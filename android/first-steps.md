@@ -16,15 +16,16 @@ For detailed setup instructions see the [Deeplearning4J Android Setup](setup.md)
 
 ## Starting an Asynchronous Task
 
-Training a neural network is CPU-intensive, which is why you wouldn’t want to do it in your application’s UI thread. I’m not too sure if DL4J trains its networks asynchronously by default. Just to be safe, I’ll spawn a separate thread now using the AsyncTask class.
+Training a neural network is CPU-intensive, which is why you wouldn’t want to do it in your application’s UI thread. I’m not too sure if DL4J trains its networks asynchronously by default. Just to be safe, I’ll spawn a separate thread.
 
 ```java
-AsyncTask.execute(new Runnable() {
-    @Override
-    public void run() {
+private void startBackgroundThread() {
+    Thread thread;
+    thread = new Thread(() -> {
         createAndUseNetwork();
-    }
-});
+        });
+    thread.start();
+}
 ```
 
 Because the method createAndUseNetwork\(\) doesn’t exist yet, create it.
@@ -39,44 +40,29 @@ private void createAndUseNetwork() {
 DL4J has a very intuitive API. Let us now use it to create a simple multi-layer perceptron with hidden layers. It will take two input values, and spit out one output value. To create the layers, we’ll use the DenseLayer and OutputLayer classes. Accordingly, add the following code to the createAndUseNetwork\(\) method you created in the previous step:
 
 ```java
-DenseLayer inputLayer = new DenseLayer.Builder()
-        .nIn(2)
-        .nOut(3)
-        .name("Input")
-        .build();
-DenseLayer hiddenLayer = new DenseLayer.Builder()
-        .nIn(3)
-        .nOut(2)
-        .name("Hidden")
-        .build();
-OutputLayer outputLayer = new OutputLayer.Builder()
-        .nIn(2)
-        .nOut(1)
-        .name("Output")
-        .build();
-```
+MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
+                .seed(seed)
+                .weightInit(WeightInit.XAVIER)
+                .updater(Updater.ADAM)
+                .list()
+                .layer(new DenseLayer.Builder()
+                        .nIn(2)
+                        .nOut(3)
+                        .activation(Activation.RELU)
+                        .build())
+                .layer(new DenseLayer.Builder()
+                        .nOut(2)
+                        .activation(Activation.RELU)
+                        .build())        
+                .layer(new OutputLayer.Builder(LossFunction.NEGATIVELOGLIKELIHOOD)
+                        .weightInit(WeightInit.XAVIER)
+                        .activation(Activation.SIGMOID)
+                        .nOut(1).build())
+                .build();
 
-Now that our layers are ready, let’s create a NeuralNetConfiguration.Builder object to configure our neural network.
 
-```java
-NeuralNetConfiguration.Builder nncBuilder = new NeuralNetConfiguration.Builder();
-nncBuilder.updater(Updater.ADAM);
-```
-
-We must now create a NeuralNetConfiguration.ListBuilder object to actually connect our layers and specify their order.
-
-```java
-NeuralNetConfiguration.ListBuilder listBuilder = nncBuilder.list();
-listBuilder.layer(0, inputLayer);
-listBuilder.layer(1, hiddenLayer);
-listBuilder.layer(2, outputLayer);
-```
-
-At this point, we can generate and initialize our neural network as an instance of the MultiLayerNetwork class.
-
-```java
-MultiLayerNetwork myNetwork = new MultiLayerNetwork(listBuilder.build());
-myNetwork.init();
+MultiLayerNetwork model = new MultiLayerNetwork(conf);
+model.init();
 ```
 
 ## Creating Training Data

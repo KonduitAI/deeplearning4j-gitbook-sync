@@ -19,13 +19,13 @@ The instructions below apply to all DL4J and ND4J submodules, such as deeplearni
 You can use Deeplearning4j with Gradle by adding the following to your build.gradle in the dependencies block:
 
 ```text
-compile "org.deeplearning4j:deeplearning4j-core:1.0.0-beta6"
+implementation "org.deeplearning4j:deeplearning4j-core:1.0.0-beta6"
 ```
 
 Add a backend by adding the following:
 
 ```text
-compile "org.nd4j:nd4j-native-platform:1.0.0-beta6"
+implementation "org.nd4j:nd4j-native-platform:1.0.0-beta6"
 ```
 
 You can also swap the standard CPU implementation for [GPUs](deeplearning4j/deeplearning4j-config-gpu-cpu).

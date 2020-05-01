@@ -12,12 +12,12 @@ While neural networks are typically run on powerful computers using multiple GPU
 
 ## Prerequisites
 
-* Android Studio 2.2 or newer, which can be downloaded [here](https://developer.android.com/studio/index.html#Other). 
-* Android Studio version 2.2 and higher comes with the latest OpenJDK embedded; however, it is recommended to have the JDK installed on your own as you are then able to update it independent of Android Studio. Android Studio 3.0 and later supports all of Java 7 and a subset of Java 8 language features. Java JDKs can be downloaded from Oracle's website.
+* Android Studio 3.6.3 or newer, which can be downloaded [here](https://developer.android.com/studio/index.html#Other). 
+* Android Studio version 3.6.3 and higher comes with the latest OpenJDK embedded; however, it is recommended to have the JDK installed on your own as you are then able to update it independent of Android Studio. Android Studio 3.0 and later supports all of Java 7 and a subset of Java 8 language features. Java JDKs can be downloaded from the Oracle or OpenJDK website.
 * Within Android studio, the Android SDK Manager can be used to install Android Build tools 24.0.1 or later, SDK platform 24 or later, and the Android Support Repository. 
 * An Android device or an emulator running API level 21 or higher. A minimum of 200 MB of internal storage space free is recommended.
 
-It is also recommended that you download and install IntelliJ IDEA, Maven, and the complete dl4j-examples directory for building and building and training neural nets on your desktop instead of android studio.
+It is also recommended that you download and install IntelliJ IDEA, Maven, and the complete dl4j-examples directory for building and building and training neural nets on your desktop instead of android studio. With the setup we are giving you here you can use dl4j on your android device and emulator. You need to add the regular dependencies to use dl4j in the `\app\src\test\java\` tests. 
 
 ## Required Dependencies
 
@@ -52,30 +52,18 @@ implementation group: 'org.bytedeco', name: 'leptonica', version: '1.78.0-1.5.2'
 testimplementation 'junit:junit:4.12'
 ```
 
+You may also need to add the following compile options:
+
+```groovy
+compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+```
+
 DL4J depends on ND4J, which is a library that offers fast n-dimensional arrays. ND4J in turn depends on a platform-specific native code library called JavaCPP, therefore you must load a version of ND4J that matches the architecture of the Android device. Both -x86 and -arm types can be included to support multiple device processor types.
 
-The above dependencies contain several files with identical names which must be handled with the following exclude parameters to your packagingOptions.
-
-```java
-packagingOptions {
-    exclude 'META-INF/DEPENDENCIES'
-    exclude 'META-INF/DEPENDENCIES.txt'
-    exclude 'META-INF/LICENSE'
-    exclude 'META-INF/LICENSE.txt'
-    exclude 'META-INF/license.txt'
-    exclude 'META-INF/NOTICE'
-    exclude 'META-INF/NOTICE.txt'
-    exclude 'META-INF/notice.txt'
-    exclude 'META-INF/INDEX.LIST'
-
-}
-```
-
-After adding the above dependencies and exclusions to the build.gradle file, try syncing Gradle with to see if any other exclusions are needed. The error message will identify the file path that should be added to the list of exclusions. An example error message with file path is: _&gt; More than one file was found with OS independent path 'org/bytedeco/javacpp/ windows-x86\_64/msvp120.dll'_ Compiling these dependencies involves a large number of files, thus it is necessary to set multiDexEnabled to true in defaultConfig.
-
-```java
-multiDexEnabled true
-```
+After adding the above to the build.gradle file, try syncing Gradle with to see if any exclusions are needed. The error message will identify the file path that should be added to the list of exclusions. An example error message with file path is: _&gt; More than one file was found with OS independent path 'org/bytedeco/javacpp/ windows-x86\_64/msvp120.dll'_ 
 
 A conflict in the junit module versions often causes the following error: _&gt; Conflict with dependency 'junit:junit' in project ':app'. Resolved versions for app \(4.8.2\) and test app \(4.12\) differ_. This can be suppressed by forcing all of the junit modules to use the same version with the following:
 
@@ -110,95 +98,6 @@ buildscript {
 }
 ```
 
-Proguard optimizes and reduces the amount of code in your Android application in order to make if smaller and faster. Unfortunately, proguard removes annotations by default, including the @Platform annotation used by javaCV. To make proguard preserve these annotations and keep native methods add the following flags to the progaurd-rules.pro file.
-
-```java
-# enable optimization
--optimizations !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/*
--optimizationpasses 5
--allowaccessmodification
--dontwarn org.apache.lang.**
--ignorewarnings
-
--keepattributes *Annotation*
-# JavaCV
--keep @org.bytedeco.javacpp.annotation interface * {*;}
--keep @org.bytedeco.javacpp.annotation.Platform public class *
--keepclasseswithmembernames class * {@org.bytedeco.* <fields>;}
--keepclasseswithmembernames class * {@org.bytedeco.* <methods>;}
-
--keepattributes EnclosingMethod
--keep @interface org.bytedeco.javacpp.annotation.*,javax.inject.*
-
--keepattributes *Annotation*, Exceptions, Signature, Deprecated, SourceFile, SourceDir, LineNumberTable, LocalVariableTable, LocalVariableTypeTable, Synthetic, EnclosingMethod, RuntimeVisibleAnnotations, RuntimeInvisibleAnnotations, RuntimeVisibleParameterAnnotations, RuntimeInvisibleParameterAnnotations, AnnotationDefault, InnerClasses
--keep class org.bytedeco.javacpp.** {*;}
--dontwarn java.awt.**
--dontwarn org.bytedeco.javacv.**
--dontwarn org.bytedeco.javacpp.**
-# end javacv
-
-# This flag is needed to keep native methods
--keepclasseswithmembernames class * {
- native <methods>;
-}
-
--keep public class * extends android.view.View {
- public <init>(android.content.Context);
- public <init>(android.content.Context, android.util.AttributeSet);
- public <init>(android.content.Context, android.util.AttributeSet, int);
- public void set*(...);
-}
-
--keepclasseswithmembers class * {
- public <init>(android.content.Context, android.util.AttributeSet);
-}
-
--keepclasseswithmembers class * {
- public <init>(android.content.Context, android.util.AttributeSet, int);
-}
-
--keepclassmembers class * extends android.app.Activity {
- public void *(android.view.View);
-}
-
-# For enumeration classes
--keepclassmembers enum * {
- public static **[] values();
- public static ** valueOf(java.lang.String);
-}
-
--keep class * implements android.os.Parcelable {
- public static final android.os.Parcelable$Creator *;
-}
-
--keepclassmembers class **.R$* {
- public static <fields>;
-}
-
--keep class android.support.v7.app.** { *; }
--keep interface android.support.v7.app.** { *; }
--keep class com.actionbarsherlock.** { *; }
--keep interface com.actionbarsherlock.** { *; }
--dontwarn android.support.**
--dontwarn com.google.ads.**
-
-# Flags to keep standard classes
--keep public class * extends android.app.Activity
--keep public class * extends android.app.Application
--keep public class * extends android.app.Service
--keep public class * extends android.content.BroadcastReceiver
--keep public class * extends android.content.ContentProvider
--keep public class * extends android.app.backup.BackupAgent
--keep public class * extends android.preference.Preference
--keep public class * extends android.support.v7.app.Fragment
--keep public class * extends android.support.v7.app.DialogFragment
--keep public class * extends com.actionbarsherlock.app.SherlockListFragment
--keep public class * extends com.actionbarsherlock.app.SherlockFragment
--keep public class * extends com.actionbarsherlock.app.SherlockFragmentActivity
--keep public class * extends android.app.Fragment
--keep public class com.android.vending.licensing.ILicensingService
-```
-
 Testing your app is the best way to check if any errors are being caused by inappropriately removed code; however, you can also inspect what was removed by reviewing the usage.txt output file saved in /build/outputs/mapping/release/.
 
 To fix errors and force ProGuard to retain certain code, add a -keep line in the ProGuard configuration file. For example:
@@ -215,7 +114,7 @@ It may also be advantageous to increase the allocated memory to your app by addi
 android:largeHeap="true"
 ```
 
-As of release 0.9.0, ND4J offers an additional memory-management model: workspaces. Workspaces allow you to reuse memory for cyclic workloads without the JVM Garbage Collector for off-heap memory tracking. D4j Workspace allows for memory to be preallocated before a try / catch block and reused over in over within that block.
+ND4J offers an additional memory-management model: workspaces. Workspaces allow you to reuse memory for cyclic workloads without the JVM Garbage Collector for off-heap memory tracking. D4j Workspace allows for memory to be preallocated before a try / catch block and reused over in over within that block.
 
 If your training process uses workspaces, it is recommended that you disable or reduce the frequency of periodic GC calls prior to your model.fit\(\) call.
 
@@ -227,7 +126,7 @@ Nd4j.getMemoryManager().setAutoGcWindow(5000)
 Nd4j.getMemoryManager().togglePeriodicGc(false);
 ```
 
-The example below illustrates the use of a Workspace for memory allocation in the AsyncTask of and Android Application. More information concerning ND4J Workspaces can be found [here](../config/config-memory/config-workspaces.md).
+The example below illustrates the use of a Workspace for memory allocation.  More information concerning ND4J Workspaces can be found [here](../config/config-memory/config-workspaces.md).
 
 ```java
 import org.nd4j.linalg.api.memory.MemoryWorkspace;
@@ -236,58 +135,39 @@ import org.nd4j.linalg.api.memory.enums.AllocationPolicy;
 import org.nd4j.linalg.api.memory.enums.LearningPolicy;
 
 
-private class AsyncTaskRunner extends AsyncTask<String, Integer, INDArray> {
+//Make sure to run on a background thread, this is where we will initiate the Workspace
+protected INDArray doInBackground(String... params) {
 
-    // Runs in UI before background thread is called
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-    }
+    // we will create configuration with 10MB memory space preallocated
+    WorkspaceConfiguration initialConfig = WorkspaceConfiguration.builder()
+        .initialSize(10 * 1024L * 1024L)
+        .policyAllocation(AllocationPolicy.STRICT)
+        .policyLearning(LearningPolicy.NONE)
+        .build();
 
-    //Runs on background thread, this is where we will initiate the Workspace
-    protected INDArray doInBackground(String... params) {
+    INDArray result = null;
 
-        // we will create configuration with 10MB memory space preallocated
-        WorkspaceConfiguration initialConfig = WorkspaceConfiguration.builder()
-                .initialSize(10 * 1024L * 1024L)
-                .policyAllocation(AllocationPolicy.STRICT)
-                .policyLearning(LearningPolicy.NONE)
-                .build();
-
-        INDArray result = null;
-
-        try(MemoryWorkspace ws = Nd4j.getWorkspaceManager().getAndActivateWorkspace(initialConfig, "SOME_ID")) {
+    try(MemoryWorkspace ws = Nd4j.getWorkspaceManager().getAndActivateWorkspace(initialConfig, "SOME_ID")) {
         // now, INDArrays created within this try block will be allocated from this workspace pool
-
-            //Load a trained model
-            File file = new File(Environment.getExternalStorageDirectory() + "/trained_model.zip");
-            MultiLayerNetwork restored = ModelSerializer.restoreMultiLayerNetwork(file);
-
-            // Create input in INDArray
-            INDArray inputData = Nd4j.zeros(1, 4);
-
-            inputData.putScalar(new int[]{0, 0}, 1);
-            inputData.putScalar(new int[]{0, 1}, 0);
-            inputData.putScalar(new int[]{0, 2}, 1);
-            inputData.putScalar(new int[]{0, 3}, 0);
-
-            result = restored.output(inputData);
-
-        }
-        catch(IOException ex){Log.d("AsyncTaskRunner2 ", "catchIOException = " + ex  );}
-
-        return result;
+    
+        //Load a trained model
+        File file = new File(Environment.getExternalStorageDirectory() + "/trained_model.zip");
+        MultiLayerNetwork restored = ModelSerializer.restoreMultiLayerNetwork(file);
+    
+        // Create input in INDArray
+        INDArray inputData = Nd4j.zeros(1, 4);
+    
+        inputData.putScalar(new int[]{0, 0}, 1);
+        inputData.putScalar(new int[]{0, 1}, 0);
+        inputData.putScalar(new int[]{0, 2}, 1);
+        inputData.putScalar(new int[]{0, 3}, 0);
+    
+        result = restored.output(inputData);
+    
     }
+    catch(IOException ex){Log.d("AsyncTaskRunner2 ", "catchIOException = " + ex  );}
 
-    protected void onProgressUpdate(Integer... values) {
-        super.onProgressUpdate(values);
-    }
-
-    protected void onPostExecute(INDArray result) {
-        super.onPostExecute(result);
-     //Handle results and update UI here.
-    }
-
+    return result;
 }
 ```
 
@@ -295,7 +175,7 @@ private class AsyncTaskRunner extends AsyncTask<String, Integer, INDArray> {
 
 Practical considerations regarding performance limits are needed when building Android applications that run neural networks. Training a neural network on a device is possible, but should only be attempted with networks with limited numbers of layers, nodes, and iterations. The first Demo app [DL4JIrisClassifierDemo](linear-classifier.md#dl-4-jirisclassifierdemo) is able to train on a standard device in about 15 seconds.
 
-When training on a device is a reasonable option, the application performance can be improved by saving the trained model on the phone's external storage once an initial training is complete. The trained model can then be used as an application resource. This approach is useful for training networks with data obtained from user input. The following code illustrates how to train a network and save it on the phone's external resources.
+When training on a device is a reasonable option, the application performance can be improved by saving the trained model on external storage once an initial training is complete. The trained model can then be used as an application resource. This approach is useful for training networks with data obtained from user input. The following code illustrates how to train a network and save it on external resources.
 
 For API 23 and greater, you will need to include the permissions in your manifest and also programmatically request the read and write permissions in your activity. The required Manifest permissions are:
 
