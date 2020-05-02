@@ -172,3 +172,7 @@
 * [Support](support.md)
 * [Why Deep Learning?](why-deep-learning.md)
 
+## Operations
+
+* [ND4J and SameDiff Ops](operations/nd4j-and-samediff-ops.md)
+
