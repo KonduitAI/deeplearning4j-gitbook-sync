@@ -86,6 +86,19 @@
 * [Ops](samediff/ops.md)
 * [Adding Ops](samediff/adding-ops.md)
 
+## Operation Namespaces
+
+* [Bitwise](operation-namespaces/bitwise.md)
+* [Linalg](operation-namespaces/linalg.md)
+* [Math](operation-namespaces/math.md)
+* [Random](operation-namespaces/random.md)
+* [BaseOps](operation-namespaces/baseops.md)
+* [CNN](operation-namespaces/cnn.md)
+* [Image](operation-namespaces/image.md)
+* [Loss](operation-namespaces/loss.md)
+* [NN](operation-namespaces/nn.md)
+* [RNN](operation-namespaces/rnn.md)
+
 ## Tuning & Training
 
 * [Evaluation](tuning-and-training/evaluation.md)
@@ -94,15 +107,6 @@
 * [Early Stopping](tuning-and-training/early-stopping.md)
 * [t-SNE Visualization](tuning-and-training/tsne-visualization.md)
 * [Transfer Learning](tuning-and-training/transfer-learning.md)
-
-## DISTRIBUTED DEEP LEARNING
-
-* [Introduction/Getting Started](distributed-deep-learning/intro.md)
-* [Technical Explanation](distributed-deep-learning/technicalref.md)
-* [Spark Guide](distributed-deep-learning/howto.md)
-* [Spark Data Pipelines Guide](distributed-deep-learning/data-howto.md)
-* [API Reference](distributed-deep-learning/apiref.md)
-* [Parameter Server](distributed-deep-learning/parameter-server.md)
 
 ## Keras Import
 
@@ -128,6 +132,15 @@
   * [Recurrent Layers](keras-import/api-reference/recurrent-layers.md)
   * [Wrapper Layers](keras-import/api-reference/wrapper-layers.md)
   * [Advanced Activations](keras-import/api-reference/advanced-activations.md)
+
+## DISTRIBUTED DEEP LEARNING
+
+* [Introduction/Getting Started](distributed-deep-learning/intro.md)
+* [Technical Explanation](distributed-deep-learning/technicalref.md)
+* [Spark Guide](distributed-deep-learning/howto.md)
+* [Spark Data Pipelines Guide](distributed-deep-learning/data-howto.md)
+* [API Reference](distributed-deep-learning/apiref.md)
+* [Parameter Server](distributed-deep-learning/parameter-server.md)
 
 ## Arbiter
 
@@ -167,19 +180,8 @@
 * [Tutorial: First Steps](android/first-steps.md)
 * [Tutorial: Classifier](android/linear-classifier.md)
 * [Tutorial: Image Classifier](android/image-classification.md)
-* [FAQ](faq.md)
-* [Press](press.md)
-* [Support](support.md)
-* [Why Deep Learning?](why-deep-learning.md)
+* [FAQ](android/faq.md)
+* [Press](android/press.md)
+* [Support](android/support.md)
+* [Why Deep Learning?](android/why-deep-learning.md)
 
-## Operation Namespaces
-* [Bitwise](operations/Bitwise.md)
-* [Linalg](operations/Linalg.md)
-* [Math](operations/Math.md)
-* [Random](operations/Random.md)
-* [BaseOps](operations/BaseOps.md)
-* [CNN](operations/CNN.md)
-* [Image](operations/Image.md)
-* [Loss](operations/Loss.md)
-* [NN](operations/NN.md)
-* [RNN](operations/RNN.md)
