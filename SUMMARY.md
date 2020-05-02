@@ -172,7 +172,14 @@
 * [Support](support.md)
 * [Why Deep Learning?](why-deep-learning.md)
 
-## Operations
-
-* [ND4J and SameDiff Ops](operations/nd4j-and-samediff-ops.md)
-
+## Operation Namespaces
+* [Bitwise](operations/Bitwise.md)
+* [Linalg](operations/Linalg.md)
+* [Math](operations/Math.md)
+* [Random](operations/Random.md)
+* [BaseOps](operations/SDBaseOps.md)
+* [CNN](operations/SDCNN.md)
+* [Image](operations/SDImage.md)
+* [Loss](operations/SDLoss.md)
+* [NN](operations/SDNN.md)
+* [RNN](operations/SDRNN.md)
