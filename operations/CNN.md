@@ -16,7 +16,7 @@ SDVariable avgPooling2d(String name, SDVariable input, Pooling2DConfig pooling2D
 2D Convolution layer operation - average pooling 2d
 
 * **input**  (NUMERIC) - the input to average pooling 2d operation - 4d CNN (image) activations in NCHW format (shape [minibatch, channels, height, width]) or NHWC format (shape [minibatch, height, width, channels])
-* **Pooling2DConfig** - see [Pooling2DConfig](#pooling2dconfig)
+* **Pooling2DConfig** - see [Pooling2DConfig](#pooling-2-dconfig)
 
 ## avgPooling3d
 ```JAVA
@@ -28,7 +28,7 @@ SDVariable avgPooling3d(String name, SDVariable input, Pooling3DConfig pooling3D
 3D convolution layer operation - average pooling 3d 
 
 * **input**  (NUMERIC) - the input to average pooling 3d operation - 5d activations in NCDHW format (shape [minibatch, channels, depth, height, width]) or NDHWC format (shape [minibatch, depth, height, width, channels])
-* **Pooling3DConfig** - see [Pooling3DConfig](#pooling3dconfig)
+* **Pooling3DConfig** - see [Pooling3DConfig](#pooling-3-dconfig)
 
 ## batchToSpace
 ```JAVA
@@ -58,7 +58,7 @@ col2im operation for use in 2D convolution operations. Outputs a 4d array with s
 [minibatch, inputChannels, height, width]
 
 * **in**  (NUMERIC) - Input - rank 6 input with shape [minibatch, inputChannels, kernelHeight, kernelWidth, outputHeight, outputWidth]
-* **Conv2DConfig** - see [Conv2DConfig](#conv2dconfig)
+* **Conv2DConfig** - see [Conv2DConfig](#conv-2-dconfig)
 
 ## conv1d
 ```JAVA
@@ -76,7 +76,7 @@ Conv1d operation.
 * **input**  (NUMERIC) - the inputs to conv1d
 * **weights**  (NUMERIC) - weights for conv1d op - rank 3 array with shape [kernelSize, inputChannels, outputChannels]
 * **bias**  (NUMERIC) - bias for conv1d op - rank 1 array with shape [outputChannels]. May be null.
-* **Conv1DConfig** - see [Conv1DConfig](#conv1dconfig)
+* **Conv1DConfig** - see [Conv1DConfig](#conv-1-dconfig)
 
 ## conv2d
 ```JAVA
@@ -94,7 +94,7 @@ SDVariable conv2d(String name, SDVariable layerInput, SDVariable weights, Conv2D
 * **layerInput**  (NUMERIC) - the input to max pooling 2d operation - 4d CNN (image) activations in NCHW format
 * **weights**  (NUMERIC) - Weights for the convolution operation. 4 dimensions with format [kernelHeight, kernelWidth, inputChannels, outputChannels]
 * **bias**  (NUMERIC) - Optional 1D bias array with shape [outputChannels]. May be null.
-* **Conv2DConfig** - see [Conv2DConfig](#conv2dconfig)
+* **Conv2DConfig** - see [Conv2DConfig](#conv-2-dconfig)
 
 ## conv3d
 ```JAVA
@@ -112,7 +112,7 @@ Convolution 3D operation with optional bias
 * **input**  (NUMERIC) - the input to average pooling 3d operation - 5d activations in NCDHW format (shape [minibatch, channels, depth, height, width]) or NDHWC format (shape [minibatch, depth, height, width, channels])
 * **weights**  (NUMERIC) -  Weights for conv3d. Rank 5 with shape [kernelDepth, kernelHeight, kernelWidth, inputChannels, outputChannels].
 * **bias**  (NUMERIC) -  Optional 1D bias array with shape [outputChannels]. May be null.
-* **Conv3DConfig** - see [Conv3DConfig](#conv3dconfig)
+* **Conv3DConfig** - see [Conv3DConfig](#conv-3-dconfig)
 
 ## deconv2d
 ```JAVA
@@ -130,7 +130,7 @@ SDVariable deconv2d(String name, SDVariable layerInput, SDVariable weights, DeCo
 * **layerInput**  (NUMERIC) - the input to deconvolution 2d operation - 4d CNN (image) activations in NCHW format (shape [minibatch, channels, height, width]) or NHWC format (shape [minibatch, height, width, channels])
 * **weights**  (NUMERIC) - Weights for the 2d deconvolution operation. 4 dimensions with format [inputChannels, outputChannels, kernelHeight, kernelWidth]
 * **bias**  (NUMERIC) - Optional 1D bias array with shape [outputChannels]. May be null.
-* **DeConv2DConfig** - see [DeConv2DConfig](#deconv2dconfig)
+* **DeConv2DConfig** - see [DeConv2DConfig](#deconv-2-dconfig)
 
 ## deconv3d
 ```JAVA
@@ -148,7 +148,7 @@ SDVariable deconv3d(String name, SDVariable input, SDVariable weights, DeConv3DC
 * **input**  (NUMERIC) - Input array - shape [bS, iD, iH, iW, iC] (NDHWC) or [bS, iC, iD, iH, iW] (NCDHW)
 * **weights**  (NUMERIC) - Weights array - shape [kD, kH, kW, oC, iC]
 * **bias**  (NUMERIC) - Bias array - optional, may be null. If non-null, must have shape [outputChannels]
-* **DeConv3DConfig** - see [DeConv3DConfig](#deconv3dconfig)
+* **DeConv3DConfig** - see [DeConv3DConfig](#deconv-3-dconfig)
 
 ## depthToSpace
 ```JAVA
@@ -183,7 +183,7 @@ Depth-wise 2D convolution operation with optional bias
 * **layerInput**  (NUMERIC) - the input to max pooling 2d operation - 4d CNN (image) activations in NCHW format
 * **depthWeights**  (NUMERIC) - Depth-wise conv2d weights. 4 dimensions with format [kernelHeight, kernelWidth, inputChannels, depthMultiplier]
 * **bias**  (NUMERIC) - Optional 1D bias array with shape [outputChannels]. May be null.
-* **Conv2DConfig** - see [Conv2DConfig](#conv2dconfig)
+* **Conv2DConfig** - see [Conv2DConfig](#conv-2-dconfig)
 
 ## dilation2D
 ```JAVA
@@ -230,7 +230,7 @@ im2col operation for use in 2D convolution operations. Outputs a 6d array with s
 [minibatch, inputChannels, kernelHeight, kernelWidth, outputHeight, outputWidth]   
 
 * **in**  (NUMERIC) - Input - rank 4 input with shape [minibatch, inputChannels, height, width]
-* **Conv2DConfig** - see [Conv2DConfig](#conv2dconfig)
+* **Conv2DConfig** - see [Conv2DConfig](#conv-2-dconfig)
 
 ## localResponseNormalization
 ```JAVA
@@ -254,7 +254,7 @@ SDVariable[] maxPoolWithArgmax(String name, SDVariable input, Pooling2DConfig po
 2D Convolution layer operation - Max pooling on the input and outputs both max values and indices 
 
 * **input**  (NUMERIC) - the input to max pooling 2d operation - 4d CNN (image) activations in NCHW format (shape [minibatch, channels, height, width]) or NHWC format (shape [minibatch, height, width, channels])
-* **Pooling2DConfig** - see [Pooling2DConfig](#pooling2dconfig)
+* **Pooling2DConfig** - see [Pooling2DConfig](#pooling-2-dconfig)
 
 ## maxPooling2d
 ```JAVA
@@ -266,7 +266,7 @@ SDVariable maxPooling2d(String name, SDVariable input, Pooling2DConfig pooling2D
 2D Convolution layer operation - max pooling 2d 
 
 * **input**  (NUMERIC) - the input to max pooling 2d operation - 4d CNN (image) activations in NCHW format (shape [minibatch, channels, height, width]) or NHWC format (shape [minibatch, height, width, channels])
-* **Pooling2DConfig** - see [Pooling2DConfig](#pooling2dconfig)
+* **Pooling2DConfig** - see [Pooling2DConfig](#pooling-2-dconfig)
 
 ## maxPooling3d
 ```JAVA
@@ -278,7 +278,7 @@ SDVariable maxPooling3d(String name, SDVariable input, Pooling3DConfig pooling3D
 3D convolution layer operation - max pooling 3d operation.
 
 * **input**  (NUMERIC) - the input to average pooling 3d operation - 5d activations in NCDHW format (shape [minibatch, channels, depth, height, width]) or NDHWC format (shape [minibatch, depth, height, width, channels])
-* **Pooling3DConfig** - see [Pooling3DConfig](#pooling3dconfig)
+* **Pooling3DConfig** - see [Pooling3DConfig](#pooling-3-dconfig)
 
 ## separableConv2d
 ```JAVA
@@ -297,7 +297,7 @@ Separable 2D convolution operation with optional bias
 * **depthWeights**  (NUMERIC) - Separable conv2d depth weights. 4 dimensions with format [kernelHeight, kernelWidth, inputChannels, depthMultiplier]
 * **pointWeights**  (NUMERIC) - Point weights, rank 4 with format [1, 1, inputChannels*depthMultiplier, outputChannels]. May be null
 * **bias**  (NUMERIC) - Optional bias, rank 1 with shape [outputChannels]. May be null.
-* **Conv2DConfig** - see [Conv2DConfig](#conv2dconfig)
+* **Conv2DConfig** - see [Conv2DConfig](#conv-2-dconfig)
 
 ## spaceToBatch
 ```JAVA
@@ -370,7 +370,7 @@ SDVariable upsampling2d(String name, SDVariable input, int scaleH, int scaleW, b
 * **dataFormat** (STRING) - Data format - default = NCW
 
 Used in these ops: 
-[conv1d](#conv1d)
+[conv1d](#conv-1-d)
 ## Conv2DConfig
 * **kH** (LONG) - Kernel height - default = -1
 * **kW** (LONG) - Kernel width - default = -1
@@ -384,11 +384,11 @@ Used in these ops:
 * **dataFormat** (STRING) - Data format - default = NCHW
 
 Used in these ops: 
-[col2Im](#col2im)
-[conv2d](#conv2d)
-[depthWiseConv2d](#depthwiseconv2d)
-[im2Col](#im2col)
-[separableConv2d](#separableconv2d)
+[col2Im](#col-2-im)
+[conv2d](#conv-2-d)
+[depthWiseConv2d](#depthwiseconv-2-d)
+[im2Col](#im-2-col)
+[separableConv2d](#separableconv-2-d)
 ## Conv3DConfig
 * **kD** (LONG) - Kernel depth - default = -1
 * **kW** (LONG) - Kernel width - default = -1
@@ -407,7 +407,7 @@ Used in these ops:
 * **dataFormat** (STRING) - Data format - default = NDHWC
 
 Used in these ops: 
-[conv3d](#conv3d)
+[conv3d](#conv-3-d)
 ## DeConv2DConfig
 * **kH** (LONG) - Kernel height - default = -1
 * **kW** (LONG) - Kernel width - default = -1
@@ -421,7 +421,7 @@ Used in these ops:
 * **dataFormat** (STRING) - Data format - default = NCHW
 
 Used in these ops: 
-[deconv2d](#deconv2d)
+[deconv2d](#deconv-2-d)
 ## DeConv3DConfig
 * **kD** (LONG) - Kernel depth - default = -1
 * **kW** (LONG) - Kernel width - default = -1
@@ -439,7 +439,7 @@ Used in these ops:
 * **dataFormat** (STRING) - Data format - default = NCDHW
 
 Used in these ops: 
-[deconv3d](#deconv3d)
+[deconv3d](#deconv-3-d)
 ## Pooling2DConfig
 * **kH** (LONG) - Kernel height - default = -1
 * **kW** (LONG) - Kernel width - default = -1
@@ -453,9 +453,9 @@ Used in these ops:
 * **dataFormat** (STRING) - Data format - default = nchw
 
 Used in these ops: 
-[avgPooling2d](#avgpooling2d)
+[avgPooling2d](#avgpooling-2-d)
 [maxPoolWithArgmax](#maxpoolwithargmax)
-[maxPooling2d](#maxpooling2d)
+[maxPooling2d](#maxpooling-2-d)
 ## Pooling3DConfig
 * **kD** (LONG) - Kernel depth - default = -1
 * **kW** (LONG) - Kernel width - default = -1
@@ -473,8 +473,8 @@ Used in these ops:
 * **dataFormat** (STRING) - Data format - default = NCDHW
 
 Used in these ops: 
-[avgPooling3d](#avgpooling3d)
-[maxPooling3d](#maxpooling3d)
+[avgPooling3d](#avgpooling-3-d)
+[maxPooling3d](#maxpooling-3-d)
 ## LocalResponseNormalizationConfig
 * **alpha** (NUMERIC) - alpha - default = 1
 * **beta** (NUMERIC) - beta - default = 0.5
