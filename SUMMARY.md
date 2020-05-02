@@ -88,6 +88,7 @@
 
 ## Operation Namespaces
 
+* [Overview](operation-namespaces/overview.md)
 * [Bitwise](operation-namespaces/bitwise.md)
 * [Linalg](operation-namespaces/linalg.md)
 * [Math](operation-namespaces/math.md)
