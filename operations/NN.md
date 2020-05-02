@@ -17,11 +17,11 @@ Neural network batch normalization operation.
 
 For details, see <a href="https://arxiv.org/abs/1502.03167">https://arxiv.org/abs/1502.03167</a>
 
-* **input**  (NUMERIC type) - Input variable.
-* **mean**  (NUMERIC type) - Mean value. For 1d axis, this should match input.size(axis)
-* **variance**  (NUMERIC type) - Variance value. For 1d axis, this should match input.size(axis)
-* **gamma**  (NUMERIC type) - Gamma value. For 1d axis, this should match input.size(axis)
-* **beta**  (NUMERIC type) - Beta value. For 1d axis, this should match input.size(axis)
+* **input**  (NUMERIC) - Input variable.
+* **mean**  (NUMERIC) - Mean value. For 1d axis, this should match input.size(axis)
+* **variance**  (NUMERIC) - Variance value. For 1d axis, this should match input.size(axis)
+* **gamma**  (NUMERIC) - Gamma value. For 1d axis, this should match input.size(axis)
+* **beta**  (NUMERIC) - Beta value. For 1d axis, this should match input.size(axis)
 * **epsilon** - Epsilon constant for numerical stability (to avoid division by 0)
 * **axis** - For 2d CNN activations: 1 for NCHW format activations, or 3 for NHWC format activations.
 For 3d CNN activations: 1 for NCDHW format, 4 for NDHWC
@@ -36,8 +36,8 @@ SDVariable biasAdd(String name, SDVariable input, SDVariable bias, boolean nchw)
 ```
 Bias addition operation: a special case of addition, typically used with CNN 4D activations and a 1D bias vector
 
-* **input**  (NUMERIC type) - 4d input variable
-* **bias**  (NUMERIC type) - 1d bias
+* **input**  (NUMERIC) - 4d input variable
+* **bias**  (NUMERIC) - 1d bias
 * **nchw** - The format - nchw=true means [minibatch, channels, height, width] format; nchw=false - [minibatch, height, width, channels].
 Unused for 2d inputs
 
@@ -84,13 +84,13 @@ Note: Queries, keys and values must either be all rank 3 or all rank 4 arrays. M
 
 output rank will depend on the input rank.
 
-* **queries**  (NUMERIC type) - input 3D array "queries" of shape [batchSize, featureKeys, queryCount]
+* **queries**  (NUMERIC) - input 3D array "queries" of shape [batchSize, featureKeys, queryCount]
 or 4D array of shape [batchSize, numHeads, featureKeys, queryCount]
-* **keys**  (NUMERIC type) - input 3D array "keys" of shape [batchSize, featureKeys, timesteps]
+* **keys**  (NUMERIC) - input 3D array "keys" of shape [batchSize, featureKeys, timesteps]
 or 4D array of shape [batchSize, numHeads, featureKeys, timesteps]
-* **values**  (NUMERIC type) - input 3D array "values" of shape [batchSize, featureValues, timesteps]
+* **values**  (NUMERIC) - input 3D array "values" of shape [batchSize, featureValues, timesteps]
 or 4D array of shape [batchSize, numHeads, featureValues, timesteps]
-* **mask**  (NUMERIC type) - OPTIONAL; array that defines which values should be skipped of shape [batchSize, timesteps]
+* **mask**  (NUMERIC) - OPTIONAL; array that defines which values should be skipped of shape [batchSize, timesteps]
 * **scaled** - normalization, false -> do not apply normalization, true -> apply normalization
 
 ## dropout
@@ -102,7 +102,7 @@ SDVariable dropout(String name, SDVariable input, double inputRetainProbability)
 ```
 Dropout operation
 
-* **input**  (NUMERIC type) - Input array
+* **input**  (NUMERIC) - Input array
 * **inputRetainProbability** - Probability of retaining an input (set to 0 with probability 1-p)
 
 ## elu
@@ -124,7 +124,7 @@ with constant a = 1.0
 
 See: <a href="https://arxiv.org/abs/1511.07289">https://arxiv.org/abs/1511.07289</a>
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 
 ## gelu
 ```JAVA
@@ -139,7 +139,7 @@ For more details, see <i>Gaussian Error Linear Units (GELUs)</i> - <a href="http
 
 This method uses the sigmoid approximation
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 
 ## hardSigmoid
 ```JAVA
@@ -156,7 +156,7 @@ out[1] = 0.2*in[i]+0.5 if -2.5 < in[i] < 2.5
 
 out[i] = 1 if in[i] >= 2.5
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 
 ## hardTanh
 ```JAVA
@@ -173,7 +173,7 @@ out[1] = in[i] if -1 < in[i] < 1
 
 out[i] = 1 if in[i] >= 1
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 
 ## hardTanhDerivative
 ```JAVA
@@ -184,7 +184,7 @@ SDVariable hardTanhDerivative(String name, SDVariable x)
 ```
 Derivative (dOut/dIn) of the element-wise hard Tanh function - hardTanh(INDArray)
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 
 ## layerNorm
 ```JAVA
@@ -203,9 +203,9 @@ Apply Layer Normalization
 
 y = gain * standardize(x) + bias
 
-* **input**  (NUMERIC type) - Input variable
-* **gain**  (NUMERIC type) - Gain
-* **bias**  (NUMERIC type) - Bias
+* **input**  (NUMERIC) - Input variable
+* **gain**  (NUMERIC) - Gain
+* **bias**  (NUMERIC) - Bias
 * **channelsFirst** - For 2D input - unused. True for NCHW (minibatch, channels, height, width), false for NHWC data
 * **dimensions** - Dimensions to perform layer norm over - dimension=1 for 2d/MLP data, dimension=1,2,3 for CNNs (Size: AtLeast(min=1))
 
@@ -224,7 +224,7 @@ out = alpha * x if x < cutoff
 
 Alpha value is most commonly set to 0.01
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 * **alpha** - Cutoff - commonly 0.01
 
 ## leakyReluDerivative
@@ -236,7 +236,7 @@ SDVariable leakyReluDerivative(String name, SDVariable x, double alpha)
 ```
 Leaky ReLU derivative: dOut/dIn given input.
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 * **alpha** - Cutoff - commonly 0.01
 
 ## linear
@@ -250,9 +250,9 @@ Linear layer operation: out = mmul(in,w) + bias
 
 Note that bias array is optional
 
-* **input**  (NUMERIC type) - Input data
-* **weights**  (NUMERIC type) - Weights variable, shape [nIn, nOut]
-* **bias**  (NUMERIC type) - Optional bias variable (may be null)
+* **input**  (NUMERIC) - Input data
+* **weights**  (NUMERIC) - Weights variable, shape [nIn, nOut]
+* **bias**  (NUMERIC) - Optional bias variable (may be null)
 
 ## logSigmoid
 ```JAVA
@@ -263,7 +263,7 @@ SDVariable logSigmoid(String name, SDVariable x)
 ```
 Element-wise sigmoid function: out[i] = log(sigmoid(in[i]))
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 
 ## logSoftmax
 ```JAVA
@@ -274,7 +274,7 @@ SDVariable logSoftmax(String name, SDVariable x)
 ```
 Log softmax activation
 
-* **x**  (NUMERIC type) - 
+* **x**  (NUMERIC) - 
 
 ## logSoftmax
 ```JAVA
@@ -285,7 +285,7 @@ SDVariable logSoftmax(String name, SDVariable x, int dimension)
 ```
 Log softmax activation
 
-* **x**  (NUMERIC type) - Input
+* **x**  (NUMERIC) - Input
 * **dimension** - Dimension along which to apply log softmax
 
 ## multiHeadDotProductAttention
@@ -315,14 +315,14 @@ This makes use of dot_product_attention OP support for rank 4 inputs.
 
 see dotProductAttention(INDArray, INDArray, INDArray, INDArray, boolean, boolean)
 
-* **queries**  (NUMERIC type) - input 3D array "queries" of shape [batchSize, featureKeys, queryCount]
-* **keys**  (NUMERIC type) - input 3D array "keys" of shape [batchSize, featureKeys, timesteps]
-* **values**  (NUMERIC type) - input 3D array "values" of shape [batchSize, featureValues, timesteps]
-* **Wq**  (NUMERIC type) - input query projection weights of shape [numHeads, projectedKeys, featureKeys]
-* **Wk**  (NUMERIC type) - input key projection weights of shape [numHeads, projectedKeys, featureKeys]
-* **Wv**  (NUMERIC type) - input value projection weights of shape [numHeads, projectedValues, featureValues]
-* **Wo**  (NUMERIC type) - output projection weights of shape [numHeads * projectedValues, outSize]
-* **mask**  (NUMERIC type) - OPTIONAL; array that defines which values should be skipped of shape [batchSize, timesteps]
+* **queries**  (NUMERIC) - input 3D array "queries" of shape [batchSize, featureKeys, queryCount]
+* **keys**  (NUMERIC) - input 3D array "keys" of shape [batchSize, featureKeys, timesteps]
+* **values**  (NUMERIC) - input 3D array "values" of shape [batchSize, featureValues, timesteps]
+* **Wq**  (NUMERIC) - input query projection weights of shape [numHeads, projectedKeys, featureKeys]
+* **Wk**  (NUMERIC) - input key projection weights of shape [numHeads, projectedKeys, featureKeys]
+* **Wv**  (NUMERIC) - input value projection weights of shape [numHeads, projectedValues, featureValues]
+* **Wo**  (NUMERIC) - output projection weights of shape [numHeads * projectedValues, outSize]
+* **mask**  (NUMERIC) - OPTIONAL; array that defines which values should be skipped of shape [batchSize, timesteps]
 * **scaled** - normalization, false -> do not apply normalization, true -> apply normalization
 
 ## pad
@@ -334,8 +334,8 @@ SDVariable pad(String name, SDVariable input, SDVariable padding, double constan
 ```
 Padding operation 
 
-* **input**  (NUMERIC type) - Input tensor
-* **padding**  (NUMERIC type) - Padding value
+* **input**  (NUMERIC) - Input tensor
+* **padding**  (NUMERIC) - Padding value
 * **constant** - Padding constant
 
 ## prelu
@@ -361,8 +361,8 @@ and you want each channel to have its own cutoff, use sharedAxes = [2, 3] and an
 
 alpha with shape [channels].
 
-* **input**  (NUMERIC type) - Input data
-* **alpha**  (NUMERIC type) - The cutoff variable.  Note that the batch dimension (the 0th, whether it is batch or not) should not be part of alpha.
+* **input**  (NUMERIC) - Input data
+* **alpha**  (NUMERIC) - The cutoff variable.  Note that the batch dimension (the 0th, whether it is batch or not) should not be part of alpha.
 * **sharedAxes** - Which axes to share cutoff parameters along. (Size: AtLeast(min=1))
 
 ## relu
@@ -378,7 +378,7 @@ out[i] = in[i] if in[i] >= cutoff
 
 out[i] = 0 otherwise
 
-* **x**  (NUMERIC type) - Input
+* **x**  (NUMERIC) - Input
 * **cutoff** - Cutoff value for ReLU operation - x > cutoff ? x : 0. Usually 0
 
 ## relu6
@@ -392,7 +392,7 @@ Element-wise "rectified linear 6" function with specified cutoff:
 
 out[i] = min(max(in, cutoff), 6)
 
-* **x**  (NUMERIC type) - Input
+* **x**  (NUMERIC) - Input
 * **cutoff** - Cutoff value for ReLU operation. Usually 0
 
 ## reluLayer
@@ -406,9 +406,9 @@ ReLU (Rectified Linear Unit) layer operation: out = relu(mmul(in,w) + bias)
 
 Note that bias array is optional
 
-* **input**  (NUMERIC type) - Input data
-* **weights**  (NUMERIC type) - Weights variable
-* **bias**  (NUMERIC type) - Optional bias variable (may be null)
+* **input**  (NUMERIC) - Input data
+* **weights**  (NUMERIC) - Weights variable
+* **bias**  (NUMERIC) - Optional bias variable (may be null)
 
 ## selu
 ```JAVA
@@ -425,7 +425,7 @@ out[i] = scale * alpha * (exp(in[i])-1) if in[i]>0, or 0 if in[i] <= 0
 
 Uses default scale and alpha values.
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 
 ## sigmoid
 ```JAVA
@@ -436,7 +436,7 @@ SDVariable sigmoid(String name, SDVariable x)
 ```
 Element-wise sigmoid function: out[i] = 1.0/(1+exp(-in[i]))
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 
 ## sigmoidDerivative
 ```JAVA
@@ -447,8 +447,8 @@ SDVariable sigmoidDerivative(String name, SDVariable x, SDVariable wrt)
 ```
 Element-wise sigmoid function derivative: dL/dIn given input and dL/dOut
 
-* **x**  (NUMERIC type) - Input Variable
-* **wrt**  (NUMERIC type) - Gradient at the output - dL/dOut. Must have same shape as the input
+* **x**  (NUMERIC) - Input Variable
+* **wrt**  (NUMERIC) - Gradient at the output - dL/dOut. Must have same shape as the input
 
 ## softmax
 ```JAVA
@@ -463,7 +463,7 @@ SDVariable softmax(String name, SDVariable x)
 ```
 Softmax activation, along the specified dimension
 
-* **x**  (NUMERIC type) - Input
+* **x**  (NUMERIC) - Input
 * **dimension** - Dimension along which to apply softmax - default = -1
 
 ## softmaxDerivative
@@ -475,8 +475,8 @@ SDVariable softmaxDerivative(String name, SDVariable x, SDVariable wrt, int dime
 ```
 Softmax derivative function
 
-* **x**  (NUMERIC type) - Softmax input
-* **wrt**  (NUMERIC type) - Gradient at output, dL/dx
+* **x**  (NUMERIC) - Softmax input
+* **wrt**  (NUMERIC) - Gradient at output, dL/dx
 * **dimension** - Softmax dimension
 
 ## softplus
@@ -488,7 +488,7 @@ SDVariable softplus(String name, SDVariable x)
 ```
 Element-wise softplus function: out = log(exp(x) + 1)
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 
 ## softsign
 ```JAVA
@@ -499,7 +499,7 @@ SDVariable softsign(String name, SDVariable x)
 ```
 Element-wise softsign function: out = x / (abs(x) + 1)
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 
 ## softsignDerivative
 ```JAVA
@@ -510,7 +510,7 @@ SDVariable softsignDerivative(String name, SDVariable x)
 ```
 Element-wise derivative (dOut/dIn) of the softsign function softsign(INDArray)
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 
 ## swish
 ```JAVA
@@ -523,7 +523,7 @@ Element-wise "swish" function: out = x * sigmoid(b*x) with b=1.0
 
 See: <a href="https://arxiv.org/abs/1710.05941">https://arxiv.org/abs/1710.05941</a>
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 
 ## tanh
 ```JAVA
@@ -534,5 +534,5 @@ SDVariable tanh(String name, SDVariable x)
 ```
 Elementwise tanh (hyperbolic tangent) operation: out = tanh(x)
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 

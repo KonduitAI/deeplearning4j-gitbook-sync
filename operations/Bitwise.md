@@ -15,8 +15,8 @@ SDVariable and(String name, SDVariable x, SDVariable y)
 ```
 Bitwise AND operation. Supports broadcasting.
 
-* **x**  (INT type) - First input array
-* **y**  (INT type) - Second input array
+* **x**  (INT) - First input array
+* **y**  (INT) - Second input array
 
 ## bitRotl
 ```JAVA
@@ -27,8 +27,8 @@ SDVariable bitRotl(String name, SDVariable x, SDVariable shift)
 ```
 Roll integer bits to the left, i.e. var << 4 | var >> (32 - 4)
 
-* **x**  (INT type) - Input 1
-* **shift**  (INT type) - Number of bits to shift.
+* **x**  (INT) - Input 1
+* **shift**  (INT) - Number of bits to shift.
 
 ## bitRotr
 ```JAVA
@@ -39,8 +39,8 @@ SDVariable bitRotr(String name, SDVariable x, SDVariable shift)
 ```
 Roll integer bits to the right, i.e. var >> 4 | var << (32 - 4)
 
-* **x**  (INT type) - Input 1
-* **shift**  (INT type) - Number of bits to shift.
+* **x**  (INT) - Input 1
+* **shift**  (INT) - Number of bits to shift.
 
 ## bitShift
 ```JAVA
@@ -51,8 +51,8 @@ SDVariable bitShift(String name, SDVariable x, SDVariable shift)
 ```
 Shift integer bits to the left, i.e. var << 4
 
-* **x**  (INT type) - Input 1
-* **shift**  (INT type) - Number of bits to shift.
+* **x**  (INT) - Input 1
+* **shift**  (INT) - Number of bits to shift.
 
 ## bitShiftRight
 ```JAVA
@@ -63,8 +63,8 @@ SDVariable bitShiftRight(String name, SDVariable x, SDVariable shift)
 ```
 Shift integer bits to the right, i.e. var >> 4
 
-* **x**  (INT type) - Input 1
-* **shift**  (INT type) - Number of bits to shift.
+* **x**  (INT) - Input 1
+* **shift**  (INT) - Number of bits to shift.
 
 ## bitsHammingDistance
 ```JAVA
@@ -76,8 +76,8 @@ SDVariable bitsHammingDistance(String name, SDVariable x, SDVariable y)
 Bitwise Hamming distance reduction over all elements of both input arrays.<br>
 For example, if x=01100000 and y=1010000 then the bitwise Hamming distance is 2 (due to differences at positions 0 and 1)
 
-* **x**  (INT type) - First input array.
-* **y**  (INT type) - Second input array.
+* **x**  (INT) - First input array.
+* **y**  (INT) - Second input array.
 
 ## leftShift
 ```JAVA
@@ -88,8 +88,8 @@ SDVariable leftShift(String name, SDVariable x, SDVariable y)
 ```
 Bitwise left shift operation. Supports broadcasting.
 
-* **x**  (INT type) - Input to be bit shifted
-* **y**  (INT type) - Amount to shift elements of x array
+* **x**  (INT) - Input to be bit shifted
+* **y**  (INT) - Amount to shift elements of x array
 
 ## leftShiftCyclic
 ```JAVA
@@ -104,8 +104,8 @@ Unlike #leftShift(INDArray, INDArray) the bits will "wrap around":
 
 `leftShiftCyclic(01110000, 2) -> 11000001`
 
-* **x**  (INT type) - Input to be bit shifted
-* **y**  (INT type) - Amount to shift elements of x array
+* **x**  (INT) - Input to be bit shifted
+* **y**  (INT) - Amount to shift elements of x array
 
 ## or
 ```JAVA
@@ -116,8 +116,8 @@ SDVariable or(String name, SDVariable x, SDVariable y)
 ```
 Bitwise OR operation. Supports broadcasting.
 
-* **x**  (INT type) - First input array
-* **y**  (INT type) - First input array
+* **x**  (INT) - First input array
+* **y**  (INT) - First input array
 
 ## rightShift
 ```JAVA
@@ -128,8 +128,8 @@ SDVariable rightShift(String name, SDVariable x, SDVariable y)
 ```
 Bitwise right shift operation. Supports broadcasting. 
 
-* **x**  (INT type) - Input to be bit shifted
-* **y**  (INT type) - Amount to shift elements of x array
+* **x**  (INT) - Input to be bit shifted
+* **y**  (INT) - Amount to shift elements of x array
 
 ## rightShiftCyclic
 ```JAVA
@@ -144,8 +144,8 @@ Unlike rightShift(INDArray, INDArray) the bits will "wrap around":
 
 `rightShiftCyclic(00001110, 2) -> 10000011`
 
-* **x**  (INT type) - Input to be bit shifted
-* **y**  (INT type) - Amount to shift elements of x array
+* **x**  (INT) - Input to be bit shifted
+* **y**  (INT) - Amount to shift elements of x array
 
 ## xor
 ```JAVA
@@ -156,6 +156,6 @@ SDVariable xor(String name, SDVariable x, SDVariable y)
 ```
 Bitwise XOR operation (exclusive OR). Supports broadcasting.
 
-* **x**  (INT type) - First input array
-* **y**  (INT type) - First input array
+* **x**  (INT) - First input array
+* **y**  (INT) - First input array
 

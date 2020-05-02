@@ -19,9 +19,9 @@ SDVariable absoluteDifference(String name, SDVariable label, SDVariable predicti
 ```
 Absolute difference loss: `sum_i abs( label[i] - predictions[i] )`
 
-* **label**  (NUMERIC type) - Label array
-* **predictions**  (NUMERIC type) - Predictions array
-* **weights**  (NUMERIC type) - Weights array. May be null. If null, a weight of 1.0 is used
+* **label**  (NUMERIC) - Label array
+* **predictions**  (NUMERIC) - Predictions array
+* **weights**  (NUMERIC) - Weights array. May be null. If null, a weight of 1.0 is used
 * **lossReduce** - Reduction type for the loss. See LossReduce for more details. Default: LossReduce#MEAN_BY_NONZERO_WEIGHT_COUNT - default = LossReduce.MEAN_BY_NONZERO_WEIGHT_COUNT
 
 ## cosineDistance
@@ -44,9 +44,9 @@ If this is not the case, you should normalize them first by dividing by norm2(St
 
 along the cosine distance dimension (with keepDims=true).
 
-* **label**  (NUMERIC type) - Label array
-* **predictions**  (NUMERIC type) - Predictions array
-* **weights**  (NUMERIC type) - Weights array. May be null. If null, a weight of 1.0 is use
+* **label**  (NUMERIC) - Label array
+* **predictions**  (NUMERIC) - Predictions array
+* **weights**  (NUMERIC) - Weights array. May be null. If null, a weight of 1.0 is use
 * **lossReduce** - Reduction type for the loss. See LossReduce for more details. Default: LossReduce#MEAN_BY_NONZERO_WEIGHT_COUNT - default = LossReduce.MEAN_BY_NONZERO_WEIGHT_COUNT
 * **dimension** - Dimension to perform the cosine distance over
 
@@ -67,9 +67,9 @@ Implements `L = max(0, 1 - t * predictions)` where t is the label values after i
 
 from the user specified {0,1`. Note that Labels should be provided with values {0,1`.
 
-* **label**  (NUMERIC type) - Label array. Each value should be 0.0 or 1.0 (internally -1 to 1 is used)
-* **predictions**  (NUMERIC type) - Predictions array
-* **weights**  (NUMERIC type) - Weights array. May be null. If null, a weight of 1.0 is used
+* **label**  (NUMERIC) - Label array. Each value should be 0.0 or 1.0 (internally -1 to 1 is used)
+* **predictions**  (NUMERIC) - Predictions array
+* **weights**  (NUMERIC) - Weights array. May be null. If null, a weight of 1.0 is used
 * **lossReduce** - Reduction type for the loss. See LossReduce for more details. Default: LossReduce#MEAN_BY_NONZERO_WEIGHT_COUNT - default = LossReduce.MEAN_BY_NONZERO_WEIGHT_COUNT
 
 ## huberLoss
@@ -96,9 +96,9 @@ Huber loss implements:
 
 </pre>
 
-* **label**  (NUMERIC type) - Label array
-* **predictions**  (NUMERIC type) - Predictions array
-* **weights**  (NUMERIC type) - Weights array. May be null. If null, a weight of 1.0 is used
+* **label**  (NUMERIC) - Label array
+* **predictions**  (NUMERIC) - Predictions array
+* **weights**  (NUMERIC) - Weights array. May be null. If null, a weight of 1.0 is used
 * **lossReduce** - Reduction type for the loss. See LossReduce for more details. Default: LossReduce#MEAN_BY_NONZERO_WEIGHT_COUNT - default = LossReduce.MEAN_BY_NONZERO_WEIGHT_COUNT
 * **delta** - Loss function delta value
 
@@ -111,7 +111,7 @@ SDVariable l2Loss(String name, SDVariable var)
 ```
 L2 loss: 1/2 * sum(x^2)
 
-* **var**  (NUMERIC type) - Variable to calculate L2 loss of
+* **var**  (NUMERIC) - Variable to calculate L2 loss of
 
 ## logLoss
 ```JAVA
@@ -128,9 +128,9 @@ Log loss, i.e., binary cross entropy loss, usually used for binary multi-label c
 
 `-1/numExamples * sum_i (labels[i] * log(predictions[i] + epsilon) + (1-labels[i]) * log(1-predictions[i] + epsilon))`
 
-* **label**  (NUMERIC type) - Label array
-* **predictions**  (NUMERIC type) - Predictions array
-* **weights**  (NUMERIC type) - Weights array. May be null. If null, a weight of 1.0 is used
+* **label**  (NUMERIC) - Label array
+* **predictions**  (NUMERIC) - Predictions array
+* **weights**  (NUMERIC) - Weights array. May be null. If null, a weight of 1.0 is used
 * **lossReduce** - Reduction type for the loss. See LossReduce for more details. Default: LossReduce#MEAN_BY_NONZERO_WEIGHT_COUNT - default = LossReduce.MEAN_BY_NONZERO_WEIGHT_COUNT
 * **epsilon** - epsilon - default = 0.0
 
@@ -149,9 +149,9 @@ Log poisson loss: a loss function used for training classifiers.
 
 Implements `L = exp(c) - z * c` where c is log(predictions) and z is labels.
 
-* **label**  (NUMERIC type) - Label array. Each value should be 0.0 or 1.0
-* **predictions**  (NUMERIC type) - Predictions array (has to be log(x) of actual predictions)
-* **weights**  (NUMERIC type) - Weights array. May be null. If null, a weight of 1.0 is used
+* **label**  (NUMERIC) - Label array. Each value should be 0.0 or 1.0
+* **predictions**  (NUMERIC) - Predictions array (has to be log(x) of actual predictions)
+* **weights**  (NUMERIC) - Weights array. May be null. If null, a weight of 1.0 is used
 * **lossReduce** - Reduction type for the loss. See LossReduce for more details. Default: LossReduce#MEAN_BY_NONZERO_WEIGHT_COUNT - default = LossReduce.MEAN_BY_NONZERO_WEIGHT_COUNT
 * **full** - Boolean flag. true for logPoissonFull, false for logPoisson
 
@@ -172,9 +172,9 @@ MPWSE loss calculates the difference between pairs of consecutive elements in th
 For example, if predictions = [p0, p1, p2] and labels are [l0, l1, l2] then MPWSE is:
 
 {@code [((p0-p1) - (l0-l1))^2 + ((p0-p2) - (l0-l2))^2 + ((p1-p2) - (l1-l2))^2] / 3}<br>
-* **label**  (NUMERIC type) - Label array
-* **predictions**  (NUMERIC type) - Predictions array
-* **weights**  (NUMERIC type) - Weights array. May be null. If null, a weight of 1.0 is used. Must be either null, scalar, or have shape [batchSize]
+* **label**  (NUMERIC) - Label array
+* **predictions**  (NUMERIC) - Predictions array
+* **weights**  (NUMERIC) - Weights array. May be null. If null, a weight of 1.0 is used. Must be either null, scalar, or have shape [batchSize]
 * **lossReduce** - Reduction type for the loss. See LossReduce for more details. Default: LossReduce#MEAN_BY_NONZERO_WEIGHT_COUNT - default = LossReduce.MEAN_BY_NONZERO_WEIGHT_COUNT
 
 ## meanSquaredError
@@ -194,9 +194,9 @@ When averaged (using LossReduce#MEAN_BY_WEIGHT or LossReduce#MEAN_BY_NONZERO_WEI
 
 this is the mean squared error loss function.
 
-* **label**  (NUMERIC type) - Label array
-* **predictions**  (NUMERIC type) - Predictions array
-* **weights**  (NUMERIC type) - Weights array. May be null. If null, a weight of 1.0 is used
+* **label**  (NUMERIC) - Label array
+* **predictions**  (NUMERIC) - Predictions array
+* **weights**  (NUMERIC) - Weights array. May be null. If null, a weight of 1.0 is used
 * **lossReduce** - Reduction type for the loss. See LossReduce for more details. Default: LossReduce#MEAN_BY_NONZERO_WEIGHT_COUNT - default = LossReduce.MEAN_BY_NONZERO_WEIGHT_COUNT
 
 ## sigmoidCrossEntropy
@@ -230,9 +230,9 @@ label = (1.0 - labelSmoothing) * label + 0.5 * labelSmoothing`
 
 </pre>
 
-* **label**  (NUMERIC type) - Label array
-* **predictionLogits**  (NUMERIC type) - Predictions array
-* **weights**  (NUMERIC type) - Weights array. May be null. If null, a weight of 1.0 is used
+* **label**  (NUMERIC) - Label array
+* **predictionLogits**  (NUMERIC) - Predictions array
+* **weights**  (NUMERIC) - Weights array. May be null. If null, a weight of 1.0 is used
 * **lossReduce** - Reduction type for the loss. See LossReduce for more details. Default: LossReduce#MEAN_BY_NONZERO_WEIGHT_COUNT - default = LossReduce.MEAN_BY_NONZERO_WEIGHT_COUNT
 * **labelSmoothing** - Label smoothing value. Default value: 0 - default = 0.0
 
@@ -263,9 +263,9 @@ oneHotLabel = (1.0 - labelSmoothing) * oneHotLabels + labelSmoothing/numClasses`
 
 </pre>
 
-* **oneHotLabels**  (NUMERIC type) - Label array. Should be one-hot per example and same shape as predictions (for example, [mb, nOut])
-* **logitPredictions**  (NUMERIC type) - Predictions array (pre-softmax)
-* **weights**  (NUMERIC type) - Weights array. May be null. If null, a weight of 1.0 is used
+* **oneHotLabels**  (NUMERIC) - Label array. Should be one-hot per example and same shape as predictions (for example, [mb, nOut])
+* **logitPredictions**  (NUMERIC) - Predictions array (pre-softmax)
+* **weights**  (NUMERIC) - Weights array. May be null. If null, a weight of 1.0 is used
 * **lossReduce** - Reduction type for the loss. See LossReduce for more details. Default: LossReduce#MEAN_BY_NONZERO_WEIGHT_COUNT - default = LossReduce.MEAN_BY_NONZERO_WEIGHT_COUNT
 * **labelSmoothing** - Label smoothing value. Default value: 0 - default = 0.0
 
@@ -281,8 +281,8 @@ As per softmaxCrossEntropy(String, SDVariable, SDVariable, LossReduce) but the l
 is represented as an integer array instead of the equivalent one-hot array.<br>
 i.e., if logits are rank N, then labels have rank N-1
 
-* **logits**  (NUMERIC type) - Logits array ("pre-softmax activations")
-* **labels**  (INT type) - Labels array. Must be an integer type.
+* **logits**  (NUMERIC) - Logits array ("pre-softmax activations")
+* **labels**  (INT) - Labels array. Must be an integer type.
 
 ## weightedCrossEntropyWithLogits
 ```JAVA
@@ -293,7 +293,7 @@ SDVariable weightedCrossEntropyWithLogits(String name, SDVariable targets, SDVar
 ```
 Weighted cross entropy loss with logits
 
-* **targets**  (NUMERIC type) - targets array
-* **inputs**  (NUMERIC type) - input array
-* **weights**  (NUMERIC type) - eights array. May be null. If null, a weight of 1.0 is used
+* **targets**  (NUMERIC) - targets array
+* **inputs**  (NUMERIC) - input array
+* **weights**  (NUMERIC) - eights array. May be null. If null, a weight of 1.0 is used
 

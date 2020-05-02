@@ -19,10 +19,10 @@ SDVariable CropAndResize(String name, SDVariable image, SDVariable cropBoxes, SD
 ```
 Given an input image and some crop boxes, extract out the image subsets and resize them to the specified size.
 
-* **image**  (NUMERIC type) - Input image, with shape [batch, height, width, channels]
-* **cropBoxes**  (NUMERIC type) - Float32 crop, shape [numBoxes, 4] with values in range 0 to 1
-* **boxIndices**  (NUMERIC type) - Indices: which image (index to dimension 0) the cropBoxes belong to. Rank 1, shape [numBoxes]
-* **cropOutSize**  (INT type) - Output size for the images - int32, rank 1 with values [outHeight, outWidth]
+* **image**  (NUMERIC) - Input image, with shape [batch, height, width, channels]
+* **cropBoxes**  (NUMERIC) - Float32 crop, shape [numBoxes, 4] with values in range 0 to 1
+* **boxIndices**  (NUMERIC) - Indices: which image (index to dimension 0) the cropBoxes belong to. Rank 1, shape [numBoxes]
+* **cropOutSize**  (INT) - Output size for the images - int32, rank 1 with values [outHeight, outWidth]
 * **extrapolationValue** - Used for extrapolation, when applicable. 0.0 should be used for the default - default = 0.0
 
 ## adjustContrast
@@ -34,7 +34,7 @@ SDVariable adjustContrast(String name, SDVariable in, double factor)
 ```
 Adjusts contrast of RGB or grayscale images.
 
-* **in**  (NUMERIC type) - images to adjust. 3D shape or higher
+* **in**  (NUMERIC) - images to adjust. 3D shape or higher
 * **factor** - multiplier for adjusting contrast
 
 ## adjustHue
@@ -46,7 +46,7 @@ SDVariable adjustHue(String name, SDVariable in, double delta)
 ```
 Adjust hue of RGB image 
 
-* **in**  (NUMERIC type) - image as 3D array
+* **in**  (NUMERIC) - image as 3D array
 * **delta** - value to add to hue channel
 
 ## adjustSaturation
@@ -58,7 +58,7 @@ SDVariable adjustSaturation(String name, SDVariable in, double factor)
 ```
 Adjust saturation of RGB images
 
-* **in**  (NUMERIC type) - RGB image as 3D array
+* **in**  (NUMERIC) - RGB image as 3D array
 * **factor** - factor for saturation
 
 ## extractImagePatches
@@ -70,7 +70,7 @@ SDVariable extractImagePatches(String name, SDVariable image, int[] kSizes, int[
 ```
 Given an input image, extract out image patches (of size kSizes - h x w) and place them in the depth dimension. 
 
-* **image**  (NUMERIC type) - Input image to extract image patches from - shape [batch, height, width, channels]
+* **image**  (NUMERIC) - Input image to extract image patches from - shape [batch, height, width, channels]
 * **kSizes** - Kernel size - size of the image patches, [height, width] (Size: Exactly(count=2))
 * **strides** - Stride in the input dimension for extracting image patches, [stride_height, stride_width] (Size: Exactly(count=2))
 * **rates** - Usually [1,1]. Equivalent to dilation rate in dilated convolutions - how far apart the output pixels
@@ -87,7 +87,7 @@ SDVariable hsvToRgb(String name, SDVariable input)
 ```
 Converting image from HSV to RGB format 
 
-* **input**  (NUMERIC type) - 3D image
+* **input**  (NUMERIC) - 3D image
 
 ## nonMaxSuppression
 ```JAVA
@@ -98,8 +98,8 @@ SDVariable nonMaxSuppression(String name, SDVariable boxes, SDVariable scores, i
 ```
 Greedily selects a subset of bounding boxes in descending order of score
 
-* **boxes**  (NUMERIC type) - Might be null. Name for the output variable
-* **scores**  (NUMERIC type) - vector of shape [num_boxes]
+* **boxes**  (NUMERIC) - Might be null. Name for the output variable
+* **scores**  (NUMERIC) - vector of shape [num_boxes]
 * **maxOutSize** - scalar representing the maximum number of boxes to be selected
 * **iouThreshold** - threshold for deciding whether boxes overlap too much with respect to IOU
 * **scoreThreshold** - threshold for deciding when to remove boxes based on score
@@ -113,8 +113,8 @@ SDVariable randomCrop(String name, SDVariable input, SDVariable shape)
 ```
 Randomly crops image
 
-* **input**  (NUMERIC type) - input array
-* **shape**  (INT type) - shape for crop
+* **input**  (NUMERIC) - input array
+* **shape**  (INT) - shape for crop
 
 ## rgbToHsv
 ```JAVA
@@ -125,7 +125,7 @@ SDVariable rgbToHsv(String name, SDVariable input)
 ```
 Converting array from HSV to RGB format
 
-* **input**  (NUMERIC type) - 3D image
+* **input**  (NUMERIC) - 3D image
 
 ## rgbToYiq
 ```JAVA
@@ -136,7 +136,7 @@ SDVariable rgbToYiq(String name, SDVariable input)
 ```
 Converting array from RGB to YIQ format 
 
-* **input**  (NUMERIC type) - 3D image
+* **input**  (NUMERIC) - 3D image
 
 ## rgbToYuv
 ```JAVA
@@ -147,7 +147,7 @@ SDVariable rgbToYuv(String name, SDVariable input)
 ```
 Converting array from RGB to YUV format 
 
-* **input**  (NUMERIC type) - 3D image
+* **input**  (NUMERIC) - 3D image
 
 ## yiqToRgb
 ```JAVA
@@ -158,7 +158,7 @@ SDVariable yiqToRgb(String name, SDVariable input)
 ```
 Converting image from YIQ to RGB format 
 
-* **input**  (NUMERIC type) - 3D image
+* **input**  (NUMERIC) - 3D image
 
 ## yuvToRgb
 ```JAVA
@@ -169,5 +169,5 @@ SDVariable yuvToRgb(String name, SDVariable input)
 ```
 Converting image from YUV to RGB format 
 
-* **input**  (NUMERIC type) - 3D image
+* **input**  (NUMERIC) - 3D image
 

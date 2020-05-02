@@ -15,7 +15,7 @@ SDVariable all(String name, SDVariable x, int[] dimensions)
 ```
 Boolean and array reduction operation, optionally along specified dimensions
 
-* **x**  (BOOL type) - Input variable
+* **x**  (BOOL) - Input variable
 * **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
 ## any
@@ -27,7 +27,7 @@ SDVariable any(String name, SDVariable x, int[] dimensions)
 ```
 Boolean or array reduction operation, optionally along specified dimensions
 
-* **x**  (BOOL type) -  Input variable
+* **x**  (BOOL) -  Input variable
 * **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
 ## argmax
@@ -57,7 +57,7 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **in**  (NUMERIC type) - Input variable
+* **in**  (NUMERIC) - Input variable
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
 * **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
@@ -92,7 +92,7 @@ Note: supports broadcasting if x and y have different shapes and are broadcastab
 
 For example, if X has shape [1,10] and Y has shape [5,10] then op(X,Y) has output shape [5,10]<br>
 Broadcast rules are the same as NumPy: https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html<br>
-* **in**  (NUMERIC type) - Input variable
+* **in**  (NUMERIC) - Input variable
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
 * **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
@@ -121,8 +121,8 @@ The result of this operation will be a batch of multiplied matrices. The
 
 result has the same length as both input batches and each output matrix is of shape (M, K).
 
-* **inputsA**  (NUMERIC type) - First array of input matrices, all of shape (M, N) or (N, M)
-* **inputsB**  (NUMERIC type) -  Second array of input matrices, all of shape (N, K) or (K, N)
+* **inputsA**  (NUMERIC) - First array of input matrices, all of shape (M, N) or (N, M)
+* **inputsB**  (NUMERIC) -  Second array of input matrices, all of shape (N, K) or (K, N)
 * **transposeA** - Whether to transpose A arrays or not - default = false
 * **transposeB** - Whether to transpose B arrays or not - default = false
 
@@ -135,7 +135,7 @@ SDVariable castTo(String name, SDVariable arg, DataType datatype)
 ```
 Cast the array to a new datatype - for example, Integer -> Float
 
-* **arg**  (NDARRAY type) - Input variable to cast
+* **arg**  (NDARRAY) - Input variable to cast
 * **datatype** - Datatype to cast to
 
 ## concat
@@ -151,7 +151,7 @@ Note that inputs must have identical rank and identical dimensions, other than t
 
 For example, if 2 inputs have shape [a, x, c] and [a, y, c] and dimension = 1, then the output has shape [a, x+y, c]
 
-* **inputs**  (NUMERIC type) - Input variables
+* **inputs**  (NUMERIC) - Input variables
 * **dimension** - Dimension to concatenate on
 
 ## cumprod
@@ -177,7 +177,7 @@ exclusive=false, reverse=true: [a*b*c, b*c, c]
 
 exclusive=true, reverse=true: [b*c, c, 0]
 
-* **in**  (NUMERIC type) - Input variable
+* **in**  (NUMERIC) - Input variable
 * **exclusive** - If true: exclude the first value - default = false
 * **reverse** - If true: reverse the direction of the accumulation - default = false
 * **axis** - Scalar axis argument for dimension to perform cumululative sum operations along (Size: AtLeast(min=1))
@@ -205,7 +205,7 @@ exclusive=false, reverse=true: [a+b+c, b+c, c]
 
 exclusive=true, reverse=true: [b+c, c, 0]
 
-* **in**  (NUMERIC type) - Input variable
+* **in**  (NUMERIC) - Input variable
 * **exclusive** - If true: exclude the first value - default = false
 * **reverse** - If true: reverse the direction of the accumulation - default = false
 * **axis** - Scalar axis argument for dimension to perform cumululative sum operations along (Size: AtLeast(min=1))
@@ -221,8 +221,8 @@ Pairwise dot product reduction along dimension
 
 output = sum(i=0 ... size(dim)-1) x[i] * y[i]
 
-* **x**  (NUMERIC type) - first input
-* **y**  (NUMERIC type) - second input
+* **x**  (NUMERIC) - first input
+* **y**  (NUMERIC) - second input
 * **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
 ## dynamicPartition
@@ -250,8 +250,8 @@ out[1] = [1,4] `
 
 </pre>
 
-* **x**  (NUMERIC type) - Input variable
-* **partitions**  (INT type) - 1D input with values 0 to numPartitions-1
+* **x**  (NUMERIC) - Input variable
+* **partitions**  (INT) - 1D input with values 0 to numPartitions-1
 * **numPartitions** - Number of partitions, >= 1
 
 ## dynamicStitch
@@ -263,8 +263,8 @@ SDVariable dynamicStitch(String name, SDVariable indices, SDVariable x)
 ```
 Dynamically merge the specified input arrays into a single array, using the specified indices
 
-* **indices**  (INT type) - Indices to use when merging. Must be >= 1, same length as input variables
-* **x**  (NUMERIC type) - Input variables.
+* **indices**  (INT) - Indices to use when merging. Must be >= 1, same length as input variables
+* **x**  (NUMERIC) - Input variables.
 
 ## eq
 ```JAVA
@@ -277,7 +277,7 @@ Equals operation: elementwise x == y
 
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x**  (NUMERIC type) - Input array
+* **x**  (NUMERIC) - Input array
 * **y** - Double value argument to use in operation
 
 ## eq
@@ -297,8 +297,8 @@ For example, if X has shape [1,10] and Y has shape [5,10] then op(X,Y) has outpu
 Broadcast rules are the same as NumPy: https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html<br>
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x**  (NUMERIC type) - Input 1
-* **y**  (NUMERIC type) - Input 2
+* **x**  (NUMERIC) - Input 1
+* **y**  (NUMERIC) - Input 2
 
 ## expandDims
 ```JAVA
@@ -317,7 +317,7 @@ axis = 1: [a, 1, b]
 
 axis = 2: [a, b, 1]
 
-* **x**  (NDARRAY type) - Input variable
+* **x**  (NDARRAY) - Input variable
 * **axis** - Axis to expand
 
 ## fill
@@ -329,7 +329,7 @@ SDVariable fill(String name, SDVariable shape, DataType dataType, double value)
 ```
 Generate an output variable with the specified (dynamic) shape with all elements set to the specified value
 
-* **shape**  (INT type) - Shape: must be a 1D array/variable
+* **shape**  (INT) - Shape: must be a 1D array/variable
 * **dataType** - Datatype of the output array
 * **value** - Value to set all elements to
 
@@ -344,7 +344,7 @@ Gather slices from the input variable where the indices are specified as fixed i
 
 Output shape is same as input shape, except for axis dimension, which has size equal to indices.length.
 
-* **df**  (NUMERIC type) - Input variable
+* **df**  (NUMERIC) - Input variable
 * **indices** - Indices to get (Size: AtLeast(min=1))
 * **axis** - Axis that the indices refer to
 
@@ -359,8 +359,8 @@ Gather slices from the input variable where the indices are specified as dynamic
 
 Output shape is same as input shape, except for axis dimension, which has size equal to indices.length.
 
-* **df**  (NUMERIC type) - Input variable
-* **indices**  (INT type) - Indices to get slices for. Rank 0 or 1 input
+* **df**  (NUMERIC) - Input variable
+* **indices**  (INT) - Indices to get slices for. Rank 0 or 1 input
 * **axis** - Axis that the indices refer to
 
 ## gatherNd
@@ -372,8 +372,8 @@ SDVariable gatherNd(String name, SDVariable df, SDVariable indices)
 ```
 Gather slices from df with shape specified by indices. 
 
-* **df**  (NUMERIC type) - 
-* **indices**  (NUMERIC type) - 
+* **df**  (NUMERIC) - 
+* **indices**  (NUMERIC) - 
 
 ## gt
 ```JAVA
@@ -386,7 +386,7 @@ Greater than operation: elementwise x > y
 
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x**  (NUMERIC type) - Input array
+* **x**  (NUMERIC) - Input array
 * **y** - Double value argument to use in operation
 
 ## gt
@@ -406,8 +406,8 @@ For example, if X has shape [1,10] and Y has shape [5,10] then op(X,Y) has outpu
 Broadcast rules are the same as NumPy: https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html<br>
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x**  (NUMERIC type) - Input 1
-* **y**  (NUMERIC type) - Input 2
+* **x**  (NUMERIC) - Input 1
+* **y**  (NUMERIC) - Input 2
 
 ## gte
 ```JAVA
@@ -420,7 +420,7 @@ Greater than or equals operation: elementwise x >= y
 
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x**  (NUMERIC type) - Input array
+* **x**  (NUMERIC) - Input array
 * **y** - Double value argument to use in operation
 
 ## gte
@@ -440,8 +440,8 @@ For example, if X has shape [1,10] and Y has shape [5,10] then op(X,Y) has outpu
 Broadcast rules are the same as NumPy: https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html<br>
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x**  (NUMERIC type) - Input 1
-* **y**  (NUMERIC type) - Input 2
+* **x**  (NUMERIC) - Input 1
+* **y**  (NUMERIC) - Input 2
 
 ## identity
 ```JAVA
@@ -452,7 +452,7 @@ SDVariable identity(String name, SDVariable input)
 ```
 Elementwise identity operation: out = x
 
-* **input**  (NUMERIC type) - Input variable
+* **input**  (NUMERIC) - Input variable
 
 ## invertPermutation
 ```JAVA
@@ -467,7 +467,7 @@ Example: if input is [2, 0, 1] then output is [1, 2, 0]
 
 The idea is that x.permute(input).permute(invertPermutation(input)) == x
 
-* **input**  (INT type) - 1D indices for permutation
+* **input**  (INT) - 1D indices for permutation
 
 ## isNumericTensor
 ```JAVA
@@ -478,7 +478,7 @@ SDVariable isNumericTensor(String name, SDVariable x)
 ```
 Is the director a numeric tensor? In the current version of ND4J/SameDiff, this always returns true/1
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 
 ## linspace
 ```JAVA
@@ -507,9 +507,9 @@ Create a new 1d array with values evenly spaced between values 'start' and 'stop
 
 For example, linspace(start=3.0, stop=4.0, number=3) will generate [3.0, 3.5, 4.0]
 
-* **start**  (NUMERIC type) - Start value
-* **stop**  (NUMERIC type) - Stop value
-* **number**  (LONG type) - Number of values to generate
+* **start**  (NUMERIC) - Start value
+* **stop**  (NUMERIC) - Stop value
+* **number**  (LONG) - Number of values to generate
 * **dataType** - Data type of the output array
 
 ## lt
@@ -523,7 +523,7 @@ Less than operation: elementwise x < y
 
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x**  (NUMERIC type) - Input array
+* **x**  (NUMERIC) - Input array
 * **y** - Double value argument to use in operation
 
 ## lt
@@ -543,8 +543,8 @@ For example, if X has shape [1,10] and Y has shape [5,10] then op(X,Y) has outpu
 Broadcast rules are the same as NumPy: https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html<br>
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x**  (NUMERIC type) - Input 1
-* **y**  (NUMERIC type) - Input 2
+* **x**  (NUMERIC) - Input 1
+* **y**  (NUMERIC) - Input 2
 
 ## lte
 ```JAVA
@@ -557,7 +557,7 @@ Less than or equals operation: elementwise x <= y
 
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x**  (NUMERIC type) - Input array
+* **x**  (NUMERIC) - Input array
 * **y** - Double value argument to use in operation
 
 ## lte
@@ -577,8 +577,8 @@ For example, if X has shape [1,10] and Y has shape [5,10] then op(X,Y) has outpu
 Broadcast rules are the same as NumPy: https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html<br>
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x**  (NUMERIC type) - Input 1
-* **y**  (NUMERIC type) - Input 2
+* **x**  (NUMERIC) - Input 1
+* **y**  (NUMERIC) - Input 2
 
 ## matchCondition
 ```JAVA
@@ -589,7 +589,7 @@ SDVariable matchCondition(String name, SDVariable in, Condition condition)
 ```
 Returns a boolean mask of equal shape to the input, where the condition is satisfied - value 1 where satisfied, 0 otherwise
 
-* **in**  (NUMERIC type) - Input
+* **in**  (NUMERIC) - Input
 * **condition** - Condition
 
 ## matchConditionCount
@@ -601,7 +601,7 @@ SDVariable matchConditionCount(String name, SDVariable in, Condition condition)
 ```
 Returns a count of the number of elements that satisfy the condition
 
-* **in**  (NUMERIC type) - Input
+* **in**  (NUMERIC) - Input
 * **condition** - Condition
 
 ## matchConditionCount
@@ -629,7 +629,7 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **in**  (NUMERIC type) - Input variable
+* **in**  (NUMERIC) - Input variable
 * **condition** - Condition
 * **keepDim** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
 * **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
@@ -659,7 +659,7 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
 * **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
@@ -676,8 +676,8 @@ Note: supports broadcasting if x and y have different shapes and are broadcastab
 
 For example, if X has shape [1,10] and Y has shape [5,10] then op(X,Y) has output shape [5,10]<br>
 Broadcast rules are the same as NumPy: https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html<br>
-* **first**  (NUMERIC type) - First input array
-* **second**  (NUMERIC type) - Second input array
+* **first**  (NUMERIC) - First input array
+* **second**  (NUMERIC) - Second input array
 
 ## mean
 ```JAVA
@@ -704,7 +704,7 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
 * **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
@@ -733,7 +733,7 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
 * **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
@@ -750,8 +750,8 @@ Note: supports broadcasting if x and y have different shapes and are broadcastab
 
 For example, if X has shape [1,10] and Y has shape [5,10] then op(X,Y) has output shape [5,10]<br>
 Broadcast rules are the same as NumPy: https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html<br>
-* **first**  (NUMERIC type) - First input array
-* **second**  (NUMERIC type) - Second input array
+* **first**  (NUMERIC) - First input array
+* **second**  (NUMERIC) - Second input array
 
 ## mmul
 ```JAVA
@@ -768,8 +768,8 @@ Matrix multiplication: out = mmul(x,y)
 
 Supports specifying transpose argument to perform operation such as mmul(a^T, b), etc.
 
-* **x**  (NUMERIC type) - First input variable
-* **y**  (NUMERIC type) - Second input variable
+* **x**  (NUMERIC) - First input variable
+* **y**  (NUMERIC) - Second input variable
 * **transposeX** - Transpose x (first argument) - default = false
 * **transposeY** - Transpose y (second argument) - default = false
 * **transposeZ** - Transpose result array - default = false
@@ -785,7 +785,7 @@ Not equals operation: elementwise x != y
 
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x**  (NUMERIC type) - Input array
+* **x**  (NUMERIC) - Input array
 * **y** - Double value argument to use in operation
 
 ## neq
@@ -805,8 +805,8 @@ For example, if X has shape [1,10] and Y has shape [5,10] then op(X,Y) has outpu
 Broadcast rules are the same as NumPy: https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html<br>
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x**  (NUMERIC type) - Input 1
-* **y**  (NUMERIC type) - Input 2
+* **x**  (NUMERIC) - Input 1
+* **y**  (NUMERIC) - Input 2
 
 ## norm1
 ```JAVA
@@ -835,7 +835,7 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
 * **dimensions** - dimensions to reduce over (Size: AtLeast(min=0))
 
@@ -866,7 +866,7 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
 * **dimensions** - dimensions dimensions to reduce over (Size: AtLeast(min=0))
 
@@ -899,7 +899,7 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
 * **dimensions** - dimensions to reduce over (Size: AtLeast(min=0))
 
@@ -920,7 +920,7 @@ If input has shape [ a, ..., n] then output has shape [ a, ..., n, depth],
 
 with {out[i, ..., j, in[i,...,j]]  with other values being set to
 
-* **indices**  (NUMERIC type) - Indices - value 0 to depth-1
+* **indices**  (NUMERIC) - Indices - value 0 to depth-1
 * **depth** - Number of classes
 * **axis** - 
 * **on** - 
@@ -942,7 +942,7 @@ with out[i, ..., j, in[i,...,j]] = 1 with other values being set to 0
 
 see oneHot(SDVariable, int, int, double, double)
 
-* **indices**  (NUMERIC type) - Indices - value 0 to depth-1
+* **indices**  (NUMERIC) - Indices - value 0 to depth-1
 * **depth** - Number of classes
 
 ## onesLike
@@ -956,7 +956,7 @@ Return a variable of all 1s, with the same shape as the input variable. Note tha
 
 if the input shape changes in later execution, the returned variable's shape will also be updated
 
-* **input**  (NUMERIC type) - Input INDArray 
+* **input**  (NUMERIC) - Input INDArray 
 
 ## onesLike
 ```JAVA
@@ -967,7 +967,7 @@ SDVariable onesLike(String name, SDVariable input, DataType dataType)
 ```
 As per onesLike(String, SDVariable) but the output datatype may be specified
 
-* **input**  (NUMERIC type) - 
+* **input**  (NUMERIC) - 
 * **dataType** - 
 
 ## permute
@@ -981,8 +981,8 @@ Array permutation operation: permute the dimensions according to the specified p
 
 Example: if input has shape [a,b,c] and dimensions = [2,0,1] the output has shape [c,a,b]
 
-* **x**  (NUMERIC type) - Input variable
-* **dimensions**  (INT type) - Permute dimensions
+* **x**  (NUMERIC) - Input variable
+* **dimensions**  (INT) - Permute dimensions
 
 ## permute
 ```JAVA
@@ -995,7 +995,7 @@ Array permutation operation: permute the dimensions according to the specified p
 
 Example: if input has shape [a,b,c] and dimensions = [2,0,1] the output has shape [c,a,b]
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 * **dimensions** -  (Size: AtLeast(min=0))
 
 ## prod
@@ -1023,7 +1023,7 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
 * **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
@@ -1058,9 +1058,9 @@ up to (but not including) limit.
 
 For example, range(1.0, 3.0, 0.5) will return [1.0, 1.5, 2.0, 2.5]
 
-* **from**  (NUMERIC type) - Initial/smallest value
-* **to**  (NUMERIC type) - Largest value (exclusive)
-* **step**  (NUMERIC type) - Step size
+* **from**  (NUMERIC) - Initial/smallest value
+* **to**  (NUMERIC) - Largest value (exclusive)
+* **step**  (NUMERIC) - Step size
 * **dataType** - 
 
 ## rank
@@ -1072,7 +1072,7 @@ SDVariable rank(String name, SDVariable in)
 ```
 Returns the rank (number of dimensions, i.e., length(shape)) of the specified INDArray  as a 0D scalar variable
 
-* **in**  (NUMERIC type) - Input variable
+* **in**  (NUMERIC) - Input variable
 
 ## replaceWhere
 ```JAVA
@@ -1087,8 +1087,8 @@ out[i] = from[i] if condition(update[i]) is satisfied, or
 
 out[i] = update[i] if condition(update[i]) is NOT satisfied
 
-* **update**  (NUMERIC type) - Source array
-* **from**  (NUMERIC type) - Replacement values array (used conditionally). Must be same shape as 'update' array
+* **update**  (NUMERIC) - Source array
+* **from**  (NUMERIC) - Replacement values array (used conditionally). Must be same shape as 'update' array
 * **condition** - Condition to check on update array elements
 
 ## replaceWhere
@@ -1104,7 +1104,7 @@ out[i] = value if condition(update[i]) is satisfied, or
 
 out[i] = update[i] if condition(update[i]) is NOT satisfied
 
-* **update**  (NUMERIC type) - Source array
+* **update**  (NUMERIC) - Source array
 * **value** - Value to set at the output, if the condition is satisfied
 * **condition** - Condition to check on update array elements
 
@@ -1121,8 +1121,8 @@ input, but with the specified shape.
 
 Note that prod(shape) must match length(input) == prod(input.shape)
 
-* **x**  (NUMERIC type) - Input variable
-* **shape**  (NUMERIC type) - New shape for variable
+* **x**  (NUMERIC) - Input variable
+* **shape**  (NUMERIC) - New shape for variable
 
 ## reshape
 ```JAVA
@@ -1137,7 +1137,7 @@ input, but with the specified shape.
 
 Note that prod(shape) must match length(input) == prod(input.shape)
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 * **shape** - New shape for variable (Size: AtLeast(min=0))
 
 ## reverse
@@ -1169,7 +1169,7 @@ reverse(in, 1):
 
 [1, 2 3]
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 * **dimensions** - Input variable (Size: AtLeast(min=0))
 
 ## reverseSequence
@@ -1185,8 +1185,8 @@ SDVariable reverseSequence(String name, SDVariable x, SDVariable seq_lengths)
 ```
 Reverse sequence op: for each slice along dimension seqDimension, the first seqLength values are reversed
 
-* **x**  (NUMERIC type) - Input variable
-* **seq_lengths**  (INT type) - Length of the sequences
+* **x**  (NUMERIC) - Input variable
+* **seq_lengths**  (INT) - Length of the sequences
 * **seqDim** - Sequence dimension - default = -1
 * **batchDim** - Batch dimension - default = 0
 
@@ -1201,7 +1201,7 @@ Element-wise scalar floor modulus operation: out = floorMod(in, value).
 
 i.e., returns the remainder after division by 'value'
 
-* **in**  (NUMERIC type) - Input variable
+* **in**  (NUMERIC) - Input variable
 * **value** - Scalar value to compare
 
 ## scalarMax
@@ -1213,7 +1213,7 @@ SDVariable scalarMax(String name, SDVariable in, double value)
 ```
 Element-wise scalar maximum operation: out = max(in, value)
 
-* **in**  (NUMERIC type) - Input variable
+* **in**  (NUMERIC) - Input variable
 * **value** - Scalar value to compare
 
 ## scalarMin
@@ -1225,7 +1225,7 @@ SDVariable scalarMin(String name, SDVariable in, double value)
 ```
 Element-wise scalar minimum operation: out = min(in, value)
 
-* **in**  (NUMERIC type) - Input variable
+* **in**  (NUMERIC) - Input variable
 * **value** - Scalar value to compare
 
 ## scalarSet
@@ -1237,7 +1237,7 @@ SDVariable scalarSet(String name, SDVariable in, double set)
 ```
 Return a variable with equal shape to the input, but all elements set to value 'set'
 
-* **in**  (NUMERIC type) - Input variable
+* **in**  (NUMERIC) - Input variable
 * **set** - Value to set
 
 ## scatterAdd
@@ -1257,9 +1257,9 @@ If indices is rank 2+, then for each position (i,...,k), out[indices[i], ..., in
 
 Note that if multiple indices refer to the same location, the contributions from each is handled correctly. 
 
-* **ref**  (NUMERIC type) - Initial/source variable
-* **indices**  (NUMERIC type) - Indices array
-* **updates**  (NUMERIC type) - Updates to add to the initial/source array
+* **ref**  (NUMERIC) - Initial/source variable
+* **indices**  (NUMERIC) - Indices array
+* **updates**  (NUMERIC) - Updates to add to the initial/source array
 
 ## scatterDiv
 ```JAVA
@@ -1278,9 +1278,9 @@ If indices is rank 2+, then for each position (i,...,k), out[indices[i], ..., in
 
 Note that if multiple indices refer to the same location, the contributions from each is handled correctly. 
 
-* **ref**  (NUMERIC type) - Initial/source variable
-* **indices**  (NUMERIC type) - Indices array
-* **updates**  (NUMERIC type) - Updates to add to the initial/source array
+* **ref**  (NUMERIC) - Initial/source variable
+* **indices**  (NUMERIC) - Indices array
+* **updates**  (NUMERIC) - Updates to add to the initial/source array
 
 ## scatterMax
 ```JAVA
@@ -1299,9 +1299,9 @@ If indices is rank 2+, then for each position (i,...,k), out[indices[i], ..., in
 
 Note that if multiple indices refer to the same location, the contributions from each is handled correctly. 
 
-* **ref**  (NUMERIC type) - Initial/source variable
-* **indices**  (NUMERIC type) - Indices array
-* **updates**  (NUMERIC type) - Updates to add to the initial/source array
+* **ref**  (NUMERIC) - Initial/source variable
+* **indices**  (NUMERIC) - Indices array
+* **updates**  (NUMERIC) - Updates to add to the initial/source array
 
 ## scatterMin
 ```JAVA
@@ -1320,9 +1320,9 @@ If indices is rank 2+, then for each position (i,...,k), out[indices[i], ..., in
 
 Note that if multiple indices refer to the same location, the contributions from each is handled correctly. 
 
-* **ref**  (NUMERIC type) - Initial/source variable
-* **indices**  (NUMERIC type) - Indices array
-* **updates**  (NUMERIC type) - Updates to add to the initial/source array
+* **ref**  (NUMERIC) - Initial/source variable
+* **indices**  (NUMERIC) - Indices array
+* **updates**  (NUMERIC) - Updates to add to the initial/source array
 
 ## scatterMul
 ```JAVA
@@ -1341,9 +1341,9 @@ If indices is rank 2+, then for each position (i,...,k), out[indices[i], ..., in
 
 Note that if multiple indices refer to the same location, the contributions from each is handled correctly. 
 
-* **ref**  (NUMERIC type) - Initial/source variable
-* **indices**  (NUMERIC type) - Indices array
-* **updates**  (NUMERIC type) - Updates to add to the initial/source array
+* **ref**  (NUMERIC) - Initial/source variable
+* **indices**  (NUMERIC) - Indices array
+* **updates**  (NUMERIC) - Updates to add to the initial/source array
 
 ## scatterSub
 ```JAVA
@@ -1362,9 +1362,9 @@ If indices is rank 2+, then for each position (i,...,k), out[indices[i], ..., in
 
 Note that if multiple indices refer to the same location, the contributions from each is handled correctly. 
 
-* **ref**  (NUMERIC type) - Initial/source variable
-* **indices**  (NUMERIC type) - Indices array
-* **updates**  (NUMERIC type) - Updates to add to the initial/source array
+* **ref**  (NUMERIC) - Initial/source variable
+* **indices**  (NUMERIC) - Indices array
+* **updates**  (NUMERIC) - Updates to add to the initial/source array
 
 ## scatterUpdate
 ```JAVA
@@ -1383,9 +1383,9 @@ If indices is rank 2+, then for each position (i,...,k), out[indices[i], ..., in
 
 Note that if multiple indices refer to the same location, the contributions from each is handled correctly. 
 
-* **ref**  (NUMERIC type) - Initial/source variable
-* **indices**  (NUMERIC type) - Indices array
-* **updates**  (NUMERIC type) - Updates to add to the initial/source array
+* **ref**  (NUMERIC) - Initial/source variable
+* **indices**  (NUMERIC) - Indices array
+* **updates**  (NUMERIC) - Updates to add to the initial/source array
 
 ## segmentMax
 ```JAVA
@@ -1408,8 +1408,8 @@ See {unsortedSegment (String, SDVariable, SDVariable, int) ops
 
 for the same op without this sorted requirement
 
-* **data**  (NDARRAY type) - Data to perform segment max on
-* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
+* **data**  (NDARRAY) - Data to perform segment max on
+* **segmentIds**  (NUMERIC) - Variable for the segment IDs
 
 ## segmentMean
 ```JAVA
@@ -1432,8 +1432,8 @@ See {unsortedSegment (String, SDVariable, SDVariable, int) ops
 
 for the same op without this sorted requirement
 
-* **data**  (NDARRAY type) - Data to perform segment max on
-* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
+* **data**  (NDARRAY) - Data to perform segment max on
+* **segmentIds**  (NUMERIC) - Variable for the segment IDs
 
 ## segmentMin
 ```JAVA
@@ -1456,8 +1456,8 @@ See {unsortedSegment (String, SDVariable, SDVariable, int) ops
 
 for the same op without this sorted requirement
 
-* **data**  (NDARRAY type) - Data to perform segment max on
-* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
+* **data**  (NDARRAY) - Data to perform segment max on
+* **segmentIds**  (NUMERIC) - Variable for the segment IDs
 
 ## segmentProd
 ```JAVA
@@ -1480,8 +1480,8 @@ See {unsortedSegment (String, SDVariable, SDVariable, int) ops
 
 for the same op without this sorted requirement
 
-* **data**  (NDARRAY type) - Data to perform segment max on
-* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
+* **data**  (NDARRAY) - Data to perform segment max on
+* **segmentIds**  (NUMERIC) - Variable for the segment IDs
 
 ## segmentSum
 ```JAVA
@@ -1504,8 +1504,8 @@ See {unsortedSegment (String, SDVariable, SDVariable, int) ops
 
 for the same op without this sorted requirement
 
-* **data**  (NDARRAY type) - Data to perform segment max on
-* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
+* **data**  (NDARRAY) - Data to perform segment max on
+* **segmentIds**  (NUMERIC) - Variable for the segment IDs
 
 ## sequenceMask
 ```JAVA
@@ -1518,7 +1518,7 @@ Generate a sequence mask (with values 0 or 1) based on the specified lengths
 
 Specifically, out[i, ..., k, j] = (j < lengths[i, ..., k] ? 1.0 : 0.0)
 
-* **lengths**  (NUMERIC type) - Lengths of the sequences
+* **lengths**  (NUMERIC) - Lengths of the sequences
 * **maxLen** - Maximum sequence length
 * **dataType** - 
 
@@ -1533,8 +1533,8 @@ Generate a sequence mask (with values 0 or 1) based on the specified lengths
 
 Specifically, out[i, ..., k, j] = (j < lengths[i, ..., k] ? 1.0 : 0.0)
 
-* **lengths**  (NUMERIC type) - Lengths of the sequences
-* **maxLen**  (INT type) - Maximum sequence length
+* **lengths**  (NUMERIC) - Lengths of the sequences
+* **maxLen**  (INT) - Maximum sequence length
 * **dataType** - 
 
 ## sequenceMask
@@ -1546,7 +1546,7 @@ SDVariable sequenceMask(String name, SDVariable lengths, DataType dataType)
 ```
 see sequenceMask(String, SDVariable, SDVariable, DataType)
 
-* **lengths**  (NUMERIC type) - 
+* **lengths**  (NUMERIC) - 
 * **dataType** - 
 
 ## shape
@@ -1558,7 +1558,7 @@ SDVariable shape(String name, SDVariable input)
 ```
 Returns the shape of the specified INDArray  as a 1D INDArray 
 
-* **input**  (NUMERIC type) - Input variable
+* **input**  (NUMERIC) - Input variable
 
 ## size
 ```JAVA
@@ -1569,7 +1569,7 @@ SDVariable size(String name, SDVariable in)
 ```
 Returns the size (number of elements, i.e., prod(shape)) of the specified INDArray  as a 0D scalar variable
 
-* **in**  (NUMERIC type) - Input variable
+* **in**  (NUMERIC) - Input variable
 
 ## sizeAt
 ```JAVA
@@ -1582,7 +1582,7 @@ Returns a rank 0 (scalar) variable for the size of the specified dimension.
 
 For example, if X has shape [10,20,30] then sizeAt(X,1)=20. Similarly, sizeAt(X,-1)=30
 
-* **in**  (NUMERIC type) - Input variable
+* **in**  (NUMERIC) - Input variable
 * **dimension** - Dimension to get size of
 
 ## slice
@@ -1608,7 +1608,7 @@ then slice(input, begin=[0,1], size=[2,1] will return:
 
 Note that for each dimension i, begin[i] + size[i] <= input.size(i)
 
-* **input**  (NUMERIC type) - input Variable to get subset of
+* **input**  (NUMERIC) - input Variable to get subset of
 * **begin** - Beginning index. Must be same length as rank of input array (Size: AtLeast(min=1))
 * **size** - Size of the output array. Must be same length as rank of input array (Size: AtLeast(min=1))
 
@@ -1635,9 +1635,9 @@ then slice(input, begin=[0,1], size=[2,1] will return:
 
 Note that for each dimension i, begin[i] + size[i] <= input.size(i)
 
-* **input**  (NUMERIC type) - input Variable to get subset of
-* **begin**  (INT type) - Beginning index. Must be same length as rank of input array
-* **size**  (INT type) - Size of the output array. Must be same length as rank of input array
+* **input**  (NUMERIC) - input Variable to get subset of
+* **begin**  (INT) - Beginning index. Must be same length as rank of input array
+* **size**  (INT) - Size of the output array. Must be same length as rank of input array
 
 ## squaredNorm
 ```JAVA
@@ -1664,7 +1664,7 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x**  (NUMERIC type) - 
+* **x**  (NUMERIC) - 
 * **keepDims** -  - default = false
 * **dimensions** -  (Size: AtLeast(min=0))
 
@@ -1679,7 +1679,7 @@ Remove a single dimension of size 1.
 
 For example, if input has shape [a,b,1,c] then squeeze(input, 2) returns an array of shape [a,b,c]
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 * **axis** - Size 1 dimension to remove
 
 ## stack
@@ -1703,7 +1703,7 @@ axis = 3: [a,b,c,N]
 
 see unstack(String[], SDVariable, int, int)
 
-* **values**  (NDARRAY type) - Input variables to stack. Must have the same shape for all inputs
+* **values**  (NDARRAY) - Input variables to stack. Must have the same shape for all inputs
 * **axis** - Axis to stack on
 
 ## standardDeviation
@@ -1731,7 +1731,7 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 * **biasCorrected** - If true: divide by (N-1) (i.e., sample stdev). If false: divide by N (population stdev)
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
 * **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
@@ -1763,7 +1763,7 @@ then stridedSlice(input, begin=[0,1], end=[2,2], strides=[2,1], all masks = 0) w
 
 [h, i]
 
-* **in**  (NUMERIC type) - Variable to get subset of
+* **in**  (NUMERIC) - Variable to get subset of
 * **begin** - Beginning index (Size: AtLeast(min=1))
 * **end** - End index (Size: AtLeast(min=1))
 * **strides** - Stride ("step size") for each dimension. For example, stride of 2 means take every second element. (Size: AtLeast(min=1))
@@ -1798,7 +1798,7 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 * **keepDims** - If true: keep the dimensions that are reduced on (as length 1). False: remove the reduction dimensions - default = false
 * **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
@@ -1815,8 +1815,8 @@ SDVariable tensorMmul(String name, SDVariable x, SDVariable y, int[] dimensionsX
 ```
 //TODO: Ops must be documented.
 
-* **x**  (NUMERIC type) - Input variable x
-* **y**  (NUMERIC type) - Input variable y
+* **x**  (NUMERIC) - Input variable x
+* **y**  (NUMERIC) - Input variable y
 * **dimensionsX** - dimensions for first input array (x) (Size: AtLeast(min=1))
 * **dimensionsY** - dimensions for second input array (y) (Size: AtLeast(min=1))
 * **transposeX** - Transpose x (first argument) - default = false
@@ -1850,8 +1850,8 @@ then output is
 
 [3, 4, 3, 4, 3, 4]
 
-* **x**  (NDARRAY type) - Input variable
-* **repeat**  (INT type) - Number of times to repeat in each axis. Must have length equal to the rank of the input array
+* **x**  (NDARRAY) - Input variable
+* **repeat**  (INT) - Number of times to repeat in each axis. Must have length equal to the rank of the input array
 
 ## tile
 ```JAVA
@@ -1862,7 +1862,7 @@ SDVariable tile(String name, SDVariable x, int[] repeat)
 ```
 see tile(String, SDVariable, int...)
 
-* **x**  (NDARRAY type) - 
+* **x**  (NDARRAY) - 
 * **repeat** -  (Size: AtLeast(min=1))
 
 ## transpose
@@ -1874,7 +1874,7 @@ SDVariable transpose(String name, SDVariable x)
 ```
 Matrix transpose operation: If input has shape [a,b] output has shape [b,a]
 
-* **x**  (NDARRAY type) - Input variable
+* **x**  (NDARRAY) - Input variable
 
 ## unsortedSegmentMax
 ```JAVA
@@ -1893,8 +1893,8 @@ segmentIds =  [1, 0, 2, 0, 1, 1, 2]
 
 then output = [6, 9, 8] = [max(3,6), max(1,4,9), max(2,8)]
 
-* **data**  (NUMERIC type) - Data (variable) to perform unsorted segment max on
-* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
+* **data**  (NUMERIC) - Data (variable) to perform unsorted segment max on
+* **segmentIds**  (NUMERIC) - Variable for the segment IDs
 * **numSegments** - Number of segments
 
 ## unsortedSegmentMean
@@ -1914,8 +1914,8 @@ segmentIds =  [1, 0, 2, 0, 1, 1, 2]
 
 then output = [4.5, 4.666, 5] = [mean(3,6), mean(1,4,9), mean(2,8)]
 
-* **data**  (NUMERIC type) - Data (variable) to perform unsorted segment max on
-* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
+* **data**  (NUMERIC) - Data (variable) to perform unsorted segment max on
+* **segmentIds**  (NUMERIC) - Variable for the segment IDs
 * **numSegments** - Number of segments
 
 ## unsortedSegmentMin
@@ -1935,8 +1935,8 @@ segmentIds =  [1, 0, 2, 0, 1, 1, 2]
 
 then output = [3, 1, 2] = [min(3,6), min(1,4,9), min(2,8)]
 
-* **data**  (NUMERIC type) - Data (variable) to perform unsorted segment max on
-* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
+* **data**  (NUMERIC) - Data (variable) to perform unsorted segment max on
+* **segmentIds**  (NUMERIC) - Variable for the segment IDs
 * **numSegments** - Number of segments
 
 ## unsortedSegmentProd
@@ -1956,8 +1956,8 @@ segmentIds =  [1, 0, 2, 0, 1, 1, 2]
 
 then output = [4.5, 4.666, 5] = [mean(3,6), mean(1,4,9), mean(2,8)]
 
-* **data**  (NUMERIC type) - Data (variable) to perform unsorted segment max on
-* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
+* **data**  (NUMERIC) - Data (variable) to perform unsorted segment max on
+* **segmentIds**  (NUMERIC) - Variable for the segment IDs
 * **numSegments** - Number of segments
 
 ## unsortedSegmentSqrtN
@@ -1975,8 +1975,8 @@ segmentIds =  [1, 0, 2, 0, 1, 1, 2]
 
 then output = [1.414, 1.732, 1.414] = [sqrt(2), sqrtN(3), sqrtN(2)]
 
-* **data**  (NUMERIC type) - Data (variable) to perform unsorted segment max on
-* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
+* **data**  (NUMERIC) - Data (variable) to perform unsorted segment max on
+* **segmentIds**  (NUMERIC) - Variable for the segment IDs
 * **numSegments** - Number of segments
 
 ## unsortedSegmentSum
@@ -1996,8 +1996,8 @@ segmentIds =  [1, 0, 2, 0, 1, 1, 2]
 
 then output = [9, 14, 10] = [sum(3,6), sum(1,4,9), sum(2,8)]
 
-* **data**  (NUMERIC type) - Data (variable) to perform unsorted segment max on
-* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
+* **data**  (NUMERIC) - Data (variable) to perform unsorted segment max on
+* **segmentIds**  (NUMERIC) - Variable for the segment IDs
 * **numSegments** - Number of segments
 
 ## unstack
@@ -2017,7 +2017,7 @@ axis = 1: [a,c]
 
 axis = 2: [a,b]
 
-* **value**  (NDARRAY type) - Input variable to unstack
+* **value**  (NDARRAY) - Input variable to unstack
 * **axis** - Axis to unstack on
 * **num** - Number of output variables
 
@@ -2046,7 +2046,7 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x**  (NUMERIC type) - Input variable
+* **x**  (NUMERIC) - Input variable
 * **biasCorrected** - If true: divide by (N-1) (i.e., sample variable). If false: divide by N (population variance)
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
 * **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
@@ -2062,5 +2062,5 @@ Return a variable of all 0s, with the same shape as the input variable. Note tha
 
 if the input shape changes in later execution, the returned variable's shape will also be updated
 
-* **input**  (NUMERIC type) - Input 
+* **input**  (NUMERIC) - Input 
 

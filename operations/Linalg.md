@@ -15,7 +15,7 @@ SDVariable Cholesky(String name, SDVariable input)
 ```
 Computes the Cholesky decomposition of one or more square matrices.
 
-* **input**  (NUMERIC type) - Input tensor with inner-most 2 dimensions forming square matrices
+* **input**  (NUMERIC) - Input tensor with inner-most 2 dimensions forming square matrices
 
 ## Lstsq
 ```JAVA
@@ -30,8 +30,8 @@ SDVariable Lstsq(String name, SDVariable matrix, SDVariable rhs, double l2_regur
 ```
 Solver for linear squares problems.
 
-* **matrix**  (NUMERIC type) - input tensor
-* **rhs**  (NUMERIC type) - input tensor
+* **matrix**  (NUMERIC) - input tensor
+* **rhs**  (NUMERIC) - input tensor
 * **l2_reguralizer** - regularizer
 * **fast** - fast mode, defaults to True - default = true
 
@@ -44,7 +44,7 @@ SDVariable Lu(String name, SDVariable input)
 ```
 Computes LU decomposition.
 
-* **input**  (NUMERIC type) - input tensor
+* **input**  (NUMERIC) - input tensor
 
 ## Matmul
 ```JAVA
@@ -55,8 +55,8 @@ SDVariable Matmul(String name, SDVariable a, SDVariable b)
 ```
 Performs matrix mutiplication on input tensors.
 
-* **a**  (NUMERIC type) - input tensor
-* **b**  (NUMERIC type) - input tensor
+* **a**  (NUMERIC) - input tensor
+* **b**  (NUMERIC) - input tensor
 
 ## MatrixBandPart
 ```JAVA
@@ -67,7 +67,7 @@ SDVariable[] MatrixBandPart(String name, SDVariable input, int minLower, int max
 ```
 Copy a tensor setting outside a central band in each innermost matrix.
 
-* **input**  (NUMERIC type) - input tensor
+* **input**  (NUMERIC) - input tensor
 * **minLower** - lower diagonal count
 * **maxUpper** - upper diagonal count
 
@@ -84,7 +84,7 @@ SDVariable[] Qr(String name, SDVariable input)
 ```
 Computes the QR decompositions of input matrix.
 
-* **input**  (NUMERIC type) - input tensor
+* **input**  (NUMERIC) - input tensor
 * **full** - full matrices mode - default = false
 
 ## Solve
@@ -100,8 +100,8 @@ SDVariable Solve(String name, SDVariable matrix, SDVariable rhs)
 ```
 Solver for systems of linear equations.
 
-* **matrix**  (NUMERIC type) - input tensor
-* **rhs**  (NUMERIC type) - input tensor
+* **matrix**  (NUMERIC) - input tensor
+* **rhs**  (NUMERIC) - input tensor
 * **adjoint** - adjoint mode, defaults to False - default = false
 
 ## TriangularSolve
@@ -113,8 +113,8 @@ SDVariable TriangularSolve(String name, SDVariable matrix, SDVariable rhs, boole
 ```
 Solver for systems of linear questions.
 
-* **matrix**  (NUMERIC type) - input tensor
-* **rhs**  (NUMERIC type) - input tensor
+* **matrix**  (NUMERIC) - input tensor
+* **rhs**  (NUMERIC) - input tensor
 * **lower** - defines whether innermost matrices in matrix are lower or upper triangular
 * **adjoint** - adjoint mode
 
@@ -127,8 +127,8 @@ SDVariable cross(String name, SDVariable a, SDVariable b)
 ```
 Computes pairwise cross product.
 
-* **a**  (NUMERIC type) - 
-* **b**  (NUMERIC type) - 
+* **a**  (NUMERIC) - 
+* **b**  (NUMERIC) - 
 
 ## diag
 ```JAVA
@@ -139,7 +139,7 @@ SDVariable diag(String name, SDVariable input)
 ```
 Calculates diagonal tensor.
 
-* **input**  (NUMERIC type) - 
+* **input**  (NUMERIC) - 
 
 ## diag_part
 ```JAVA
@@ -150,7 +150,7 @@ SDVariable diag_part(String name, SDVariable input)
 ```
 Calculates diagonal tensor.
 
-* **input**  (NUMERIC type) - 
+* **input**  (NUMERIC) - 
 
 ## logdet
 ```JAVA
@@ -161,7 +161,7 @@ SDVariable logdet(String name, SDVariable input)
 ```
 Calculates log of determinant.
 
-* **input**  (NUMERIC type) - 
+* **input**  (NUMERIC) - 
 
 ## mmul
 ```JAVA
@@ -178,8 +178,8 @@ Matrix multiplication: out = mmul(x,y)
 
 Supports specifying transpose argument to perform operation such as mmul(a^T, b), etc.
 
-* **x**  (NUMERIC type) - First input variable
-* **y**  (NUMERIC type) - Second input variable
+* **x**  (NUMERIC) - First input variable
+* **y**  (NUMERIC) - Second input variable
 * **transposeX** - Transpose x (first argument) - default = false
 * **transposeY** - Transpose y (second argument) - default = false
 * **transposeZ** - Transpose result array - default = false
@@ -197,7 +197,7 @@ SDVariable svd(String name, SDVariable input, boolean fullUV, boolean computeUV)
 ```
 Calculates singular value decomposition.
 
-* **input**  (NUMERIC type) - 
+* **input**  (NUMERIC) - 
 * **fullUV** - 
 * **computeUV** - 
 * **switchNum** -  - default = 16

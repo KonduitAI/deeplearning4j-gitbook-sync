@@ -15,9 +15,9 @@ SDVariable[] gru(String name, SDVariable x, SDVariable hLast, GRUWeights gRUWeig
 ```
 The GRU cell.  Does a single time step operation
 
-* **x**  (NUMERIC type) - Input, with shape [batchSize, inSize]
-* **hLast**  (NUMERIC type) - Output of the previous cell/time step, with shape [batchSize, numUnits]
-* **GRUWeights** - see [GRUWeights](#GRUWeights)
+* **x**  (NUMERIC) - Input, with shape [batchSize, inSize]
+* **hLast**  (NUMERIC) - Output of the previous cell/time step, with shape [batchSize, numUnits]
+* **GRUWeights** - see [GRUWeights](#gruweights)
 
 ## lstmCell
 ```JAVA
@@ -28,11 +28,11 @@ SDVariable[] lstmCell(String name, SDVariable x, SDVariable cLast, SDVariable yL
 ```
 The LSTM cell.  Does a single time step operation.
 
-* **x**  (NUMERIC type) - Input, with shape [batchSize, inSize]
-* **cLast**  (NUMERIC type) - Previous cell state, with shape [batchSize, numUnits]
-* **yLast**  (NUMERIC type) - revious cell output, with shape [batchSize, numUnits]
-* **LSTMWeights** - see [LSTMWeights](#LSTMWeights)
-* **LSTMConfiguration** - see [LSTMConfiguration](#LSTMConfiguration)
+* **x**  (NUMERIC) - Input, with shape [batchSize, inSize]
+* **cLast**  (NUMERIC) - Previous cell state, with shape [batchSize, numUnits]
+* **yLast**  (NUMERIC) - revious cell output, with shape [batchSize, numUnits]
+* **LSTMWeights** - see [LSTMWeights](#lstmweights)
+* **LSTMConfiguration** - see [LSTMConfiguration](#lstmconfiguration)
 
 ## lstmLayer
 ```JAVA
@@ -81,12 +81,12 @@ specify gate/cell/out aplha/beta and numbers of activations for gate/cell/out de
 
 Also this layer supports MKLDNN (DNNL) and cuDNN acceleration
 
-* **x**  (NUMERIC type) -  Input, with shape dependent on the data format (in config).
-* **cLast**  (NUMERIC type) - Previous/initial cell state, with shape [batchSize, numUnits]
-* **yLast**  (NUMERIC type) - Previous/initial cell output, with shape [batchSize, numUnits]
-* **maxTSLength**  (NUMERIC type) - maxTSLength with shape [batchSize]
-* **LSTMLayerWeights** - see [LSTMLayerWeights](#LSTMLayerWeights)
-* **LSTMLayerConfig** - see [LSTMLayerConfig](#LSTMLayerConfig)
+* **x**  (NUMERIC) -  Input, with shape dependent on the data format (in config).
+* **cLast**  (NUMERIC) - Previous/initial cell state, with shape [batchSize, numUnits]
+* **yLast**  (NUMERIC) - Previous/initial cell output, with shape [batchSize, numUnits]
+* **maxTSLength**  (NUMERIC) - maxTSLength with shape [batchSize]
+* **LSTMLayerWeights** - see [LSTMLayerWeights](#lstmlayerweights)
+* **LSTMLayerConfig** - see [LSTMLayerConfig](#lstmlayerconfig)
 
 ## lstmblock
 ```JAVA
@@ -101,12 +101,12 @@ SDVariable lstmblock(String name, SDVariable x, LSTMWeights lSTMWeights, LSTMCon
 ```
 The LSTM block
 
-* **maxTSLength**  (NUMERIC type) - 
-* **x**  (NUMERIC type) -  Input, with shape dependent on the data format (in config).
-* **cLast**  (NUMERIC type) - Previous/initial cell state, with shape [batchSize, numUnits]
-* **yLast**  (NUMERIC type) - Previous/initial cell output, with shape [batchSize, numUnits]
-* **LSTMWeights** - see [LSTMWeights](#LSTMWeights)
-* **LSTMConfiguration** - see [LSTMConfiguration](#LSTMConfiguration)
+* **maxTSLength**  (NUMERIC) - 
+* **x**  (NUMERIC) -  Input, with shape dependent on the data format (in config).
+* **cLast**  (NUMERIC) - Previous/initial cell state, with shape [batchSize, numUnits]
+* **yLast**  (NUMERIC) - Previous/initial cell output, with shape [batchSize, numUnits]
+* **LSTMWeights** - see [LSTMWeights](#lstmweights)
+* **LSTMConfiguration** - see [LSTMConfiguration](#lstmconfiguration)
 
 ## sru
 ```JAVA
@@ -121,10 +121,10 @@ SDVariable sru(String name, SDVariable x, SDVariable initialC, SRUWeights sRUWei
 ```
 The SRU layer.  Does a single time step operation.
 
-* **x**  (NUMERIC type) - Input, with shape [batchSize, inSize]
-* **initialC**  (NUMERIC type) - Initial cell state, with shape [batchSize, inSize]
-* **mask**  (NUMERIC type) - An optional dropout mask, with shape [batchSize, inSize]
-* **SRUWeights** - see [SRUWeights](#SRUWeights)
+* **x**  (NUMERIC) - Input, with shape [batchSize, inSize]
+* **initialC**  (NUMERIC) - Initial cell state, with shape [batchSize, inSize]
+* **mask**  (NUMERIC) - An optional dropout mask, with shape [batchSize, inSize]
+* **SRUWeights** - see [SRUWeights](#sruweights)
 
 ## sruCell
 ```JAVA
@@ -135,9 +135,9 @@ SDVariable sruCell(String name, SDVariable x, SDVariable cLast, SRUWeights sRUWe
 ```
 The SRU layer.  Does a single time step operation.
 
-* **x**  (NUMERIC type) - Input, with shape [batchSize, inSize]
-* **cLast**  (NUMERIC type) - Previous cell state, with shape [batchSize, inSize]
-* **SRUWeights** - see [SRUWeights](#SRUWeights)
+* **x**  (NUMERIC) - Input, with shape [batchSize, inSize]
+* **cLast**  (NUMERIC) - Previous cell state, with shape [batchSize, inSize]
+* **SRUWeights** - see [SRUWeights](#sruweights)
 
 # Configuration Classes
 ## LSTMConfiguration
@@ -150,7 +150,7 @@ The SRU layer.  Does a single time step operation.
 * **clippingCellValue** - The bias added to forget gates in order to reduce the scale of forgetting in the beginning of the training. (NUMERIC type)
 
 Used in these ops: 
-[lstmCell](#lstmCell)
+[lstmCell](#lstmcell)
 [lstmblock](#lstmblock)
 ## LSTMLayerConfig
 * **LSTMDataFormat** - for unidirectional:  TNS: shape [timeLength, numExamples, inOutSize] - sometimes referred to as "time major"<br>
@@ -180,7 +180,7 @@ Used in these ops:
 * **outBeta** - null (NUMERIC type) - default = 0.0
 
 Used in these ops: 
-[lstmLayer](#lstmLayer)
+[lstmLayer](#lstmlayer)
 ## GRUWeights
 * **ruWeight**- null (NUMERIC type)
 * **cWeight**- null (NUMERIC type)
@@ -195,7 +195,7 @@ Used in these ops:
 
 Used in these ops: 
 [sru](#sru)
-[sruCell](#sruCell)
+[sruCell](#srucell)
 ## LSTMWeights
 * **ruWeight**- null (NUMERIC type)
 * **inputPeepholeWeights**- null (NUMERIC type)
@@ -204,7 +204,7 @@ Used in these ops:
 * **bias**- null (NUMERIC type)
 
 Used in these ops: 
-[lstmCell](#lstmCell)
+[lstmCell](#lstmcell)
 [lstmblock](#lstmblock)
 ## LSTMLayerWeights
 * **inputWeights**- input weights Wx:
@@ -218,4 +218,4 @@ Used in these ops:
   2) [2, 3*nOut] when directionMode >= 2 (NUMERIC type)
 
 Used in these ops: 
-[lstmLayer](#lstmLayer)
+[lstmLayer](#lstmlayer)

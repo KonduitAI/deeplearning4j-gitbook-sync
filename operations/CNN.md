@@ -15,8 +15,8 @@ SDVariable avgPooling2d(String name, SDVariable input, Pooling2DConfig pooling2D
 ```
 2D Convolution layer operation - average pooling 2d
 
-* **input**  (NUMERIC type) - the input to average pooling 2d operation - 4d CNN (image) activations in NCHW format (shape [minibatch, channels, height, width]) or NHWC format (shape [minibatch, height, width, channels])
-* **Pooling2DConfig** - see [Pooling2DConfig](#Pooling2DConfig)
+* **input**  (NUMERIC) - the input to average pooling 2d operation - 4d CNN (image) activations in NCHW format (shape [minibatch, channels, height, width]) or NHWC format (shape [minibatch, height, width, channels])
+* **Pooling2DConfig** - see [Pooling2DConfig](#pooling2dconfig)
 
 ## avgPooling3d
 ```JAVA
@@ -27,8 +27,8 @@ SDVariable avgPooling3d(String name, SDVariable input, Pooling3DConfig pooling3D
 ```
 3D convolution layer operation - average pooling 3d 
 
-* **input**  (NUMERIC type) - the input to average pooling 3d operation - 5d activations in NCDHW format (shape [minibatch, channels, depth, height, width]) or NDHWC format (shape [minibatch, depth, height, width, channels])
-* **Pooling3DConfig** - see [Pooling3DConfig](#Pooling3DConfig)
+* **input**  (NUMERIC) - the input to average pooling 3d operation - 5d activations in NCDHW format (shape [minibatch, channels, depth, height, width]) or NDHWC format (shape [minibatch, depth, height, width, channels])
+* **Pooling3DConfig** - see [Pooling3DConfig](#pooling3dconfig)
 
 ## batchToSpace
 ```JAVA
@@ -41,7 +41,7 @@ Convolution 2d layer batch to space operation on 4d input.
 
 Reduces input batch dimension by rearranging data into a larger spatial dimensions
 
-* **x**  (NUMERIC type) - Input variable. 4d input
+* **x**  (NUMERIC) - Input variable. 4d input
 * **blocks** - Block size, in the height/width dimension (Size: Exactly(count=2))
 * **croppingTop** -  (Size: Exactly(count=2))
 * **croppingBottom** -  (Size: Exactly(count=2))
@@ -57,8 +57,8 @@ col2im operation for use in 2D convolution operations. Outputs a 4d array with s
 
 [minibatch, inputChannels, height, width]
 
-* **in**  (NUMERIC type) - Input - rank 6 input with shape [minibatch, inputChannels, kernelHeight, kernelWidth, outputHeight, outputWidth]
-* **Conv2DConfig** - see [Conv2DConfig](#Conv2DConfig)
+* **in**  (NUMERIC) - Input - rank 6 input with shape [minibatch, inputChannels, kernelHeight, kernelWidth, outputHeight, outputWidth]
+* **Conv2DConfig** - see [Conv2DConfig](#conv2dconfig)
 
 ## conv1d
 ```JAVA
@@ -73,10 +73,10 @@ SDVariable conv1d(String name, SDVariable input, SDVariable weights, Conv1DConfi
 ```
 Conv1d operation.
 
-* **input**  (NUMERIC type) - the inputs to conv1d
-* **weights**  (NUMERIC type) - weights for conv1d op - rank 3 array with shape [kernelSize, inputChannels, outputChannels]
-* **bias**  (NUMERIC type) - bias for conv1d op - rank 1 array with shape [outputChannels]. May be null.
-* **Conv1DConfig** - see [Conv1DConfig](#Conv1DConfig)
+* **input**  (NUMERIC) - the inputs to conv1d
+* **weights**  (NUMERIC) - weights for conv1d op - rank 3 array with shape [kernelSize, inputChannels, outputChannels]
+* **bias**  (NUMERIC) - bias for conv1d op - rank 1 array with shape [outputChannels]. May be null.
+* **Conv1DConfig** - see [Conv1DConfig](#conv1dconfig)
 
 ## conv2d
 ```JAVA
@@ -91,10 +91,10 @@ SDVariable conv2d(String name, SDVariable layerInput, SDVariable weights, Conv2D
 ```
 2D Convolution operation with optional bias
 
-* **layerInput**  (NUMERIC type) - the input to max pooling 2d operation - 4d CNN (image) activations in NCHW format
-* **weights**  (NUMERIC type) - Weights for the convolution operation. 4 dimensions with format [kernelHeight, kernelWidth, inputChannels, outputChannels]
-* **bias**  (NUMERIC type) - Optional 1D bias array with shape [outputChannels]. May be null.
-* **Conv2DConfig** - see [Conv2DConfig](#Conv2DConfig)
+* **layerInput**  (NUMERIC) - the input to max pooling 2d operation - 4d CNN (image) activations in NCHW format
+* **weights**  (NUMERIC) - Weights for the convolution operation. 4 dimensions with format [kernelHeight, kernelWidth, inputChannels, outputChannels]
+* **bias**  (NUMERIC) - Optional 1D bias array with shape [outputChannels]. May be null.
+* **Conv2DConfig** - see [Conv2DConfig](#conv2dconfig)
 
 ## conv3d
 ```JAVA
@@ -109,10 +109,10 @@ SDVariable conv3d(String name, SDVariable input, SDVariable weights, Conv3DConfi
 ```
 Convolution 3D operation with optional bias 
 
-* **input**  (NUMERIC type) - the input to average pooling 3d operation - 5d activations in NCDHW format (shape [minibatch, channels, depth, height, width]) or NDHWC format (shape [minibatch, depth, height, width, channels])
-* **weights**  (NUMERIC type) -  Weights for conv3d. Rank 5 with shape [kernelDepth, kernelHeight, kernelWidth, inputChannels, outputChannels].
-* **bias**  (NUMERIC type) -  Optional 1D bias array with shape [outputChannels]. May be null.
-* **Conv3DConfig** - see [Conv3DConfig](#Conv3DConfig)
+* **input**  (NUMERIC) - the input to average pooling 3d operation - 5d activations in NCDHW format (shape [minibatch, channels, depth, height, width]) or NDHWC format (shape [minibatch, depth, height, width, channels])
+* **weights**  (NUMERIC) -  Weights for conv3d. Rank 5 with shape [kernelDepth, kernelHeight, kernelWidth, inputChannels, outputChannels].
+* **bias**  (NUMERIC) -  Optional 1D bias array with shape [outputChannels]. May be null.
+* **Conv3DConfig** - see [Conv3DConfig](#conv3dconfig)
 
 ## deconv2d
 ```JAVA
@@ -127,10 +127,10 @@ SDVariable deconv2d(String name, SDVariable layerInput, SDVariable weights, DeCo
 ```
 2D deconvolution operation with optional bias
 
-* **layerInput**  (NUMERIC type) - the input to deconvolution 2d operation - 4d CNN (image) activations in NCHW format (shape [minibatch, channels, height, width]) or NHWC format (shape [minibatch, height, width, channels])
-* **weights**  (NUMERIC type) - Weights for the 2d deconvolution operation. 4 dimensions with format [inputChannels, outputChannels, kernelHeight, kernelWidth]
-* **bias**  (NUMERIC type) - Optional 1D bias array with shape [outputChannels]. May be null.
-* **DeConv2DConfig** - see [DeConv2DConfig](#DeConv2DConfig)
+* **layerInput**  (NUMERIC) - the input to deconvolution 2d operation - 4d CNN (image) activations in NCHW format (shape [minibatch, channels, height, width]) or NHWC format (shape [minibatch, height, width, channels])
+* **weights**  (NUMERIC) - Weights for the 2d deconvolution operation. 4 dimensions with format [inputChannels, outputChannels, kernelHeight, kernelWidth]
+* **bias**  (NUMERIC) - Optional 1D bias array with shape [outputChannels]. May be null.
+* **DeConv2DConfig** - see [DeConv2DConfig](#deconv2dconfig)
 
 ## deconv3d
 ```JAVA
@@ -145,10 +145,10 @@ SDVariable deconv3d(String name, SDVariable input, SDVariable weights, DeConv3DC
 ```
 3D CNN deconvolution operation with or without optional bias
 
-* **input**  (NUMERIC type) - Input array - shape [bS, iD, iH, iW, iC] (NDHWC) or [bS, iC, iD, iH, iW] (NCDHW)
-* **weights**  (NUMERIC type) - Weights array - shape [kD, kH, kW, oC, iC]
-* **bias**  (NUMERIC type) - Bias array - optional, may be null. If non-null, must have shape [outputChannels]
-* **DeConv3DConfig** - see [DeConv3DConfig](#DeConv3DConfig)
+* **input**  (NUMERIC) - Input array - shape [bS, iD, iH, iW, iC] (NDHWC) or [bS, iC, iD, iH, iW] (NCDHW)
+* **weights**  (NUMERIC) - Weights array - shape [kD, kH, kW, oC, iC]
+* **bias**  (NUMERIC) - Bias array - optional, may be null. If non-null, must have shape [outputChannels]
+* **DeConv3DConfig** - see [DeConv3DConfig](#deconv3dconfig)
 
 ## depthToSpace
 ```JAVA
@@ -163,7 +163,7 @@ Example: if input has shape [mb, 8, 2, 2] and block size is 2, then output size 
 
 = [mb, 2, 4, 4]
 
-* **x**  (NUMERIC type) - the input to depth to space pooling 2d operation - 4d activations in NCHW format (shape [minibatch, channels, height, width]) or NHWC format (shape [minibatch, height, width, channels])
+* **x**  (NUMERIC) - the input to depth to space pooling 2d operation - 4d activations in NCHW format (shape [minibatch, channels, height, width]) or NHWC format (shape [minibatch, height, width, channels])
 * **blockSize** - Block size, in the height/width dimension
 * **dataFormat** - Data format: "NCHW" or "NHWC"
 
@@ -180,10 +180,10 @@ SDVariable depthWiseConv2d(String name, SDVariable layerInput, SDVariable depthW
 ```
 Depth-wise 2D convolution operation with optional bias 
 
-* **layerInput**  (NUMERIC type) - the input to max pooling 2d operation - 4d CNN (image) activations in NCHW format
-* **depthWeights**  (NUMERIC type) - Depth-wise conv2d weights. 4 dimensions with format [kernelHeight, kernelWidth, inputChannels, depthMultiplier]
-* **bias**  (NUMERIC type) - Optional 1D bias array with shape [outputChannels]. May be null.
-* **Conv2DConfig** - see [Conv2DConfig](#Conv2DConfig)
+* **layerInput**  (NUMERIC) - the input to max pooling 2d operation - 4d CNN (image) activations in NCHW format
+* **depthWeights**  (NUMERIC) - Depth-wise conv2d weights. 4 dimensions with format [kernelHeight, kernelWidth, inputChannels, depthMultiplier]
+* **bias**  (NUMERIC) - Optional 1D bias array with shape [outputChannels]. May be null.
+* **Conv2DConfig** - see [Conv2DConfig](#conv2dconfig)
 
 ## dilation2D
 ```JAVA
@@ -194,8 +194,8 @@ SDVariable dilation2D(String name, SDVariable df, SDVariable weights, int[] stri
 ```
 TODO doc string
 
-* **df**  (NUMERIC type) - 
-* **weights**  (NUMERIC type) - df
+* **df**  (NUMERIC) - 
+* **weights**  (NUMERIC) - df
 * **strides** - weights (Size: Exactly(count=2))
 * **rates** - strides (Size: Exactly(count=2))
 * **isSameMode** - isSameMode
@@ -209,7 +209,7 @@ SDVariable extractImagePatches(String name, SDVariable input, int kH, int kW, in
 ```
 Extract image patches 
 
-* **input**  (NUMERIC type) - Input array. Must be rank 4, with shape [minibatch, height, width, channels]
+* **input**  (NUMERIC) - Input array. Must be rank 4, with shape [minibatch, height, width, channels]
 * **kH** - Kernel height
 * **kW** - Kernel width
 * **sH** - Stride height
@@ -229,8 +229,8 @@ im2col operation for use in 2D convolution operations. Outputs a 6d array with s
 
 [minibatch, inputChannels, kernelHeight, kernelWidth, outputHeight, outputWidth]   
 
-* **in**  (NUMERIC type) - Input - rank 4 input with shape [minibatch, inputChannels, height, width]
-* **Conv2DConfig** - see [Conv2DConfig](#Conv2DConfig)
+* **in**  (NUMERIC) - Input - rank 4 input with shape [minibatch, inputChannels, height, width]
+* **Conv2DConfig** - see [Conv2DConfig](#conv2dconfig)
 
 ## localResponseNormalization
 ```JAVA
@@ -241,8 +241,8 @@ SDVariable localResponseNormalization(String name, SDVariable input, LocalRespon
 ```
 2D convolution layer operation - local response normalization
 
-* **input**  (NUMERIC type) - the inputs to lrn
-* **LocalResponseNormalizationConfig** - see [LocalResponseNormalizationConfig](#LocalResponseNormalizationConfig)
+* **input**  (NUMERIC) - the inputs to lrn
+* **LocalResponseNormalizationConfig** - see [LocalResponseNormalizationConfig](#localresponsenormalizationconfig)
 
 ## maxPoolWithArgmax
 ```JAVA
@@ -253,8 +253,8 @@ SDVariable[] maxPoolWithArgmax(String name, SDVariable input, Pooling2DConfig po
 ```
 2D Convolution layer operation - Max pooling on the input and outputs both max values and indices 
 
-* **input**  (NUMERIC type) - the input to max pooling 2d operation - 4d CNN (image) activations in NCHW format (shape [minibatch, channels, height, width]) or NHWC format (shape [minibatch, height, width, channels])
-* **Pooling2DConfig** - see [Pooling2DConfig](#Pooling2DConfig)
+* **input**  (NUMERIC) - the input to max pooling 2d operation - 4d CNN (image) activations in NCHW format (shape [minibatch, channels, height, width]) or NHWC format (shape [minibatch, height, width, channels])
+* **Pooling2DConfig** - see [Pooling2DConfig](#pooling2dconfig)
 
 ## maxPooling2d
 ```JAVA
@@ -265,8 +265,8 @@ SDVariable maxPooling2d(String name, SDVariable input, Pooling2DConfig pooling2D
 ```
 2D Convolution layer operation - max pooling 2d 
 
-* **input**  (NUMERIC type) - the input to max pooling 2d operation - 4d CNN (image) activations in NCHW format (shape [minibatch, channels, height, width]) or NHWC format (shape [minibatch, height, width, channels])
-* **Pooling2DConfig** - see [Pooling2DConfig](#Pooling2DConfig)
+* **input**  (NUMERIC) - the input to max pooling 2d operation - 4d CNN (image) activations in NCHW format (shape [minibatch, channels, height, width]) or NHWC format (shape [minibatch, height, width, channels])
+* **Pooling2DConfig** - see [Pooling2DConfig](#pooling2dconfig)
 
 ## maxPooling3d
 ```JAVA
@@ -277,8 +277,8 @@ SDVariable maxPooling3d(String name, SDVariable input, Pooling3DConfig pooling3D
 ```
 3D convolution layer operation - max pooling 3d operation.
 
-* **input**  (NUMERIC type) - the input to average pooling 3d operation - 5d activations in NCDHW format (shape [minibatch, channels, depth, height, width]) or NDHWC format (shape [minibatch, depth, height, width, channels])
-* **Pooling3DConfig** - see [Pooling3DConfig](#Pooling3DConfig)
+* **input**  (NUMERIC) - the input to average pooling 3d operation - 5d activations in NCDHW format (shape [minibatch, channels, depth, height, width]) or NDHWC format (shape [minibatch, depth, height, width, channels])
+* **Pooling3DConfig** - see [Pooling3DConfig](#pooling3dconfig)
 
 ## separableConv2d
 ```JAVA
@@ -293,11 +293,11 @@ SDVariable separableConv2d(String name, SDVariable layerInput, SDVariable depthW
 ```
 Separable 2D convolution operation with optional bias 
 
-* **layerInput**  (NUMERIC type) - the input to max pooling 2d operation - 4d CNN (image) activations in NCHW format (shape [minibatch, channels, height, width]) or NHWC format (shape [minibatch, height, width, channels])
-* **depthWeights**  (NUMERIC type) - Separable conv2d depth weights. 4 dimensions with format [kernelHeight, kernelWidth, inputChannels, depthMultiplier]
-* **pointWeights**  (NUMERIC type) - Point weights, rank 4 with format [1, 1, inputChannels*depthMultiplier, outputChannels]. May be null
-* **bias**  (NUMERIC type) - Optional bias, rank 1 with shape [outputChannels]. May be null.
-* **Conv2DConfig** - see [Conv2DConfig](#Conv2DConfig)
+* **layerInput**  (NUMERIC) - the input to max pooling 2d operation - 4d CNN (image) activations in NCHW format (shape [minibatch, channels, height, width]) or NHWC format (shape [minibatch, height, width, channels])
+* **depthWeights**  (NUMERIC) - Separable conv2d depth weights. 4 dimensions with format [kernelHeight, kernelWidth, inputChannels, depthMultiplier]
+* **pointWeights**  (NUMERIC) - Point weights, rank 4 with format [1, 1, inputChannels*depthMultiplier, outputChannels]. May be null
+* **bias**  (NUMERIC) - Optional bias, rank 1 with shape [outputChannels]. May be null.
+* **Conv2DConfig** - see [Conv2DConfig](#conv2dconfig)
 
 ## spaceToBatch
 ```JAVA
@@ -310,7 +310,7 @@ Convolution 2d layer space to batch operation on 4d input.
 
 Increases input batch dimension by rearranging data from spatial dimensions into batch dimension 
 
-* **x**  (NUMERIC type) - Input variable. 4d input
+* **x**  (NUMERIC) - Input variable. 4d input
 * **blocks** - Block size, in the height/width dimension (Size: Exactly(count=2))
 * **paddingTop** - Optional 2d int[] array for padding the result: values [[pad top, pad bottom], [pad left, pad right]] (Size: Exactly(count=2))
 * **paddingBottom** - Optional 2d int[] array for padding the result: values [[pad top, pad bottom], [pad left, pad right]] (Size: Exactly(count=2))
@@ -328,7 +328,7 @@ Example: if input has shape [mb, 2, 4, 4] and block size is 2, then output size 
 
 = [mb, 2, 4, 4] 
 
-* **x**  (NUMERIC type) - the input to depth to space pooling 2d operation - 4d activations in NCHW format (shape [minibatch, channels, height, width]) or NHWC format (shape [minibatch, height, width, channels])
+* **x**  (NUMERIC) - the input to depth to space pooling 2d operation - 4d activations in NCHW format (shape [minibatch, channels, height, width]) or NHWC format (shape [minibatch, height, width, channels])
 * **blockSize** -  Block size, in the height/width dimension
 * **dataFormat** - Data format: "NCHW" or "NHWC"
 
@@ -343,7 +343,7 @@ Upsampling layer for 2D inputs.
 
 scale is used for both height and width dimensions. 
 
-* **input**  (NUMERIC type) - Input in NCHW format
+* **input**  (NUMERIC) - Input in NCHW format
 * **scale** - The scale for both height and width dimensions.
 
 ## upsampling2d
@@ -355,7 +355,7 @@ SDVariable upsampling2d(String name, SDVariable input, int scaleH, int scaleW, b
 ```
 2D Convolution layer operation - Upsampling 2d 
 
-* **input**  (NUMERIC type) - Input in NCHW format
+* **input**  (NUMERIC) - Input in NCHW format
 * **scaleH** - Scale to upsample in height dimension
 * **scaleW** - Scale to upsample in width dimension
 * **nchw** - If true: input is in NCHW (minibatch, channels, height, width) format. False: NHWC format
@@ -384,11 +384,11 @@ Used in these ops:
 * **dataFormat** - Data format (STRING type) - default = NCHW
 
 Used in these ops: 
-[col2Im](#col2Im)
+[col2Im](#col2im)
 [conv2d](#conv2d)
-[depthWiseConv2d](#depthWiseConv2d)
-[im2Col](#im2Col)
-[separableConv2d](#separableConv2d)
+[depthWiseConv2d](#depthwiseconv2d)
+[im2Col](#im2col)
+[separableConv2d](#separableconv2d)
 ## Conv3DConfig
 * **kD** - Kernel depth (LONG type) - default = -1
 * **kW** - Kernel width (LONG type) - default = -1
@@ -453,9 +453,9 @@ Used in these ops:
 * **dataFormat** - Data format (STRING type) - default = nchw
 
 Used in these ops: 
-[avgPooling2d](#avgPooling2d)
-[maxPoolWithArgmax](#maxPoolWithArgmax)
-[maxPooling2d](#maxPooling2d)
+[avgPooling2d](#avgpooling2d)
+[maxPoolWithArgmax](#maxpoolwithargmax)
+[maxPooling2d](#maxpooling2d)
 ## Pooling3DConfig
 * **kD** - Kernel depth (LONG type) - default = -1
 * **kW** - Kernel width (LONG type) - default = -1
@@ -473,8 +473,8 @@ Used in these ops:
 * **dataFormat** - Data format (STRING type) - default = NCDHW
 
 Used in these ops: 
-[avgPooling3d](#avgPooling3d)
-[maxPooling3d](#maxPooling3d)
+[avgPooling3d](#avgpooling3d)
+[maxPooling3d](#maxpooling3d)
 ## LocalResponseNormalizationConfig
 * **alpha** - alpha (NUMERIC type) - default = 1
 * **beta** - beta (NUMERIC type) - default = 0.5
@@ -482,4 +482,4 @@ Used in these ops:
 * **depth** - depth (INT type) - default = 5
 
 Used in these ops: 
-[localResponseNormalization](#localResponseNormalization)
+[localResponseNormalization](#localresponsenormalization)
