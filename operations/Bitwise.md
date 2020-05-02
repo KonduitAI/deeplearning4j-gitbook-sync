@@ -5,9 +5,8 @@ description:
 category: Operations
 weight: 0
 ---
-# Bitwise Namespace
 # Operation classes
-## <a name="and">and</a>
+## and
 ```JAVA
 INDArray and(INDArray x, INDArray y)
 
@@ -16,10 +15,10 @@ SDVariable and(String name, SDVariable x, SDVariable y)
 ```
 Bitwise AND operation. Supports broadcasting.
 
-* **x** - First input array (INT type)
-* **y** - Second input array (INT type)
+* **x**  (INT type) - First input array
+* **y**  (INT type) - Second input array
 
-## <a name="bitRotl">bitRotl</a>
+## bitRotl
 ```JAVA
 INDArray bitRotl(INDArray x, INDArray shift)
 
@@ -28,10 +27,10 @@ SDVariable bitRotl(String name, SDVariable x, SDVariable shift)
 ```
 Roll integer bits to the left, i.e. var << 4 | var >> (32 - 4)
 
-* **x** - Input 1 (INT type)
-* **shift** - Number of bits to shift. (INT type)
+* **x**  (INT type) - Input 1
+* **shift**  (INT type) - Number of bits to shift.
 
-## <a name="bitRotr">bitRotr</a>
+## bitRotr
 ```JAVA
 INDArray bitRotr(INDArray x, INDArray shift)
 
@@ -40,10 +39,10 @@ SDVariable bitRotr(String name, SDVariable x, SDVariable shift)
 ```
 Roll integer bits to the right, i.e. var >> 4 | var << (32 - 4)
 
-* **x** - Input 1 (INT type)
-* **shift** - Number of bits to shift. (INT type)
+* **x**  (INT type) - Input 1
+* **shift**  (INT type) - Number of bits to shift.
 
-## <a name="bitShift">bitShift</a>
+## bitShift
 ```JAVA
 INDArray bitShift(INDArray x, INDArray shift)
 
@@ -52,10 +51,10 @@ SDVariable bitShift(String name, SDVariable x, SDVariable shift)
 ```
 Shift integer bits to the left, i.e. var << 4
 
-* **x** - Input 1 (INT type)
-* **shift** - Number of bits to shift. (INT type)
+* **x**  (INT type) - Input 1
+* **shift**  (INT type) - Number of bits to shift.
 
-## <a name="bitShiftRight">bitShiftRight</a>
+## bitShiftRight
 ```JAVA
 INDArray bitShiftRight(INDArray x, INDArray shift)
 
@@ -64,10 +63,10 @@ SDVariable bitShiftRight(String name, SDVariable x, SDVariable shift)
 ```
 Shift integer bits to the right, i.e. var >> 4
 
-* **x** - Input 1 (INT type)
-* **shift** - Number of bits to shift. (INT type)
+* **x**  (INT type) - Input 1
+* **shift**  (INT type) - Number of bits to shift.
 
-## <a name="bitsHammingDistance">bitsHammingDistance</a>
+## bitsHammingDistance
 ```JAVA
 INDArray bitsHammingDistance(INDArray x, INDArray y)
 
@@ -77,10 +76,10 @@ SDVariable bitsHammingDistance(String name, SDVariable x, SDVariable y)
 Bitwise Hamming distance reduction over all elements of both input arrays.<br>
 For example, if x=01100000 and y=1010000 then the bitwise Hamming distance is 2 (due to differences at positions 0 and 1)
 
-* **x** - First input array. (INT type)
-* **y** - Second input array. (INT type)
+* **x**  (INT type) - First input array.
+* **y**  (INT type) - Second input array.
 
-## <a name="leftShift">leftShift</a>
+## leftShift
 ```JAVA
 INDArray leftShift(INDArray x, INDArray y)
 
@@ -89,10 +88,10 @@ SDVariable leftShift(String name, SDVariable x, SDVariable y)
 ```
 Bitwise left shift operation. Supports broadcasting.
 
-* **x** - Input to be bit shifted (INT type)
-* **y** - Amount to shift elements of x array (INT type)
+* **x**  (INT type) - Input to be bit shifted
+* **y**  (INT type) - Amount to shift elements of x array
 
-## <a name="leftShiftCyclic">leftShiftCyclic</a>
+## leftShiftCyclic
 ```JAVA
 INDArray leftShiftCyclic(INDArray x, INDArray y)
 
@@ -105,10 +104,10 @@ Unlike #leftShift(INDArray, INDArray) the bits will "wrap around":
 
 `leftShiftCyclic(01110000, 2) -> 11000001`
 
-* **x** - Input to be bit shifted (INT type)
-* **y** - Amount to shift elements of x array (INT type)
+* **x**  (INT type) - Input to be bit shifted
+* **y**  (INT type) - Amount to shift elements of x array
 
-## <a name="or">or</a>
+## or
 ```JAVA
 INDArray or(INDArray x, INDArray y)
 
@@ -117,10 +116,10 @@ SDVariable or(String name, SDVariable x, SDVariable y)
 ```
 Bitwise OR operation. Supports broadcasting.
 
-* **x** - First input array (INT type)
-* **y** - First input array (INT type)
+* **x**  (INT type) - First input array
+* **y**  (INT type) - First input array
 
-## <a name="rightShift">rightShift</a>
+## rightShift
 ```JAVA
 INDArray rightShift(INDArray x, INDArray y)
 
@@ -129,10 +128,10 @@ SDVariable rightShift(String name, SDVariable x, SDVariable y)
 ```
 Bitwise right shift operation. Supports broadcasting. 
 
-* **x** - Input to be bit shifted (INT type)
-* **y** - Amount to shift elements of x array (INT type)
+* **x**  (INT type) - Input to be bit shifted
+* **y**  (INT type) - Amount to shift elements of x array
 
-## <a name="rightShiftCyclic">rightShiftCyclic</a>
+## rightShiftCyclic
 ```JAVA
 INDArray rightShiftCyclic(INDArray x, INDArray y)
 
@@ -145,10 +144,10 @@ Unlike rightShift(INDArray, INDArray) the bits will "wrap around":
 
 `rightShiftCyclic(00001110, 2) -> 10000011`
 
-* **x** - Input to be bit shifted (INT type)
-* **y** - Amount to shift elements of x array (INT type)
+* **x**  (INT type) - Input to be bit shifted
+* **y**  (INT type) - Amount to shift elements of x array
 
-## <a name="xor">xor</a>
+## xor
 ```JAVA
 INDArray xor(INDArray x, INDArray y)
 
@@ -157,6 +156,6 @@ SDVariable xor(String name, SDVariable x, SDVariable y)
 ```
 Bitwise XOR operation (exclusive OR). Supports broadcasting.
 
-* **x** - First input array (INT type)
-* **y** - First input array (INT type)
+* **x**  (INT type) - First input array
+* **y**  (INT type) - First input array
 

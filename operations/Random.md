@@ -5,9 +5,8 @@ description:
 category: Operations
 weight: 20
 ---
-# Random Namespace
 # Operation classes
-## <a name="bernoulli">bernoulli</a>
+## bernoulli
 ```JAVA
 INDArray bernoulli(double p, DataType datatype, long[] shape)
 
@@ -22,9 +21,9 @@ with the specified probability. Array values will have value 1 with probability 
 
 * **p** - Probability of value 1
 * **datatype** - Data type of the output variable
-* **shape** - Shape of the new random INDArray, as a 1D array (Size: AtLeast(min=0)
+* **shape** - Shape of the new random INDArray, as a 1D array (Size: AtLeast(min=0))
 
-## <a name="binomial">binomial</a>
+## binomial
 ```JAVA
 INDArray binomial(int nTrials, double p, DataType datatype, long[] shape)
 
@@ -38,9 +37,9 @@ with the specified number of trials and probability.
 * **nTrials** - Number of trials parameter for the binomial distribution
 * **p** - Probability of success for each trial
 * **datatype** - Data type of the output variable
-* **shape** - Shape of the new random INDArray, as a 1D array (Size: AtLeast(min=0)
+* **shape** - Shape of the new random INDArray, as a 1D array (Size: AtLeast(min=0))
 
-## <a name="exponential">exponential</a>
+## exponential
 ```JAVA
 INDArray exponential(double lambda, DataType datatype, long[] shape)
 
@@ -53,9 +52,9 @@ P(x) = lambda * exp(-lambda * x)
 
 * **lambda** - lambda parameter
 * **datatype** - Data type of the output variable
-* **shape** - Shape of the new random INDArray, as a 1D array (Size: AtLeast(min=0)
+* **shape** - Shape of the new random INDArray, as a 1D array (Size: AtLeast(min=0))
 
-## <a name="logNormal">logNormal</a>
+## logNormal
 ```JAVA
 INDArray logNormal(double mean, double stddev, DataType datatype, long[] shape)
 
@@ -69,9 +68,9 @@ i.e., `log(x) ~ N(mean, stdev)`
 * **mean** - Mean value for the random array
 * **stddev** - Standard deviation for the random array
 * **datatype** - Data type of the output variable
-* **shape** - Shape of the new random INDArray, as a 1D array (Size: AtLeast(min=0)
+* **shape** - Shape of the new random INDArray, as a 1D array (Size: AtLeast(min=0))
 
-## <a name="normal">normal</a>
+## normal
 ```JAVA
 INDArray normal(double mean, double stddev, DataType datatype, long[] shape)
 
@@ -84,9 +83,9 @@ N(mean, stdev)<br>
 * **mean** - Mean value for the random array
 * **stddev** - Standard deviation for the random array
 * **datatype** - Data type of the output variable
-* **shape** - Shape of the new random INDArray, as a 1D array (Size: AtLeast(min=0)
+* **shape** - Shape of the new random INDArray, as a 1D array (Size: AtLeast(min=0))
 
-## <a name="normalTruncated">normalTruncated</a>
+## normalTruncated
 ```JAVA
 INDArray normalTruncated(double mean, double stddev, DataType datatype, long[] shape)
 
@@ -100,9 +99,9 @@ N(mean, stdev). However, any values more than 1 standard deviation from the mean
 * **mean** - Mean value for the random array
 * **stddev** - Standard deviation for the random array
 * **datatype** - Data type of the output variable
-* **shape** - Shape of the new random INDArray, as a 1D array (Size: AtLeast(min=0)
+* **shape** - Shape of the new random INDArray, as a 1D array (Size: AtLeast(min=0))
 
-## <a name="uniform">uniform</a>
+## uniform
 ```JAVA
 INDArray uniform(double min, double max, DataType datatype, long[] shape)
 
@@ -116,5 +115,5 @@ U(min,max)
 * **min** - Minimum value
 * **max** - Maximum value.
 * **datatype** - Data type of the output variable
-* **shape** - Shape of the new random INDArray, as a 1D array (Size: AtLeast(min=0)
+* **shape** - Shape of the new random INDArray, as a 1D array (Size: AtLeast(min=0))
 

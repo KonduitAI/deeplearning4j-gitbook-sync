@@ -5,9 +5,8 @@ description:
 category: Operations
 weight: 60
 ---
-# Math Namespace
 # Operation classes
-## <a name="abs">abs</a>
+## abs
 ```JAVA
 INDArray abs(INDArray x)
 
@@ -16,9 +15,9 @@ SDVariable abs(String name, SDVariable x)
 ```
 Elementwise absolute value operation: out = abs(x)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="acos">acos</a>
+## acos
 ```JAVA
 INDArray acos(INDArray x)
 
@@ -27,9 +26,9 @@ SDVariable acos(String name, SDVariable x)
 ```
 Elementwise acos (arccosine, inverse cosine) operation: out = arccos(x)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="acosh">acosh</a>
+## acosh
 ```JAVA
 INDArray acosh(INDArray x)
 
@@ -38,9 +37,9 @@ SDVariable acosh(String name, SDVariable x)
 ```
 Elementwise acosh (inverse hyperbolic cosine) function: out = acosh(x)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="amax">amax</a>
+## amax
 ```JAVA
 INDArray amax(INDArray in, int[] dimensions)
 
@@ -49,10 +48,10 @@ SDVariable amax(String name, SDVariable in, int[] dimensions)
 ```
 Absolute max array reduction operation, optionally along specified dimensions: out = max(abs(x))
 
-* **in** - Input variable (NUMERIC type)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **in**  (NUMERIC type) - Input variable
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="amean">amean</a>
+## amean
 ```JAVA
 INDArray amean(INDArray in, int[] dimensions)
 
@@ -61,10 +60,10 @@ SDVariable amean(String name, SDVariable in, int[] dimensions)
 ```
 Absolute mean array reduction operation, optionally along specified dimensions: out = mean(abs(x))
 
-* **in** - Input variable (NUMERIC type)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **in**  (NUMERIC type) - Input variable
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="amin">amin</a>
+## amin
 ```JAVA
 INDArray amin(INDArray in, int[] dimensions)
 
@@ -73,10 +72,10 @@ SDVariable amin(String name, SDVariable in, int[] dimensions)
 ```
 Absolute min array reduction operation, optionally along specified dimensions: out = min(abs(x))
 
-* **in** - Input variable (NUMERIC type)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **in**  (NUMERIC type) - Input variable
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="and">and</a>
+## and
 ```JAVA
 INDArray and(INDArray x, INDArray y)
 
@@ -91,10 +90,10 @@ Note: supports broadcasting if x and y have different shapes and are broadcastab
 
 Returns an array with values 1 where condition is satisfied, or value 0 otherwise.
 
-* **x** - Input 1 (BOOL type)
-* **y** - Input 2 (BOOL type)
+* **x**  (BOOL type) - Input 1
+* **y**  (BOOL type) - Input 2
 
-## <a name="asin">asin</a>
+## asin
 ```JAVA
 INDArray asin(INDArray x)
 
@@ -103,9 +102,9 @@ SDVariable asin(String name, SDVariable x)
 ```
 Elementwise asin (arcsin, inverse sine) operation: out = arcsin(x)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="asinh">asinh</a>
+## asinh
 ```JAVA
 INDArray asinh(INDArray x)
 
@@ -114,9 +113,9 @@ SDVariable asinh(String name, SDVariable x)
 ```
 Elementwise asinh (inverse hyperbolic sine) function: out = asinh(x)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="asum">asum</a>
+## asum
 ```JAVA
 INDArray asum(INDArray in, int[] dimensions)
 
@@ -125,10 +124,10 @@ SDVariable asum(String name, SDVariable in, int[] dimensions)
 ```
 Absolute sum array reduction operation, optionally along specified dimensions: out = sum(abs(x))
 
-* **in** - Input variable (NUMERIC type)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **in**  (NUMERIC type) - Input variable
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="atan">atan</a>
+## atan
 ```JAVA
 INDArray atan(INDArray x)
 
@@ -137,9 +136,9 @@ SDVariable atan(String name, SDVariable x)
 ```
 Elementwise atan (arctangent, inverse tangent) operation: out = arctangent(x)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="atan2">atan2</a>
+## atan2
 ```JAVA
 INDArray atan2(INDArray y, INDArray x)
 
@@ -150,10 +149,10 @@ Elementwise atan (arctangent, inverse tangent) operation: out = atan2(x,y).
 
 Similar to atan(y/x) but sigts of x and y are used to determine the location of the result
 
-* **y** - Input Y variable (NUMERIC type)
-* **x** - Input X variable (NUMERIC type)
+* **y**  (NUMERIC type) - Input Y variable
+* **x**  (NUMERIC type) - Input X variable
 
-## <a name="atanh">atanh</a>
+## atanh
 ```JAVA
 INDArray atanh(INDArray x)
 
@@ -162,9 +161,9 @@ SDVariable atanh(String name, SDVariable x)
 ```
 Elementwise atanh (inverse hyperbolic tangent) function: out = atanh(x)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="bitShift">bitShift</a>
+## bitShift
 ```JAVA
 INDArray bitShift(INDArray x, INDArray shift)
 
@@ -173,10 +172,10 @@ SDVariable bitShift(String name, SDVariable x, SDVariable shift)
 ```
 Bit shift operation
 
-* **x** - input (NUMERIC type)
-* **shift** - shift value (NUMERIC type)
+* **x**  (NUMERIC type) - input
+* **shift**  (NUMERIC type) - shift value
 
-## <a name="bitShiftRight">bitShiftRight</a>
+## bitShiftRight
 ```JAVA
 INDArray bitShiftRight(INDArray x, INDArray shift)
 
@@ -185,10 +184,10 @@ SDVariable bitShiftRight(String name, SDVariable x, SDVariable shift)
 ```
 Right bit shift operation
 
-* **x** - Input tensor (NUMERIC type)
-* **shift** - shift argument (NUMERIC type)
+* **x**  (NUMERIC type) - Input tensor
+* **shift**  (NUMERIC type) - shift argument
 
-## <a name="bitShiftRotl">bitShiftRotl</a>
+## bitShiftRotl
 ```JAVA
 INDArray bitShiftRotl(INDArray x, INDArray shift)
 
@@ -197,10 +196,10 @@ SDVariable bitShiftRotl(String name, SDVariable x, SDVariable shift)
 ```
 Cyclic bit shift operation
 
-* **x** - Input tensor (NUMERIC type)
-* **shift** - shift argy=ument (NUMERIC type)
+* **x**  (NUMERIC type) - Input tensor
+* **shift**  (NUMERIC type) - shift argy=ument
 
-## <a name="bitShiftRotr">bitShiftRotr</a>
+## bitShiftRotr
 ```JAVA
 INDArray bitShiftRotr(INDArray x, INDArray shift)
 
@@ -209,10 +208,10 @@ SDVariable bitShiftRotr(String name, SDVariable x, SDVariable shift)
 ```
 Cyclic right shift operation
 
-* **x** - Input tensor (NUMERIC type)
-* **shift** - Shift argument (NUMERIC type)
+* **x**  (NUMERIC type) - Input tensor
+* **shift**  (NUMERIC type) - Shift argument
 
-## <a name="ceil">ceil</a>
+## ceil
 ```JAVA
 INDArray ceil(INDArray x)
 
@@ -223,9 +222,9 @@ Element-wise ceiling function: out = ceil(x).
 
 Rounds each value up to the nearest integer value (if not already an integer)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="clipByNorm">clipByNorm</a>
+## clipByNorm
 ```JAVA
 INDArray clipByNorm(INDArray x, double clipValue, int[] dimensions)
 
@@ -240,11 +239,11 @@ Otherwise, out[i] = in[i] * clipValue / l2Norm(in, dimensions) where each value 
 
 to the corresponding l2Norm along the specified dimensions
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 * **clipValue** - Clipping value (maximum l2 norm)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="clipByValue">clipByValue</a>
+## clipByValue
 ```JAVA
 INDArray clipByValue(INDArray x, double clipValueMin, double clipValueMax)
 
@@ -259,11 +258,11 @@ out[i] = clipValueMin if in[i] < clipValueMin
 
 out[i] = clipValueMax if in[i] > clipValueMax
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 * **clipValueMin** - Minimum value for clipping
 * **clipValueMax** - Maximum value for clipping
 
-## <a name="confusionMatrix">confusionMatrix</a>
+## confusionMatrix
 ```JAVA
 INDArray confusionMatrix(INDArray labels, INDArray pred, DataType dataType)
 
@@ -282,11 +281,11 @@ For example, if labels = [0, 1, 1] and predicted = [0, 2, 1] then output is:
 
 [0, 0, 0]
 
-* **labels** - Labels - 1D array of integer values representing label values (NUMERIC type)
-* **pred** - Predictions - 1D array of integer values representing predictions. Same length as labels (NUMERIC type)
+* **labels**  (NUMERIC type) - Labels - 1D array of integer values representing label values
+* **pred**  (NUMERIC type) - Predictions - 1D array of integer values representing predictions. Same length as labels
 * **dataType** - Data type
 
-## <a name="confusionMatrix">confusionMatrix</a>
+## confusionMatrix
 ```JAVA
 INDArray confusionMatrix(INDArray labels, INDArray pred, int numClasses)
 
@@ -307,11 +306,11 @@ For example, if labels = [0, 1, 1], predicted = [0, 2, 1], and numClasses=4 then
 
 [0, 0, 0, 0]
 
-* **labels** - Labels - 1D array of integer values representing label values (NUMERIC type)
-* **pred** - Predictions - 1D array of integer values representing predictions. Same length as labels (NUMERIC type)
+* **labels**  (NUMERIC type) - Labels - 1D array of integer values representing label values
+* **pred**  (NUMERIC type) - Predictions - 1D array of integer values representing predictions. Same length as labels
 * **numClasses** - Number of classes
 
-## <a name="confusionMatrix">confusionMatrix</a>
+## confusionMatrix
 ```JAVA
 INDArray confusionMatrix(INDArray labels, INDArray pred, INDArray weights)
 
@@ -330,11 +329,11 @@ For example, if labels = [0, 1, 1], predicted = [0, 2, 1] and weights = [1, 2, 3
 
 [0, 0, 0]
 
-* **labels** - Labels - 1D array of integer values representing label values (NUMERIC type)
-* **pred** - Predictions - 1D array of integer values representing predictions. Same length as labels (NUMERIC type)
-* **weights** - Weights - 1D array of values (may be real/decimal) representing the weight/contribution of each prediction. Must be same length as both labels and predictions arrays (NUMERIC type)
+* **labels**  (NUMERIC type) - Labels - 1D array of integer values representing label values
+* **pred**  (NUMERIC type) - Predictions - 1D array of integer values representing predictions. Same length as labels
+* **weights**  (NUMERIC type) - Weights - 1D array of values (may be real/decimal) representing the weight/contribution of each prediction. Must be same length as both labels and predictions arrays
 
-## <a name="confusionMatrix">confusionMatrix</a>
+## confusionMatrix
 ```JAVA
 INDArray confusionMatrix(INDArray labels, INDArray pred, INDArray weights, int numClasses)
 
@@ -355,12 +354,12 @@ For example, if labels = [0, 1, 1], predicted = [0, 2, 1], numClasses = 4, and w
 
 [0, 0, 0, 0]
 
-* **labels** - Labels - 1D array of integer values representing label values (NUMERIC type)
-* **pred** - Predictions - 1D array of integer values representing predictions. Same length as labels (NUMERIC type)
-* **weights** - Weights - 1D array of values (may be real/decimal) representing the weight/contribution of each prediction. Must be same length as both labels and predictions arrays (NUMERIC type)
+* **labels**  (NUMERIC type) - Labels - 1D array of integer values representing label values
+* **pred**  (NUMERIC type) - Predictions - 1D array of integer values representing predictions. Same length as labels
+* **weights**  (NUMERIC type) - Weights - 1D array of values (may be real/decimal) representing the weight/contribution of each prediction. Must be same length as both labels and predictions arrays
 * **numClasses** - 
 
-## <a name="cos">cos</a>
+## cos
 ```JAVA
 INDArray cos(INDArray x)
 
@@ -369,9 +368,9 @@ SDVariable cos(String name, SDVariable x)
 ```
 Elementwise cosine operation: out = cos(x)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="cosh">cosh</a>
+## cosh
 ```JAVA
 INDArray cosh(INDArray x)
 
@@ -380,9 +379,9 @@ SDVariable cosh(String name, SDVariable x)
 ```
 Elementwise cosh (hyperbolic cosine) operation: out = cosh(x)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="cosineDistance">cosineDistance</a>
+## cosineDistance
 ```JAVA
 INDArray cosineDistance(INDArray x, INDArray y, int[] dimensions)
 
@@ -395,11 +394,11 @@ tensor/subset along the specified dimensions:
 
 out = 1.0 - cosineSimilarity(x,y)
 
-* **x** - Input variable x (NUMERIC type)
-* **y** - Input variable y (NUMERIC type)
-* **dimensions** - Dimensions to calculate cosineDistance over (Size: AtLeast(min=0)
+* **x**  (NUMERIC type) - Input variable x
+* **y**  (NUMERIC type) - Input variable y
+* **dimensions** - Dimensions to calculate cosineDistance over (Size: AtLeast(min=0))
 
-## <a name="cosineSimilarity">cosineSimilarity</a>
+## cosineSimilarity
 ```JAVA
 INDArray cosineSimilarity(INDArray x, INDArray y, int[] dimensions)
 
@@ -412,11 +411,11 @@ along the specified dimensions:
 
 out = (sum_i x[i] * y[i]) / ( sqrt(sum_i x[i]^2) * sqrt(sum_i y[i]^2)
 
-* **x** - Input variable x (NUMERIC type)
-* **y** - Input variable y (NUMERIC type)
-* **dimensions** - Dimensions to calculate cosineSimilarity over (Size: AtLeast(min=0)
+* **x**  (NUMERIC type) - Input variable x
+* **y**  (NUMERIC type) - Input variable y
+* **dimensions** - Dimensions to calculate cosineSimilarity over (Size: AtLeast(min=0))
 
-## <a name="countNonZero">countNonZero</a>
+## countNonZero
 ```JAVA
 INDArray countNonZero(INDArray in, int[] dimensions)
 
@@ -425,10 +424,10 @@ SDVariable countNonZero(String name, SDVariable in, int[] dimensions)
 ```
 Count non zero array reduction operation, optionally along specified dimensions: out = count(x != 0)
 
-* **in** - Input variable (NUMERIC type)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **in**  (NUMERIC type) - Input variable
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="countZero">countZero</a>
+## countZero
 ```JAVA
 INDArray countZero(INDArray in, int[] dimensions)
 
@@ -437,10 +436,10 @@ SDVariable countZero(String name, SDVariable in, int[] dimensions)
 ```
 Count zero array reduction operation, optionally along specified dimensions: out = count(x == 0)
 
-* **in** - Input variable (NUMERIC type)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **in**  (NUMERIC type) - Input variable
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="cross">cross</a>
+## cross
 ```JAVA
 INDArray cross(INDArray a, INDArray b)
 
@@ -451,10 +450,10 @@ Returns the pair-wise cross product of equal size arrays a and b: a x b = ||a||x
 
 Can take rank 1 or above inputs (of equal shapes), but note that the last dimension must have dimension 3
 
-* **a** - First input (NUMERIC type)
-* **b** - Second input (NUMERIC type)
+* **a**  (NUMERIC type) - First input
+* **b**  (NUMERIC type) - Second input
 
-## <a name="cube">cube</a>
+## cube
 ```JAVA
 INDArray cube(INDArray x)
 
@@ -463,9 +462,9 @@ SDVariable cube(String name, SDVariable x)
 ```
 Element-wise cube function: out = x^3
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="diag">diag</a>
+## diag
 ```JAVA
 INDArray diag(INDArray x)
 
@@ -488,9 +487,9 @@ Higher input ranks are also supported: if input has shape [a,...,R-1] then outpu
 
 i.e., for input rank R, output has rank 2R
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="diagPart">diagPart</a>
+## diagPart
 ```JAVA
 INDArray diagPart(INDArray x)
 
@@ -511,9 +510,9 @@ then output is [1, 2, 3].
 
 Supports higher dimensions: in general, out[i,...,k] = in[i,...,k,i,...,k]
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="entropy">entropy</a>
+## entropy
 ```JAVA
 INDArray entropy(INDArray in, int[] dimensions)
 
@@ -522,10 +521,10 @@ SDVariable entropy(String name, SDVariable in, int[] dimensions)
 ```
 Entropy reduction: -sum(x * log(x))
 
-* **in** - Input variable (NUMERIC type)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **in**  (NUMERIC type) - Input variable
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="erf">erf</a>
+## erf
 ```JAVA
 INDArray erf(INDArray x)
 
@@ -534,9 +533,9 @@ SDVariable erf(String name, SDVariable x)
 ```
 Element-wise Gaussian error function - out = erf(in)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="erfc">erfc</a>
+## erfc
 ```JAVA
 INDArray erfc(INDArray x)
 
@@ -545,9 +544,9 @@ SDVariable erfc(String name, SDVariable x)
 ```
 Element-wise complementary Gaussian error function - out = erfc(in) = 1 - erf(in)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="euclideanDistance">euclideanDistance</a>
+## euclideanDistance
 ```JAVA
 INDArray euclideanDistance(INDArray x, INDArray y, int[] dimensions)
 
@@ -560,11 +559,11 @@ tensor/subset along the specified dimensions:
 
 out = sqrt( sum_i (x[i] - y[i])^2 )
 
-* **x** - Input variable x (NUMERIC type)
-* **y** - Input variable y (NUMERIC type)
-* **dimensions** - Dimensions to calculate euclideanDistance over (Size: AtLeast(min=0)
+* **x**  (NUMERIC type) - Input variable x
+* **y**  (NUMERIC type) - Input variable y
+* **dimensions** - Dimensions to calculate euclideanDistance over (Size: AtLeast(min=0))
 
-## <a name="exp">exp</a>
+## exp
 ```JAVA
 INDArray exp(INDArray x)
 
@@ -573,9 +572,9 @@ SDVariable exp(String name, SDVariable x)
 ```
 Elementwise exponent function: out = exp(x) = 2.71828...^x
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="expm1">expm1</a>
+## expm1
 ```JAVA
 INDArray expm1(INDArray x)
 
@@ -584,9 +583,9 @@ SDVariable expm1(String name, SDVariable x)
 ```
 Elementwise 1.0 - exponent function: out = 1.0 - exp(x) = 1.0 - 2.71828...^x
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="eye">eye</a>
+## eye
 ```JAVA
 INDArray eye(int rows)
 
@@ -597,7 +596,7 @@ Generate an identity matrix with the specified number of rows and columns.
 
 * **rows** - Number of rows
 
-## <a name="eye">eye</a>
+## eye
 ```JAVA
 INDArray eye(int rows, int cols)
 
@@ -609,7 +608,7 @@ As per eye(String, int, int, DataType) but with the default datatype, Eye.DEFAUL
 * **rows** - Number of rows
 * **cols** - Number of columns
 
-## <a name="eye">eye</a>
+## eye
 ```JAVA
 INDArray eye(int rows, int cols, DataType dataType, int[] dimensions)
 
@@ -637,9 +636,9 @@ eye:
 * **rows** - Number of rows
 * **cols** - Number of columns
 * **dataType** - Data type
-* **dimensions** -  (Size: AtLeast(min=0)
+* **dimensions** -  (Size: AtLeast(min=0))
 
-## <a name="eye">eye</a>
+## eye
 ```JAVA
 INDArray eye(INDArray rows, INDArray cols)
 
@@ -648,10 +647,10 @@ SDVariable eye(String name, SDVariable rows, SDVariable cols)
 ```
 As per eye(int, int) bit with the number of rows/columns specified as scalar INDArrays
 
-* **rows** - Number of rows (INT type)
-* **cols** - Number of columns (INT type)
+* **rows**  (INT type) - Number of rows
+* **cols**  (INT type) - Number of columns
 
-## <a name="eye">eye</a>
+## eye
 ```JAVA
 INDArray eye(INDArray rows)
 
@@ -660,9 +659,9 @@ SDVariable eye(String name, SDVariable rows)
 ```
 As per eye(String, int) but with the number of rows specified as a scalar INDArray
 
-* **rows** - Number of rows (INT type)
+* **rows**  (INT type) - Number of rows
 
-## <a name="firstIndex">firstIndex</a>
+## firstIndex
 ```JAVA
 INDArray firstIndex(INDArray in, Condition condition, int[] dimensions)
 
@@ -691,15 +690,12 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **in** - Input variable (NUMERIC type)
+* **in**  (NUMERIC type) - Input variable
 * **condition** - Condition to check on input variable
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=1)
-* **in** - Input variable (NUMERIC type)
-* **condition** - Condition to check on input variable
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=1))
 * **keepDims** - If true: keep the dimensions that are reduced on (as length 1). False: remove the reduction dimensions - default = false
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=1)
 
-## <a name="floor">floor</a>
+## floor
 ```JAVA
 INDArray floor(INDArray x)
 
@@ -710,9 +706,9 @@ Element-wise floor function: out = floor(x).
 
 Rounds each value down to the nearest integer value (if not already an integer)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="hammingDistance">hammingDistance</a>
+## hammingDistance
 ```JAVA
 INDArray hammingDistance(INDArray x, INDArray y, int[] dimensions)
 
@@ -725,11 +721,11 @@ tensor/subset along the specified dimensions:
 
 out = count( x[i] != y[i] )
 
-* **x** - Input variable x (NUMERIC type)
-* **y** - Input variable y (NUMERIC type)
-* **dimensions** - Dimensions to calculate hammingDistance over (Size: AtLeast(min=0)
+* **x**  (NUMERIC type) - Input variable x
+* **y**  (NUMERIC type) - Input variable y
+* **dimensions** - Dimensions to calculate hammingDistance over (Size: AtLeast(min=0))
 
-## <a name="iamax">iamax</a>
+## iamax
 ```JAVA
 INDArray iamax(INDArray in, int[] dimensions)
 
@@ -744,13 +740,11 @@ Index of the max absolute value: argmax(abs(in))
 
 see argmax(String, INDArray, boolean, int...)
 
-* **in** - Input variable (NUMERIC type)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=1)
-* **in** - Input variable (NUMERIC type)
+* **in**  (NUMERIC type) - Input variable
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=1))
 * **keepDims** - If true: keep the dimensions that are reduced on (as length 1). False: remove the reduction dimensions - default = false
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=1)
 
-## <a name="iamin">iamin</a>
+## iamin
 ```JAVA
 INDArray iamin(INDArray in, int[] dimensions)
 
@@ -765,13 +759,11 @@ Index of the min absolute value: argmin(abs(in))
 
 see argmin(String, INDArray, boolean, int...)
 
-* **in** - Input variable (NUMERIC type)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=1)
-* **in** - Input variable (NUMERIC type)
+* **in**  (NUMERIC type) - Input variable
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=1))
 * **keepDims** - If true: keep the dimensions that are reduced on (as length 1). False: remove the reduction dimensions - default = false
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=1)
 
-## <a name="isFinite">isFinite</a>
+## isFinite
 ```JAVA
 INDArray isFinite(INDArray x)
 
@@ -784,9 +776,9 @@ Returns an array with the same shape/size as the input, with values 1 where cond
 
 value 0 otherwise
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="isInfinite">isInfinite</a>
+## isInfinite
 ```JAVA
 INDArray isInfinite(INDArray x)
 
@@ -799,9 +791,9 @@ Returns an array with the same shape/size as the input, with values 1 where cond
 
 value 0 otherwise
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="isMax">isMax</a>
+## isMax
 ```JAVA
 INDArray isMax(INDArray x)
 
@@ -814,9 +806,9 @@ Returns an array with the same shape/size as the input, with values 1 where cond
 
 value 0 otherwise
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="isNaN">isNaN</a>
+## isNaN
 ```JAVA
 INDArray isNaN(INDArray x)
 
@@ -829,9 +821,9 @@ Returns an array with the same shape/size as the input, with values 1 where cond
 
 value 0 otherwise
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="isNonDecreasing">isNonDecreasing</a>
+## isNonDecreasing
 ```JAVA
 INDArray isNonDecreasing(INDArray x)
 
@@ -844,9 +836,9 @@ An array is non-decreasing if for every valid i, x[i] <= x[i+1]. For Rank 2+ arr
 
 in 'c' (row major) order
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="isStrictlyIncreasing">isStrictlyIncreasing</a>
+## isStrictlyIncreasing
 ```JAVA
 INDArray isStrictlyIncreasing(INDArray x)
 
@@ -859,9 +851,9 @@ An array is strictly increasing if for every valid i, x[i] < x[i+1]. For Rank 2+
 
 in 'c' (row major) order
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="jaccardDistance">jaccardDistance</a>
+## jaccardDistance
 ```JAVA
 INDArray jaccardDistance(INDArray x, INDArray y, int[] dimensions)
 
@@ -872,11 +864,11 @@ Jaccard similarity reduction operation. The output contains the Jaccard distance
 
                 tensor along the specified dimensions.
 
-* **x** - Input variable x (NUMERIC type)
-* **y** - Input variable y (NUMERIC type)
-* **dimensions** - Dimensions to calculate jaccardDistance over (Size: AtLeast(min=0)
+* **x**  (NUMERIC type) - Input variable x
+* **y**  (NUMERIC type) - Input variable y
+* **dimensions** - Dimensions to calculate jaccardDistance over (Size: AtLeast(min=0))
 
-## <a name="lastIndex">lastIndex</a>
+## lastIndex
 ```JAVA
 INDArray lastIndex(INDArray in, Condition condition, int[] dimensions)
 
@@ -905,15 +897,12 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **in** - Input variable (NUMERIC type)
+* **in**  (NUMERIC type) - Input variable
 * **condition** - Condition to check on input variable
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=1)
-* **in** - Input variable (NUMERIC type)
-* **condition** - Condition to check on input variable
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=1))
 * **keepDims** - If true: keep the dimensions that are reduced on (as length 1). False: remove the reduction dimensions - default = false
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=1)
 
-## <a name="listDiff">listDiff</a>
+## listDiff
 ```JAVA
 INDArray[] listDiff(INDArray x, INDArray y)
 
@@ -922,10 +911,10 @@ SDVariable[] listDiff(String name, SDVariable x, SDVariable y)
 ```
 Calculates difference between inputs X and Y.
 
-* **x** - Input variable X (NUMERIC type)
-* **y** - Input variable Y (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable X
+* **y**  (NUMERIC type) - Input variable Y
 
-## <a name="log">log</a>
+## log
 ```JAVA
 INDArray log(INDArray x)
 
@@ -934,9 +923,9 @@ SDVariable log(String name, SDVariable x)
 ```
 Element-wise logarithm function (base e - natural logarithm): out = log(x)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="log">log</a>
+## log
 ```JAVA
 INDArray log(INDArray x, double base)
 
@@ -945,10 +934,10 @@ SDVariable log(String name, SDVariable x, double base)
 ```
 Element-wise logarithm function (with specified base): out = log_{base`(x)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 * **base** - Logarithm base
 
-## <a name="log1p">log1p</a>
+## log1p
 ```JAVA
 INDArray log1p(INDArray x)
 
@@ -957,9 +946,9 @@ SDVariable log1p(String name, SDVariable x)
 ```
 Elementwise natural logarithm function: out = log_e (1 + x)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="logEntropy">logEntropy</a>
+## logEntropy
 ```JAVA
 INDArray logEntropy(INDArray in, int[] dimensions)
 
@@ -968,10 +957,10 @@ SDVariable logEntropy(String name, SDVariable in, int[] dimensions)
 ```
 Log entropy reduction: log(-sum(x * log(x)))
 
-* **in** - Input variable (NUMERIC type)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **in**  (NUMERIC type) - Input variable
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="logSumExp">logSumExp</a>
+## logSumExp
 ```JAVA
 INDArray logSumExp(INDArray input, int[] dimensions)
 
@@ -982,10 +971,10 @@ Log-sum-exp reduction (optionally along dimension).
 
 Computes log(sum(exp(x))
 
-* **input** - Input variable (NUMERIC type)
-* **dimensions** - Optional dimensions to reduce along (Size: AtLeast(min=0)
+* **input**  (NUMERIC type) - Input variable
+* **dimensions** - Optional dimensions to reduce along (Size: AtLeast(min=0))
 
-## <a name="manhattanDistance">manhattanDistance</a>
+## manhattanDistance
 ```JAVA
 INDArray manhattanDistance(INDArray x, INDArray y, int[] dimensions)
 
@@ -998,11 +987,11 @@ tensor/subset along the specified dimensions:
 
 out = sum_i abs(x[i]-y[i])
 
-* **x** - Input variable x (NUMERIC type)
-* **y** - Input variable y (NUMERIC type)
-* **dimensions** - Dimensions to calculate manhattanDistance over (Size: AtLeast(min=0)
+* **x**  (NUMERIC type) - Input variable x
+* **y**  (NUMERIC type) - Input variable y
+* **dimensions** - Dimensions to calculate manhattanDistance over (Size: AtLeast(min=0))
 
-## <a name="matrixDeterminant">matrixDeterminant</a>
+## matrixDeterminant
 ```JAVA
 INDArray matrixDeterminant(INDArray in)
 
@@ -1015,9 +1004,9 @@ For higher dimensional input with shape [..., m, m] the matrix determinant is re
 
 shape [m,m] sub-matrix.
 
-* **in** - Input (NUMERIC type)
+* **in**  (NUMERIC type) - Input
 
-## <a name="matrixInverse">matrixInverse</a>
+## matrixInverse
 ```JAVA
 INDArray matrixInverse(INDArray in)
 
@@ -1030,9 +1019,9 @@ For higher dimensional input with shape [..., m, m] the matrix inverse is return
 
 shape [m,m] sub-matrix.
 
-* **in** - Input (NUMERIC type)
+* **in**  (NUMERIC type) - Input
 
-## <a name="mergeAdd">mergeAdd</a>
+## mergeAdd
 ```JAVA
 INDArray mergeAdd(INDArray inputs)
 
@@ -1043,9 +1032,9 @@ Merge add function: merges an arbitrary number of equal shaped arrays using elem
 
 out = sum_i in[i]
 
-* **inputs** - Input variables (NUMERIC type)
+* **inputs**  (NUMERIC type) - Input variables
 
-## <a name="mergeAvg">mergeAvg</a>
+## mergeAvg
 ```JAVA
 INDArray mergeAvg(INDArray inputs)
 
@@ -1056,9 +1045,9 @@ Merge average function: merges an arbitrary number of equal shaped arrays using 
 
 out = mean_i in[i]
 
-* **inputs** - Input variables (NUMERIC type)
+* **inputs**  (NUMERIC type) - Input variables
 
-## <a name="mergeMax">mergeMax</a>
+## mergeMax
 ```JAVA
 INDArray mergeMax(INDArray inputs)
 
@@ -1069,9 +1058,9 @@ Merge max function: merges an arbitrary number of equal shaped arrays using elem
 
 out = max_i in[i]
 
-* **inputs** - Input variables (NUMERIC type)
+* **inputs**  (NUMERIC type) - Input variables
 
-## <a name="meshgrid">meshgrid</a>
+## meshgrid
 ```JAVA
 INDArray[] meshgrid(INDArray inputs, boolean cartesian)
 
@@ -1080,10 +1069,10 @@ SDVariable[] meshgrid(String name, SDVariable inputs, boolean cartesian)
 ```
 Broadcasts parameters for evaluation on an N-D grid.
 
-* **inputs** -  (NUMERIC type)
+* **inputs**  (NUMERIC type) - 
 * **cartesian** - 
 
-## <a name="moments">moments</a>
+## moments
 ```JAVA
 INDArray[] moments(INDArray input, int[] axes)
 
@@ -1092,10 +1081,10 @@ SDVariable[] moments(String name, SDVariable input, int[] axes)
 ```
 Calculate the mean and (population) variance for the input variable, for the specified axis
 
-* **input** - Input to calculate moments for (NUMERIC type)
-* **axes** - Dimensions to perform calculation over (Size: AtLeast(min=0)
+* **input**  (NUMERIC type) - Input to calculate moments for
+* **axes** - Dimensions to perform calculation over (Size: AtLeast(min=0))
 
-## <a name="neg">neg</a>
+## neg
 ```JAVA
 INDArray neg(INDArray x)
 
@@ -1104,9 +1093,9 @@ SDVariable neg(String name, SDVariable x)
 ```
 Elementwise negative operation: out = -x
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="normalizeMoments">normalizeMoments</a>
+## normalizeMoments
 ```JAVA
 INDArray[] normalizeMoments(INDArray counts, INDArray means, INDArray variances, double shift)
 
@@ -1115,12 +1104,12 @@ SDVariable[] normalizeMoments(String name, SDVariable counts, SDVariable means, 
 ```
 Calculate the mean and variance from the sufficient statistics
 
-* **counts** - Rank 0 (scalar) value with the total number of values used to calculate the sufficient statistics (NUMERIC type)
-* **means** - Mean-value sufficient statistics: this is the SUM of all data values (NUMERIC type)
-* **variances** - Variaance sufficient statistics: this is the squared sum of all data values (NUMERIC type)
+* **counts**  (NUMERIC type) - Rank 0 (scalar) value with the total number of values used to calculate the sufficient statistics
+* **means**  (NUMERIC type) - Mean-value sufficient statistics: this is the SUM of all data values
+* **variances**  (NUMERIC type) - Variaance sufficient statistics: this is the squared sum of all data values
 * **shift** - Shift value, possibly 0, used when calculating the sufficient statistics (for numerical stability)
 
-## <a name="or">or</a>
+## or
 ```JAVA
 INDArray or(INDArray x, INDArray y)
 
@@ -1135,10 +1124,10 @@ Note: supports broadcasting if x and y have different shapes and are broadcastab
 
 Returns an array with values 1 where condition is satisfied, or value 0 otherwise.
 
-* **x** - Input 1 (BOOL type)
-* **y** - Input 2 (BOOL type)
+* **x**  (BOOL type) - Input 1
+* **y**  (BOOL type) - Input 2
 
-## <a name="pow">pow</a>
+## pow
 ```JAVA
 INDArray pow(INDArray x, double value)
 
@@ -1147,10 +1136,10 @@ SDVariable pow(String name, SDVariable x, double value)
 ```
 Element-wise power function: out = x^value
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 * **value** - Scalar value for op
 
-## <a name="pow">pow</a>
+## pow
 ```JAVA
 INDArray pow(INDArray x, INDArray y)
 
@@ -1159,10 +1148,10 @@ SDVariable pow(String name, SDVariable x, SDVariable y)
 ```
 Element-wise (broadcastable) power function: out = x[i]^y[i]
 
-* **x** - Input variable (NUMERIC type)
-* **y** - Power (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
+* **y**  (NUMERIC type) - Power
 
-## <a name="reciprocal">reciprocal</a>
+## reciprocal
 ```JAVA
 INDArray reciprocal(INDArray x)
 
@@ -1171,9 +1160,9 @@ SDVariable reciprocal(String name, SDVariable x)
 ```
 Element-wise reciprocal (inverse) function: out[i] = 1 / in[i]
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="round">round</a>
+## round
 ```JAVA
 INDArray round(INDArray x)
 
@@ -1184,9 +1173,9 @@ Element-wise round function: out = round(x).
 
 Rounds (up or down depending on value) to the nearest integer value.
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="rsqrt">rsqrt</a>
+## rsqrt
 ```JAVA
 INDArray rsqrt(INDArray x)
 
@@ -1195,9 +1184,9 @@ SDVariable rsqrt(String name, SDVariable x)
 ```
 Element-wise reciprocal (inverse) of square root: out = 1.0 / sqrt(x)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="setDiag">setDiag</a>
+## setDiag
 ```JAVA
 INDArray setDiag(INDArray in, INDArray diag)
 
@@ -1222,10 +1211,10 @@ and diag = [ 1, 2, 3] then output is
 
 [ g, h, 3]
 
-* **in** - Input variable (NUMERIC type)
-* **diag** - Diagonal (NUMERIC type)
+* **in**  (NUMERIC type) - Input variable
+* **diag**  (NUMERIC type) - Diagonal
 
-## <a name="shannonEntropy">shannonEntropy</a>
+## shannonEntropy
 ```JAVA
 INDArray shannonEntropy(INDArray in, int[] dimensions)
 
@@ -1234,10 +1223,10 @@ SDVariable shannonEntropy(String name, SDVariable in, int[] dimensions)
 ```
 Shannon Entropy reduction: -sum(x * log2(x))
 
-* **in** - Input variable (NUMERIC type)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **in**  (NUMERIC type) - Input variable
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="sign">sign</a>
+## sign
 ```JAVA
 INDArray sign(INDArray x)
 
@@ -1252,9 +1241,9 @@ out = 0 if in = 0
 
 out = 1 if in > 0
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="sin">sin</a>
+## sin
 ```JAVA
 INDArray sin(INDArray x)
 
@@ -1263,9 +1252,9 @@ SDVariable sin(String name, SDVariable x)
 ```
 Elementwise sine operation: out = sin(x)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="sinh">sinh</a>
+## sinh
 ```JAVA
 INDArray sinh(INDArray x)
 
@@ -1274,9 +1263,9 @@ SDVariable sinh(String name, SDVariable x)
 ```
 Elementwise sinh (hyperbolic sine) operation: out = sinh(x)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="sqrt">sqrt</a>
+## sqrt
 ```JAVA
 INDArray sqrt(INDArray x)
 
@@ -1285,9 +1274,9 @@ SDVariable sqrt(String name, SDVariable x)
 ```
 Element-wise square root function: out = sqrt(x)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="square">square</a>
+## square
 ```JAVA
 INDArray square(INDArray x)
 
@@ -1296,9 +1285,9 @@ SDVariable square(String name, SDVariable x)
 ```
 Element-wise square function: out = x^2
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="standardize">standardize</a>
+## standardize
 ```JAVA
 INDArray standardize(INDArray x, int[] dimensions)
 
@@ -1329,10 +1318,10 @@ For example: given x as a mini batch of the shape [numExamples, exampleLength]:
 
 </ul>
 
-* **x** - Input variable (NUMERIC type)
-* **dimensions** -  (Size: AtLeast(min=1)
+* **x**  (NUMERIC type) - Input variable
+* **dimensions** -  (Size: AtLeast(min=1))
 
-## <a name="step">step</a>
+## step
 ```JAVA
 INDArray step(INDArray x, double value)
 
@@ -1345,10 +1334,10 @@ out(x) = 1 if x >= cutoff
 
 out(x) = 0 otherwise
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 * **value** - Scalar value for op
 
-## <a name="tan">tan</a>
+## tan
 ```JAVA
 INDArray tan(INDArray x)
 
@@ -1357,9 +1346,9 @@ SDVariable tan(String name, SDVariable x)
 ```
 Elementwise tangent operation: out = tan(x)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="tanh">tanh</a>
+## tanh
 ```JAVA
 INDArray tanh(INDArray x)
 
@@ -1368,9 +1357,9 @@ SDVariable tanh(String name, SDVariable x)
 ```
 Elementwise tanh (hyperbolic tangent) operation: out = tanh(x)
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="trace">trace</a>
+## trace
 ```JAVA
 INDArray trace(INDArray in)
 
@@ -1383,9 +1372,9 @@ For rank 2 matrices, the output is a scalar vith the trace - i.e., sum of the ma
 
 For higher rank inputs, output[a,b,c] = trace(in[a,b,c,:,:])
 
-* **in** - Input variable (NUMERIC type)
+* **in**  (NUMERIC type) - Input variable
 
-## <a name="xor">xor</a>
+## xor
 ```JAVA
 INDArray xor(INDArray x, INDArray y)
 
@@ -1400,10 +1389,10 @@ Note: supports broadcasting if x and y have different shapes and are broadcastab
 
 Returns an array with values 1 where condition is satisfied, or value 0 otherwise.
 
-* **x** - Input 1 (BOOL type)
-* **y** - Input 2 (BOOL type)
+* **x**  (BOOL type) - Input 1
+* **y**  (BOOL type) - Input 2
 
-## <a name="zeroFraction">zeroFraction</a>
+## zeroFraction
 ```JAVA
 INDArray zeroFraction(INDArray input)
 
@@ -1412,5 +1401,5 @@ SDVariable zeroFraction(String name, SDVariable input)
 ```
 Full array zero fraction array reduction operation, optionally along specified dimensions: out = (count(x == 0) / length(x))
 
-* **input** - Input variable (NUMERIC type)
+* **input**  (NUMERIC type) - Input variable
 

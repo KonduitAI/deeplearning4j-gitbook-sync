@@ -5,9 +5,8 @@ description:
 category: Operations
 weight: 90
 ---
-# Linalg Namespace
 # Operation classes
-## <a name="Cholesky">Cholesky</a>
+## Cholesky
 ```JAVA
 INDArray Cholesky(INDArray input)
 
@@ -16,9 +15,9 @@ SDVariable Cholesky(String name, SDVariable input)
 ```
 Computes the Cholesky decomposition of one or more square matrices.
 
-* **input** - Input tensor with inner-most 2 dimensions forming square matrices (NUMERIC type)
+* **input**  (NUMERIC type) - Input tensor with inner-most 2 dimensions forming square matrices
 
-## <a name="Lstsq">Lstsq</a>
+## Lstsq
 ```JAVA
 INDArray Lstsq(INDArray matrix, INDArray rhs, double l2_reguralizer, boolean fast)
 
@@ -31,15 +30,12 @@ SDVariable Lstsq(String name, SDVariable matrix, SDVariable rhs, double l2_regur
 ```
 Solver for linear squares problems.
 
-* **matrix** - input tensor (NUMERIC type)
-* **rhs** - input tensor (NUMERIC type)
+* **matrix**  (NUMERIC type) - input tensor
+* **rhs**  (NUMERIC type) - input tensor
 * **l2_reguralizer** - regularizer
 * **fast** - fast mode, defaults to True - default = true
-* **matrix** - input tensor (NUMERIC type)
-* **rhs** - input tensor (NUMERIC type)
-* **l2_reguralizer** - regularizer
 
-## <a name="Lu">Lu</a>
+## Lu
 ```JAVA
 INDArray Lu(INDArray input)
 
@@ -48,9 +44,9 @@ SDVariable Lu(String name, SDVariable input)
 ```
 Computes LU decomposition.
 
-* **input** - input tensor (NUMERIC type)
+* **input**  (NUMERIC type) - input tensor
 
-## <a name="Matmul">Matmul</a>
+## Matmul
 ```JAVA
 INDArray Matmul(INDArray a, INDArray b)
 
@@ -59,10 +55,10 @@ SDVariable Matmul(String name, SDVariable a, SDVariable b)
 ```
 Performs matrix mutiplication on input tensors.
 
-* **a** - input tensor (NUMERIC type)
-* **b** - input tensor (NUMERIC type)
+* **a**  (NUMERIC type) - input tensor
+* **b**  (NUMERIC type) - input tensor
 
-## <a name="MatrixBandPart">MatrixBandPart</a>
+## MatrixBandPart
 ```JAVA
 INDArray[] MatrixBandPart(INDArray input, int minLower, int maxUpper)
 
@@ -71,11 +67,11 @@ SDVariable[] MatrixBandPart(String name, SDVariable input, int minLower, int max
 ```
 Copy a tensor setting outside a central band in each innermost matrix.
 
-* **input** - input tensor (NUMERIC type)
+* **input**  (NUMERIC type) - input tensor
 * **minLower** - lower diagonal count
 * **maxUpper** - upper diagonal count
 
-## <a name="Qr">Qr</a>
+## Qr
 ```JAVA
 INDArray[] Qr(INDArray input, boolean full)
 
@@ -88,11 +84,10 @@ SDVariable[] Qr(String name, SDVariable input)
 ```
 Computes the QR decompositions of input matrix.
 
-* **input** - input tensor (NUMERIC type)
+* **input**  (NUMERIC type) - input tensor
 * **full** - full matrices mode - default = false
-* **input** - input tensor (NUMERIC type)
 
-## <a name="Solve">Solve</a>
+## Solve
 ```JAVA
 INDArray Solve(INDArray matrix, INDArray rhs, boolean adjoint)
 
@@ -105,13 +100,11 @@ SDVariable Solve(String name, SDVariable matrix, SDVariable rhs)
 ```
 Solver for systems of linear equations.
 
-* **matrix** - input tensor (NUMERIC type)
-* **rhs** - input tensor (NUMERIC type)
+* **matrix**  (NUMERIC type) - input tensor
+* **rhs**  (NUMERIC type) - input tensor
 * **adjoint** - adjoint mode, defaults to False - default = false
-* **matrix** - input tensor (NUMERIC type)
-* **rhs** - input tensor (NUMERIC type)
 
-## <a name="TriangularSolve">TriangularSolve</a>
+## TriangularSolve
 ```JAVA
 INDArray TriangularSolve(INDArray matrix, INDArray rhs, boolean lower, boolean adjoint)
 
@@ -120,12 +113,12 @@ SDVariable TriangularSolve(String name, SDVariable matrix, SDVariable rhs, boole
 ```
 Solver for systems of linear questions.
 
-* **matrix** - input tensor (NUMERIC type)
-* **rhs** - input tensor (NUMERIC type)
+* **matrix**  (NUMERIC type) - input tensor
+* **rhs**  (NUMERIC type) - input tensor
 * **lower** - defines whether innermost matrices in matrix are lower or upper triangular
 * **adjoint** - adjoint mode
 
-## <a name="cross">cross</a>
+## cross
 ```JAVA
 INDArray cross(INDArray a, INDArray b)
 
@@ -134,10 +127,10 @@ SDVariable cross(String name, SDVariable a, SDVariable b)
 ```
 Computes pairwise cross product.
 
-* **a** -  (NUMERIC type)
-* **b** -  (NUMERIC type)
+* **a**  (NUMERIC type) - 
+* **b**  (NUMERIC type) - 
 
-## <a name="diag">diag</a>
+## diag
 ```JAVA
 INDArray diag(INDArray input)
 
@@ -146,9 +139,9 @@ SDVariable diag(String name, SDVariable input)
 ```
 Calculates diagonal tensor.
 
-* **input** -  (NUMERIC type)
+* **input**  (NUMERIC type) - 
 
-## <a name="diag_part">diag_part</a>
+## diag_part
 ```JAVA
 INDArray diag_part(INDArray input)
 
@@ -157,9 +150,9 @@ SDVariable diag_part(String name, SDVariable input)
 ```
 Calculates diagonal tensor.
 
-* **input** -  (NUMERIC type)
+* **input**  (NUMERIC type) - 
 
-## <a name="logdet">logdet</a>
+## logdet
 ```JAVA
 INDArray logdet(INDArray input)
 
@@ -168,9 +161,9 @@ SDVariable logdet(String name, SDVariable input)
 ```
 Calculates log of determinant.
 
-* **input** -  (NUMERIC type)
+* **input**  (NUMERIC type) - 
 
-## <a name="mmul">mmul</a>
+## mmul
 ```JAVA
 INDArray mmul(INDArray x, INDArray y, boolean transposeX, boolean transposeY, boolean transposeZ)
 
@@ -185,15 +178,13 @@ Matrix multiplication: out = mmul(x,y)
 
 Supports specifying transpose argument to perform operation such as mmul(a^T, b), etc.
 
-* **x** - First input variable (NUMERIC type)
-* **y** - Second input variable (NUMERIC type)
+* **x**  (NUMERIC type) - First input variable
+* **y**  (NUMERIC type) - Second input variable
 * **transposeX** - Transpose x (first argument) - default = false
 * **transposeY** - Transpose y (second argument) - default = false
 * **transposeZ** - Transpose result array - default = false
-* **x** - First input variable (NUMERIC type)
-* **y** - Second input variable (NUMERIC type)
 
-## <a name="svd">svd</a>
+## svd
 ```JAVA
 INDArray svd(INDArray input, boolean fullUV, boolean computeUV, int switchNum)
 
@@ -206,11 +197,8 @@ SDVariable svd(String name, SDVariable input, boolean fullUV, boolean computeUV)
 ```
 Calculates singular value decomposition.
 
-* **input** -  (NUMERIC type)
+* **input**  (NUMERIC type) - 
 * **fullUV** - 
 * **computeUV** - 
 * **switchNum** -  - default = 16
-* **input** -  (NUMERIC type)
-* **fullUV** - 
-* **computeUV** - 
 

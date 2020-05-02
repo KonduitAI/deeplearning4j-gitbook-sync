@@ -5,9 +5,8 @@ description:
 category: Operations
 weight: 70
 ---
-# BaseOps Namespace
 # Operation classes
-## <a name="all">all</a>
+## all
 ```JAVA
 INDArray all(INDArray x, int[] dimensions)
 
@@ -16,10 +15,10 @@ SDVariable all(String name, SDVariable x, int[] dimensions)
 ```
 Boolean and array reduction operation, optionally along specified dimensions
 
-* **x** - Input variable (BOOL type)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **x**  (BOOL type) - Input variable
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="any">any</a>
+## any
 ```JAVA
 INDArray any(INDArray x, int[] dimensions)
 
@@ -28,10 +27,10 @@ SDVariable any(String name, SDVariable x, int[] dimensions)
 ```
 Boolean or array reduction operation, optionally along specified dimensions
 
-* **x** -  Input variable (BOOL type)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **x**  (BOOL type) -  Input variable
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="argmax">argmax</a>
+## argmax
 ```JAVA
 INDArray argmax(INDArray in, boolean keepDims, int[] dimensions)
 
@@ -58,13 +57,11 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **in** - Input variable (NUMERIC type)
+* **in**  (NUMERIC type) - Input variable
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
-* **in** - Input variable (NUMERIC type)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="argmin">argmin</a>
+## argmin
 ```JAVA
 INDArray argmin(INDArray in, boolean keepDims, int[] dimensions)
 
@@ -95,13 +92,11 @@ Note: supports broadcasting if x and y have different shapes and are broadcastab
 
 For example, if X has shape [1,10] and Y has shape [5,10] then op(X,Y) has output shape [5,10]<br>
 Broadcast rules are the same as NumPy: https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html<br>
-* **in** - Input variable (NUMERIC type)
+* **in**  (NUMERIC type) - Input variable
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
-* **in** - Input variable (NUMERIC type)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="batchMmul">batchMmul</a>
+## batchMmul
 ```JAVA
 INDArray batchMmul(INDArray inputsA, INDArray inputsB, boolean transposeA, boolean transposeB)
 
@@ -126,14 +121,12 @@ The result of this operation will be a batch of multiplied matrices. The
 
 result has the same length as both input batches and each output matrix is of shape (M, K).
 
-* **inputsA** - First array of input matrices, all of shape (M, N) or (N, M) (NUMERIC type)
-* **inputsB** -  Second array of input matrices, all of shape (N, K) or (K, N) (NUMERIC type)
+* **inputsA**  (NUMERIC type) - First array of input matrices, all of shape (M, N) or (N, M)
+* **inputsB**  (NUMERIC type) -  Second array of input matrices, all of shape (N, K) or (K, N)
 * **transposeA** - Whether to transpose A arrays or not - default = false
 * **transposeB** - Whether to transpose B arrays or not - default = false
-* **inputsA** - First array of input matrices, all of shape (M, N) or (N, M) (NUMERIC type)
-* **inputsB** -  Second array of input matrices, all of shape (N, K) or (K, N) (NUMERIC type)
 
-## <a name="castTo">castTo</a>
+## castTo
 ```JAVA
 INDArray castTo(INDArray arg, DataType datatype)
 
@@ -142,10 +135,10 @@ SDVariable castTo(String name, SDVariable arg, DataType datatype)
 ```
 Cast the array to a new datatype - for example, Integer -> Float
 
-* **arg** - Input variable to cast (NDARRAY type)
+* **arg**  (NDARRAY type) - Input variable to cast
 * **datatype** - Datatype to cast to
 
-## <a name="concat">concat</a>
+## concat
 ```JAVA
 INDArray concat(INDArray inputs, int dimension)
 
@@ -158,10 +151,10 @@ Note that inputs must have identical rank and identical dimensions, other than t
 
 For example, if 2 inputs have shape [a, x, c] and [a, y, c] and dimension = 1, then the output has shape [a, x+y, c]
 
-* **inputs** - Input variables (NUMERIC type)
+* **inputs**  (NUMERIC type) - Input variables
 * **dimension** - Dimension to concatenate on
 
-## <a name="cumprod">cumprod</a>
+## cumprod
 ```JAVA
 INDArray cumprod(INDArray in, boolean exclusive, boolean reverse, int[] axis)
 
@@ -184,14 +177,12 @@ exclusive=false, reverse=true: [a*b*c, b*c, c]
 
 exclusive=true, reverse=true: [b*c, c, 0]
 
-* **in** - Input variable (NUMERIC type)
+* **in**  (NUMERIC type) - Input variable
 * **exclusive** - If true: exclude the first value - default = false
 * **reverse** - If true: reverse the direction of the accumulation - default = false
-* **axis** - Scalar axis argument for dimension to perform cumululative sum operations along (Size: AtLeast(min=1)
-* **in** - Input variable (NUMERIC type)
-* **axis** - Scalar axis argument for dimension to perform cumululative sum operations along (Size: AtLeast(min=1)
+* **axis** - Scalar axis argument for dimension to perform cumululative sum operations along (Size: AtLeast(min=1))
 
-## <a name="cumsum">cumsum</a>
+## cumsum
 ```JAVA
 INDArray cumsum(INDArray in, boolean exclusive, boolean reverse, int[] axis)
 
@@ -214,14 +205,12 @@ exclusive=false, reverse=true: [a+b+c, b+c, c]
 
 exclusive=true, reverse=true: [b+c, c, 0]
 
-* **in** - Input variable (NUMERIC type)
+* **in**  (NUMERIC type) - Input variable
 * **exclusive** - If true: exclude the first value - default = false
 * **reverse** - If true: reverse the direction of the accumulation - default = false
-* **axis** - Scalar axis argument for dimension to perform cumululative sum operations along (Size: AtLeast(min=1)
-* **in** - Input variable (NUMERIC type)
-* **axis** - Scalar axis argument for dimension to perform cumululative sum operations along (Size: AtLeast(min=1)
+* **axis** - Scalar axis argument for dimension to perform cumululative sum operations along (Size: AtLeast(min=1))
 
-## <a name="dot">dot</a>
+## dot
 ```JAVA
 INDArray dot(INDArray x, INDArray y, int[] dimensions)
 
@@ -232,11 +221,11 @@ Pairwise dot product reduction along dimension
 
 output = sum(i=0 ... size(dim)-1) x[i] * y[i]
 
-* **x** - first input (NUMERIC type)
-* **y** - second input (NUMERIC type)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **x**  (NUMERIC type) - first input
+* **y**  (NUMERIC type) - second input
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="dynamicPartition">dynamicPartition</a>
+## dynamicPartition
 ```JAVA
 INDArray dynamicPartition(INDArray x, INDArray partitions, int numPartitions)
 
@@ -261,11 +250,11 @@ out[1] = [1,4] `
 
 </pre>
 
-* **x** - Input variable (NUMERIC type)
-* **partitions** - 1D input with values 0 to numPartitions-1 (INT type)
+* **x**  (NUMERIC type) - Input variable
+* **partitions**  (INT type) - 1D input with values 0 to numPartitions-1
 * **numPartitions** - Number of partitions, >= 1
 
-## <a name="dynamicStitch">dynamicStitch</a>
+## dynamicStitch
 ```JAVA
 INDArray dynamicStitch(INDArray indices, INDArray x)
 
@@ -274,10 +263,10 @@ SDVariable dynamicStitch(String name, SDVariable indices, SDVariable x)
 ```
 Dynamically merge the specified input arrays into a single array, using the specified indices
 
-* **indices** - Indices to use when merging. Must be >= 1, same length as input variables (INT type)
-* **x** - Input variables. (NUMERIC type)
+* **indices**  (INT type) - Indices to use when merging. Must be >= 1, same length as input variables
+* **x**  (NUMERIC type) - Input variables.
 
-## <a name="eq">eq</a>
+## eq
 ```JAVA
 INDArray eq(INDArray x, double y)
 
@@ -288,10 +277,10 @@ Equals operation: elementwise x == y
 
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x** - Input array (NUMERIC type)
+* **x**  (NUMERIC type) - Input array
 * **y** - Double value argument to use in operation
 
-## <a name="eq">eq</a>
+## eq
 ```JAVA
 INDArray eq(INDArray x, INDArray y)
 
@@ -308,10 +297,10 @@ For example, if X has shape [1,10] and Y has shape [5,10] then op(X,Y) has outpu
 Broadcast rules are the same as NumPy: https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html<br>
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x** - Input 1 (NUMERIC type)
-* **y** - Input 2 (NUMERIC type)
+* **x**  (NUMERIC type) - Input 1
+* **y**  (NUMERIC type) - Input 2
 
-## <a name="expandDims">expandDims</a>
+## expandDims
 ```JAVA
 INDArray expandDims(INDArray x, int axis)
 
@@ -328,10 +317,10 @@ axis = 1: [a, 1, b]
 
 axis = 2: [a, b, 1]
 
-* **x** - Input variable (NDARRAY type)
+* **x**  (NDARRAY type) - Input variable
 * **axis** - Axis to expand
 
-## <a name="fill">fill</a>
+## fill
 ```JAVA
 INDArray fill(INDArray shape, DataType dataType, double value)
 
@@ -340,11 +329,11 @@ SDVariable fill(String name, SDVariable shape, DataType dataType, double value)
 ```
 Generate an output variable with the specified (dynamic) shape with all elements set to the specified value
 
-* **shape** - Shape: must be a 1D array/variable (INT type)
+* **shape**  (INT type) - Shape: must be a 1D array/variable
 * **dataType** - Datatype of the output array
 * **value** - Value to set all elements to
 
-## <a name="gather">gather</a>
+## gather
 ```JAVA
 INDArray gather(INDArray df, int[] indices, int axis)
 
@@ -355,11 +344,11 @@ Gather slices from the input variable where the indices are specified as fixed i
 
 Output shape is same as input shape, except for axis dimension, which has size equal to indices.length.
 
-* **df** - Input variable (NUMERIC type)
-* **indices** - Indices to get (Size: AtLeast(min=1)
+* **df**  (NUMERIC type) - Input variable
+* **indices** - Indices to get (Size: AtLeast(min=1))
 * **axis** - Axis that the indices refer to
 
-## <a name="gather">gather</a>
+## gather
 ```JAVA
 INDArray gather(INDArray df, INDArray indices, int axis)
 
@@ -370,11 +359,11 @@ Gather slices from the input variable where the indices are specified as dynamic
 
 Output shape is same as input shape, except for axis dimension, which has size equal to indices.length.
 
-* **df** - Input variable (NUMERIC type)
-* **indices** - Indices to get slices for. Rank 0 or 1 input (INT type)
+* **df**  (NUMERIC type) - Input variable
+* **indices**  (INT type) - Indices to get slices for. Rank 0 or 1 input
 * **axis** - Axis that the indices refer to
 
-## <a name="gatherNd">gatherNd</a>
+## gatherNd
 ```JAVA
 INDArray gatherNd(INDArray df, INDArray indices)
 
@@ -383,10 +372,10 @@ SDVariable gatherNd(String name, SDVariable df, SDVariable indices)
 ```
 Gather slices from df with shape specified by indices. 
 
-* **df** -  (NUMERIC type)
-* **indices** -  (NUMERIC type)
+* **df**  (NUMERIC type) - 
+* **indices**  (NUMERIC type) - 
 
-## <a name="gt">gt</a>
+## gt
 ```JAVA
 INDArray gt(INDArray x, double y)
 
@@ -397,10 +386,10 @@ Greater than operation: elementwise x > y
 
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x** - Input array (NUMERIC type)
+* **x**  (NUMERIC type) - Input array
 * **y** - Double value argument to use in operation
 
-## <a name="gt">gt</a>
+## gt
 ```JAVA
 INDArray gt(INDArray x, INDArray y)
 
@@ -417,10 +406,10 @@ For example, if X has shape [1,10] and Y has shape [5,10] then op(X,Y) has outpu
 Broadcast rules are the same as NumPy: https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html<br>
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x** - Input 1 (NUMERIC type)
-* **y** - Input 2 (NUMERIC type)
+* **x**  (NUMERIC type) - Input 1
+* **y**  (NUMERIC type) - Input 2
 
-## <a name="gte">gte</a>
+## gte
 ```JAVA
 INDArray gte(INDArray x, double y)
 
@@ -431,10 +420,10 @@ Greater than or equals operation: elementwise x >= y
 
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x** - Input array (NUMERIC type)
+* **x**  (NUMERIC type) - Input array
 * **y** - Double value argument to use in operation
 
-## <a name="gte">gte</a>
+## gte
 ```JAVA
 INDArray gte(INDArray x, INDArray y)
 
@@ -451,10 +440,10 @@ For example, if X has shape [1,10] and Y has shape [5,10] then op(X,Y) has outpu
 Broadcast rules are the same as NumPy: https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html<br>
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x** - Input 1 (NUMERIC type)
-* **y** - Input 2 (NUMERIC type)
+* **x**  (NUMERIC type) - Input 1
+* **y**  (NUMERIC type) - Input 2
 
-## <a name="identity">identity</a>
+## identity
 ```JAVA
 INDArray identity(INDArray input)
 
@@ -463,9 +452,9 @@ SDVariable identity(String name, SDVariable input)
 ```
 Elementwise identity operation: out = x
 
-* **input** - Input variable (NUMERIC type)
+* **input**  (NUMERIC type) - Input variable
 
-## <a name="invertPermutation">invertPermutation</a>
+## invertPermutation
 ```JAVA
 INDArray invertPermutation(INDArray input)
 
@@ -478,9 +467,9 @@ Example: if input is [2, 0, 1] then output is [1, 2, 0]
 
 The idea is that x.permute(input).permute(invertPermutation(input)) == x
 
-* **input** - 1D indices for permutation (INT type)
+* **input**  (INT type) - 1D indices for permutation
 
-## <a name="isNumericTensor">isNumericTensor</a>
+## isNumericTensor
 ```JAVA
 INDArray isNumericTensor(INDArray x)
 
@@ -489,9 +478,9 @@ SDVariable isNumericTensor(String name, SDVariable x)
 ```
 Is the director a numeric tensor? In the current version of ND4J/SameDiff, this always returns true/1
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 
-## <a name="linspace">linspace</a>
+## linspace
 ```JAVA
 INDArray linspace(DataType dataType, double start, double stop, long number)
 
@@ -507,7 +496,7 @@ For example, linspace(start=3.0, stop=4.0, number=3) will generate [3.0, 3.5, 4.
 * **stop** - Stop value
 * **number** - Number of values to generate
 
-## <a name="linspace">linspace</a>
+## linspace
 ```JAVA
 INDArray linspace(INDArray start, INDArray stop, INDArray number, DataType dataType)
 
@@ -518,12 +507,12 @@ Create a new 1d array with values evenly spaced between values 'start' and 'stop
 
 For example, linspace(start=3.0, stop=4.0, number=3) will generate [3.0, 3.5, 4.0]
 
-* **start** - Start value (NUMERIC type)
-* **stop** - Stop value (NUMERIC type)
-* **number** - Number of values to generate (LONG type)
+* **start**  (NUMERIC type) - Start value
+* **stop**  (NUMERIC type) - Stop value
+* **number**  (LONG type) - Number of values to generate
 * **dataType** - Data type of the output array
 
-## <a name="lt">lt</a>
+## lt
 ```JAVA
 INDArray lt(INDArray x, double y)
 
@@ -534,10 +523,10 @@ Less than operation: elementwise x < y
 
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x** - Input array (NUMERIC type)
+* **x**  (NUMERIC type) - Input array
 * **y** - Double value argument to use in operation
 
-## <a name="lt">lt</a>
+## lt
 ```JAVA
 INDArray lt(INDArray x, INDArray y)
 
@@ -554,10 +543,10 @@ For example, if X has shape [1,10] and Y has shape [5,10] then op(X,Y) has outpu
 Broadcast rules are the same as NumPy: https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html<br>
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x** - Input 1 (NUMERIC type)
-* **y** - Input 2 (NUMERIC type)
+* **x**  (NUMERIC type) - Input 1
+* **y**  (NUMERIC type) - Input 2
 
-## <a name="lte">lte</a>
+## lte
 ```JAVA
 INDArray lte(INDArray x, double y)
 
@@ -568,10 +557,10 @@ Less than or equals operation: elementwise x <= y
 
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x** - Input array (NUMERIC type)
+* **x**  (NUMERIC type) - Input array
 * **y** - Double value argument to use in operation
 
-## <a name="lte">lte</a>
+## lte
 ```JAVA
 INDArray lte(INDArray x, INDArray y)
 
@@ -588,10 +577,10 @@ For example, if X has shape [1,10] and Y has shape [5,10] then op(X,Y) has outpu
 Broadcast rules are the same as NumPy: https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html<br>
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x** - Input 1 (NUMERIC type)
-* **y** - Input 2 (NUMERIC type)
+* **x**  (NUMERIC type) - Input 1
+* **y**  (NUMERIC type) - Input 2
 
-## <a name="matchCondition">matchCondition</a>
+## matchCondition
 ```JAVA
 INDArray matchCondition(INDArray in, Condition condition)
 
@@ -600,10 +589,10 @@ SDVariable matchCondition(String name, SDVariable in, Condition condition)
 ```
 Returns a boolean mask of equal shape to the input, where the condition is satisfied - value 1 where satisfied, 0 otherwise
 
-* **in** - Input (NUMERIC type)
+* **in**  (NUMERIC type) - Input
 * **condition** - Condition
 
-## <a name="matchConditionCount">matchConditionCount</a>
+## matchConditionCount
 ```JAVA
 INDArray matchConditionCount(INDArray in, Condition condition)
 
@@ -612,10 +601,10 @@ SDVariable matchConditionCount(String name, SDVariable in, Condition condition)
 ```
 Returns a count of the number of elements that satisfy the condition
 
-* **in** - Input (NUMERIC type)
+* **in**  (NUMERIC type) - Input
 * **condition** - Condition
 
-## <a name="matchConditionCount">matchConditionCount</a>
+## matchConditionCount
 ```JAVA
 INDArray matchConditionCount(INDArray in, Condition condition, boolean keepDim, int[] dimensions)
 
@@ -640,15 +629,12 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **in** - Input variable (NUMERIC type)
+* **in**  (NUMERIC type) - Input variable
 * **condition** - Condition
 * **keepDim** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
-* **in** - Input variable (NUMERIC type)
-* **condition** - Condition
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="max">max</a>
+## max
 ```JAVA
 INDArray max(INDArray x, boolean keepDims, int[] dimensions)
 
@@ -673,13 +659,11 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
-* **x** - Input variable (NUMERIC type)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="max">max</a>
+## max
 ```JAVA
 INDArray max(INDArray first, INDArray second)
 
@@ -692,10 +676,10 @@ Note: supports broadcasting if x and y have different shapes and are broadcastab
 
 For example, if X has shape [1,10] and Y has shape [5,10] then op(X,Y) has output shape [5,10]<br>
 Broadcast rules are the same as NumPy: https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html<br>
-* **first** - First input array (NUMERIC type)
-* **second** - Second input array (NUMERIC type)
+* **first**  (NUMERIC type) - First input array
+* **second**  (NUMERIC type) - Second input array
 
-## <a name="mean">mean</a>
+## mean
 ```JAVA
 INDArray mean(INDArray x, boolean keepDims, int[] dimensions)
 
@@ -720,13 +704,11 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
-* **x** - Input variable (NUMERIC type)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="min">min</a>
+## min
 ```JAVA
 INDArray min(INDArray x, boolean keepDims, int[] dimensions)
 
@@ -751,13 +733,11 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
-* **x** - Input variable (NUMERIC type)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="min">min</a>
+## min
 ```JAVA
 INDArray min(INDArray first, INDArray second)
 
@@ -770,10 +750,10 @@ Note: supports broadcasting if x and y have different shapes and are broadcastab
 
 For example, if X has shape [1,10] and Y has shape [5,10] then op(X,Y) has output shape [5,10]<br>
 Broadcast rules are the same as NumPy: https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html<br>
-* **first** - First input array (NUMERIC type)
-* **second** - Second input array (NUMERIC type)
+* **first**  (NUMERIC type) - First input array
+* **second**  (NUMERIC type) - Second input array
 
-## <a name="mmul">mmul</a>
+## mmul
 ```JAVA
 INDArray mmul(INDArray x, INDArray y, boolean transposeX, boolean transposeY, boolean transposeZ)
 
@@ -788,15 +768,13 @@ Matrix multiplication: out = mmul(x,y)
 
 Supports specifying transpose argument to perform operation such as mmul(a^T, b), etc.
 
-* **x** - First input variable (NUMERIC type)
-* **y** - Second input variable (NUMERIC type)
+* **x**  (NUMERIC type) - First input variable
+* **y**  (NUMERIC type) - Second input variable
 * **transposeX** - Transpose x (first argument) - default = false
 * **transposeY** - Transpose y (second argument) - default = false
 * **transposeZ** - Transpose result array - default = false
-* **x** - First input variable (NUMERIC type)
-* **y** - Second input variable (NUMERIC type)
 
-## <a name="neq">neq</a>
+## neq
 ```JAVA
 INDArray neq(INDArray x, double y)
 
@@ -807,10 +785,10 @@ Not equals operation: elementwise x != y
 
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x** - Input array (NUMERIC type)
+* **x**  (NUMERIC type) - Input array
 * **y** - Double value argument to use in operation
 
-## <a name="neq">neq</a>
+## neq
 ```JAVA
 INDArray neq(INDArray x, INDArray y)
 
@@ -827,10 +805,10 @@ For example, if X has shape [1,10] and Y has shape [5,10] then op(X,Y) has outpu
 Broadcast rules are the same as NumPy: https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html<br>
 Return boolean array with values true where satisfied, or false otherwise.
 
-* **x** - Input 1 (NUMERIC type)
-* **y** - Input 2 (NUMERIC type)
+* **x**  (NUMERIC type) - Input 1
+* **y**  (NUMERIC type) - Input 2
 
-## <a name="norm1">norm1</a>
+## norm1
 ```JAVA
 INDArray norm1(INDArray x, boolean keepDims, int[] dimensions)
 
@@ -857,13 +835,11 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
-* **dimensions** - dimensions to reduce over (Size: AtLeast(min=0)
-* **x** - Input variable (NUMERIC type)
-* **dimensions** - dimensions to reduce over (Size: AtLeast(min=0)
+* **dimensions** - dimensions to reduce over (Size: AtLeast(min=0))
 
-## <a name="norm2">norm2</a>
+## norm2
 ```JAVA
 INDArray norm2(INDArray x, boolean keepDims, int[] dimensions)
 
@@ -890,13 +866,11 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
-* **dimensions** - dimensions dimensions to reduce over (Size: AtLeast(min=0)
-* **x** - Input variable (NUMERIC type)
-* **dimensions** - dimensions dimensions to reduce over (Size: AtLeast(min=0)
+* **dimensions** - dimensions dimensions to reduce over (Size: AtLeast(min=0))
 
-## <a name="normmax">normmax</a>
+## normmax
 ```JAVA
 INDArray normmax(INDArray x, boolean keepDims, int[] dimensions)
 
@@ -925,13 +899,11 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
-* **dimensions** - dimensions to reduce over (Size: AtLeast(min=0)
-* **x** - Input variable (NUMERIC type)
-* **dimensions** - dimensions to reduce over (Size: AtLeast(min=0)
+* **dimensions** - dimensions to reduce over (Size: AtLeast(min=0))
 
-## <a name="oneHot">oneHot</a>
+## oneHot
 ```JAVA
 INDArray oneHot(INDArray indices, int depth, int axis, double on, double off, DataType dataType)
 
@@ -948,19 +920,14 @@ If input has shape [ a, ..., n] then output has shape [ a, ..., n, depth],
 
 with {out[i, ..., j, in[i,...,j]]  with other values being set to
 
-* **indices** - Indices - value 0 to depth-1 (NUMERIC type)
+* **indices**  (NUMERIC type) - Indices - value 0 to depth-1
 * **depth** - Number of classes
 * **axis** - 
 * **on** - 
 * **off** - 
 * **dataType** - Output data type - default = DataType.FLOAT
-* **indices** - Indices - value 0 to depth-1 (NUMERIC type)
-* **depth** - Number of classes
-* **axis** - 
-* **on** - 
-* **off** - 
 
-## <a name="oneHot">oneHot</a>
+## oneHot
 ```JAVA
 INDArray oneHot(INDArray indices, int depth)
 
@@ -975,10 +942,10 @@ with out[i, ..., j, in[i,...,j]] = 1 with other values being set to 0
 
 see oneHot(SDVariable, int, int, double, double)
 
-* **indices** - Indices - value 0 to depth-1 (NUMERIC type)
+* **indices**  (NUMERIC type) - Indices - value 0 to depth-1
 * **depth** - Number of classes
 
-## <a name="onesLike">onesLike</a>
+## onesLike
 ```JAVA
 INDArray onesLike(INDArray input)
 
@@ -989,9 +956,9 @@ Return a variable of all 1s, with the same shape as the input variable. Note tha
 
 if the input shape changes in later execution, the returned variable's shape will also be updated
 
-* **input** - Input INDArray  (NUMERIC type)
+* **input**  (NUMERIC type) - Input INDArray 
 
-## <a name="onesLike">onesLike</a>
+## onesLike
 ```JAVA
 INDArray onesLike(INDArray input, DataType dataType)
 
@@ -1000,10 +967,10 @@ SDVariable onesLike(String name, SDVariable input, DataType dataType)
 ```
 As per onesLike(String, SDVariable) but the output datatype may be specified
 
-* **input** -  (NUMERIC type)
+* **input**  (NUMERIC type) - 
 * **dataType** - 
 
-## <a name="permute">permute</a>
+## permute
 ```JAVA
 INDArray permute(INDArray x, INDArray dimensions)
 
@@ -1014,10 +981,10 @@ Array permutation operation: permute the dimensions according to the specified p
 
 Example: if input has shape [a,b,c] and dimensions = [2,0,1] the output has shape [c,a,b]
 
-* **x** - Input variable (NUMERIC type)
-* **dimensions** - Permute dimensions (INT type)
+* **x**  (NUMERIC type) - Input variable
+* **dimensions**  (INT type) - Permute dimensions
 
-## <a name="permute">permute</a>
+## permute
 ```JAVA
 INDArray permute(INDArray x, int[] dimensions)
 
@@ -1028,10 +995,10 @@ Array permutation operation: permute the dimensions according to the specified p
 
 Example: if input has shape [a,b,c] and dimensions = [2,0,1] the output has shape [c,a,b]
 
-* **x** - Input variable (NUMERIC type)
-* **dimensions** -  (Size: AtLeast(min=0)
+* **x**  (NUMERIC type) - Input variable
+* **dimensions** -  (Size: AtLeast(min=0))
 
-## <a name="prod">prod</a>
+## prod
 ```JAVA
 INDArray prod(INDArray x, boolean keepDims, int[] dimensions)
 
@@ -1056,13 +1023,11 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
-* **x** - Input variable (NUMERIC type)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="range">range</a>
+## range
 ```JAVA
 INDArray range(double from, double to, double step, DataType dataType)
 
@@ -1080,7 +1045,7 @@ For example, range(1.0, 3.0, 0.5) will return [1.0, 1.5, 2.0, 2.5]
 * **step** - Step size
 * **dataType** - 
 
-## <a name="range">range</a>
+## range
 ```JAVA
 INDArray range(INDArray from, INDArray to, INDArray step, DataType dataType)
 
@@ -1093,12 +1058,12 @@ up to (but not including) limit.
 
 For example, range(1.0, 3.0, 0.5) will return [1.0, 1.5, 2.0, 2.5]
 
-* **from** - Initial/smallest value (NUMERIC type)
-* **to** - Largest value (exclusive) (NUMERIC type)
-* **step** - Step size (NUMERIC type)
+* **from**  (NUMERIC type) - Initial/smallest value
+* **to**  (NUMERIC type) - Largest value (exclusive)
+* **step**  (NUMERIC type) - Step size
 * **dataType** - 
 
-## <a name="rank">rank</a>
+## rank
 ```JAVA
 INDArray rank(INDArray in)
 
@@ -1107,9 +1072,9 @@ SDVariable rank(String name, SDVariable in)
 ```
 Returns the rank (number of dimensions, i.e., length(shape)) of the specified INDArray  as a 0D scalar variable
 
-* **in** - Input variable (NUMERIC type)
+* **in**  (NUMERIC type) - Input variable
 
-## <a name="replaceWhere">replaceWhere</a>
+## replaceWhere
 ```JAVA
 INDArray replaceWhere(INDArray update, INDArray from, Condition condition)
 
@@ -1122,11 +1087,11 @@ out[i] = from[i] if condition(update[i]) is satisfied, or
 
 out[i] = update[i] if condition(update[i]) is NOT satisfied
 
-* **update** - Source array (NUMERIC type)
-* **from** - Replacement values array (used conditionally). Must be same shape as 'update' array (NUMERIC type)
+* **update**  (NUMERIC type) - Source array
+* **from**  (NUMERIC type) - Replacement values array (used conditionally). Must be same shape as 'update' array
 * **condition** - Condition to check on update array elements
 
-## <a name="replaceWhere">replaceWhere</a>
+## replaceWhere
 ```JAVA
 INDArray replaceWhere(INDArray update, double value, Condition condition)
 
@@ -1139,11 +1104,11 @@ out[i] = value if condition(update[i]) is satisfied, or
 
 out[i] = update[i] if condition(update[i]) is NOT satisfied
 
-* **update** - Source array (NUMERIC type)
+* **update**  (NUMERIC type) - Source array
 * **value** - Value to set at the output, if the condition is satisfied
 * **condition** - Condition to check on update array elements
 
-## <a name="reshape">reshape</a>
+## reshape
 ```JAVA
 INDArray reshape(INDArray x, INDArray shape)
 
@@ -1156,10 +1121,10 @@ input, but with the specified shape.
 
 Note that prod(shape) must match length(input) == prod(input.shape)
 
-* **x** - Input variable (NUMERIC type)
-* **shape** - New shape for variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
+* **shape**  (NUMERIC type) - New shape for variable
 
-## <a name="reshape">reshape</a>
+## reshape
 ```JAVA
 INDArray reshape(INDArray x, long[] shape)
 
@@ -1172,10 +1137,10 @@ input, but with the specified shape.
 
 Note that prod(shape) must match length(input) == prod(input.shape)
 
-* **x** - Input variable (NUMERIC type)
-* **shape** - New shape for variable (Size: AtLeast(min=0)
+* **x**  (NUMERIC type) - Input variable
+* **shape** - New shape for variable (Size: AtLeast(min=0))
 
-## <a name="reverse">reverse</a>
+## reverse
 ```JAVA
 INDArray reverse(INDArray x, int[] dimensions)
 
@@ -1204,10 +1169,10 @@ reverse(in, 1):
 
 [1, 2 3]
 
-* **x** - Input variable (NUMERIC type)
-* **dimensions** - Input variable (Size: AtLeast(min=0)
+* **x**  (NUMERIC type) - Input variable
+* **dimensions** - Input variable (Size: AtLeast(min=0))
 
-## <a name="reverseSequence">reverseSequence</a>
+## reverseSequence
 ```JAVA
 INDArray reverseSequence(INDArray x, INDArray seq_lengths, int seqDim, int batchDim)
 
@@ -1220,14 +1185,12 @@ SDVariable reverseSequence(String name, SDVariable x, SDVariable seq_lengths)
 ```
 Reverse sequence op: for each slice along dimension seqDimension, the first seqLength values are reversed
 
-* **x** - Input variable (NUMERIC type)
-* **seq_lengths** - Length of the sequences (INT type)
+* **x**  (NUMERIC type) - Input variable
+* **seq_lengths**  (INT type) - Length of the sequences
 * **seqDim** - Sequence dimension - default = -1
 * **batchDim** - Batch dimension - default = 0
-* **x** - Input variable (NUMERIC type)
-* **seq_lengths** - Length of the sequences (INT type)
 
-## <a name="scalarFloorMod">scalarFloorMod</a>
+## scalarFloorMod
 ```JAVA
 INDArray scalarFloorMod(INDArray in, double value)
 
@@ -1238,10 +1201,10 @@ Element-wise scalar floor modulus operation: out = floorMod(in, value).
 
 i.e., returns the remainder after division by 'value'
 
-* **in** - Input variable (NUMERIC type)
+* **in**  (NUMERIC type) - Input variable
 * **value** - Scalar value to compare
 
-## <a name="scalarMax">scalarMax</a>
+## scalarMax
 ```JAVA
 INDArray scalarMax(INDArray in, double value)
 
@@ -1250,10 +1213,10 @@ SDVariable scalarMax(String name, SDVariable in, double value)
 ```
 Element-wise scalar maximum operation: out = max(in, value)
 
-* **in** - Input variable (NUMERIC type)
+* **in**  (NUMERIC type) - Input variable
 * **value** - Scalar value to compare
 
-## <a name="scalarMin">scalarMin</a>
+## scalarMin
 ```JAVA
 INDArray scalarMin(INDArray in, double value)
 
@@ -1262,10 +1225,10 @@ SDVariable scalarMin(String name, SDVariable in, double value)
 ```
 Element-wise scalar minimum operation: out = min(in, value)
 
-* **in** - Input variable (NUMERIC type)
+* **in**  (NUMERIC type) - Input variable
 * **value** - Scalar value to compare
 
-## <a name="scalarSet">scalarSet</a>
+## scalarSet
 ```JAVA
 INDArray scalarSet(INDArray in, double set)
 
@@ -1274,10 +1237,10 @@ SDVariable scalarSet(String name, SDVariable in, double set)
 ```
 Return a variable with equal shape to the input, but all elements set to value 'set'
 
-* **in** - Input variable (NUMERIC type)
+* **in**  (NUMERIC type) - Input variable
 * **set** - Value to set
 
-## <a name="scatterAdd">scatterAdd</a>
+## scatterAdd
 ```JAVA
 INDArray scatterAdd(INDArray ref, INDArray indices, INDArray updates)
 
@@ -1294,11 +1257,11 @@ If indices is rank 2+, then for each position (i,...,k), out[indices[i], ..., in
 
 Note that if multiple indices refer to the same location, the contributions from each is handled correctly. 
 
-* **ref** - Initial/source variable (NUMERIC type)
-* **indices** - Indices array (NUMERIC type)
-* **updates** - Updates to add to the initial/source array (NUMERIC type)
+* **ref**  (NUMERIC type) - Initial/source variable
+* **indices**  (NUMERIC type) - Indices array
+* **updates**  (NUMERIC type) - Updates to add to the initial/source array
 
-## <a name="scatterDiv">scatterDiv</a>
+## scatterDiv
 ```JAVA
 INDArray scatterDiv(INDArray ref, INDArray indices, INDArray updates)
 
@@ -1315,11 +1278,11 @@ If indices is rank 2+, then for each position (i,...,k), out[indices[i], ..., in
 
 Note that if multiple indices refer to the same location, the contributions from each is handled correctly. 
 
-* **ref** - Initial/source variable (NUMERIC type)
-* **indices** - Indices array (NUMERIC type)
-* **updates** - Updates to add to the initial/source array (NUMERIC type)
+* **ref**  (NUMERIC type) - Initial/source variable
+* **indices**  (NUMERIC type) - Indices array
+* **updates**  (NUMERIC type) - Updates to add to the initial/source array
 
-## <a name="scatterMax">scatterMax</a>
+## scatterMax
 ```JAVA
 INDArray scatterMax(INDArray ref, INDArray indices, INDArray updates)
 
@@ -1336,11 +1299,11 @@ If indices is rank 2+, then for each position (i,...,k), out[indices[i], ..., in
 
 Note that if multiple indices refer to the same location, the contributions from each is handled correctly. 
 
-* **ref** - Initial/source variable (NUMERIC type)
-* **indices** - Indices array (NUMERIC type)
-* **updates** - Updates to add to the initial/source array (NUMERIC type)
+* **ref**  (NUMERIC type) - Initial/source variable
+* **indices**  (NUMERIC type) - Indices array
+* **updates**  (NUMERIC type) - Updates to add to the initial/source array
 
-## <a name="scatterMin">scatterMin</a>
+## scatterMin
 ```JAVA
 INDArray scatterMin(INDArray ref, INDArray indices, INDArray updates)
 
@@ -1357,11 +1320,11 @@ If indices is rank 2+, then for each position (i,...,k), out[indices[i], ..., in
 
 Note that if multiple indices refer to the same location, the contributions from each is handled correctly. 
 
-* **ref** - Initial/source variable (NUMERIC type)
-* **indices** - Indices array (NUMERIC type)
-* **updates** - Updates to add to the initial/source array (NUMERIC type)
+* **ref**  (NUMERIC type) - Initial/source variable
+* **indices**  (NUMERIC type) - Indices array
+* **updates**  (NUMERIC type) - Updates to add to the initial/source array
 
-## <a name="scatterMul">scatterMul</a>
+## scatterMul
 ```JAVA
 INDArray scatterMul(INDArray ref, INDArray indices, INDArray updates)
 
@@ -1378,11 +1341,11 @@ If indices is rank 2+, then for each position (i,...,k), out[indices[i], ..., in
 
 Note that if multiple indices refer to the same location, the contributions from each is handled correctly. 
 
-* **ref** - Initial/source variable (NUMERIC type)
-* **indices** - Indices array (NUMERIC type)
-* **updates** - Updates to add to the initial/source array (NUMERIC type)
+* **ref**  (NUMERIC type) - Initial/source variable
+* **indices**  (NUMERIC type) - Indices array
+* **updates**  (NUMERIC type) - Updates to add to the initial/source array
 
-## <a name="scatterSub">scatterSub</a>
+## scatterSub
 ```JAVA
 INDArray scatterSub(INDArray ref, INDArray indices, INDArray updates)
 
@@ -1399,11 +1362,11 @@ If indices is rank 2+, then for each position (i,...,k), out[indices[i], ..., in
 
 Note that if multiple indices refer to the same location, the contributions from each is handled correctly. 
 
-* **ref** - Initial/source variable (NUMERIC type)
-* **indices** - Indices array (NUMERIC type)
-* **updates** - Updates to add to the initial/source array (NUMERIC type)
+* **ref**  (NUMERIC type) - Initial/source variable
+* **indices**  (NUMERIC type) - Indices array
+* **updates**  (NUMERIC type) - Updates to add to the initial/source array
 
-## <a name="scatterUpdate">scatterUpdate</a>
+## scatterUpdate
 ```JAVA
 INDArray scatterUpdate(INDArray ref, INDArray indices, INDArray updates)
 
@@ -1420,11 +1383,11 @@ If indices is rank 2+, then for each position (i,...,k), out[indices[i], ..., in
 
 Note that if multiple indices refer to the same location, the contributions from each is handled correctly. 
 
-* **ref** - Initial/source variable (NUMERIC type)
-* **indices** - Indices array (NUMERIC type)
-* **updates** - Updates to add to the initial/source array (NUMERIC type)
+* **ref**  (NUMERIC type) - Initial/source variable
+* **indices**  (NUMERIC type) - Indices array
+* **updates**  (NUMERIC type) - Updates to add to the initial/source array
 
-## <a name="segmentMax">segmentMax</a>
+## segmentMax
 ```JAVA
 INDArray segmentMax(INDArray data, INDArray segmentIds)
 
@@ -1445,10 +1408,10 @@ See {unsortedSegment (String, SDVariable, SDVariable, int) ops
 
 for the same op without this sorted requirement
 
-* **data** - Data to perform segment max on (NDARRAY type)
-* **segmentIds** - Variable for the segment IDs (NUMERIC type)
+* **data**  (NDARRAY type) - Data to perform segment max on
+* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
 
-## <a name="segmentMean">segmentMean</a>
+## segmentMean
 ```JAVA
 INDArray segmentMean(INDArray data, INDArray segmentIds)
 
@@ -1469,10 +1432,10 @@ See {unsortedSegment (String, SDVariable, SDVariable, int) ops
 
 for the same op without this sorted requirement
 
-* **data** - Data to perform segment max on (NDARRAY type)
-* **segmentIds** - Variable for the segment IDs (NUMERIC type)
+* **data**  (NDARRAY type) - Data to perform segment max on
+* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
 
-## <a name="segmentMin">segmentMin</a>
+## segmentMin
 ```JAVA
 INDArray segmentMin(INDArray data, INDArray segmentIds)
 
@@ -1493,10 +1456,10 @@ See {unsortedSegment (String, SDVariable, SDVariable, int) ops
 
 for the same op without this sorted requirement
 
-* **data** - Data to perform segment max on (NDARRAY type)
-* **segmentIds** - Variable for the segment IDs (NUMERIC type)
+* **data**  (NDARRAY type) - Data to perform segment max on
+* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
 
-## <a name="segmentProd">segmentProd</a>
+## segmentProd
 ```JAVA
 INDArray segmentProd(INDArray data, INDArray segmentIds)
 
@@ -1517,10 +1480,10 @@ See {unsortedSegment (String, SDVariable, SDVariable, int) ops
 
 for the same op without this sorted requirement
 
-* **data** - Data to perform segment max on (NDARRAY type)
-* **segmentIds** - Variable for the segment IDs (NUMERIC type)
+* **data**  (NDARRAY type) - Data to perform segment max on
+* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
 
-## <a name="segmentSum">segmentSum</a>
+## segmentSum
 ```JAVA
 INDArray segmentSum(INDArray data, INDArray segmentIds)
 
@@ -1541,10 +1504,10 @@ See {unsortedSegment (String, SDVariable, SDVariable, int) ops
 
 for the same op without this sorted requirement
 
-* **data** - Data to perform segment max on (NDARRAY type)
-* **segmentIds** - Variable for the segment IDs (NUMERIC type)
+* **data**  (NDARRAY type) - Data to perform segment max on
+* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
 
-## <a name="sequenceMask">sequenceMask</a>
+## sequenceMask
 ```JAVA
 INDArray sequenceMask(INDArray lengths, int maxLen, DataType dataType)
 
@@ -1555,11 +1518,11 @@ Generate a sequence mask (with values 0 or 1) based on the specified lengths
 
 Specifically, out[i, ..., k, j] = (j < lengths[i, ..., k] ? 1.0 : 0.0)
 
-* **lengths** - Lengths of the sequences (NUMERIC type)
+* **lengths**  (NUMERIC type) - Lengths of the sequences
 * **maxLen** - Maximum sequence length
 * **dataType** - 
 
-## <a name="sequenceMask">sequenceMask</a>
+## sequenceMask
 ```JAVA
 INDArray sequenceMask(INDArray lengths, INDArray maxLen, DataType dataType)
 
@@ -1570,11 +1533,11 @@ Generate a sequence mask (with values 0 or 1) based on the specified lengths
 
 Specifically, out[i, ..., k, j] = (j < lengths[i, ..., k] ? 1.0 : 0.0)
 
-* **lengths** - Lengths of the sequences (NUMERIC type)
-* **maxLen** - Maximum sequence length (INT type)
+* **lengths**  (NUMERIC type) - Lengths of the sequences
+* **maxLen**  (INT type) - Maximum sequence length
 * **dataType** - 
 
-## <a name="sequenceMask">sequenceMask</a>
+## sequenceMask
 ```JAVA
 INDArray sequenceMask(INDArray lengths, DataType dataType)
 
@@ -1583,10 +1546,10 @@ SDVariable sequenceMask(String name, SDVariable lengths, DataType dataType)
 ```
 see sequenceMask(String, SDVariable, SDVariable, DataType)
 
-* **lengths** -  (NUMERIC type)
+* **lengths**  (NUMERIC type) - 
 * **dataType** - 
 
-## <a name="shape">shape</a>
+## shape
 ```JAVA
 INDArray shape(INDArray input)
 
@@ -1595,9 +1558,9 @@ SDVariable shape(String name, SDVariable input)
 ```
 Returns the shape of the specified INDArray  as a 1D INDArray 
 
-* **input** - Input variable (NUMERIC type)
+* **input**  (NUMERIC type) - Input variable
 
-## <a name="size">size</a>
+## size
 ```JAVA
 INDArray size(INDArray in)
 
@@ -1606,9 +1569,9 @@ SDVariable size(String name, SDVariable in)
 ```
 Returns the size (number of elements, i.e., prod(shape)) of the specified INDArray  as a 0D scalar variable
 
-* **in** - Input variable (NUMERIC type)
+* **in**  (NUMERIC type) - Input variable
 
-## <a name="sizeAt">sizeAt</a>
+## sizeAt
 ```JAVA
 INDArray sizeAt(INDArray in, int dimension)
 
@@ -1619,10 +1582,10 @@ Returns a rank 0 (scalar) variable for the size of the specified dimension.
 
 For example, if X has shape [10,20,30] then sizeAt(X,1)=20. Similarly, sizeAt(X,-1)=30
 
-* **in** - Input variable (NUMERIC type)
+* **in**  (NUMERIC type) - Input variable
 * **dimension** - Dimension to get size of
 
-## <a name="slice">slice</a>
+## slice
 ```JAVA
 INDArray slice(INDArray input, int[] begin, int[] size)
 
@@ -1645,11 +1608,11 @@ then slice(input, begin=[0,1], size=[2,1] will return:
 
 Note that for each dimension i, begin[i] + size[i] <= input.size(i)
 
-* **input** - input Variable to get subset of (NUMERIC type)
-* **begin** - Beginning index. Must be same length as rank of input array (Size: AtLeast(min=1)
-* **size** - Size of the output array. Must be same length as rank of input array (Size: AtLeast(min=1)
+* **input**  (NUMERIC type) - input Variable to get subset of
+* **begin** - Beginning index. Must be same length as rank of input array (Size: AtLeast(min=1))
+* **size** - Size of the output array. Must be same length as rank of input array (Size: AtLeast(min=1))
 
-## <a name="slice">slice</a>
+## slice
 ```JAVA
 INDArray slice(INDArray input, INDArray begin, INDArray size)
 
@@ -1672,11 +1635,11 @@ then slice(input, begin=[0,1], size=[2,1] will return:
 
 Note that for each dimension i, begin[i] + size[i] <= input.size(i)
 
-* **input** - input Variable to get subset of (NUMERIC type)
-* **begin** - Beginning index. Must be same length as rank of input array (INT type)
-* **size** - Size of the output array. Must be same length as rank of input array (INT type)
+* **input**  (NUMERIC type) - input Variable to get subset of
+* **begin**  (INT type) - Beginning index. Must be same length as rank of input array
+* **size**  (INT type) - Size of the output array. Must be same length as rank of input array
 
-## <a name="squaredNorm">squaredNorm</a>
+## squaredNorm
 ```JAVA
 INDArray squaredNorm(INDArray x, boolean keepDims, int[] dimensions)
 
@@ -1701,13 +1664,11 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x** -  (NUMERIC type)
+* **x**  (NUMERIC type) - 
 * **keepDims** -  - default = false
-* **dimensions** -  (Size: AtLeast(min=0)
-* **x** -  (NUMERIC type)
-* **dimensions** -  (Size: AtLeast(min=0)
+* **dimensions** -  (Size: AtLeast(min=0))
 
-## <a name="squeeze">squeeze</a>
+## squeeze
 ```JAVA
 INDArray squeeze(INDArray x, int axis)
 
@@ -1718,10 +1679,10 @@ Remove a single dimension of size 1.
 
 For example, if input has shape [a,b,1,c] then squeeze(input, 2) returns an array of shape [a,b,c]
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 * **axis** - Size 1 dimension to remove
 
-## <a name="stack">stack</a>
+## stack
 ```JAVA
 INDArray stack(INDArray values, int axis)
 
@@ -1742,10 +1703,10 @@ axis = 3: [a,b,c,N]
 
 see unstack(String[], SDVariable, int, int)
 
-* **values** - Input variables to stack. Must have the same shape for all inputs (NDARRAY type)
+* **values**  (NDARRAY type) - Input variables to stack. Must have the same shape for all inputs
 * **axis** - Axis to stack on
 
-## <a name="standardDeviation">standardDeviation</a>
+## standardDeviation
 ```JAVA
 INDArray standardDeviation(INDArray x, boolean biasCorrected, boolean keepDims, int[] dimensions)
 
@@ -1770,15 +1731,12 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 * **biasCorrected** - If true: divide by (N-1) (i.e., sample stdev). If false: divide by N (population stdev)
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
-* **x** - Input variable (NUMERIC type)
-* **biasCorrected** - If true: divide by (N-1) (i.e., sample stdev). If false: divide by N (population stdev)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="stridedSlice">stridedSlice</a>
+## stridedSlice
 ```JAVA
 INDArray stridedSlice(INDArray in, long[] begin, long[] end, long[] strides, int beginMask, int endMask, int ellipsisMask, int newAxisMask, int shrinkAxisMask)
 
@@ -1805,21 +1763,17 @@ then stridedSlice(input, begin=[0,1], end=[2,2], strides=[2,1], all masks = 0) w
 
 [h, i]
 
-* **in** - Variable to get subset of (NUMERIC type)
-* **begin** - Beginning index (Size: AtLeast(min=1)
-* **end** - End index (Size: AtLeast(min=1)
-* **strides** - Stride ("step size") for each dimension. For example, stride of 2 means take every second element. (Size: AtLeast(min=1)
+* **in**  (NUMERIC type) - Variable to get subset of
+* **begin** - Beginning index (Size: AtLeast(min=1))
+* **end** - End index (Size: AtLeast(min=1))
+* **strides** - Stride ("step size") for each dimension. For example, stride of 2 means take every second element. (Size: AtLeast(min=1))
 * **beginMask** - Bit mask: If the ith bit is set to 1, then the value in the begin long[] is ignored, and a value of 0 is used instead for the beginning index for that dimension - default = 0
 * **endMask** - Bit mask: If the ith bit is set to 1, then the value in the end long[] is ignored, and a value of size(i)-1 is used instead for the end index for that dimension - default = 0
 * **ellipsisMask** - Bit mask: only one non-zero value is allowed here. If a non-zero value is set, then other dimensions are inserted as required at the specified position - default = 0
 * **newAxisMask** - Bit mask: if the ith bit is set to 1, then the begin/end/stride values are ignored, and a size 1 dimension is inserted at this point - default = 0
 * **shrinkAxisMask** - Bit mask: if the ith bit is set to 1, then the begin/end/stride values are ignored, and a size 1 dimension is removed at this point. Note that begin/end/stride values must result in a size 1 output for these dimensions - default = 0
-* **in** - Variable to get subset of (NUMERIC type)
-* **begin** - Beginning index (Size: AtLeast(min=1)
-* **end** - End index (Size: AtLeast(min=1)
-* **strides** - Stride ("step size") for each dimension. For example, stride of 2 means take every second element. (Size: AtLeast(min=1)
 
-## <a name="sum">sum</a>
+## sum
 ```JAVA
 INDArray sum(INDArray x, boolean keepDims, int[] dimensions)
 
@@ -1844,13 +1798,11 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 * **keepDims** - If true: keep the dimensions that are reduced on (as length 1). False: remove the reduction dimensions - default = false
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
-* **x** - Input variable (NUMERIC type)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="tensorMmul">tensorMmul</a>
+## tensorMmul
 ```JAVA
 INDArray tensorMmul(INDArray x, INDArray y, int[] dimensionsX, int[] dimensionsY, boolean transposeX, boolean transposeY, boolean transposeZ)
 
@@ -1863,19 +1815,15 @@ SDVariable tensorMmul(String name, SDVariable x, SDVariable y, int[] dimensionsX
 ```
 //TODO: Ops must be documented.
 
-* **x** - Input variable x (NUMERIC type)
-* **y** - Input variable y (NUMERIC type)
-* **dimensionsX** - dimensions for first input array (x) (Size: AtLeast(min=1)
-* **dimensionsY** - dimensions for second input array (y) (Size: AtLeast(min=1)
+* **x**  (NUMERIC type) - Input variable x
+* **y**  (NUMERIC type) - Input variable y
+* **dimensionsX** - dimensions for first input array (x) (Size: AtLeast(min=1))
+* **dimensionsY** - dimensions for second input array (y) (Size: AtLeast(min=1))
 * **transposeX** - Transpose x (first argument) - default = false
 * **transposeY** - Transpose y (second argument) - default = false
 * **transposeZ** - Transpose result array - default = false
-* **x** - Input variable x (NUMERIC type)
-* **y** - Input variable y (NUMERIC type)
-* **dimensionsX** - dimensions for first input array (x) (Size: AtLeast(min=1)
-* **dimensionsY** - dimensions for second input array (y) (Size: AtLeast(min=1)
 
-## <a name="tile">tile</a>
+## tile
 ```JAVA
 INDArray tile(INDArray x, INDArray repeat)
 
@@ -1902,10 +1850,10 @@ then output is
 
 [3, 4, 3, 4, 3, 4]
 
-* **x** - Input variable (NDARRAY type)
-* **repeat** - Number of times to repeat in each axis. Must have length equal to the rank of the input array (INT type)
+* **x**  (NDARRAY type) - Input variable
+* **repeat**  (INT type) - Number of times to repeat in each axis. Must have length equal to the rank of the input array
 
-## <a name="tile">tile</a>
+## tile
 ```JAVA
 INDArray tile(INDArray x, int[] repeat)
 
@@ -1914,10 +1862,10 @@ SDVariable tile(String name, SDVariable x, int[] repeat)
 ```
 see tile(String, SDVariable, int...)
 
-* **x** -  (NDARRAY type)
-* **repeat** -  (Size: AtLeast(min=1)
+* **x**  (NDARRAY type) - 
+* **repeat** -  (Size: AtLeast(min=1))
 
-## <a name="transpose">transpose</a>
+## transpose
 ```JAVA
 INDArray transpose(INDArray x)
 
@@ -1926,9 +1874,9 @@ SDVariable transpose(String name, SDVariable x)
 ```
 Matrix transpose operation: If input has shape [a,b] output has shape [b,a]
 
-* **x** - Input variable (NDARRAY type)
+* **x**  (NDARRAY type) - Input variable
 
-## <a name="unsortedSegmentMax">unsortedSegmentMax</a>
+## unsortedSegmentMax
 ```JAVA
 INDArray unsortedSegmentMax(INDArray data, INDArray segmentIds, int numSegments)
 
@@ -1945,11 +1893,11 @@ segmentIds =  [1, 0, 2, 0, 1, 1, 2]
 
 then output = [6, 9, 8] = [max(3,6), max(1,4,9), max(2,8)]
 
-* **data** - Data (variable) to perform unsorted segment max on (NUMERIC type)
-* **segmentIds** - Variable for the segment IDs (NUMERIC type)
+* **data**  (NUMERIC type) - Data (variable) to perform unsorted segment max on
+* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
 * **numSegments** - Number of segments
 
-## <a name="unsortedSegmentMean">unsortedSegmentMean</a>
+## unsortedSegmentMean
 ```JAVA
 INDArray unsortedSegmentMean(INDArray data, INDArray segmentIds, int numSegments)
 
@@ -1966,11 +1914,11 @@ segmentIds =  [1, 0, 2, 0, 1, 1, 2]
 
 then output = [4.5, 4.666, 5] = [mean(3,6), mean(1,4,9), mean(2,8)]
 
-* **data** - Data (variable) to perform unsorted segment max on (NUMERIC type)
-* **segmentIds** - Variable for the segment IDs (NUMERIC type)
+* **data**  (NUMERIC type) - Data (variable) to perform unsorted segment max on
+* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
 * **numSegments** - Number of segments
 
-## <a name="unsortedSegmentMin">unsortedSegmentMin</a>
+## unsortedSegmentMin
 ```JAVA
 INDArray unsortedSegmentMin(INDArray data, INDArray segmentIds, int numSegments)
 
@@ -1987,11 +1935,11 @@ segmentIds =  [1, 0, 2, 0, 1, 1, 2]
 
 then output = [3, 1, 2] = [min(3,6), min(1,4,9), min(2,8)]
 
-* **data** - Data (variable) to perform unsorted segment max on (NUMERIC type)
-* **segmentIds** - Variable for the segment IDs (NUMERIC type)
+* **data**  (NUMERIC type) - Data (variable) to perform unsorted segment max on
+* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
 * **numSegments** - Number of segments
 
-## <a name="unsortedSegmentProd">unsortedSegmentProd</a>
+## unsortedSegmentProd
 ```JAVA
 INDArray unsortedSegmentProd(INDArray data, INDArray segmentIds, int numSegments)
 
@@ -2008,11 +1956,11 @@ segmentIds =  [1, 0, 2, 0, 1, 1, 2]
 
 then output = [4.5, 4.666, 5] = [mean(3,6), mean(1,4,9), mean(2,8)]
 
-* **data** - Data (variable) to perform unsorted segment max on (NUMERIC type)
-* **segmentIds** - Variable for the segment IDs (NUMERIC type)
+* **data**  (NUMERIC type) - Data (variable) to perform unsorted segment max on
+* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
 * **numSegments** - Number of segments
 
-## <a name="unsortedSegmentSqrtN">unsortedSegmentSqrtN</a>
+## unsortedSegmentSqrtN
 ```JAVA
 INDArray unsortedSegmentSqrtN(INDArray data, INDArray segmentIds, int numSegments)
 
@@ -2027,11 +1975,11 @@ segmentIds =  [1, 0, 2, 0, 1, 1, 2]
 
 then output = [1.414, 1.732, 1.414] = [sqrt(2), sqrtN(3), sqrtN(2)]
 
-* **data** - Data (variable) to perform unsorted segment max on (NUMERIC type)
-* **segmentIds** - Variable for the segment IDs (NUMERIC type)
+* **data**  (NUMERIC type) - Data (variable) to perform unsorted segment max on
+* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
 * **numSegments** - Number of segments
 
-## <a name="unsortedSegmentSum">unsortedSegmentSum</a>
+## unsortedSegmentSum
 ```JAVA
 INDArray unsortedSegmentSum(INDArray data, INDArray segmentIds, int numSegments)
 
@@ -2048,11 +1996,11 @@ segmentIds =  [1, 0, 2, 0, 1, 1, 2]
 
 then output = [9, 14, 10] = [sum(3,6), sum(1,4,9), sum(2,8)]
 
-* **data** - Data (variable) to perform unsorted segment max on (NUMERIC type)
-* **segmentIds** - Variable for the segment IDs (NUMERIC type)
+* **data**  (NUMERIC type) - Data (variable) to perform unsorted segment max on
+* **segmentIds**  (NUMERIC type) - Variable for the segment IDs
 * **numSegments** - Number of segments
 
-## <a name="unstack">unstack</a>
+## unstack
 ```JAVA
 void unstack(INDArray value, int axis, int num)
 
@@ -2069,11 +2017,11 @@ axis = 1: [a,c]
 
 axis = 2: [a,b]
 
-* **value** - Input variable to unstack (NDARRAY type)
+* **value**  (NDARRAY type) - Input variable to unstack
 * **axis** - Axis to unstack on
 * **num** - Number of output variables
 
-## <a name="variance">variance</a>
+## variance
 ```JAVA
 INDArray variance(INDArray x, boolean biasCorrected, boolean keepDims, int[] dimensions)
 
@@ -2098,15 +2046,12 @@ keepDims = true: [a,1,c]
 
 keepDims = false: [a,c]
 
-* **x** - Input variable (NUMERIC type)
+* **x**  (NUMERIC type) - Input variable
 * **biasCorrected** - If true: divide by (N-1) (i.e., sample variable). If false: divide by N (population variance)
 * **keepDims** - If true: keep the dimensions that are reduced on (as size 1). False: remove the reduction dimensions - default = false
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
-* **x** - Input variable (NUMERIC type)
-* **biasCorrected** - If true: divide by (N-1) (i.e., sample variable). If false: divide by N (population variance)
-* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0)
+* **dimensions** - Dimensions to reduce over. If dimensions are not specified, full array reduction is performed (Size: AtLeast(min=0))
 
-## <a name="zerosLike">zerosLike</a>
+## zerosLike
 ```JAVA
 INDArray zerosLike(INDArray input)
 
@@ -2117,5 +2062,5 @@ Return a variable of all 0s, with the same shape as the input variable. Note tha
 
 if the input shape changes in later execution, the returned variable's shape will also be updated
 
-* **input** - Input  (NUMERIC type)
+* **input**  (NUMERIC type) - Input 
 

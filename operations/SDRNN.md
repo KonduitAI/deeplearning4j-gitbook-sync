@@ -5,9 +5,8 @@ description:
 category: Operations
 weight: 50
 ---
-# RNN Namespace
 # Operation classes
-## <a name="gru">gru</a>
+## gru
 ```JAVA
 INDArray[] gru(INDArray x, INDArray hLast, GRUWeights gRUWeights)
 
@@ -16,11 +15,11 @@ SDVariable[] gru(String name, SDVariable x, SDVariable hLast, GRUWeights gRUWeig
 ```
 The GRU cell.  Does a single time step operation
 
-* **x** - Input, with shape [batchSize, inSize] (NUMERIC type)
-* **hLast** - Output of the previous cell/time step, with shape [batchSize, numUnits] (NUMERIC type)
-* **GRUWeights** - [GRUWeights]
+* **x**  (NUMERIC type) - Input, with shape [batchSize, inSize]
+* **hLast**  (NUMERIC type) - Output of the previous cell/time step, with shape [batchSize, numUnits]
+* **GRUWeights** - see [GRUWeights](#GRUWeights)
 
-## <a name="lstmCell">lstmCell</a>
+## lstmCell
 ```JAVA
 INDArray[] lstmCell(INDArray x, INDArray cLast, INDArray yLast, LSTMWeights lSTMWeights, LSTMConfiguration lSTMConfiguration)
 
@@ -29,13 +28,13 @@ SDVariable[] lstmCell(String name, SDVariable x, SDVariable cLast, SDVariable yL
 ```
 The LSTM cell.  Does a single time step operation.
 
-* **x** - Input, with shape [batchSize, inSize] (NUMERIC type)
-* **cLast** - Previous cell state, with shape [batchSize, numUnits] (NUMERIC type)
-* **yLast** - revious cell output, with shape [batchSize, numUnits] (NUMERIC type)
-* **LSTMWeights** - [LSTMWeights]
-* **LSTMConfiguration** - [LSTMConfiguration]
+* **x**  (NUMERIC type) - Input, with shape [batchSize, inSize]
+* **cLast**  (NUMERIC type) - Previous cell state, with shape [batchSize, numUnits]
+* **yLast**  (NUMERIC type) - revious cell output, with shape [batchSize, numUnits]
+* **LSTMWeights** - see [LSTMWeights](#LSTMWeights)
+* **LSTMConfiguration** - see [LSTMConfiguration](#LSTMConfiguration)
 
-## <a name="lstmLayer">lstmLayer</a>
+## lstmLayer
 ```JAVA
 INDArray[] lstmLayer(INDArray x, INDArray cLast, INDArray yLast, INDArray maxTSLength, LSTMLayerWeights lSTMLayerWeights, LSTMLayerConfig lSTMLayerConfig)
 
@@ -82,17 +81,14 @@ specify gate/cell/out aplha/beta and numbers of activations for gate/cell/out de
 
 Also this layer supports MKLDNN (DNNL) and cuDNN acceleration
 
-* **x** -  Input, with shape dependent on the data format (in config). (NUMERIC type)
-* **cLast** - Previous/initial cell state, with shape [batchSize, numUnits] (NUMERIC type)
-* **yLast** - Previous/initial cell output, with shape [batchSize, numUnits] (NUMERIC type)
-* **maxTSLength** - maxTSLength with shape [batchSize] (NUMERIC type)
-* **LSTMLayerWeights** - [LSTMLayerWeights]
-* **LSTMLayerConfig** - [LSTMLayerConfig]
-* **x** -  Input, with shape dependent on the data format (in config). (NUMERIC type)
-* **LSTMLayerWeights** - [LSTMLayerWeights]
-* **LSTMLayerConfig** - [LSTMLayerConfig]
+* **x**  (NUMERIC type) -  Input, with shape dependent on the data format (in config).
+* **cLast**  (NUMERIC type) - Previous/initial cell state, with shape [batchSize, numUnits]
+* **yLast**  (NUMERIC type) - Previous/initial cell output, with shape [batchSize, numUnits]
+* **maxTSLength**  (NUMERIC type) - maxTSLength with shape [batchSize]
+* **LSTMLayerWeights** - see [LSTMLayerWeights](#LSTMLayerWeights)
+* **LSTMLayerConfig** - see [LSTMLayerConfig](#LSTMLayerConfig)
 
-## <a name="lstmblock">lstmblock</a>
+## lstmblock
 ```JAVA
 INDArray lstmblock(INDArray maxTSLength, INDArray x, INDArray cLast, INDArray yLast, LSTMWeights lSTMWeights, LSTMConfiguration lSTMConfiguration)
 
@@ -105,17 +101,14 @@ SDVariable lstmblock(String name, SDVariable x, LSTMWeights lSTMWeights, LSTMCon
 ```
 The LSTM block
 
-* **maxTSLength** -  (NUMERIC type)
-* **x** -  Input, with shape dependent on the data format (in config). (NUMERIC type)
-* **cLast** - Previous/initial cell state, with shape [batchSize, numUnits] (NUMERIC type)
-* **yLast** - Previous/initial cell output, with shape [batchSize, numUnits] (NUMERIC type)
-* **LSTMWeights** - [LSTMWeights]
-* **LSTMConfiguration** - [LSTMConfiguration]
-* **x** -  Input, with shape dependent on the data format (in config). (NUMERIC type)
-* **LSTMWeights** - [LSTMWeights]
-* **LSTMConfiguration** - [LSTMConfiguration]
+* **maxTSLength**  (NUMERIC type) - 
+* **x**  (NUMERIC type) -  Input, with shape dependent on the data format (in config).
+* **cLast**  (NUMERIC type) - Previous/initial cell state, with shape [batchSize, numUnits]
+* **yLast**  (NUMERIC type) - Previous/initial cell output, with shape [batchSize, numUnits]
+* **LSTMWeights** - see [LSTMWeights](#LSTMWeights)
+* **LSTMConfiguration** - see [LSTMConfiguration](#LSTMConfiguration)
 
-## <a name="sru">sru</a>
+## sru
 ```JAVA
 INDArray sru(INDArray x, INDArray initialC, INDArray mask, SRUWeights sRUWeights)
 
@@ -128,15 +121,12 @@ SDVariable sru(String name, SDVariable x, SDVariable initialC, SRUWeights sRUWei
 ```
 The SRU layer.  Does a single time step operation.
 
-* **x** - Input, with shape [batchSize, inSize] (NUMERIC type)
-* **initialC** - Initial cell state, with shape [batchSize, inSize] (NUMERIC type)
-* **mask** - An optional dropout mask, with shape [batchSize, inSize] (NUMERIC type)
-* **SRUWeights** - [SRUWeights]
-* **x** - Input, with shape [batchSize, inSize] (NUMERIC type)
-* **initialC** - Initial cell state, with shape [batchSize, inSize] (NUMERIC type)
-* **SRUWeights** - [SRUWeights]
+* **x**  (NUMERIC type) - Input, with shape [batchSize, inSize]
+* **initialC**  (NUMERIC type) - Initial cell state, with shape [batchSize, inSize]
+* **mask**  (NUMERIC type) - An optional dropout mask, with shape [batchSize, inSize]
+* **SRUWeights** - see [SRUWeights](#SRUWeights)
 
-## <a name="sruCell">sruCell</a>
+## sruCell
 ```JAVA
 INDArray sruCell(INDArray x, INDArray cLast, SRUWeights sRUWeights)
 
@@ -145,12 +135,12 @@ SDVariable sruCell(String name, SDVariable x, SDVariable cLast, SRUWeights sRUWe
 ```
 The SRU layer.  Does a single time step operation.
 
-* **x** - Input, with shape [batchSize, inSize] (NUMERIC type)
-* **cLast** - Previous cell state, with shape [batchSize, inSize] (NUMERIC type)
-* **SRUWeights** - [SRUWeights]
+* **x**  (NUMERIC type) - Input, with shape [batchSize, inSize]
+* **cLast**  (NUMERIC type) - Previous cell state, with shape [batchSize, inSize]
+* **SRUWeights** - see [SRUWeights](#SRUWeights)
 
-# Configuration Classes <configs>
-## <a name="LSTMConfiguration"></a>
+# Configuration Classes
+## LSTMConfiguration
 * **RnnDataFormat** -  The data format of the input. Input shape depends on data format (in config):<br>
  TNS -> [timeSteps, batchSize, inSize]<br>
  NST -> [batchSize, inSize, timeSteps]<br>
@@ -162,7 +152,7 @@ The SRU layer.  Does a single time step operation.
 Used in these ops: 
 [lstmCell](#lstmCell)
 [lstmblock](#lstmblock)
-## <a name="LSTMLayerConfig"></a>
+## LSTMLayerConfig
 * **LSTMDataFormat** - for unidirectional:  TNS: shape [timeLength, numExamples, inOutSize] - sometimes referred to as "time major"<br>
   NST: shape [numExamples, inOutSize, timeLength]<br>
   NTS: shape [numExamples, timeLength, inOutSize] - TF "time_major=false" layout<br> for bidirectional:
@@ -191,7 +181,7 @@ Used in these ops:
 
 Used in these ops: 
 [lstmLayer](#lstmLayer)
-## <a name="GRUWeights"></a>
+## GRUWeights
 * **ruWeight**- null (NUMERIC type)
 * **cWeight**- null (NUMERIC type)
 * **ruBias**- null (NUMERIC type)
@@ -199,14 +189,14 @@ Used in these ops:
 
 Used in these ops: 
 [gru](#gru)
-## <a name="SRUWeights"></a>
+## SRUWeights
 * **weights**- null (NUMERIC type)
 * **bias**- null (NUMERIC type)
 
 Used in these ops: 
 [sru](#sru)
 [sruCell](#sruCell)
-## <a name="LSTMWeights"></a>
+## LSTMWeights
 * **ruWeight**- null (NUMERIC type)
 * **inputPeepholeWeights**- null (NUMERIC type)
 * **forgetPeepholeWeights**- null (NUMERIC type)
@@ -216,7 +206,7 @@ Used in these ops:
 Used in these ops: 
 [lstmCell](#lstmCell)
 [lstmblock](#lstmblock)
-## <a name="LSTMLayerWeights"></a>
+## LSTMLayerWeights
 * **inputWeights**- input weights Wx:
  1) shapes [nIn, 4*nOut] for FWD,BWD  2) shapes [2, nIn, 4*nOut] BIDIR_SUM, BIDIR_CONCAT and BIDIR_EXTRA_DIM (NUMERIC type)
 * **recurrentWeights**- // recurrent weights Wr:

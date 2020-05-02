@@ -5,9 +5,8 @@ description:
 category: Operations
 weight: 80
 ---
-# Loss Namespace
 # Operation classes
-## <a name="absoluteDifference">absoluteDifference</a>
+## absoluteDifference
 ```JAVA
 INDArray absoluteDifference(INDArray label, INDArray predictions, INDArray weights, LossReduce lossReduce)
 
@@ -20,15 +19,12 @@ SDVariable absoluteDifference(String name, SDVariable label, SDVariable predicti
 ```
 Absolute difference loss: `sum_i abs( label[i] - predictions[i] )`
 
-* **label** - Label array (NUMERIC type)
-* **predictions** - Predictions array (NUMERIC type)
-* **weights** - Weights array. May be null. If null, a weight of 1.0 is used (NUMERIC type)
+* **label**  (NUMERIC type) - Label array
+* **predictions**  (NUMERIC type) - Predictions array
+* **weights**  (NUMERIC type) - Weights array. May be null. If null, a weight of 1.0 is used
 * **lossReduce** - Reduction type for the loss. See LossReduce for more details. Default: LossReduce#MEAN_BY_NONZERO_WEIGHT_COUNT - default = LossReduce.MEAN_BY_NONZERO_WEIGHT_COUNT
-* **label** - Label array (NUMERIC type)
-* **predictions** - Predictions array (NUMERIC type)
-* **weights** - Weights array. May be null. If null, a weight of 1.0 is used (NUMERIC type)
 
-## <a name="cosineDistance">cosineDistance</a>
+## cosineDistance
 ```JAVA
 INDArray cosineDistance(INDArray label, INDArray predictions, INDArray weights, LossReduce lossReduce, int dimension)
 
@@ -48,17 +44,13 @@ If this is not the case, you should normalize them first by dividing by norm2(St
 
 along the cosine distance dimension (with keepDims=true).
 
-* **label** - Label array (NUMERIC type)
-* **predictions** - Predictions array (NUMERIC type)
-* **weights** - Weights array. May be null. If null, a weight of 1.0 is use (NUMERIC type)
+* **label**  (NUMERIC type) - Label array
+* **predictions**  (NUMERIC type) - Predictions array
+* **weights**  (NUMERIC type) - Weights array. May be null. If null, a weight of 1.0 is use
 * **lossReduce** - Reduction type for the loss. See LossReduce for more details. Default: LossReduce#MEAN_BY_NONZERO_WEIGHT_COUNT - default = LossReduce.MEAN_BY_NONZERO_WEIGHT_COUNT
 * **dimension** - Dimension to perform the cosine distance over
-* **label** - Label array (NUMERIC type)
-* **predictions** - Predictions array (NUMERIC type)
-* **weights** - Weights array. May be null. If null, a weight of 1.0 is use (NUMERIC type)
-* **dimension** - Dimension to perform the cosine distance over
 
-## <a name="hingeLoss">hingeLoss</a>
+## hingeLoss
 ```JAVA
 INDArray hingeLoss(INDArray label, INDArray predictions, INDArray weights, LossReduce lossReduce)
 
@@ -75,15 +67,12 @@ Implements `L = max(0, 1 - t * predictions)` where t is the label values after i
 
 from the user specified {0,1`. Note that Labels should be provided with values {0,1`.
 
-* **label** - Label array. Each value should be 0.0 or 1.0 (internally -1 to 1 is used) (NUMERIC type)
-* **predictions** - Predictions array (NUMERIC type)
-* **weights** - Weights array. May be null. If null, a weight of 1.0 is used (NUMERIC type)
+* **label**  (NUMERIC type) - Label array. Each value should be 0.0 or 1.0 (internally -1 to 1 is used)
+* **predictions**  (NUMERIC type) - Predictions array
+* **weights**  (NUMERIC type) - Weights array. May be null. If null, a weight of 1.0 is used
 * **lossReduce** - Reduction type for the loss. See LossReduce for more details. Default: LossReduce#MEAN_BY_NONZERO_WEIGHT_COUNT - default = LossReduce.MEAN_BY_NONZERO_WEIGHT_COUNT
-* **label** - Label array. Each value should be 0.0 or 1.0 (internally -1 to 1 is used) (NUMERIC type)
-* **predictions** - Predictions array (NUMERIC type)
-* **weights** - Weights array. May be null. If null, a weight of 1.0 is used (NUMERIC type)
 
-## <a name="huberLoss">huberLoss</a>
+## huberLoss
 ```JAVA
 INDArray huberLoss(INDArray label, INDArray predictions, INDArray weights, LossReduce lossReduce, double delta)
 
@@ -107,17 +96,13 @@ Huber loss implements:
 
 </pre>
 
-* **label** - Label array (NUMERIC type)
-* **predictions** - Predictions array (NUMERIC type)
-* **weights** - Weights array. May be null. If null, a weight of 1.0 is used (NUMERIC type)
+* **label**  (NUMERIC type) - Label array
+* **predictions**  (NUMERIC type) - Predictions array
+* **weights**  (NUMERIC type) - Weights array. May be null. If null, a weight of 1.0 is used
 * **lossReduce** - Reduction type for the loss. See LossReduce for more details. Default: LossReduce#MEAN_BY_NONZERO_WEIGHT_COUNT - default = LossReduce.MEAN_BY_NONZERO_WEIGHT_COUNT
 * **delta** - Loss function delta value
-* **label** - Label array (NUMERIC type)
-* **predictions** - Predictions array (NUMERIC type)
-* **weights** - Weights array. May be null. If null, a weight of 1.0 is used (NUMERIC type)
-* **delta** - Loss function delta value
 
-## <a name="l2Loss">l2Loss</a>
+## l2Loss
 ```JAVA
 INDArray l2Loss(INDArray var)
 
@@ -126,9 +111,9 @@ SDVariable l2Loss(String name, SDVariable var)
 ```
 L2 loss: 1/2 * sum(x^2)
 
-* **var** - Variable to calculate L2 loss of (NUMERIC type)
+* **var**  (NUMERIC type) - Variable to calculate L2 loss of
 
-## <a name="logLoss">logLoss</a>
+## logLoss
 ```JAVA
 INDArray logLoss(INDArray label, INDArray predictions, INDArray weights, LossReduce lossReduce, double epsilon)
 
@@ -143,15 +128,13 @@ Log loss, i.e., binary cross entropy loss, usually used for binary multi-label c
 
 `-1/numExamples * sum_i (labels[i] * log(predictions[i] + epsilon) + (1-labels[i]) * log(1-predictions[i] + epsilon))`
 
-* **label** - Label array (NUMERIC type)
-* **predictions** - Predictions array (NUMERIC type)
-* **weights** - Weights array. May be null. If null, a weight of 1.0 is used (NUMERIC type)
+* **label**  (NUMERIC type) - Label array
+* **predictions**  (NUMERIC type) - Predictions array
+* **weights**  (NUMERIC type) - Weights array. May be null. If null, a weight of 1.0 is used
 * **lossReduce** - Reduction type for the loss. See LossReduce for more details. Default: LossReduce#MEAN_BY_NONZERO_WEIGHT_COUNT - default = LossReduce.MEAN_BY_NONZERO_WEIGHT_COUNT
 * **epsilon** - epsilon - default = 0.0
-* **label** - Label array (NUMERIC type)
-* **predictions** - Predictions array (NUMERIC type)
 
-## <a name="logPoisson">logPoisson</a>
+## logPoisson
 ```JAVA
 INDArray logPoisson(INDArray label, INDArray predictions, INDArray weights, LossReduce lossReduce, boolean full)
 
@@ -166,17 +149,13 @@ Log poisson loss: a loss function used for training classifiers.
 
 Implements `L = exp(c) - z * c` where c is log(predictions) and z is labels.
 
-* **label** - Label array. Each value should be 0.0 or 1.0 (NUMERIC type)
-* **predictions** - Predictions array (has to be log(x) of actual predictions) (NUMERIC type)
-* **weights** - Weights array. May be null. If null, a weight of 1.0 is used (NUMERIC type)
+* **label**  (NUMERIC type) - Label array. Each value should be 0.0 or 1.0
+* **predictions**  (NUMERIC type) - Predictions array (has to be log(x) of actual predictions)
+* **weights**  (NUMERIC type) - Weights array. May be null. If null, a weight of 1.0 is used
 * **lossReduce** - Reduction type for the loss. See LossReduce for more details. Default: LossReduce#MEAN_BY_NONZERO_WEIGHT_COUNT - default = LossReduce.MEAN_BY_NONZERO_WEIGHT_COUNT
 * **full** - Boolean flag. true for logPoissonFull, false for logPoisson
-* **label** - Label array. Each value should be 0.0 or 1.0 (NUMERIC type)
-* **predictions** - Predictions array (has to be log(x) of actual predictions) (NUMERIC type)
-* **weights** - Weights array. May be null. If null, a weight of 1.0 is used (NUMERIC type)
-* **full** - Boolean flag. true for logPoissonFull, false for logPoisson
 
-## <a name="meanPairwiseSquaredError">meanPairwiseSquaredError</a>
+## meanPairwiseSquaredError
 ```JAVA
 INDArray meanPairwiseSquaredError(INDArray label, INDArray predictions, INDArray weights, LossReduce lossReduce)
 
@@ -193,15 +172,12 @@ MPWSE loss calculates the difference between pairs of consecutive elements in th
 For example, if predictions = [p0, p1, p2] and labels are [l0, l1, l2] then MPWSE is:
 
 {@code [((p0-p1) - (l0-l1))^2 + ((p0-p2) - (l0-l2))^2 + ((p1-p2) - (l1-l2))^2] / 3}<br>
-* **label** - Label array (NUMERIC type)
-* **predictions** - Predictions array (NUMERIC type)
-* **weights** - Weights array. May be null. If null, a weight of 1.0 is used. Must be either null, scalar, or have shape [batchSize] (NUMERIC type)
+* **label**  (NUMERIC type) - Label array
+* **predictions**  (NUMERIC type) - Predictions array
+* **weights**  (NUMERIC type) - Weights array. May be null. If null, a weight of 1.0 is used. Must be either null, scalar, or have shape [batchSize]
 * **lossReduce** - Reduction type for the loss. See LossReduce for more details. Default: LossReduce#MEAN_BY_NONZERO_WEIGHT_COUNT - default = LossReduce.MEAN_BY_NONZERO_WEIGHT_COUNT
-* **label** - Label array (NUMERIC type)
-* **predictions** - Predictions array (NUMERIC type)
-* **weights** - Weights array. May be null. If null, a weight of 1.0 is used. Must be either null, scalar, or have shape [batchSize] (NUMERIC type)
 
-## <a name="meanSquaredError">meanSquaredError</a>
+## meanSquaredError
 ```JAVA
 INDArray meanSquaredError(INDArray label, INDArray predictions, INDArray weights, LossReduce lossReduce)
 
@@ -218,15 +194,12 @@ When averaged (using LossReduce#MEAN_BY_WEIGHT or LossReduce#MEAN_BY_NONZERO_WEI
 
 this is the mean squared error loss function.
 
-* **label** - Label array (NUMERIC type)
-* **predictions** - Predictions array (NUMERIC type)
-* **weights** - Weights array. May be null. If null, a weight of 1.0 is used (NUMERIC type)
+* **label**  (NUMERIC type) - Label array
+* **predictions**  (NUMERIC type) - Predictions array
+* **weights**  (NUMERIC type) - Weights array. May be null. If null, a weight of 1.0 is used
 * **lossReduce** - Reduction type for the loss. See LossReduce for more details. Default: LossReduce#MEAN_BY_NONZERO_WEIGHT_COUNT - default = LossReduce.MEAN_BY_NONZERO_WEIGHT_COUNT
-* **label** - Label array (NUMERIC type)
-* **predictions** - Predictions array (NUMERIC type)
-* **weights** - Weights array. May be null. If null, a weight of 1.0 is used (NUMERIC type)
 
-## <a name="sigmoidCrossEntropy">sigmoidCrossEntropy</a>
+## sigmoidCrossEntropy
 ```JAVA
 INDArray sigmoidCrossEntropy(INDArray label, INDArray predictionLogits, INDArray weights, LossReduce lossReduce, double labelSmoothing)
 
@@ -257,16 +230,13 @@ label = (1.0 - labelSmoothing) * label + 0.5 * labelSmoothing`
 
 </pre>
 
-* **label** - Label array (NUMERIC type)
-* **predictionLogits** - Predictions array (NUMERIC type)
-* **weights** - Weights array. May be null. If null, a weight of 1.0 is used (NUMERIC type)
+* **label**  (NUMERIC type) - Label array
+* **predictionLogits**  (NUMERIC type) - Predictions array
+* **weights**  (NUMERIC type) - Weights array. May be null. If null, a weight of 1.0 is used
 * **lossReduce** - Reduction type for the loss. See LossReduce for more details. Default: LossReduce#MEAN_BY_NONZERO_WEIGHT_COUNT - default = LossReduce.MEAN_BY_NONZERO_WEIGHT_COUNT
 * **labelSmoothing** - Label smoothing value. Default value: 0 - default = 0.0
-* **label** - Label array (NUMERIC type)
-* **predictionLogits** - Predictions array (NUMERIC type)
-* **weights** - Weights array. May be null. If null, a weight of 1.0 is used (NUMERIC type)
 
-## <a name="softmaxCrossEntropy">softmaxCrossEntropy</a>
+## softmaxCrossEntropy
 ```JAVA
 INDArray softmaxCrossEntropy(INDArray oneHotLabels, INDArray logitPredictions, INDArray weights, LossReduce lossReduce, double labelSmoothing)
 
@@ -293,16 +263,13 @@ oneHotLabel = (1.0 - labelSmoothing) * oneHotLabels + labelSmoothing/numClasses`
 
 </pre>
 
-* **oneHotLabels** - Label array. Should be one-hot per example and same shape as predictions (for example, [mb, nOut]) (NUMERIC type)
-* **logitPredictions** - Predictions array (pre-softmax) (NUMERIC type)
-* **weights** - Weights array. May be null. If null, a weight of 1.0 is used (NUMERIC type)
+* **oneHotLabels**  (NUMERIC type) - Label array. Should be one-hot per example and same shape as predictions (for example, [mb, nOut])
+* **logitPredictions**  (NUMERIC type) - Predictions array (pre-softmax)
+* **weights**  (NUMERIC type) - Weights array. May be null. If null, a weight of 1.0 is used
 * **lossReduce** - Reduction type for the loss. See LossReduce for more details. Default: LossReduce#MEAN_BY_NONZERO_WEIGHT_COUNT - default = LossReduce.MEAN_BY_NONZERO_WEIGHT_COUNT
 * **labelSmoothing** - Label smoothing value. Default value: 0 - default = 0.0
-* **oneHotLabels** - Label array. Should be one-hot per example and same shape as predictions (for example, [mb, nOut]) (NUMERIC type)
-* **logitPredictions** - Predictions array (pre-softmax) (NUMERIC type)
-* **weights** - Weights array. May be null. If null, a weight of 1.0 is used (NUMERIC type)
 
-## <a name="sparseSoftmaxCrossEntropy">sparseSoftmaxCrossEntropy</a>
+## sparseSoftmaxCrossEntropy
 ```JAVA
 INDArray sparseSoftmaxCrossEntropy(INDArray logits, INDArray labels)
 
@@ -314,10 +281,10 @@ As per softmaxCrossEntropy(String, SDVariable, SDVariable, LossReduce) but the l
 is represented as an integer array instead of the equivalent one-hot array.<br>
 i.e., if logits are rank N, then labels have rank N-1
 
-* **logits** - Logits array ("pre-softmax activations") (NUMERIC type)
-* **labels** - Labels array. Must be an integer type. (INT type)
+* **logits**  (NUMERIC type) - Logits array ("pre-softmax activations")
+* **labels**  (INT type) - Labels array. Must be an integer type.
 
-## <a name="weightedCrossEntropyWithLogits">weightedCrossEntropyWithLogits</a>
+## weightedCrossEntropyWithLogits
 ```JAVA
 INDArray weightedCrossEntropyWithLogits(INDArray targets, INDArray inputs, INDArray weights)
 
@@ -326,7 +293,7 @@ SDVariable weightedCrossEntropyWithLogits(String name, SDVariable targets, SDVar
 ```
 Weighted cross entropy loss with logits
 
-* **targets** - targets array (NUMERIC type)
-* **inputs** - input array (NUMERIC type)
-* **weights** - eights array. May be null. If null, a weight of 1.0 is used (NUMERIC type)
+* **targets**  (NUMERIC type) - targets array
+* **inputs**  (NUMERIC type) - input array
+* **weights**  (NUMERIC type) - eights array. May be null. If null, a weight of 1.0 is used
 
