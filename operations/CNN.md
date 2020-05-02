@@ -362,26 +362,26 @@ SDVariable upsampling2d(String name, SDVariable input, int scaleH, int scaleW, b
 
 # Configuration Classes
 ## Conv1DConfig
-* **k** - Kernel (LONG type) - default = -1
-* **s** - stride (LONG type) - default = 1
-* **p** - padding (LONG type) - default = 0
-* **d** - dilation (LONG type) - default = 1
-* **isSameMode** - Same mode (BOOL type) - default = true
-* **dataFormat** - Data format (STRING type) - default = NCW
+* **k** (LONG) - Kernel - default = -1
+* **s** (LONG) - stride - default = 1
+* **p** (LONG) - padding - default = 0
+* **d** (LONG) - dilation - default = 1
+* **isSameMode** (BOOL) - Same mode - default = true
+* **dataFormat** (STRING) - Data format - default = NCW
 
 Used in these ops: 
 [conv1d](#conv1d)
 ## Conv2DConfig
-* **kH** - Kernel height (LONG type) - default = -1
-* **kW** - Kernel width (LONG type) - default = -1
-* **sH** - Stride along height dimension (LONG type) - default = 1
-* **sW** - Stride along width dimension (LONG type) - default = 1
-* **pH** - Padding along height dimension (LONG type) - default = 0
-* **pW** - Padding along width dimension (LONG type) - default = 0
-* **dH** - Dilation along height dimension (LONG type) - default = 1
-* **dW** - Dilation along width dimension (LONG type) - default = 1
-* **isSameMode** - Same mode (BOOL type) - default = true
-* **dataFormat** - Data format (STRING type) - default = NCHW
+* **kH** (LONG) - Kernel height - default = -1
+* **kW** (LONG) - Kernel width - default = -1
+* **sH** (LONG) - Stride along height dimension - default = 1
+* **sW** (LONG) - Stride along width dimension - default = 1
+* **pH** (LONG) - Padding along height dimension - default = 0
+* **pW** (LONG) - Padding along width dimension - default = 0
+* **dH** (LONG) - Dilation along height dimension - default = 1
+* **dW** (LONG) - Dilation along width dimension - default = 1
+* **isSameMode** (BOOL) - Same mode - default = true
+* **dataFormat** (STRING) - Data format - default = NCHW
 
 Used in these ops: 
 [col2Im](#col2im)
@@ -390,96 +390,96 @@ Used in these ops:
 [im2Col](#im2col)
 [separableConv2d](#separableconv2d)
 ## Conv3DConfig
-* **kD** - Kernel depth (LONG type) - default = -1
-* **kW** - Kernel width (LONG type) - default = -1
-* **kH** - Kernel height (LONG type) - default = -1
-* **sD** - Stride depth (LONG type) - default = 1
-* **sW** - Stride width (LONG type) - default = 1
-* **sH** - Stride height (LONG type) - default = 1
-* **pD** - Padding depth (LONG type) - default = 0
-* **pW** - Padding width (LONG type) - default = 0
-* **pH** - Padding height (LONG type) - default = 0
-* **dD** - Dilation depth (LONG type) - default = 1
-* **dW** - Dilation width (LONG type) - default = 1
-* **dH** - Dilation height (LONG type) - default = 1
-* **biasUsed** - biasUsed (BOOL type) - default = false
-* **isSameMode** - Same mode (BOOL type) - default = true
-* **dataFormat** - Data format (STRING type) - default = NDHWC
+* **kD** (LONG) - Kernel depth - default = -1
+* **kW** (LONG) - Kernel width - default = -1
+* **kH** (LONG) - Kernel height - default = -1
+* **sD** (LONG) - Stride depth - default = 1
+* **sW** (LONG) - Stride width - default = 1
+* **sH** (LONG) - Stride height - default = 1
+* **pD** (LONG) - Padding depth - default = 0
+* **pW** (LONG) - Padding width - default = 0
+* **pH** (LONG) - Padding height - default = 0
+* **dD** (LONG) - Dilation depth - default = 1
+* **dW** (LONG) - Dilation width - default = 1
+* **dH** (LONG) - Dilation height - default = 1
+* **biasUsed** (BOOL) - biasUsed - default = false
+* **isSameMode** (BOOL) - Same mode - default = true
+* **dataFormat** (STRING) - Data format - default = NDHWC
 
 Used in these ops: 
 [conv3d](#conv3d)
 ## DeConv2DConfig
-* **kH** - Kernel height (LONG type) - default = -1
-* **kW** - Kernel width (LONG type) - default = -1
-* **sH** - Stride along height dimension (LONG type) - default = 1
-* **sW** - Stride along width dimension (LONG type) - default = 1
-* **pH** - Padding along height dimension (LONG type) - default = 0
-* **pW** - Padding along width dimension (LONG type) - default = 0
-* **dH** - Dilation along height dimension (LONG type) - default = 1
-* **dW** - Dilation along width dimension (LONG type) - default = 1
-* **isSameMode** - Same mode (BOOL type) - default = false
-* **dataFormat** - Data format (STRING type) - default = NCHW
+* **kH** (LONG) - Kernel height - default = -1
+* **kW** (LONG) - Kernel width - default = -1
+* **sH** (LONG) - Stride along height dimension - default = 1
+* **sW** (LONG) - Stride along width dimension - default = 1
+* **pH** (LONG) - Padding along height dimension - default = 0
+* **pW** (LONG) - Padding along width dimension - default = 0
+* **dH** (LONG) - Dilation along height dimension - default = 1
+* **dW** (LONG) - Dilation along width dimension - default = 1
+* **isSameMode** (BOOL) - Same mode - default = false
+* **dataFormat** (STRING) - Data format - default = NCHW
 
 Used in these ops: 
 [deconv2d](#deconv2d)
 ## DeConv3DConfig
-* **kD** - Kernel depth (LONG type) - default = -1
-* **kW** - Kernel width (LONG type) - default = -1
-* **kH** - Kernel height (LONG type) - default = -1
-* **sD** - Stride depth (LONG type) - default = 1
-* **sW** - Stride width (LONG type) - default = 1
-* **sH** - Stride height (LONG type) - default = 1
-* **pD** - Padding depth (LONG type) - default = 0
-* **pW** - Padding width (LONG type) - default = 0
-* **pH** - Padding height (LONG type) - default = 0
-* **dD** - Dilation depth (LONG type) - default = 1
-* **dW** - Dilation width (LONG type) - default = 1
-* **dH** - Dilation height (LONG type) - default = 1
-* **isSameMode** - Same mode (BOOL type) - default = false
-* **dataFormat** - Data format (STRING type) - default = NCDHW
+* **kD** (LONG) - Kernel depth - default = -1
+* **kW** (LONG) - Kernel width - default = -1
+* **kH** (LONG) - Kernel height - default = -1
+* **sD** (LONG) - Stride depth - default = 1
+* **sW** (LONG) - Stride width - default = 1
+* **sH** (LONG) - Stride height - default = 1
+* **pD** (LONG) - Padding depth - default = 0
+* **pW** (LONG) - Padding width - default = 0
+* **pH** (LONG) - Padding height - default = 0
+* **dD** (LONG) - Dilation depth - default = 1
+* **dW** (LONG) - Dilation width - default = 1
+* **dH** (LONG) - Dilation height - default = 1
+* **isSameMode** (BOOL) - Same mode - default = false
+* **dataFormat** (STRING) - Data format - default = NCDHW
 
 Used in these ops: 
 [deconv3d](#deconv3d)
 ## Pooling2DConfig
-* **kH** - Kernel height (LONG type) - default = -1
-* **kW** - Kernel width (LONG type) - default = -1
-* **sH** - Stride along height dimension (LONG type) - default = 1
-* **sW** - Stride along width dimension (LONG type) - default = 1
-* **pH** - Padding along height dimension (LONG type) - default = 0
-* **pW** - Padding along width dimension (LONG type) - default = 0
-* **dH** - Dilation along height dimension (LONG type) - default = 1
-* **dW** - Dilation along width dimension (LONG type) - default = 1
-* **isSameMode** - Same mode (BOOL type) - default = true
-* **dataFormat** - Data format (STRING type) - default = nchw
+* **kH** (LONG) - Kernel height - default = -1
+* **kW** (LONG) - Kernel width - default = -1
+* **sH** (LONG) - Stride along height dimension - default = 1
+* **sW** (LONG) - Stride along width dimension - default = 1
+* **pH** (LONG) - Padding along height dimension - default = 0
+* **pW** (LONG) - Padding along width dimension - default = 0
+* **dH** (LONG) - Dilation along height dimension - default = 1
+* **dW** (LONG) - Dilation along width dimension - default = 1
+* **isSameMode** (BOOL) - Same mode - default = true
+* **dataFormat** (STRING) - Data format - default = nchw
 
 Used in these ops: 
 [avgPooling2d](#avgpooling2d)
 [maxPoolWithArgmax](#maxpoolwithargmax)
 [maxPooling2d](#maxpooling2d)
 ## Pooling3DConfig
-* **kD** - Kernel depth (LONG type) - default = -1
-* **kW** - Kernel width (LONG type) - default = -1
-* **kH** - Kernel height (LONG type) - default = -1
-* **sD** - Stride depth (LONG type) - default = 1
-* **sW** - Stride width (LONG type) - default = 1
-* **sH** - Stride height (LONG type) - default = 1
-* **pD** - Padding depth (LONG type) - default = 0
-* **pW** - Padding width (LONG type) - default = 0
-* **pH** - Padding height (LONG type) - default = 0
-* **dD** - Dilation depth (LONG type) - default = 1
-* **dW** - Dilation width (LONG type) - default = 1
-* **dH** - Dilation height (LONG type) - default = 1
-* **isSameMode** - Same mode (BOOL type) - default = true
-* **dataFormat** - Data format (STRING type) - default = NCDHW
+* **kD** (LONG) - Kernel depth - default = -1
+* **kW** (LONG) - Kernel width - default = -1
+* **kH** (LONG) - Kernel height - default = -1
+* **sD** (LONG) - Stride depth - default = 1
+* **sW** (LONG) - Stride width - default = 1
+* **sH** (LONG) - Stride height - default = 1
+* **pD** (LONG) - Padding depth - default = 0
+* **pW** (LONG) - Padding width - default = 0
+* **pH** (LONG) - Padding height - default = 0
+* **dD** (LONG) - Dilation depth - default = 1
+* **dW** (LONG) - Dilation width - default = 1
+* **dH** (LONG) - Dilation height - default = 1
+* **isSameMode** (BOOL) - Same mode - default = true
+* **dataFormat** (STRING) - Data format - default = NCDHW
 
 Used in these ops: 
 [avgPooling3d](#avgpooling3d)
 [maxPooling3d](#maxpooling3d)
 ## LocalResponseNormalizationConfig
-* **alpha** - alpha (NUMERIC type) - default = 1
-* **beta** - beta (NUMERIC type) - default = 0.5
-* **bias** - bias (NUMERIC type) - default = 1
-* **depth** - depth (INT type) - default = 5
+* **alpha** (NUMERIC) - alpha - default = 1
+* **beta** (NUMERIC) - beta - default = 0.5
+* **bias** (NUMERIC) - bias - default = 1
+* **depth** (INT) - depth - default = 5
 
 Used in these ops: 
 [localResponseNormalization](#localresponsenormalization)

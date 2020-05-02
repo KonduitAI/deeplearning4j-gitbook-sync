@@ -141,43 +141,43 @@ The SRU layer.  Does a single time step operation.
 
 # Configuration Classes
 ## LSTMConfiguration
-* **RnnDataFormat** -  The data format of the input. Input shape depends on data format (in config):<br>
+* **RnnDataFormat** (ENUM) -  The data format of the input. Input shape depends on data format (in config):<br>
  TNS -> [timeSteps, batchSize, inSize]<br>
  NST -> [batchSize, inSize, timeSteps]<br>
- NTS -> [batchSize, timeSteps, inSize]<br> (ENUM type)
-* **peepHole** - Whether to provide peephole connections (BOOL type)
-* **forgetBias** - The bias added to forget gates in order to reduce the scale of forgetting in the beginning of the training. (NUMERIC type)
-* **clippingCellValue** - The bias added to forget gates in order to reduce the scale of forgetting in the beginning of the training. (NUMERIC type)
+ NTS -> [batchSize, timeSteps, inSize]<br>
+* **peepHole** (BOOL) - Whether to provide peephole connections
+* **forgetBias** (NUMERIC) - The bias added to forget gates in order to reduce the scale of forgetting in the beginning of the training.
+* **clippingCellValue** (NUMERIC) - The bias added to forget gates in order to reduce the scale of forgetting in the beginning of the training.
 
 Used in these ops: 
 [lstmCell](#lstmcell)
 [lstmblock](#lstmblock)
 ## LSTMLayerConfig
-* **LSTMDataFormat** - for unidirectional:  TNS: shape [timeLength, numExamples, inOutSize] - sometimes referred to as "time major"<br>
+* **LSTMDataFormat** (ENUM) - for unidirectional:  TNS: shape [timeLength, numExamples, inOutSize] - sometimes referred to as "time major"<br>
   NST: shape [numExamples, inOutSize, timeLength]<br>
   NTS: shape [numExamples, timeLength, inOutSize] - TF "time_major=false" layout<br> for bidirectional:
-   T2NS: 3 = [timeLength, 2, numExamples, inOutSize] (for ONNX) (ENUM type)
-* **LSTMDirectionMode** - direction <br>
+   T2NS: 3 = [timeLength, 2, numExamples, inOutSize] (for ONNX)
+* **LSTMDirectionMode** (ENUM) - direction <br>
  FWD: 0 = fwd
  BWD: 1 = bwd
  BIDIR_SUM: 2 = bidirectional sum
  BIDIR_CONCAT: 3 = bidirectional concat
- BIDIR_EXTRA_DIM: 4 = bidirectional extra output dim (in conjunction with format dataFormat = 3) (ENUM type)
-* **gateAct** - Activations (ENUM type)
-* **cellAct** - Activations (ENUM type)
-* **outAct** - Activations (ENUM type)
-* **retFullSequence** - indicates whether to return whole time sequence h {h_0, h_1, ... , h_sL-1} (BOOL type) - default = true
-* **retLastH** - indicates whether to return output at last time step only,
- in this case shape would be [bS, nOut] (exact shape depends on dataFormat argument) (BOOL type) - default = false
-* **retLastC** - indicates whether to return cells state at last time step only,
- in this case shape would be [bS, nOut] (exact shape depends on dataFormat argument) (BOOL type) - default = false
-* **cellClip** - Cell clipping value, if it = 0 then do not apply clipping (NUMERIC type) - default = 0.0
-* **gateAlpha** - null (NUMERIC type) - default = 0.0
-* **gateBeta** - null (NUMERIC type) - default = 0.0
-* **cellAlpha** - null (NUMERIC type) - default = 0.0
-* **cellBeta** - null (NUMERIC type) - default = 0.0
-* **outAlpha** - null (NUMERIC type) - default = 0.0
-* **outBeta** - null (NUMERIC type) - default = 0.0
+ BIDIR_EXTRA_DIM: 4 = bidirectional extra output dim (in conjunction with format dataFormat = 3)
+* **gateAct** (ENUM) - Activations
+* **cellAct** (ENUM) - Activations
+* **outAct** (ENUM) - Activations
+* **retFullSequence** (BOOL) - indicates whether to return whole time sequence h {h_0, h_1, ... , h_sL-1} - default = true
+* **retLastH** (BOOL) - indicates whether to return output at last time step only,
+ in this case shape would be [bS, nOut] (exact shape depends on dataFormat argument) - default = false
+* **retLastC** (BOOL) - indicates whether to return cells state at last time step only,
+ in this case shape would be [bS, nOut] (exact shape depends on dataFormat argument) - default = false
+* **cellClip** (NUMERIC) - Cell clipping value, if it = 0 then do not apply clipping - default = 0.0
+* **gateAlpha** (NUMERIC) - null - default = 0.0
+* **gateBeta** (NUMERIC) - null - default = 0.0
+* **cellAlpha** (NUMERIC) - null - default = 0.0
+* **cellBeta** (NUMERIC) - null - default = 0.0
+* **outAlpha** (NUMERIC) - null - default = 0.0
+* **outBeta** (NUMERIC) - null - default = 0.0
 
 Used in these ops: 
 [lstmLayer](#lstmlayer)
@@ -208,14 +208,14 @@ Used in these ops:
 [lstmblock](#lstmblock)
 ## LSTMLayerWeights
 * **inputWeights**- input weights Wx:
- 1) shapes [nIn, 4*nOut] for FWD,BWD  2) shapes [2, nIn, 4*nOut] BIDIR_SUM, BIDIR_CONCAT and BIDIR_EXTRA_DIM (NUMERIC type)
-* **recurrentWeights**- // recurrent weights Wr:
- 1) shapes[nIn, 4*nOut] for FWD, BWD  2) shapes [2, nIn, 4*nOut] BIDIR_SUM, BIDIR_CONCAT and BIDIR_EXTRA_DIM (NUMERIC type)
+ 1) shapes `[nIn, 4*nOut]` for FWD,BWD  2) shapes `[2, nIn, 4*nOut]` BIDIR_SUM, BIDIR_CONCAT and BIDIR_EXTRA_DIM (NUMERIC type)
+* **recurrentWeights**- recurrent weights Wr:
+ 1) shapes `[nIn, 4*nOut]` for FWD, BWD  2) shapes `[2, nIn, 4*nOut]` BIDIR_SUM, BIDIR_CONCAT and BIDIR_EXTRA_DIM (NUMERIC type)
 * **biases**- biases
- 1) shapes [4*nOut] for FWD, BWD  2) shapes [2, 4*nOut] for BIDIR_SUM, BIDIR_CONCAT and BIDIR_EXTRA_DIM (NUMERIC type)
+ 1) shapes `[4*nOut]` for FWD, BWD  2) shapes `[2, 4*nOut]` for BIDIR_SUM, BIDIR_CONCAT and BIDIR_EXTRA_DIM (NUMERIC type)
 * **peepholeWeights**- peephole weights Wp:
-  1) [3*nOut]    when directionMode <  2
-  2) [2, 3*nOut] when directionMode >= 2 (NUMERIC type)
+  1) `[3*nOut]`    when directionMode <  2
+  2) `[2, 3*nOut]`  when directionMode >= 2 (NUMERIC type)
 
 Used in these ops: 
 [lstmLayer](#lstmlayer)
