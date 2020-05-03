@@ -86,7 +86,7 @@
 * [Ops](samediff/ops.md)
 * [Adding Ops](samediff/adding-ops.md)
 
-## Operation Namespaces
+## ND4J & SameDiff Ops <a id="operation-namespaces"></a>
 
 * [Overview](operation-namespaces/overview.md)
 * [Bitwise](operation-namespaces/bitwise.md)
