@@ -12,7 +12,7 @@ weight: 3
 
 Deeplearning4j supports CUDA but can be further accelerated with cuDNN. Most 2D CNN layers \(such as ConvolutionLayer, SubsamplingLayer, etc\), and also LSTM and BatchNormalization layers support CuDNN.
 
-The only thing we need to do to have DL4J load cuDNN is to add a dependency on `deeplearning4j-cuda-9.2`, `deeplearning4j-cuda-10.0`, or `deeplearning4j-cuda-10.1`, for example:
+The only thing we need to do to have DL4J load cuDNN is to add a dependency on `deeplearning4j-cuda-9.2`, `deeplearning4j-cuda-10.0`, `deeplearning4j-cuda-10.1,`or `deeplearning4j-cuda-10.2`, for example:
 
 ```markup
 <dependency>
@@ -42,10 +42,12 @@ or
 </dependency>
 ```
 
+or
+
 ```markup
 <dependency>
     <groupId>org.deeplearning4j</groupId>
-    <artifactId>deeplearning4j-cuda-10.1</artifactId>
+    <artifactId>deeplearning4j-cuda-10.2</artifactId>
     <version>1.0.0-beta6</version>
 </dependency>
 ```
