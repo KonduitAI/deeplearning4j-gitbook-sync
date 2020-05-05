@@ -12,17 +12,7 @@ weight: 3
 
 Deeplearning4j supports CUDA but can be further accelerated with cuDNN. Most 2D CNN layers \(such as ConvolutionLayer, SubsamplingLayer, etc\), and also LSTM and BatchNormalization layers support CuDNN.
 
-The only thing we need to do to have DL4J load cuDNN is to add a dependency on `deeplearning4j-cuda-9.2`, `deeplearning4j-cuda-10.0`, or `deeplearning4j-cuda-10.1`, for example:
-
-```markup
-<dependency>
-    <groupId>org.deeplearning4j</groupId>
-    <artifactId>deeplearning4j-cuda-9.2</artifactId>
-    <version>1.0.0-beta6</version>
-</dependency>
-```
-
-or
+The only thing we need to do to have DL4J load cuDNN is to add a dependency on `deeplearning4j-cuda-10.0`, `deeplearning4j-cuda-10.1`, or `deeplearning4j-cuda-10.2`, for example:
 
 ```markup
 <dependency>
@@ -42,6 +32,8 @@ or
 </dependency>
 ```
 
+or
+
 ```markup
 <dependency>
     <groupId>org.deeplearning4j</groupId>
@@ -58,12 +50,11 @@ Note there are multiple combinations of cuDNN and CUDA supported. At this time t
 
 | CUDA Version | cuDNN Version |
 | :--- | :--- |
-| 9.2 | 7.2 |
 | 10.0 | 7.4 |
 | 10.1 | 7.6 |
 | 10.2 | 7.6 |
 
-To install, simply extract the library to a directory found in the system path used by native libraries. The easiest way is to place it alongside other libraries from CUDA in the default directory \(`/usr/local/cuda/lib64/` on Linux, `/usr/local/cuda/lib/` on Mac OS X, and `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.2\bin\`, `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\bin\`, or `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\bin\` on Windows\).
+To install, simply extract the library to a directory found in the system path used by native libraries. The easiest way is to place it alongside other libraries from CUDA in the default directory \(`/usr/local/cuda/lib64/` on Linux, `/usr/local/cuda/lib/` on Mac OS X, and `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\bin\`, `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\bin\`, or `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin\` on Windows\).
 
 Alternatively, in the case of CUDA 10.1, cuDNN comes bundled with the "redist" package of the [JavaCPP Presets for CUDA](https://github.com/bytedeco/javacpp-presets/tree/master/cuda). [After agreeing to the license](https://github.com/bytedeco/javacpp-presets/tree/master/cuda#license-agreements), we can add the following dependencies instead of installing CUDA and cuDNN:
 
