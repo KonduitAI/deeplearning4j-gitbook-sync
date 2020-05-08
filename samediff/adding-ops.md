@@ -144,7 +144,7 @@ This example is taken from [SameDiffTests](https://github.com/eclipse/deeplearni
 
 The second place you find tests is in [samediff](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-tests/src/test/java/org/nd4j/autodiff/samediff) repo directory. Whenever you add a new operation to SameDiff, add tests for the forward pass and gradient checks as well.
 
-The third set of relevant tests is stored in [imports](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-tests/src/test/java/org/nd4j/imports) and contains test for importing TensorFlow and ONNX graphs. On a side note, the resources for these import tests are generated in our [TFOpsTests](https://github.com/deeplearning4j/TFOpTests) project.
+The third set of relevant tests is stored in [imports](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-tests/src/test/java/org/nd4j/imports) and contains test for importing TensorFlow and ONNX graphs. On a side note, the resources for these import tests are generated in our [TFOpsTests](https://github.com/KonduitAI/dl4j-dev-tools/tree/master/import-tests/tfoptests) project.
 
 ## Creating and exposing new SameDiff ops
 
