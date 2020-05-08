@@ -8,10 +8,6 @@ weight: 2
 
 # Supported Features
 
-{% hint style="danger" %}
-tf.keras import is not supported yet.
-{% endhint %}
-
 ## Keras Model Import: Supported Features
 
 While not every concept in DL4J has an equivalent in Keras and vice versa, many of the key concepts can be matched. Importing keras models into DL4J is done in our [deeplearning4j-modelimport](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras) module. Below is a comprehensive list of currently supported features.

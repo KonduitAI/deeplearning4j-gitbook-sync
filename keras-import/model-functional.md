@@ -8,10 +8,6 @@ weight: 2
 
 # Functional Model
 
-{% hint style="danger" %}
-tf.keras import is not supported yet.
-{% endhint %}
-
 ## Getting started with importing Keras functional Models
 
 Let's say you start with defining a simple MLP using Keras' functional API:

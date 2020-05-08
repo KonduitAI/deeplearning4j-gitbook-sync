@@ -8,10 +8,6 @@ weight: 0
 
 # Overview
 
-{% hint style="danger" %}
-tf.keras import is not supported yet.
-{% endhint %}
-
 ## Deeplearning4j: Keras model import
 
 [Keras model import](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras) provides routines for importing neural network models originally configured and trained using [Keras](https://keras.io/), a popular Python deep learning library.
