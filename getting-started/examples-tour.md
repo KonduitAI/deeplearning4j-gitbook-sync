@@ -146,12 +146,6 @@ Do you need to add a layer with features that aren't available in DeepLearning4J
 
 Neural Networks for NLP? We have those, too.
 
-### GloVe
-
-Global Vectors for Word Representation are useful for detecting relationships between words.
-
-[Show me the code](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/nlp/glove/GloVeExample.java)
-
 ### Paragraph Vectors
 
 A vectorized representation of words. Described [here](https://cs.stanford.edu/~quocle/paragraph_vector.pdf)
