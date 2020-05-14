@@ -6,7 +6,11 @@ layout: default
 redirect_from: /releasenotes
 ---
 
-## Version 1.0.0-beta7 <a id="release-notes-for-version-100-beta6"></a>
+## Version 1.0.0-beta7
+
+Read the announcement at [https://blog.konduit.ai/2020/05/14/deeplearning4j-1-0-0-beta7-released/](https://blog.konduit.ai/2020/05/14/deeplearning4j-1-0-0-beta7-released/) for the highlights of this release.
+
+## Version 1.0.0-beta7 <a id="release-notes-for-version-100-beta7"></a>
 
 ### Highlights - 1.0.0-beta7 Release <a id="highlights---100-beta7-release"></a>
 
@@ -216,17 +220,17 @@ redirect_from: /releasenotes
 
 ### RL4J
 
-https://github.com/KonduitAI/deeplearning4j/pull/326
-https://github.com/KonduitAI/deeplearning4j/pull/327
-https://github.com/KonduitAI/deeplearning4j/pull/352
-https://github.com/KonduitAI/deeplearning4j/pull/358
-https://github.com/KonduitAI/deeplearning4j/pull/369
-https://github.com/KonduitAI/deeplearning4j/pull/404
-https://github.com/eclipse/deeplearning4j/pull/8595
-https://github.com/eclipse/deeplearning4j/pull/8596
-https://github.com/eclipse/deeplearning4j/pull/8711
-https://github.com/eclipse/deeplearning4j/pull/8717
-https://github.com/eclipse/deeplearning4j/pull/8766
+https://github.com/KonduitAI/deeplearning4j/pull/326  
+https://github.com/KonduitAI/deeplearning4j/pull/327  
+https://github.com/KonduitAI/deeplearning4j/pull/352  
+https://github.com/KonduitAI/deeplearning4j/pull/358  
+https://github.com/KonduitAI/deeplearning4j/pull/369  
+https://github.com/KonduitAI/deeplearning4j/pull/404  
+https://github.com/eclipse/deeplearning4j/pull/8595  
+https://github.com/eclipse/deeplearning4j/pull/8596  
+https://github.com/eclipse/deeplearning4j/pull/8711  
+https://github.com/eclipse/deeplearning4j/pull/8717  
+https://github.com/eclipse/deeplearning4j/pull/8766  
 
 
 #### Features and Enhancements
@@ -251,193 +255,6 @@ https://github.com/eclipse/deeplearning4j/pull/8766
 
 ---
 ---
-
-
-## Version 1.0.0-beta7
-
-Read the announcement at [https://blog.konduit.ai/2020/05/14/deeplearning4j-1-0-0-beta7-released/](https://blog.konduit.ai/2020/05/14/deeplearning4j-1-0-0-beta7-released/) for the highlights of this release.
-
-### Deeplearning4j
-
-#### Features and Enhancements
-
-* Added Keras model import support for tf.keras models [Link](https://github.com/KonduitAI/deeplearning4j/pull/258), [Link](https://github.com/KonduitAI/deeplearning4j/pull/347)
-  * Full inference and training support is available for ops/layers in the tf.keras namespace; inference only for general Tensorflow operations outside of the tf.keras namespace
-  * Note also improvements to Keras import for reshape, permute, etc operations due to NHWC and NWC support in DL4J
-* DL4J now supports NHWC \(channels last\) data format for all CNN 2D layers, in addition to NCHW [Link](https://github.com/KonduitAI/deeplearning4j/pull/376)
-* DL4J now supports NWC \(channels last - \[minibatch, sequence\_length, size\]\) for all RNN and CNN 1D layers, in addition to NCW [Link](https://github.com/KonduitAI/deeplearning4j/pull/379)
-* Added Deconvolution3D layer [Link](https://github.com/eclipse/deeplearning4j/issues/8497)
-* Keras import: added ReLU, ELU and Softmax advanced activation layers [Link](https://github.com/KonduitAI/deeplearning4j/pull/143) and Swish activation function [Link](https://github.com/eclipse/deeplearning4j/pull/8801)
-* Added DL4J SameDiffLoss class \(for easily-defined DL4J ILossFunction's via SameDiff\) [Link](https://github.com/KonduitAI/deeplearning4j/pull/251)
-* Useful exceptions are now thrown when attempting to perform unsupported operations on FastText [Link](https://github.com/KonduitAI/deeplearning4j/pull/269)
-* Added MultiLayerNetwork.evaluate\(MultiDataSetIterator\) and .evaluateRegression\(MultiDataSetIterator\) methods [Link](https://github.com/eclipse/deeplearning4j/issues/8777), [Link](https://github.com/KonduitAI/deeplearning4j/pull/318)
-
-#### Bug Fixes and Optimizations
-
-* Updaters \(Adam, AdaGrad, etc\) optimized via C++ operations \(significant training performance boost\) for DL4J and SameDiff [Link](https://github.com/KonduitAI/deeplearning4j/pull/335), [Link](https://github.com/KonduitAI/deeplearning4j/pull/384)
-* Some packages relocated to avoid split packages \(that can be a problem for OSGi and Java 9 modules\) [Link](https://github.com/KonduitAI/deeplearning4j/pull/411)
-  * Note: this is a breaking change for some class packages/imports. See [this link](https://github.com/KonduitAI/deeplearning4j/pull/411) for details on exact package changes
-* Deeplearning4j UI: Webjars versions locked down using dependency management to avoid check on each build [Link](https://github.com/eclipse/deeplearning4j/issues/8549)
-* Added MKLDNN \(DNNL/OneDNN\) support for depthwise\_conv2d operation for DL4J and SameDiff [Link](https://github.com/KonduitAI/deeplearning4j/pull/156)
-* Refactored/merged modules dl4j-perf and dl4j-util into deeplearning4j-core [Link](https://github.com/KonduitAI/deeplearning4j/pull/175)
-* Fixed an issue with BertWordPieceTokenizer - potential StackOverflowError with certain inputs [Link](https://github.com/KonduitAI/deeplearning4j/pull/205)
-* Fixed an issue with GlobalPooling layer with masks of different datatype to the activations datatype [Link](https://github.com/KonduitAI/deeplearning4j/pull/212)
-* Fixed an issue with DL4JModelValidator for ComputationGraph [Link](https://github.com/KonduitAI/deeplearning4j/pull/240)
-* Fixed an issue where SameDiff layers in DL4J could throw an exception when used with transfer learning [Link](https://github.com/eclipse/deeplearning4j/issues/8691)
-* Weight initialization for EmbeddingLayer and EmbeddingSequenceLayer now no longer depend on the vocabulary size \(only the vector size\) [Link](https://github.com/eclipse/deeplearning4j/issues/8663)
-* Fixed an issue with Keras import with bidirectional layers + preprocessors [Link](https://github.com/KonduitAI/deeplearning4j/pull/293)
-* DL4J UI: added redirect from /train to /train/overview [Link](https://github.com/eclipse/deeplearning4j/issues/8704)
-* Fixed an issue where RecordReaderDataSetIterator builder collectMetaData configuration was not being applied [Link](https://github.com/eclipse/deeplearning4j/issues/8776)
-* Fixed an issue where MultiLayerNetwork evaluation was not passing metadata to the IEvaluation instances during evaluation [Link](https://github.com/eclipse/deeplearning4j/issues/8718), [Link](https://github.com/KonduitAI/deeplearning4j/pull/318)
-* Fixed an issue with Spark training SharedTrainingMaster when training with a ComputationGraph and MultiDataSets [Link](https://github.com/eclipse/deeplearning4j/issues/8765)
-* Assorted fixes for edge cases for DL4J Keras import [Link](https://github.com/KonduitAI/deeplearning4j/pull/347)
-* deelpearning4j-nlp-korean will no longer be released for Scala 2.12 due to required dependency only having Scala 2.11 version avairable [Link](https://github.com/KonduitAI/deeplearning4j/pull/380)
-* Fix for ConvolutionalIterationListener for ComputationGraph [Link](https://github.com/KonduitAI/deeplearning4j/pull/382)
-* Fixed an issue where dataset and model zoo downloads could get stuck if the server fails to send any data \(now: timeout + retry\) [Link](https://github.com/KonduitAI/deeplearning4j/pull/406)
-* DL4J ModelSerializer no longer writes temporary files when restoring models from InputStream [Link](https://github.com/eclipse/deeplearning4j/pull/8815)
-* Fixes issues with UIServer multi session mode, and potential shutdown race condition [Link](https://github.com/eclipse/deeplearning4j/pull/8856)
-* Fixed an issue where TfidfVectorizer.vectorize\(\) could throw a NPE when fit from LabelAwareIterator [Link](https://github.com/eclipse/deeplearning4j/pull/8887)
-
-### ND4J/SameDiff:
-
-#### Features and Enhancements
-
-* SameDiff multi-threaded inference enhanced \(and fixed\) - a single SameDiff instance can now be used for inference safely and efficiently from multiple threads [Link](https://github.com/eclipse/deeplearning4j/issues/8654) [Link](https://github.com/KonduitAI/deeplearning4j/pull/263)
-* cuDNN support added to SameDiff \(automatically enabled for nd4j-cuda-10.x backend\) [Link](https://github.com/KonduitAI/deeplearning4j/pull/150)
-* Added ND4J namespaces: Nd4j.cnn, Nd4j.rnn, Nd4j.image [Link](https://github.com/KonduitAI/deeplearning4j/pull/176)
-* Added new Image operations namespace operations:
-  * rgbToHsv, hsvToRgb [Link](https://github.com/KonduitAI/deeplearning4j/pull/122)
-  * rgbToYiq, yiqToRgb, rgbToYuv, yuvToRgb [Link](https://github.com/KonduitAI/deeplearning4j/pull/144)
-  * imageResize [Link](https://github.com/KonduitAI/deeplearning4j/pull/378)
-* Added new Random operations namespace operations:
-  * gamma, poisson, shuffle [Link](https://github.com/KonduitAI/deeplearning4j/pull/122)
-* Added new Math namespace operations:
-  * clipByAvgNorm, embeddingLookup [Link](https://github.com/KonduitAI/deeplearning4j/pull/378)
-  * mergeMaxIndex [Link](https://github.com/KonduitAI/deeplearning4j/pull/392)
-* Added new NN namespace operations:
-  * cReLU [Link](https://github.com/KonduitAI/deeplearning4j/pull/378)
-* Added new CNN namespace operations:
-  * upsampling3d [Link](https://github.com/KonduitAI/deeplearning4j/pull/392)
-* Added new linalg operations namespace
-  * triangular\_solve [Link](https://github.com/KonduitAI/deeplearning4j/pull/173)
-  * tri operation [Link](https://github.com/KonduitAI/deeplearning4j/pull/392)
-  * triu operation [Link](https://github.com/KonduitAI/deeplearning4j/pull/392)
-* Added new RNN operation namespace operations:
-  * lstmLayer \(note old lstmLayer method renamed to lstmBlock\) [Link](https://github.com/KonduitAI/deeplearning4j/pull/353)
-  * gru [Link](https://github.com/KonduitAI/deeplearning4j/pull/410)
-* Added new Loss operations namespace - Nd4j.loss [Link](https://github.com/KonduitAI/deeplearning4j/pull/294)
-* Mapped operations for Tensorflow import:
-  * HSVToRGB, RGBToHSV, Igamma, Igammac, RandomGamma, RandomPoisson, RandomPoissonV2, RandomShuffle [Link](https://github.com/KonduitAI/deeplearning4j/pull/122)
-* Added SameDiff ProfilingListener - writes op performance profiles in Chrome profiler format \(load in `chrome://tracing/`\) [Link](https://github.com/KonduitAI/deeplearning4j/pull/133) [Link](https://github.com/eclipse/deeplearning4j/blob/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/autodiff/listeners/profiler/ProfilingListener.java)
-* Added SameDiff ProfileAnalyzer tool to compare profiles output from ProfilingListener \(or Tensorflow\) [Link](https://github.com/KonduitAI/deeplearning4j/pull/133) [Link](https://github.com/eclipse/deeplearning4j/blob/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/autodiff/listeners/profiler/comparison/ProfileAnalyzer.java)
-* SameDiff listener API: added frame and iteration information for listener methods [Link](https://github.com/eclipse/deeplearning4j/issues/8509) [Link](https://github.com/KonduitAI/deeplearning4j/pull/143)
-* Added \(non-backend-specific\) method of accessing Nd4j environment: `Nd4j.getEnvironment()` method \(environment info and low-level configuration options\) [Link](https://github.com/eclipse/deeplearning4j/issues/8520) [Link](https://github.com/KonduitAI/deeplearning4j/pull/143)
-* Improved memory limits/configuration support for libnd4j \(c++\) [Link](https://github.com/KonduitAI/deeplearning4j/pull/167)
-* Added pairwise \(broadcastable\) power backprop operation [Link](https://github.com/KonduitAI/deeplearning4j/pull/171)
-* Updated JavaCPP presets MKL version to 2020.0 from 2019.5 [Link](https://github.com/KonduitAI/deeplearning4j/pull/190)
-* Added DynamicCustomOp dargs - datatype arguments [Link](https://github.com/KonduitAI/deeplearning4j/pull/197) [Link](https://github.com/KonduitAI/deeplearning4j/pull/201)
-  * Output datatype configuration for Range op [Link](https://github.com/KonduitAI/deeplearning4j/pull/204), SequenceOp [Link](https://github.com/eclipse/deeplearning4j/issues/8674), ConfusionMatrix [Link](https://github.com/KonduitAI/deeplearning4j/pull/361)
-* Added tensormmul\_bp op [Link](https://github.com/KonduitAI/deeplearning4j/pull/231)
-* OpenBLAS version upgraded to 0.3.8 [Link](https://github.com/KonduitAI/deeplearning4j/pull/264)
-* libnd4j \(c++ codebase underlying DL4J, ND4J and SameDiff\) refactored to be more easily embeddable in other C++ projects [Link](https://github.com/KonduitAI/deeplearning4j/pull/273)
-* ImagePreProcessingScaler now supports preprocessing of labels \(for segmentation\) [Link](https://github.com/eclipse/deeplearning4j/issues/8731)
-* Additional datatypes now supported for nd4j-tensorflow TensorflowConversion [Link](https://github.com/KonduitAI/deeplearning4j/pull/284)
-* SameDiff operation namespaces \(sd.math, sd.image, etc\) are now code generated to ensure SameDiff and ND4J namespaces are identical \(all operations included, same API\) [Link](https://github.com/KonduitAI/deeplearning4j/pull/303)
-* Added ND4J `ArchiveUtils.unzipFileTo(String, String, boolean logFiles)` overload to enable/disable extracted file path logging [Link](https://github.com/eclipse/deeplearning4j/issues/8715)
-* Added weight format configuration for following operations: conv1D, conv2D, conv3D, deconv2d, deconv3d, depthwiseConv2d, pointwiseConv2d, sconv2d [Link](https://github.com/KonduitAI/deeplearning4j/pull/329)
-* Added backprop operation implementations for mergemax, mergeadd, mergeavg operations [Link](https://github.com/KonduitAI/deeplearning4j/pull/343)
-* MKL version upgraded to 2020.0 2020.1; OpenCV upgraded from 4.2.0 to 4.3.0 [Link](https://github.com/KonduitAI/deeplearning4j/pull/363)
-* SameDiff: DifferentialFunctionFactory class removed in favor of namespace methods \(sd.math, sd.linalg, etc\) [Link](https://github.com/KonduitAI/deeplearning4j/pull/367)
-* Added lstmLayer\_bp operation [Link](https://github.com/KonduitAI/deeplearning4j/pull/370)
-* Added gru\_bp operation [Link](https://github.com/KonduitAI/deeplearning4j/pull/377)
-* linspace operation can now use both targs and arrays for start/end/size arguments [Link](https://github.com/KonduitAI/deeplearning4j/pull/373)
-* Assorted dependency updates - OpenBLAS \(0.3.9\), OpenCV \(4.3.0\), Leptonica \(1.79.0\) [Link](https://github.com/KonduitAI/deeplearning4j/pull/374)
-* Upgraded assorted dependency versions: javax.activation:activation \(1.1 -&gt; 1.1.1\), stream analytics \(2.7.0-&gt;2.9.8\), Apache Spark \(2.4.3-&gt;2.4.5\), Jackson databind \(2.10.1 -&gt; 2.10.3\), Vertx \(3.8.3 -&gt; 3.9.0\) [Link](https://github.com/KonduitAI/deeplearning4j/pull/405)
-* Added nd4j-common-tests ResourceUtils.listClassPathfiles method [Link](https://github.com/KonduitAI/deeplearning4j/pull/416)
-
-#### Bug Fixes and Optimizations
-
-* Updaters \(Adam, AdaGrad, etc\) optimized via C++ operations \(significant training performance boost\) for DL4J and SameDiff [Link](https://github.com/KonduitAI/deeplearning4j/pull/335), [Link](https://github.com/KonduitAI/deeplearning4j/pull/384)
-* SameDiff - added CuDNN support [Link](https://github.com/KonduitAI/deeplearning4j/pull/192)
-* Some packages relocated to avoid split packages \(that can be a problem for OSGi and Java 9 modules\) [Link](https://github.com/KonduitAI/deeplearning4j/pull/411)
-  * Note: this is a breaking change for some class packages/imports. See [this link](https://github.com/KonduitAI/deeplearning4j/pull/411) for details on exact package changes
-* Fixed some issues with Tensorflow import of FusedBatchNorm operation [Link](https://github.com/KonduitAI/deeplearning4j/pull/122)
-* Fixed an issue where the Roll operation did not match Tensorflow operation [Link](https://github.com/eclipse/deeplearning4j/issues/8453) [Link](https://github.com/KonduitAI/deeplearning4j/pull/127)
-* Fixed an issue where ArchiveUtils could fail to create the top level destination directory when it does not exist [Link](https://github.com/KonduitAI/deeplearning4j/pull/129)
-* Fixed an issue where resize\_bicubic operation did not match Tensorflow for some configuration values [Link](https://github.com/eclipse/deeplearning4j/issues/8539) [Link](https://github.com/KonduitAI/deeplearning4j/pull/130)
-* Pad operation now supports long/int64 values for padding array [Link](https://github.com/KonduitAI/deeplearning4j/pull/132) [Link](https://github.com/eclipse/deeplearning4j/issues/8517)
-* Fixed an issue where hashcode operation shape function wasn't always returning int64/long dtype [Link](https://github.com/KonduitAI/deeplearning4j/pull/139)
-* Fixed an issue with reshape operation on empty arrays with -1s [Link](https://github.com/eclipse/deeplearning4j/issues/8572) [Link](https://github.com/KonduitAI/deeplearning4j/pull/146)
-* Improved performance on CUDA for concat operation [Link](https://github.com/KonduitAI/deeplearning4j/pull/148) and CPU/GPU [Link](https://github.com/KonduitAI/deeplearning4j/pull/151)
-* Improved performance for bias\_add operation
-  * On CPU for NHWC case [Link](https://github.com/KonduitAI/deeplearning4j/pull/149)
-  * Generally [Link](https://github.com/KonduitAI/deeplearning4j/pull/217)
-  * On CUDA for 2D case [Link](https://github.com/KonduitAI/deeplearning4j/pull/285)
-* Added MKLDNN \(DNNL/OneDNN\) support for depthwise\_conv2d operation for DL4J and SameDiff [Link](https://github.com/KonduitAI/deeplearning4j/pull/156)
-* Fixed a small SameDiff execution issue for switch operation where the predicate is a constant [Link](https://github.com/KonduitAI/deeplearning4j/pull/168)
-* Fixed an issue with batchnorm operation when input arrays have unusual strides [Link](https://github.com/KonduitAI/deeplearning4j/pull/169)
-* Merged nd4j-buffer, nd4j-content modules into nd4j-api [Link](https://github.com/KonduitAI/deeplearning4j/pull/175)
-* Deleted deprecated nd4j-jackson module \(remaining functionality available in nd4j-api\) [Link](https://github.com/KonduitAI/deeplearning4j/pull/175)
-* Deleted unused/unmaintained nd4j-camel and nd4j-gson modules [Link](https://github.com/KonduitAI/deeplearning4j/pull/175)
-* Optimization for legacy random ops [Link](https://github.com/KonduitAI/deeplearning4j/pull/202)
-* Optimization for broadcast operations [Link](https://github.com/KonduitAI/deeplearning4j/pull/234), [Link](https://github.com/KonduitAI/deeplearning4j/pull/239), [Link](https://github.com/KonduitAI/deeplearning4j/pull/248), [Link](https://github.com/KonduitAI/deeplearning4j/pull/257), [Link](https://github.com/KonduitAI/deeplearning4j/pull/302)
-* Performance optimization for multiple operations: softmax, squeeze, expand\_dims, tanh [Link](https://github.com/KonduitAI/deeplearning4j/pull/242)
-* Optimization for transpose/permute operations [Link](https://github.com/KonduitAI/deeplearning4j/pull/244)
-* Performance enhancement: MKLDNN matmul used for some mmul operation cases [Link](https://github.com/KonduitAI/deeplearning4j/pull/250)
-* Optimization for gather operation on CPU [Link](https://github.com/KonduitAI/deeplearning4j/pull/254)
-* Optimization for stack/unstack operations on CPU [Link](https://github.com/KonduitAI/deeplearning4j/pull/261)
-* Optimization for split operation \(CPU and CUDA\) [Link](https://github.com/KonduitAI/deeplearning4j/pull/262) [Link](https://github.com/KonduitAI/deeplearning4j/pull/266)
-* ND4J initialization no longer logs number of OpenMP BLAS threads for CUDA [Link](https://github.com/eclipse/deeplearning4j/issues/8682)
-* Optimization: Fixed issues with auto-vectorization on multple CPU operations [Link](https://github.com/KonduitAI/deeplearning4j/pull/274)
-* Optimization for reshape operation [Link](https://github.com/KonduitAI/deeplearning4j/pull/275), [Link](https://github.com/KonduitAI/deeplearning4j/pull/277)
-* Fixed an issue where INDArray.hashCode\(\) could cause an exception on some datatypes [Link](https://github.com/eclipse/deeplearning4j/issues/8565)
-* Optimization for CPU: MKLDNN is now used for softmax, tanh, softmax\_bp and tanh\_bp operations [Link](https://github.com/KonduitAI/deeplearning4j/pull/286), [Link](https://github.com/KonduitAI/deeplearning4j/pull/296), [Link](https://github.com/KonduitAI/deeplearning4j/pull/301), [Link](https://github.com/KonduitAI/deeplearning4j/pull/308)
-* Fixed random\_exponential operation [Link](https://github.com/eclipse/deeplearning4j/issues/8752)
-* Improved performance on C++ SameDiff graph execution via reduced array zeroing where safe to do so [Link](https://github.com/KonduitAI/deeplearning4j/pull/304)
-* Improved C++ indexing implementation impacting CPU performance on some operations [Link](https://github.com/KonduitAI/deeplearning4j/pull/305)
-* Fixed an issue where Split operation could have incorrect output shapes for empty arrays [Link](https://github.com/KonduitAI/deeplearning4j/pull/311)
-* Fixed some issues with SameDiff.equals method [Link](https://github.com/KonduitAI/deeplearning4j/pull/318)
-* Fixed an issue with reshape operation output shape on empty arrays [Link](https://github.com/KonduitAI/deeplearning4j/pull/338), [Link](https://github.com/KonduitAI/deeplearning4j/pull/354)
-* Nd4j.gemm now uses Mmul operation internally to avoid potential threading issues with direct BLAS calls on CUDA [Link](https://github.com/KonduitAI/deeplearning4j/pull/365)
-* Fixed an edge case issue with percentile operation [link](https://github.com/KonduitAI/deeplearning4j/pull/381)
-* Fixed an edge case issue for cusolved \(CUDA\) in libnd4j [Link](https://github.com/KonduitAI/deeplearning4j/pull/383)
-* Fixed an issue with error formatting for segment operations for incorrect lengths [Link](https://github.com/KonduitAI/deeplearning4j/pull/385)
-* Fixed an issue where ND4J workspaces were not guaranteed to be unique [Link](https://github.com/KonduitAI/deeplearning4j/pull/400)
-* Fixed some operation implementations when operating on views \(Batch/Space to Space/Batch/Depth; batchnorm\_bp\) [Link](https://github.com/KonduitAI/deeplearning4j/pull/402)
-* Fixed an issue where exponential distribution random number generation operation could produce infinities extremely rarely \(~1 in 10^9 values\) [Link](https://github.com/KonduitAI/deeplearning4j/pull/403)
-* Fixed an issue with long file paths for memory mapped workspaces on Windows [Link](https://github.com/KonduitAI/deeplearning4j/pull/408)
-* Memory for memory mapped workspaces are now deallocated immediately when workspace is destroyed, instead of waiting for GC to free memory [Link](https://github.com/KonduitAI/deeplearning4j/pull/409)
-* Fall-back to other BLAS implementation for cases where MKLDNN GEMM implementation is slow [Link](https://github.com/KonduitAI/deeplearning4j/pull/415)
-* Set nd4j-native source/target to Java 7 [Link](https://github.com/eclipse/deeplearning4j/pull/8808), [Link](https://github.com/eclipse/deeplearning4j/issues/8806)
-
-### DataVec
-
-#### Features and Enhancements
-
-* datavec-python: added zero-copy support for bytes/byte buffers [Link](https://github.com/KonduitAI/deeplearning4j/pull/209)
-* datavec-python: Python exceptions are now thrown as Java exceptions [Link](https://github.com/KonduitAI/deeplearning4j/pull/209)
-* datavec-python: Added support for additional NumPy datatypes [Link](https://github.com/KonduitAI/deeplearning4j/pull/241)
-* datavec-python: Python version upgraded from 3.7.6 to 3.7.7 [Link](https://github.com/KonduitAI/deeplearning4j/pull/346)
-
-#### Bug Fixes and Optimizations
-
-* Deleted not properly maintained modules: datavec-camel, datavec-perf [Link](https://github.com/KonduitAI/deeplearning4j/pull/175)
-* Fixed missing BOOL datatype support for arrow conversion functionality [Link](https://github.com/KonduitAI/deeplearning4j/pull/178)
-* Assorted fixes for datavec-python [Link](https://github.com/KonduitAI/deeplearning4j/pull/267) [Link](https://github.com/KonduitAI/deeplearning4j/pull/268), [Link](https://github.com/KonduitAI/deeplearning4j/pull/330)
-* Fixed an issue with LineRecordReader where initialization was performed unnecessarily \(adding performance overhead\) [Link](https://github.com/KonduitAI/deeplearning4j/pull/419)
-
-### RL4J
-
-#### Features and Enhancements
-
-* Refactoring to decouple configuration and learning methods from their implementations [Link](https://github.com/KonduitAI/deeplearning4j/pull/326)
-* Added builder patterns for all configuration classes [Link](https://github.com/KonduitAI/deeplearning4j/pull/326)
-
-### Arbiter
-
-#### Bug Fixes and Optimizations
-
-* Fixes an issue with GridSearchCandidateGenerator not working correctly for some cases [Link](https://github.com/eclipse/deeplearning4j/issues/8751), [Link](https://github.com/KonduitAI/deeplearning4j/pull/292)
 
 ## Version 1.0.0-beta6 <a id="release-notes-for-version-100-beta6"></a>
 
