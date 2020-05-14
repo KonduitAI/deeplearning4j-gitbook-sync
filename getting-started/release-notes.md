@@ -12,16 +12,6 @@ Read the announcement at [https://blog.konduit.ai/2020/05/14/deeplearning4j-1-0-
 
 ## Version 1.0.0-beta7 <a id="release-notes-for-version-100-beta7"></a>
 
-### Highlights - 1.0.0-beta7 Release <a id="highlights---100-beta7-release"></a>
-
-* New ND4J and SameDiff namespaces: APIs synchronized and all ops available in both libraries (Nd4j.math.X, SameDiff.loss.Y etc)
-* CUDA 9.2 dropped - ND4J/DL4J released with CUDA 10.0, 10.1 and 10.2 support
-* DL4J Keras import: added tf.keras import support
-* SameDiff multi-threaded inference now supported
-* DL4J: Added NHWC and NWC layout support for CNN2D, CNN1D and RNNs
-* Preview release: ARM64 support for all libraries
-
-
 ### Deeplearning4j
 
 #### Features and Enhancements
