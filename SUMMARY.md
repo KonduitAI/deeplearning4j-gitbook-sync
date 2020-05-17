@@ -73,7 +73,6 @@
 
 * [Overview](nd4j/overview.md)
 * [Quickstart](nd4j/quickstart.md)
-* [Backend](nd4j/backend.md)
 * [Basics](nd4j/basics.md)
 * [Elementwise Operations](nd4j/elementwise.md)
 * [Matrix Manipulation](nd4j/matrix-manipulation.md)
