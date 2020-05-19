@@ -17,7 +17,7 @@ We recommend that you join our [community forum](https://community.konduit.ai/).
 {% hint style="info" %}
 We are currently reworking the Getting Started Guide. 
 
-If you find that you have trouble following along here, take a look at the Konduit blog, as it features [some getting started guides from the community](https://blog.konduit.ai/tag/examples/).
+If you find that you have trouble following along here, take a look at the Konduit blog, as it features [some getting started guides from the community](https://blog.konduit.ai/tag/getting-started/).
 {% endhint %}
 
 ### A Taste of Code
