@@ -27,7 +27,7 @@ To run inference use:
 
 ```java
 INDArray out = sd.batchOutput()
-    .input(inputs, inputArray)
+    .input(inputName, inputArray)
     .output(outputs)
     .execSingle();
 ```
