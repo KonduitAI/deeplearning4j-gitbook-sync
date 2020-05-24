@@ -122,6 +122,7 @@
   * [Optimizers](keras-import/supported-features/optimizers.md)
 * [Functional Model](keras-import/model-functional.md)
 * [Sequential Model](keras-import/model-sequential.md)
+* [Custom Layers](keras-import/custom-layers.md)
 * [API Reference](keras-import/api-reference/README.md)
   * [Core Layers](keras-import/api-reference/core-layers.md)
   * [Convolutional Layers](keras-import/api-reference/convolutional-layers.md)
