@@ -499,7 +499,7 @@ Workspaces are a feature of ND4J used to improve performance, by means of more e
 
 For more details on workspaces, see the following links:
 
-* [Deeplearning4j Guide to Workspaces](https://deeplearning4j.org/workspaces)
+* [Deeplearning4j Guide to Workspaces](../config/config-memory/config-workspaces.md)
 * [Workspaces Examples](https://github.com/eclipse/deeplearning4j-examples/blob/master/nd4j-examples/src/main/java/org/nd4j/examples/Nd4jEx15_Workspaces.java)
 
 ### [Workspaces: Scope Panic](overview.md)
