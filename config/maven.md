@@ -17,7 +17,7 @@ You can use Deeplearning4j with Maven by adding the following to your `pom.xml`:
   <dependency>
       <groupId>org.deeplearning4j</groupId>
       <artifactId>deeplearning4j-core</artifactId>
-      <version>1.0.0-beta6</version>
+      <version>1.0.0-beta7</version>
   </dependency>
 </dependencies>
 ```
@@ -33,10 +33,10 @@ DL4J relies on ND4J for hardware-specific implementations and tensor operations.
   <dependency>
       <groupId>org.nd4j</groupId>
       <artifactId>nd4j-native-platform</artifactId>
-      <version>1.0.0-beta6</version>
+      <version>1.0.0-beta7</version>
   </dependency>
 </dependencies>
 ```
 
-You can also swap the standard CPU implementation for [GPUs](deeplearning4j/deeplearning4j-config-gpu-cpu).
+You can also swap the standard CPU implementation for [GPUs](backends/#nd-4-j-backends-for-gpus-and-cpus).
 

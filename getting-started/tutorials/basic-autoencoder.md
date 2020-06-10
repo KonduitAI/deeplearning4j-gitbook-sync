@@ -150,7 +150,7 @@ val listsByDigit = new util.HashMap[Integer, ArrayList[Pair[Double, INDArray]]]
     val labels = labelsTest.get(i)
     
     (0 to testData.rows-1).foreach{ j =>
-        val example = testData.getRow(j)
+        val example = testData.getRow(j, true)
         val digit = labels.getDouble(j).toInt
         val score = net.score(new DataSet(example, example))
         // Add (score, example) pair to the appropriate list
