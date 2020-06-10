@@ -362,7 +362,7 @@ Note that in the case of training data that contains time series of different le
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/nn/conf/layers/LSTM.java)
 
-LSTM recurrent neural network layer without peephole connections. Supports CuDNN acceleration - see [https://deeplearning4j.org/docs/latest/deeplearning4j-config-cudnn](https://deeplearning4j.org/docs/latest/deeplearning4j-config-cudnn) for details
+LSTM recurrent neural network layer without peephole connections. Supports CuDNN acceleration - see [cuDNN](../config/backends/config-cudnn.md) for details
 
 ### RnnLossLayer
 

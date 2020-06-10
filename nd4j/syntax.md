@@ -1,6 +1,6 @@
 # Syntax
 
-For the complete nd4j-api index, please consult the [Javadoc](https://deeplearning4j.org/api/latest/).
+For the complete nd4j-api index, please consult the [Javadoc](https://javadoc.io/doc/org.nd4j/nd4j-api).
 
 There are three types of operations used in ND4J: scalars, transforms and accumulations. We’ll use the word op synonymously with operation.
 
