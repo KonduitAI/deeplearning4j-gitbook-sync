@@ -53,7 +53,7 @@ Dataset iterators are important pieces of code that help batch and iterate acros
 
 Note that we create two different iterators below, one for training data and the other for for evaluating the accuracy of our model after training. The last `boolean` parameter in the constructor indicates whether we are instantiating test/train.
 
-You won’t need it for this tutorial, you can learn more about loading data for neural networks in this [ETL user guide](https://deeplearning4j.org/docs/latest/datavec-overview). DL4J comes with many record readers that can load and convert data into ND-Arrays from CSVs, images, videos, audio, and sequences.
+You won’t need it for this tutorial, you can learn more about loading data for neural networks in this [ETL user guide](../../datavec/overview.md). DL4J comes with many record readers that can load and convert data into ND-Arrays from CSVs, images, videos, audio, and sequences.
 
 ```scala
 import org.deeplearning4j.datasets.iterator.impl.EmnistDataSetIterator

@@ -17,7 +17,7 @@ DL4J currently supports the following types of recurrent neural network
 * RNN \("vanilla" RNN\)
 * LSTM \(Long Short-Term Memory\)
 
-Java documentation for each is available: [SimpleRnn](https://deeplearning4j.org/api/latest/org/deeplearning4j/nn/conf/layers/recurrent/SimpleRnn.html), [LSTM](https://deeplearning4j.org/api/latest/org/deeplearning4j/nn/conf/layers/LSTM.html).
+Java documentation for each is available: [SimpleRnn](https://javadoc.io/doc/org.deeplearning4j/deeplearning4j-nn/latest/org/deeplearning4j/nn/conf/layers/recurrent/SimpleRnn.html), [LSTM](https://javadoc.io/doc/org.deeplearning4j/deeplearning4j-nn/latest/org/deeplearning4j/nn/conf/layers/LSTM.html).
 
 #### Data for RNNs
 

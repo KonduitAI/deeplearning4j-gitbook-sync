@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         }
 ```
 
-Now let’s write our AsyncTask&lt;_Params_, _Progress_, _Results_&gt;. The AsyncTask needs to have a _Params_ of type Double to receive the decimal value measurements from the UI. The _Result_ type is set to INDArray, which is returned from the doInBackground\(\) Method and passed to the onPostExecute\(\) method for updating the UI. NDArrays are provided by the ND4J library and are essentially n-dimensional arrays with a given number of dimensions. For more on NDArrays, see [https://nd4j.org/userguide](https://nd4j.org/userguide).
+Now let’s write our AsyncTask&lt;_Params_, _Progress_, _Results_&gt;. The AsyncTask needs to have a _Params_ of type Double to receive the decimal value measurements from the UI. The _Result_ type is set to INDArray, which is returned from the doInBackground\(\) Method and passed to the onPostExecute\(\) method for updating the UI. NDArrays are provided by the ND4J library and are essentially n-dimensional arrays with a given number of dimensions.
 
 ```java
 private class AsyncTaskRunner extends AsyncTask<Double, Integer, INDArray> {
@@ -148,7 +148,7 @@ Now that our data is ready, we can build a simple multi-layer perceptron with a 
             .build();
 ```
 
-The next step is to build the neural network using _nccBuilder_. The parameters selected below for training are standard. To learn more about optimizing network training, see deeplearning4j.org.
+The next step is to build the neural network using _nccBuilder_. The parameters selected below for training are standard.
 
 ```java
     NeuralNetConfiguration.Builder nncBuilder = new NeuralNetConfiguration.Builder();

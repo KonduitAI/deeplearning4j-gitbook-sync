@@ -110,11 +110,11 @@ SDVariable weights = samediff.var("weights", new XavierInitScheme('c', 784, 10),
 
 Now, the weights will be randomly initialized using the Xavier scheme. There are other ways to create and
 
-fill variables: you may look them up in the 'known subclasses' section \[of our javadoc\]\([https://deeplearning4j.org/api/latest/org/nd4j/weightinit/WeightInitScheme.html](https://deeplearning4j.org/api/latest/org/nd4j/weightinit/WeightInitScheme.html)"\).
+fill variables: you may look them up in the 'known subclasses' section [of our javadoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-beta7/org/nd4j/weightinit/WeightInitScheme.html).
 
 ### Constants
 
-Constants hold values that are stored, but - unlike variables - remain unchanged during training. These, for instance, may be some hyperparamters you wish to have in your network and be able to access from the outside. Or they may be pretrained weights of a neural network that you wish to keep unchanged \(see more on that in [Changing Variable Type](https://deeplearning4j.org/api/latest/) below\). Constants may be of any data type
+Constants hold values that are stored, but - unlike variables - remain unchanged during training. These, for instance, may be some hyperparamters you wish to have in your network and be able to access from the outside. Or they may be pretrained weights of a neural network that you wish to keep unchanged \(see more on that in [Changing Variable Type](variables.md#changing-variable-types) below\). Constants may be of any data type
 
 * so e.g. `int` and `boolean` are allowed alongside with `float` and `double`.
 
@@ -130,8 +130,6 @@ A constant consisting of a single scalar value may be created using one of the `
 INDArray someScalar = samediff.scalar("scalar", 42);
 ```
 
-Again, we refer to the [javadoc](https://deeplearning4j.org/api/latest/) for the whole reference.
-
 ### Placeholders
 
 The most common placeholders you'll normally have in a `SameDiff` are inputs and, when applicable, labels. You may create placeholders of any data type, depending on the operations you use them in. To add a placeholder to a `SameDiff`, you may call one of `placeHolder` methods, e.g. like that:
@@ -146,7 +144,7 @@ as in MNIST example. Here we specify name, data type and then shape of your plac
 
 Variables of `ARRAY` type appear as outputs of [operations](samediff/samediff/ops) within `SameDiff`. Accordingly, the data type of an array-type variable depends on the kind of operation it is produced by and variable type\(s\) ot its argument\(s\). Arrays are not persistent - they are one-time values that will be recalculated from scratch at the next step. However, unlike placeholders, gradients are computed for them, as those are needed to update the values of `VARIABLE`'s.
 
-There are as many ways array-type variables are created as there are operations, so you're better up focusing on our [operations section](samediff/samediff/ops), our [javadoc](https://deeplearning4j.org/api/latest/) and [examples](samediff/samediff/exampes).
+There are as many ways array-type variables are created as there are operations, so you're better up focusing on our [operations section](samediff/samediff/ops), our [javadoc](https://javadoc.io/doc/org.nd4j/nd4j-api/1.0.0-beta7/org/nd4j/autodiff/samediff/SameDiff.html) and [examples](samediff/samediff/exampes).
 
 ## Recap table
 

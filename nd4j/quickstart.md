@@ -75,7 +75,7 @@ DataType dt = x.dataType();
 
 ### Array Creation
 
-To create INDArrays you use the static factory methods of the [Nd4j](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html%20) class.
+To create INDArrays you use the static factory methods of the [Nd4j](https://javadoc.io/doc/org.nd4j/nd4j-api/1.0.0-beta7/org/nd4j/linalg/factory/Nd4j.html) class.
 
 The `Nd4j.createFromArray` function is overloaded to make it easy to create INDArrays from regular Java arrays. The example below uses Java `double` arrays. Similar create methods are overloaded for `float`, `int` and `long`. The `Nd4j.createFromArray` function has overloads up to 4d for all types.
 
@@ -244,7 +244,7 @@ sqrt(x);
 // [         0,    1.0000,    1.4142]
 ```
 
-You can check out a complete list of transform operations in the [Javadoc](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ops/impl/transforms/package-summary.html%20)
+You can check out a complete list of transform operations in the [Javadoc](https://javadoc.io/doc/org.nd4j/nd4j-api/1.0.0-beta7/org/nd4j/linalg/ops/transforms/Transforms.html)
 
 ### Matrix multiplication
 
@@ -492,34 +492,4 @@ x
 x2
 // [    0.1604,    0.0322,    0.8910,    0.4604,    0.7724,   -1.0000,    0.1617,    0.7586,    0.6117,    0.5385,    0.1251,    0.6886]
 ```
-
-## Functions and Methods Overview
-
-### Array Creation
-
-[arange](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html#arange-double-double-%20), [create](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html#create-org.nd4j.linalg.api.buffer.DataBuffer-%20), [copy](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html#copy-org.nd4j.linalg.api.ndarray.INDArray-org.nd4j.linalg.api.ndarray.INDArray-%20), [empty](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html#empty-org.nd4j.linalg.api.buffer.DataBuffer.Type-%20), [empty\_like](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html#emptyLike-org.nd4j.linalg.api.ndarray.INDArray-%20), [eye](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html#eye-long-%20), [linspace](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html#linspace-double-double-long-%20), [meshgrid](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html#meshgrid-org.nd4j.linalg.api.ndarray.INDArray-org.nd4j.linalg.api.ndarray.INDArray-%20), [ones](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html#ones-int...-%20), [ones\_like](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html#onesLike-org.nd4j.linalg.api.ndarray.INDArray-%20), [rand](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html#rand-int-int-%20), [readTxt](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html#readTxt-java.lang.String-%20), [zeros](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html#zeros-int...-%20), [zeros\_like](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html#zerosLike-org.nd4j.linalg.api.ndarray.INDArray-%20)
-
-### Conversions
-
-[convertToDoubles](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ndarray/INDArray.html#convertToDoubles--%20), [convertToFloats](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ndarray/INDArray.html#convertToFloats--%20), [convertToHalfs](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ndarray/INDArray.html#convertToHalfs--%20)
-
-### Manipulations
-
-[concatenate](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html#concat-int-org.nd4j.linalg.api.ndarray.INDArray...-%20), [hstack](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html#hstack-org.nd4j.linalg.api.ndarray.INDArray...-%20), [ravel](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ndarray/INDArray.html#ravel--%20), [repeat](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ndarray/INDArray.html#repeat-int-long...-%20), [reshape](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ndarray/INDArray.html#reshape-long...-%20), [squeeze](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html#squeeze-org.nd4j.linalg.api.ndarray.INDArray-int-%20), [swapaxes](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ndarray/INDArray.html#swapAxes-int-int-%20), [tear](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html#tear-org.nd4j.linalg.api.ndarray.INDArray-int...-%20), [transpose](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ndarray/INDArray.html#transpose--%20), [vstack](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html#vstack-org.nd4j.linalg.api.ndarray.INDArray...-%20)
-
-### Ordering
-
-[argmax](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ndarray/INDArray.html#argMax-int...-%20), [max](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ndarray/INDArray.html#max-int...-%20), [min](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ndarray/INDArray.html#min-int...-%20), [sort](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html#sort-org.nd4j.linalg.api.ndarray.INDArray-int-boolean-%20)
-
-### Operations
-
-[choice](https://deeplearning4j.org/api/latest/org/nd4j/linalg/factory/Nd4j.html#choice-org.nd4j.linalg.api.ndarray.INDArray-org.nd4j.linalg.api.ndarray.INDArray-org.nd4j.linalg.api.ndarray.INDArray-%20), [cumsum](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ndarray/INDArray.html#cumsum-int-%20), [mmul](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ndarray/INDArray.html#mmul-org.nd4j.linalg.api.ndarray.INDArray-%20), [prod](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ndarray/INDArray.html#prod-int...-%20), [put](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ndarray/INDArray.html#put-org.nd4j.linalg.api.ndarray.INDArray-org.nd4j.linalg.api.ndarray.INDArray-%20), [putWhere](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ndarray/INDArray.html#putWhere-org.nd4j.linalg.api.ndarray.INDArray-org.nd4j.linalg.api.ndarray.INDArray-org.nd4j.linalg.indexing.conditions.Condition-%20), [sum](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ndarray/INDArray.html#sum-int...-%20)
-
-### Basic Statistics
-
-[covarianceMatrix](https://deeplearning4j.org/api/latest/org/nd4j/linalg/dimensionalityreduction/PCA.html#getCovarianceMatrix--), [mean](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ndarray/INDArray.html#mean-int...-%20), [std](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ndarray/INDArray.html#std-int...-%20), [var](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ndarray/INDArray.html#var-int...-%20)
-
-### Basic Linear Algebra
-
-[cross](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ops/impl/shape/Cross.html%20), [dot](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ops/impl/accum/Dot.html%20), [gesvd](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/blas/Lapack.html#gesvd-org.nd4j.linalg.api.ndarray.INDArray-org.nd4j.linalg.api.ndarray.INDArray-org.nd4j.linalg.api.ndarray.INDArray-org.nd4j.linalg.api.ndarray.INDArray-%20), [mmul](https://deeplearning4j.org/api/latest/org/nd4j/linalg/api/ndarray/INDArray.html#mmul-org.nd4j.linalg.api.ndarray.INDArray-)
 

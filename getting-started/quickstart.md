@@ -158,8 +158,10 @@ Congratulations! You just trained your first neural network with Deeplearning4j.
 1. Join our community forums on [community.konduit.ai](https://community.konduit.ai/).
 2. Read the [introduction to deep neural networks](https://skymind.ai/wiki/neural-network).
 3. Check out the more detailed [Comprehensive Setup Guide](deeplearning4j/deeplearning4j-quickstart).
-4. Browse the [DL4J documentation](https://deeplearning4j.org).
-5. **Python folks**: If you plan to run benchmarks on Deeplearning4j comparing it to well-known Python framework \[x\], please read [these instructions](benchmark.md) on how to optimize heap space, garbage collection and ETL on the JVM. By following them, you will see at least a _10x speedup in training time_.
+
+{% hint style="info" %}
+**Python folks**: If you plan to run benchmarks on Deeplearning4j comparing it to well-known Python framework \[x\], please read [these instructions](benchmark.md) on how to optimize heap space, garbage collection and ETL on the JVM. By following them, you will see at least a _10x speedup in training time_.
+{% endhint %}
 
 ### Additional links
 

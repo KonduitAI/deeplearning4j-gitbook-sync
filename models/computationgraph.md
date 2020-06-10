@@ -156,7 +156,7 @@ There are two types of data that can be used with the ComputationGraph.
 
 The DataSet class was originally designed for use with the MultiLayerNetwork, however can also be used with ComputationGraph - but only if that computation graph has a single input and output array. For computation graph architectures with more than one input array, or more than one output array, DataSet and DataSetIterator cannot be used \(instead, use MultiDataSet/MultiDataSetIterator\).
 
-A DataSet object is basically a pair of INDArrays that hold your training data. In the case of RNNs, it may also include masking arrays \(see [this](http://deeplearning4j.org/usingrnns) for more details\). A DataSetIterator is essentially an iterator over DataSet objects.
+A DataSet object is basically a pair of INDArrays that hold your training data. In the case of RNNs, it may also include masking arrays \(see [this](recurrent.md#masking-one-to-many-many-to-one-and-sequence-classification) for more details\). A DataSetIterator is essentially an iterator over DataSet objects.
 
 ### MultiDataSet and the MultiDataSetIterator
 

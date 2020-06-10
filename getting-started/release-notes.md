@@ -1490,7 +1490,7 @@ In prior versions of ND4J, scalars and vectors would sometimes be rank 2 instead
 
 #### Deeplearning4J: API Changes \(Transition Guide\): 0.9.1 to 1.0.0-alpha
 
-* Default training workspace mode has been switched to SEPARATE from NONE for MultiLayerNetwork and ComputationGraph \([Link](https://deeplearning4j.org/workspaces)\)
+* Default training workspace mode has been switched to SEPARATE from NONE for MultiLayerNetwork and ComputationGraph \([Link](../config/config-memory/config-workspaces.md)\)
 * Behaviour change: `fit(DataSetIterator)` and similar methods no longer perform layerwise pretraining followed by backprop - only backprop is performed in these methods. For pretraining, use `pretrain(DataSetIterator)` and `pretrain(MultiDataSetIterator)` methods \([Link](https://github.com/eclipse/deeplearning4j/pull/4279)\)
 * Previously deprecated updater configuration methods \(`.learningRate(double)`, `.momentum(double)` etc\) all removed
   * To configure learning rate: use `.updater(new Adam(lr))` instead of `.updater(Updater.ADAM).learningRate(lr)`
@@ -1733,7 +1733,7 @@ Alpha release of [SameDiff](https://github.com/eclipse/deeplearning4j/tree/maste
 
 **Deeplearning4J**
 
-* Workspaces feature added \(faster training performance + less memory\) [Link](https://deeplearning4j.org/workspaces)
+* Workspaces feature added \(faster training performance + less memory\) [Link](../config/config-memory/config-workspaces.md)
 * SharedTrainingMaster added for Spark network training \(improved performance\) [Link 1](https://deeplearning4j.oss.konduit.ai/distributed-deep-learning/intro), [Link 2](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-spark-examples/dl4j-spark/src/main/java/org/deeplearning4j/legacyExamples/mlp/MnistMLPDistributedExample.java)
 * ParallelInference added - wrapper that server inference requests using internal batching and queues  [Link](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/inference/ParallelInferenceExample.java)
 * ParallelWrapper now able to work with gradients sharing, in addition to existing parameters averaging mode [Link](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-cuda-specific-examples/src/main/java/org/deeplearning4j/examples/multigpu/GradientsSharingLenetMnistExample.java)

@@ -30,7 +30,7 @@ ComputationGraph net2 = ComputationGraph.load(new File("..."), true);
 
 
 
-Internally, these methods use the `ModelSerializer` class, which handles loading and saving models. There are two methods for saving models shown in the examples through the link. The first example saves a normal multilayer network, the second one saves a [computation graph](https://deeplearning4j.org/docs/latest/deeplearning4j-nn-computationgraph).
+Internally, these methods use the `ModelSerializer` class, which handles loading and saving models. There are two methods for saving models shown in the examples through the link. The first example saves a normal multi layer network, the second one saves a [computation graph](computationgraph.md).
 
 Here is a [basic example](https://github.com/eclipse/deeplearning4j-examples/tree/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/misc/modelsaving) with code to save a computation graph using the `ModelSerializer` class, as well as an example of using ModelSerializer to save a neural net built using MultiLayer configuration.
 

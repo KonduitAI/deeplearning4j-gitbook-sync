@@ -8,6 +8,10 @@ weight: 70
 
 # BaseOps
 
+{% hint style="info" %}
+These ops are generally available directly on `SameDiff` instances. Due to an oversight before the release, this ops aren't also available on `Nd4j`. To use the `INDArray` variants of these operations, you will have to instantiate a `NDBase` instance.
+{% endhint %}
+
 ## all
 
 ```java

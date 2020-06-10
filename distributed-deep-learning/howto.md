@@ -191,7 +191,7 @@ All up, this might look like \(for YARN, with 4GB on-heap, 5GB off-heap, 6GB YAR
 
 ### How to Configure Garbage Collection for Workers
 
-One determinant of the performance of training is the frequency of garbage colection. When using [Workspaces](https://deeplearning4j.org/docs/latest/deeplearning4j-config-memory) \(see also [this](https://deeplearning4j.org/docs/latest/deeplearning4j-config-workspaces)\), which are enabled by default, it can be helpful to reduce the frequency of garbage collection. For simple machine training \(and on the driver\) this is easy:
+One determinant of the performance of training is the frequency of garbage collection. When using [Workspaces](../config/config-memory/config-workspaces.md) \(see also [this](../config/config-memory/)\), which are enabled by default, it can be helpful to reduce the frequency of garbage collection. For simple machine training \(and on the driver\) this is easy:
 
 ```java
 // this will limit frequency of gc calls to 5000 milliseconds

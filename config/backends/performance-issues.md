@@ -29,7 +29,7 @@ To start, here’s a summary of some possible causes of performance issues:
 12. Other processes using CPU or GPU resources
 13. CPU: Lack of configuration of OMP\_NUM\_THREADS when using many models/threads simultaneously
 
-Finally, this page has a short section on [Debugging Performance Issues with JVM Profiling](https://deeplearning4j.org/docs/latest/deeplearning4j-config-performance-debugging#profiling)
+Finally, this page has a short section on [Debugging Performance Issues with JVM Profiling](performance-issues.md#debugging-performance-issues-with-jvm-profiling)
 
 ### Step 1: Check if correct backend is used <a id="step-1-check-if-correct-backend-is-used"></a>
 
@@ -68,9 +68,9 @@ If you are using CPUs only \(nd4j-native backend\) then you can skip to step 3 a
 
 cuDNN is NVIDIA’s library for accelerating neural network training on NVIDIA GPUs. Deeplearning4j can make use of cuDNN to accelerate a number of layers - including ConvolutionLayer, SubsamplingLayer, BatchNormalization, Dropout, LocalResponseNormalization and LSTM. When training on GPUs, cuDNN should always be used if possible as it is usually much faster than the built-in layer implementations.
 
-Instructions for configuring CuDNN can be found [here](https://deeplearning4j.org/docs/latest/deeplearning4j-config-cudnn). In summary, include the `deeplearning4j-cuda-x.x` dependency \(where `x.x` is your CUDA version - such as 9.2 or 10.0\). The network configuration does not need to change to utilize cuDNN - cuDNN simply needs to be available along with the deeplearning4j-cuda module.
+Instructions for configuring CuDNN can be found [here](config-cudnn.md). In summary, include the `deeplearning4j-cuda-x.x` dependency \(where `x.x` is your CUDA version - such as 9.2 or 10.0\). The network configuration does not need to change to utilize cuDNN - cuDNN simply needs to be available along with the deeplearning4j-cuda module.
 
-**How to determine if CuDNN is used or not**
+**How to determine if CuDNN is used or**
 
 Not all DL4J layer types are supported in cuDNN. DL4J layers with cuDNN support include ConvolutionLayer, SubsamplingLayer, BatchNormalization, Dropout, LocalResponseNormalization and LSTM.
 
@@ -141,11 +141,11 @@ There are a number of possible causes of ETL bottlenecks. These include \(but ar
 * Network latency or throughput issues \(when reading from remote or network storage\)
 * Computationally intensive or inefficient ETL \(especially for custom ETL pipelines\)
 
-One useful way to get more information is to perform profiling, as described in the [profiling section](https://deeplearning4j.org/docs/latest/deeplearning4j-config-performance-debugging#profiling) later in this page. For custom ETL pipelines, adding logging for the various stages can help. Finally, another approach to use a process of elimination - for example, measuring the latency and throughput of reading raw files from disk or from remote storage vs. measuring the time to actually process the data from its raw format.
+One useful way to get more information is to perform profiling, as described in the [profiling section](performance-issues.md#how-to-perform-profiling) later in this page. For custom ETL pipelines, adding logging for the various stages can help. Finally, another approach to use a process of elimination - for example, measuring the latency and throughput of reading raw files from disk or from remote storage vs. measuring the time to actually process the data from its raw format.
 
 ### Step 4: Check for Garbage Collection Overhead <a id="step-4-check-for-garbage-collection-overhead"></a>
 
-Java uses garbage collection for management of on-heap memory \(see [this link](https://stackify.com/what-is-java-garbage-collection/) for example for an explanation\). Note that DL4J and ND4J use off-heap memory for storage of all INDArrays \(see the [memory page](https://deeplearning4j.org/docs/latest/deeplearning4j-config-memory) for details\).
+Java uses garbage collection for management of on-heap memory \(see [this link](https://stackify.com/what-is-java-garbage-collection/) for example for an explanation\). Note that DL4J and ND4J use off-heap memory for storage of all INDArrays \(see the [memory page](../config-memory/) for details\).
 
 Even though DL4J/ND4J array memory is off-heap, garbage collection can still cause performance issues.
 
@@ -173,9 +173,9 @@ Nd4j.getMemoryManager().setAutoGcWindow(10000);             //Set to 10 seconds 
 Nd4j.getMemoryManager().togglePeriodicGc(false);            //Disable periodic GC calls
 ```
 
-If you suspect garbage collection overhead is having an impact on performance, try changing these settings. The main downside to reducing the frequency or disabling periodic GC entirely is when you are not using [workspaces](https://deeplearning4j.org/docs/latest/deeplearning4j-config-workspaces), though workspaces are enabled by default for all neural networks in Deeplearning4j.
+If you suspect garbage collection overhead is having an impact on performance, try changing these settings. The main downside to reducing the frequency or disabling periodic GC entirely is when you are not using [workspaces](../config-memory/config-workspaces.md), though workspaces are enabled by default for all neural networks in Deeplearning4j.
 
-Side note: if you are using DL4J for training on Spark, setting these values on the master/driver will not impact the settings on the worker. Instead, see [this guide](https://deeplearning4j.org/docs/latest/deeplearning4j-scaleout-howto#gc).
+Side note: if you are using DL4J for training on Spark, setting these values on the master/driver will not impact the settings on the worker. Instead, see [this guide](../../distributed-deep-learning/howto.md#how-to-configure-memory-settings-for-spark).
 
 **How to determine GC impact using PerformanceListener**
 
@@ -279,7 +279,7 @@ System.out.println("ND4J Data Type Setting: " + Nd4j.dataType());
 
 ### Step 8: Check workspace configuration for memory management \(enabled by default\) <a id="step-8-check-workspace-configuration-for-memory-management-enabled-by-default"></a>
 
-For details on workspaces, see the [workspaces page](https://deeplearning4j.org/docs/latest/deeplearning4j-config-workspaces).
+For details on workspaces, see the [workspaces page](../config-memory/config-workspaces.md).
 
 In summary, workspaces are enabled by default for all Deeplearning4j networks, and enabling them improves performance and reduces memory requirements. There are very few reasons to disable workspaces.
 
@@ -309,7 +309,7 @@ Another possible cause \(especially for newer users\) is a poorly designed netwo
   * More than about 20 feed-forward layers may be too many for a MLP
 * The input/activations are too large
   * For CNNs, inputs in the range of 224x224 \(for image classification\) to 600x600 \(for object detection and segmentation\) are used. Large image sizes \(such as 500x500\) are computationally demanding, and much larger than this should be considered too large in most cases.
-  * For RNNs, the sequence length matters. If you are using sequences longer than a few hundred steps, you should use [truncated backpropgation through time](https://deeplearning4j.org/docs/latest/deeplearning4j-nn-recurrent#tbptt) if possible.
+  * For RNNs, the sequence length matters. If you are using sequences longer than a few hundred steps, you should use [truncated backpropgation through time](../../models/recurrent.md#truncated-back-propagation-through-time) if possible.
 * The output number of classes is too large
   * Classification with more than about 10,000 classes can become a performance bottleneck with standard softmax output layers
 * The layers are too large
