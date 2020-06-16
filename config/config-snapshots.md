@@ -88,7 +88,17 @@ An alternative approach to \(1\) is to set `<updatePolicy>always</updatePolicy>`
 
 Snapshots will not work with Gradle. You must use Maven to download the files. After that, you may try using your local Maven repository with `mavenLocal()`.
 
-A bare minimum file like this:
+In order to download specific snapshot artifacts into your local Maven repository, you can run the following Maven command. 
+
+```text
+mvn dependency:get -DremoteRepositories=snapshots::::https://oss.sonatype.org/content/repositories/snapshots -Dartifact=org.nd4j:nd4j-native:1.0.0-SNAPSHOT:jar:macos-x86_64
+```
+
+In this example, it will download the `nd4j-native` \(CPU backend\) artifact for macOS. If you are on Windows or Linux, you'd use `windows-x86_64` or `linux-x86_64` respectively.
+
+{% hint style="danger" %}
+A bare minimum file like the following _should_ work in theory, but it does not. This is due to [a bug in Gradle](https://github.com/gradle/gradle/issues/2882). Gradle with snapshots _and_ Maven classifiers appears to be a problem.
+{% endhint %}
 
 ```text
 version '1.0-SNAPSHOT'
@@ -113,7 +123,5 @@ dependencies {
 }
 ```
 
-should work in theory, but it does not. This is due to [a bug in Gradle](https://github.com/gradle/gradle/issues/2882). Gradle with snapshots _and_ Maven classifiers appears to be a problem.
-
-Of note when using the nd4j-native backend on Gradle \(and SBT - but not Maven\), you need to add openblas as a dependency. We do this for you in the -platform pom. Reference the -platform pom [here](https://github.com/eclipse/deeplearning4j/blob/master/nd4j/nd4j-backends/nd4j-backend-impls/nd4j-native-platform/pom.xml#L19) to double check your dependencies. Note that these are version properties. See the `<properties>` section of the pom for current versions of the openblas and javacpp presets required to run nd4j-native.
+Of note when using the nd4j-native backend \(in contrast to nd4j-native-platform\) on Gradle \(and SBT - but not Maven\), you need to add openblas as a dependency. We do this for you in the -platform pom. Reference the -platform pom [here](https://github.com/eclipse/deeplearning4j/blob/master/nd4j/nd4j-backends/nd4j-backend-impls/nd4j-native-platform/pom.xml#L19) to double check your dependencies. Note that these are version properties. See the `<properties>` section of the pom for current versions of the openblas and javacpp presets required to run nd4j-native.
 
