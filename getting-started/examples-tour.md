@@ -8,6 +8,12 @@ weight: 10
 
 # Examples Tour
 
+{% hint style="info" %}
+To access examples as they were during the beta6 release, please use this version of the example repository:
+
+[https://github.com/eclipse/deeplearning4j-examples/tree/a4594ba7508a3ab1342b3390a3f8354f6c754ee1](https://github.com/eclipse/deeplearning4j-examples/tree/a4594ba7508a3ab1342b3390a3f8354f6c754ee1)
+{% endhint %}
+
 ## Survey of DeepLearning4j Examples
 
 Deeplearning4j's Github repository has many examples to cover its functionality. The [Quick Start Guide](quickstart.md) shows you how to set up Intellij and clone the repository. This page provides an overview of some of those examples.
