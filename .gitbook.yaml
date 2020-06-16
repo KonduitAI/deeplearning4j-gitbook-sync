@@ -4,3 +4,4 @@ structure:
   summary: SUMMARY.md
 redirects:
   nd4j/backend: config/backends/README.md
+  quickstart: getting-started/quickstart.md
