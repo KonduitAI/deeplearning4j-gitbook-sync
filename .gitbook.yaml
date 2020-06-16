@@ -5,3 +5,4 @@ structure:
 redirects:
   nd4j/backend: config/backends/README.md
   quickstart: getting-started/quickstart.md
+  contribute: getting-started/contribute.md
