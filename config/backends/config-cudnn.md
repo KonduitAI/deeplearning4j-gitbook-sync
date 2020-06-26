@@ -18,7 +18,7 @@ The only thing we need to do to have DL4J load cuDNN is to add a dependency on `
 <dependency>
     <groupId>org.deeplearning4j</groupId>
     <artifactId>deeplearning4j-cuda-10.0</artifactId>
-    <version>1.0.0-beta6</version>
+    <version>1.0.0-beta7</version>
 </dependency>
 ```
 
@@ -28,7 +28,7 @@ or
 <dependency>
     <groupId>org.deeplearning4j</groupId>
     <artifactId>deeplearning4j-cuda-10.1</artifactId>
-    <version>1.0.0-beta6</version>
+    <version>1.0.0-beta7</version>
 </dependency>
 ```
 
@@ -37,8 +37,8 @@ or
 ```markup
 <dependency>
     <groupId>org.deeplearning4j</groupId>
-    <artifactId>deeplearning4j-cuda-10.1</artifactId>
-    <version>1.0.0-beta6</version>
+    <artifactId>deeplearning4j-cuda-10.2</artifactId>
+    <version>1.0.0-beta7</version>
 </dependency>
 ```
 
@@ -62,7 +62,7 @@ Alternatively, in the case of CUDA 10.2, cuDNN comes bundled with the "redist" p
  <dependency>
      <groupId>org.bytedeco</groupId>
      <artifactId>cuda-platform-redist</artifactId>
-     <version>10.2-7.6-1.5.2</version>
+     <version>10.2-7.6-1.5.3</version>
  </dependency>
 ```
 
