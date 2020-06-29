@@ -2,12 +2,16 @@
 title: Core Concepts in Deeplearning4j
 short_title: Core Concepts
 description: >-
-  本页将向您全面介绍如何运行DL4J示例，启动您自己的项目。建议您加入我们的Gitter线上交流群或QQ交流群。您可以在Gitter或QQ上请求帮助、提出反馈，不过也请您在遇到问题时先参考本指南中已列出的疑难解答。如果您是初次接触深度学习，我们准备了一份初学者学习计划，包括课程、阅读材料和其他资源的链接。
+  本页将向您全面介绍如何运行DL4J示例，启动您自己的项目。建议您加入我们的QQ交流群。您可以在QQ上请求帮助、提出反馈，不过也请您在遇到问题时先参考本指南中已列出的疑难解答。如果您是初次接触深度学习，我们准备了一份初学者学习计划，包括课程、阅读材料和其他资源的链接。
 category: Get Started
 weight: 1
 ---
 
 # 核心概念
+
+{% hint style="info" %}
+由于项目的进展速度超出了我们翻译文档的速度，因此请同时参考[英文文档](https://deeplearning4j.konduit.ai/)。
+{% endhint %}
 
 ## 概述
 
