@@ -8,6 +8,10 @@ weight: 1
 
 # Eclipse DeepLearning4J
 
+{% hint style="info" %}
+如果您希望阅读中文文档，请查看[中文文档](https://deeplearning4j.konduit.ai/v/zhong-wen-v1.0.0/)。
+{% endhint %}
+
 Eclipse Deeplearning4j is the first commercial-grade, open-source, distributed deep-learning library written for Java and Scala. Integrated with Hadoop and Apache Spark, DL4J brings AI to business environments for use on distributed GPUs and CPUs.
 
 **Distributed**
