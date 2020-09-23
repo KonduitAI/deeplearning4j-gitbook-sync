@@ -23,7 +23,7 @@ Please **read this entire page**, particularly the section [Reading Records](ove
 * Uses an output format system to specify an implementation-neutral type of vector format \(SVMLight, etc.\)
 * Can be extended for specialized input formats \(such as exotic image formats\); i.e. You can write your own custom input format and let the rest of the codebase handle the transformation pipeline
 * Makes vectorization a first-class citizen - Built in Transformation tools to convert and normalize data 
-* Please see the \[DataVec Javadoc\]\(/api/{{page.version}}/\) here There's a [brief tutorial below](overview.md#tutorial). 
+* Please see the [DataVec Javadoc](https://javadoc.io/doc/org.datavec/datavec-api/1.0.0-beta7/index.html) here There's a [brief tutorial below](overview.md#tutorial). 
 
 ## A Few Examples 
 
