@@ -16,7 +16,7 @@ If your data is in CSV \(Comma Seperated Values\) format stored in flat files th
 
 Please **read this entire page**, particularly the section [Reading Records](overview.md#record) below, before working with DataVec.
 
-## Key Aspects 
+## Key Aspects
 
 * [DataVec](https://github.com/eclipse/deeplearning4j/tree/master/datavec) uses an input/output format system \(similar in some ways to how Hadoop MapReduce uses InputFormat to determine InputSplits and RecordReaders, DataVec also provides RecordReaders to Serialize Data\)
 * Designed to support all major types of input data \(text, CSV, audio, image and video\) with these specific input formats
@@ -25,7 +25,7 @@ Please **read this entire page**, particularly the section [Reading Records](ove
 * Makes vectorization a first-class citizen - Built in Transformation tools to convert and normalize data 
 * Please see the [DataVec Javadoc](https://javadoc.io/doc/org.datavec/datavec-api/1.0.0-beta7/index.html) here There's a [brief tutorial below](overview.md#tutorial). 
 
-## A Few Examples 
+## A Few Examples
 
 * Convert the CSV-based UCI Iris dataset into svmLight open vector text format
 * Convert the MNIST dataset from raw binary files to the svmLight text format.
@@ -33,7 +33,7 @@ Please **read this entire page**, particularly the section [Reading Records](ove
 * Convert raw text into TF-IDF based vectors in a text vector format {svmLight, metronome}
 * Convert raw text into the word2vec in a text vector format {svmLight, metronome} 
 
-## Targeted Vectorization Engines 
+## Targeted Vectorization Engines
 
 * Any CSV to vectors with a scriptable transform language 
 * MNIST to vectors
@@ -42,15 +42,15 @@ Please **read this entire page**, particularly the section [Reading Records](ove
   * Bag of Words
   * word2vec 
 
-## CSV Transformation Engine 
+## CSV Transformation Engine
 
-If data is numeric and appropriately formatted then CSVRecordReader may be satisfactory. If however your data has non-numeric fields such as strings representing boolean \(T/F\) or strings for labels then a Schema Transformation will be required. DataVec uses apache [Spark](http://spark.apache.org/) to perform transform operations. \*note you do not need to know the internals of Spark to be succesful with DataVec Transform 
+If data is numeric and appropriately formatted then CSVRecordReader may be satisfactory. If however your data has non-numeric fields such as strings representing boolean \(T/F\) or strings for labels then a Schema Transformation will be required. DataVec uses apache [Spark](http://spark.apache.org/) to perform transform operations. \*note you do not need to know the internals of Spark to be succesful with DataVec Transform
 
-## Schema Transformation Video 
+## Schema Transformation Video
 
 A video tutorial of a simple DataVec transform along with code is available below.
 
-{% embed url="https://youtu.be/MLEMw2NxjxE" %}
+{% embed url="https://youtu.be/MLEMw2NxjxE" caption="" %}
 
 ## Example Java Code
 
