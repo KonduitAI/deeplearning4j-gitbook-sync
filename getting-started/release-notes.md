@@ -8,9 +8,124 @@ redirect_from: /releasenotes
 
 # Release Notes
 
-## Version 1.0.0-beta7
+## Version 1.0.0-M1
 
-Read the announcement at [https://blog.konduit.ai/2020/05/14/deeplearning4j-1-0-0-beta7-released/](https://blog.konduit.ai/2020/05/14/deeplearning4j-1-0-0-beta7-released/) for the highlights of this release.
+### Highlights
+
+In light of the coming 1.0, the project has decided to cut a number of modules before the final release.
+These modules have not had many users in the past and have created confusion for many users just trying to use
+a few simple apis. Many of these modules have not been maintained.
+
+There will likely be 1 or 2 more milestone releases before the final 1.0. These should be considered checkpoints.
+
+
+ These modules include:
+
+1. Arbiter
+2. Jumpy
+3. Datavec modules for video, audio, audio, sound. The computer vision datavec module
+will continue to be available.
+4. Tokenizers: The tokenizers for chinese, japanese, korean were imported from other frameworks
+and not really updated.
+5. Scalnet, Nd4s: We removed the scala modules due to the small user base. We welcome 3rd party enhancements
+to the framework for syntatic sugar such as kotlin and scala. The framework's focus will be on providing
+the underlying technology rather than the defacto interfaces. If there is interest in something higher level, please discuss it on [community forums](https://community.konduit.ai/)
+
+ARM support: We have included armcompute modules for core convolution routines. 
+These routines can be found [here](https://github.com/eclipse/deeplearning4j/tree/master/libnd4j/include/ops/declarable/platform/armcompute)
+
+
+
+TVM: We now support running TVM modules.  Docs coming soon.
+
+
+We've updated our shaded modules to newer versions to mitigate security risks. These modules include:
+1. jackson
+2. guava
+
+Cuda 11:
+We've upgraded dl4j and associated modules to support cuda 11 and 11.2.
+
+A more modular model import framework supporting tensorflow and onnx:
+1. Model mapping procedures loadable as protobuf
+2. Defining custom rules for import to work around unsupported or custom layers/operations
+3. Op descriptor for all operations in nd4j
+
+This will enable users to override model import behavior to run their own custom models.
+This means, in most circumstances, there will be no need to modify model import core code anymore.
+Instead, users will be able to provide definitions and custom rules for their graphs.
+
+Users will be expected to convert their models in an external process. This means running standalone conversions for their models.
+This extends to keras import as well. Sometimes users convert their models in production directly from keras.
+
+The workflow going forward is to ensure that your model is converted ahead of time to avoid performance issues
+with converting large models.
+
+Removed ppc from nd4j-native-platform and nd4j-cuda-platform.
+If you need this architecture, please contact us or build from source.
+
+Added more support for avx/mkldnn/cudnn linked acceleration in our c++ library.
+We now have the ability to distribute more combinations of pre compiled math kernels via different combinations of classifiers. See the [ADR here](https://github.com/eclipse/deeplearning4j/blob/master/ADRs/0007%20-%20Nd4j%20classifiers.md) for more details.
+
+
+[The class loader is now overridable](https://github.com/eclipse/deeplearning4j/pull/9115).
+This is useful for OSGI and application server environments.
+
+We've upgraded arrow to 4.0.0 enabling the associated nd4j-arrow and datavec-arrow modules to be used without netty clashes.
+
+
+
+### Deeplearning4j
+
+#### Bug fixes
+
+* Improved keras model import support for NWHC as well as NCHW input formats for both rnn and cnn
+
+* [Added Adabelief updater](https://github.com/eclipse/deeplearning4j/pull/9186)
+* [Added maximum merge for Keras import](https://github.com/eclipse/deeplearning4j/pull/9161)
+* [Keras cropping 2d validation fixes](https://github.com/eclipse/deeplearning4j/pull/9204)
+* [Lenet input shape fix](https://github.com/eclipse/deeplearning4j/pull/9130)
+* [Fix for obtaining the UI port from a property](https://github.com/eclipse/deeplearning4j/pull/9162)
+
+
+### Nd4j
+
+
+#### Features and Enhancements
+
+* [CTC Loss](https://github.com/eclipse/deeplearning4j/pull/9230): We now have basic support for CTC loss in nd4j. This will enable the import of CTC loss based models for speech recognition as well as OCR.
+* [tensormmul_bp now run from c++](https://github.com/eclipse/deeplearning4j/pull/9260)
+* [Arm compute added for conv2d and pooling operations](https://github.com/eclipse/deeplearning4j/pull/9166)
+* [Add IndexUtils containing ravelMultiIndex and unravelIndex methods](https://github.com/eclipse/deeplearning4j/pull/9122)
+* [Updates sortCooolIndicesGeneric to take any datatype](https://github.com/eclipse/deeplearning4j/pull/9121)
+* [Add TVM runner](https://github.com/eclipse/deeplearning4j/pull/9185)
+
+#### Bug fixes
+
+* [compare_and_bitpack now functions properly](https://github.com/eclipse/deeplearning4j/pull/9196)
+* [Fix null pointer in cuda op executioner](https://github.com/eclipse/deeplearning4j/pull/9160)
+* [Fix for samediff array cache removal during training](https://github.com/eclipse/deeplearning4j/pull/9155)
+* [Fix for SD_FORBID_HELPERS environment variable](https://github.com/eclipse/deeplearning4j/pull/9127)
+* [Fixed cuda bug in summary stats (mean, variance,)](https://github.com/eclipse/deeplearning4j/pull/9184)
+
+### Python4j
+
+
+#### Features and Enhancements
+
+Rewritten and more stable python execution. This allows better support for multi threaded environments.
+
+
+#### Bug fixes
+
+
+
+Contributors:
+https://github.com/eclipse/deeplearning4j/issues?q=is%3Apr+author%3Amjlorenzo305
+
+## Version 1.0.0-M1
+
+Read the announcement at [https://blog.konduit.ai/2020/05/14/deeplearning4j-1-0-0-M1-released/](https://blog.konduit.ai/2020/05/14/deeplearning4j-1-0-0-M1-released/) for the highlights of this release.
 
 ### Deeplearning4j
 

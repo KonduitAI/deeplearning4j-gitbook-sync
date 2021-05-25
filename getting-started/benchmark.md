@@ -265,9 +265,9 @@ This is the [relevant code](https://github.com/eclipse/deeplearning4j/blob/maste
     } else iterator = source;
 ```
 
-There are actually two types of asynchronous dataset iterators. The `AsyncDataSetIterator` is what you would use most of the time. It's described in the [Javadoc here](https://javadoc.io/doc/org.nd4j/nd4j-api/1.0.0-beta7/org/nd4j/linalg/dataset/AsyncDataSetIterator.html).
+There are actually two types of asynchronous dataset iterators. The `AsyncDataSetIterator` is what you would use most of the time. It's described in the [Javadoc here](https://javadoc.io/doc/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/linalg/dataset/AsyncDataSetIterator.html).
 
-For special cases such as recurrent neural nets applied to time series, or for computation graphs, you would use a `AsyncMultiDataSetIterator`, described in the [Javadoc here](https://javadoc.io/doc/org.nd4j/nd4j-api/1.0.0-beta7/org/nd4j/linalg/dataset/AsyncMultiDataSetIterator.html).
+For special cases such as recurrent neural nets applied to time series, or for computation graphs, you would use a `AsyncMultiDataSetIterator`, described in the [Javadoc here](https://javadoc.io/doc/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/linalg/dataset/AsyncMultiDataSetIterator.html).
 
 Notice in the code above that `prefetchSize` is another parameter to set. Normal batch size might be 1000 examples, but if you set `prefetchSize` to 3, it would pre-fetch 3,000 instances.
 

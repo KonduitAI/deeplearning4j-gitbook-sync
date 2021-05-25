@@ -19,13 +19,13 @@ The instructions below apply to all DL4J and ND4J submodules, such as deeplearni
 You can use Deeplearning4j with Gradle by adding the following to your build.gradle in the dependencies block:
 
 ```text
-implementation "org.deeplearning4j:deeplearning4j-core:1.0.0-beta6"
+implementation "org.deeplearning4j:deeplearning4j-core:1.0.0-M1"
 ```
 
 Add a backend by adding the following:
 
 ```text
-implementation "org.nd4j:nd4j-native-platform:1.0.0-beta6"
+implementation "org.nd4j:nd4j-native-platform:1.0.0-M1"
 ```
 
 You can also swap the standard CPU implementation for [GPUs](deeplearning4j/deeplearning4j-config-gpu-cpu).
@@ -35,13 +35,13 @@ You can also swap the standard CPU implementation for [GPUs](deeplearning4j/deep
 You can use Deeplearning4j with SBT by adding the following to your build.sbt:
 
 ```text
-libraryDependencies += "org.deeplearning4j" % "deeplearning4j-core" % "1.0.0-beta6"
+libraryDependencies += "org.deeplearning4j" % "deeplearning4j-core" % "1.0.0-M1"
 ```
 
 Add a backend by adding the following:
 
 ```text
-libraryDependencies += "org.nd4j" % "nd4j-native-platform" % "1.0.0-beta6"
+libraryDependencies += "org.nd4j" % "nd4j-native-platform" % "1.0.0-M1"
 ```
 
 You can also swap the standard CPU implementation for [GPUs](deeplearning4j/deeplearning4j-config-gpu-cpu).
@@ -51,13 +51,13 @@ You can also swap the standard CPU implementation for [GPUs](deeplearning4j/deep
 You can use Deeplearning4j with ivy by adding the following to your ivy.xml:
 
 ```markup
-<dependency org="org.deeplearning4j" name="deeplearning4j-core" rev="1.0.0-beta6" conf="build" />
+<dependency org="org.deeplearning4j" name="deeplearning4j-core" rev="1.0.0-M1" conf="build" />
 ```
 
 Add a backend by adding the following:
 
 ```markup
-<dependency org="org.nd4j" name="nd4j-native-platform" rev="1.0.0-beta6" conf="build" />
+<dependency org="org.nd4j" name="nd4j-native-platform" rev="1.0.0-M1" conf="build" />
 ```
 
 You can also swap the standard CPU implementation for [GPUs](deeplearning4j/deeplearning4j-config-gpu-cpu).

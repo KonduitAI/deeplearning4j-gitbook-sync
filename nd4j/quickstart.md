@@ -75,7 +75,7 @@ DataType dt = x.dataType();
 
 ### Array Creation
 
-To create INDArrays you use the static factory methods of the [Nd4j](https://javadoc.io/doc/org.nd4j/nd4j-api/1.0.0-beta7/org/nd4j/linalg/factory/Nd4j.html) class.
+To create INDArrays you use the static factory methods of the [Nd4j](https://javadoc.io/doc/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/linalg/factory/Nd4j.html) class.
 
 The `Nd4j.createFromArray` function is overloaded to make it easy to create INDArrays from regular Java arrays. The example below uses Java `double` arrays. Similar create methods are overloaded for `float`, `int` and `long`. The `Nd4j.createFromArray` function has overloads up to 4d for all types.
 
@@ -244,7 +244,7 @@ sqrt(x);
 // [         0,    1.0000,    1.4142]
 ```
 
-You can check out a complete list of transform operations in the [Javadoc](https://javadoc.io/doc/org.nd4j/nd4j-api/1.0.0-beta7/org/nd4j/linalg/ops/transforms/Transforms.html)
+You can check out a complete list of transform operations in the [Javadoc](https://javadoc.io/doc/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/linalg/ops/transforms/Transforms.html)
 
 ### Matrix multiplication
 

@@ -6,6 +6,9 @@ category: SameDiff
 weight: 2
 ---
 
+Notes to write on:
+Rewrite for new op descriptors
+
 # Adding Ops
 
 ## A quick SameDiff overview
@@ -31,8 +34,6 @@ Note that each `DifferentialFunction` comes with a `SameDiff` instance. We'll di
 ### Properties and mappings
 
 Each differential function comes with _properties_. In the simplest case, a differential function just has a name. Depending on the operation in question, you'll usually have many more properties \(think strides or kernel sizes in convolutions\). When we import computation graphs from other projects \(TensorFlow, ONNX, etc.\) these properties need to be mapped to the conventions we're using internally. The methods `attributeAdaptersForFunction`, `mappingsForFunction`, `propertiesForFunction` and `resolvePropertiesFromSameDiffBeforeExecution` are what you want to look at to get started.
-
-Once properties are defined and properly mapped, you call `initFromTensorFlow` and `initFromOnnx` for TensorFlow and ONNX import, respectively. More on this later, when we discuss building SameDiff operations.
 
 ### Inputs and outputs
 

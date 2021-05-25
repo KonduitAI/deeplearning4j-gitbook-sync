@@ -47,6 +47,13 @@ The following binaries \(nd4j-native classifiers\) are provided for x86 architec
 * AVX2: `linux-x86_64-avx2`, `windows-x86_64-avx2`, `macosx-x86_64-avx2`
 * AVX512: `linux-x86_64-avx512`
 
+
+As of 1.0.0-M1, the following combinations are also possible with [onednn](https://github.com/oneapi-src/oneDNN):
+* Generic x86 \(no AVX\): `linux-x86_64-onednn`, `windows-x86_64-onednn`, `macosx-x86_64-onednn` 
+* AVX2: `linux-x86_64-onednn-avx2`, `windows-x86_64-onednn-avx2`, `macosx-x86_64-onednn-avx2`
+* AVX512: `linux-x86_64-onednn-avx512`
+
+
 **Example: Configuring AVX2 on Windows \(Maven pom.xml\)**
 
 ```markup
@@ -78,6 +85,24 @@ The following binaries \(nd4j-native classifiers\) are provided for x86 architec
     <artifactId>nd4j-native</artifactId>
     <version>${nd4j.version}</version>
     <classifier>linux-x86_64-avx512</classifier>
+</dependency>
+```
+
+
+**Example: Configuring AVX512 on Linux with onednn\(Maven pom.xml\)**
+
+```markup
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-native</artifactId>
+    <version>${nd4j.version}</version>
+</dependency>
+
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-native</artifactId>
+    <version>${nd4j.version}</version>
+    <classifier>linux-x86_64-onednn-avx512</classifier>
 </dependency>
 ```
 

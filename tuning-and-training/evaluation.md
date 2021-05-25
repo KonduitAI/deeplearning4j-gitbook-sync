@@ -61,7 +61,7 @@ By default the .stats\(\) method displays the confusion matrix entries \(one per
 * False Positive/Negative Rate
 * True Positive/Negative
 * Class Counts
-* F-beta, G-measure, Matthews Correlation Coefficient and more, see [Evaluation JavaDoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-beta7/org/nd4j/evaluation/classification/Evaluation.html)
+* F-beta, G-measure, Matthews Correlation Coefficient and more, see [Evaluation JavaDoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/evaluation/classification/Evaluation.html)
 
 Display the Confusion Matrix.
 
@@ -119,7 +119,7 @@ col_0     7.98925e+00    2.00648e+00    2.82653e+00    5.01481e-01    7.25783e-0
 
 Columns are Mean Squared Error, Mean Absolute Error, Root Mean Squared Error, Relative Squared Error, and R^2 Coefficient of Determination
 
-See [RegressionEvaluation JavaDoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-beta7/org/nd4j/evaluation/regression/RegressionEvaluation.html)
+See [RegressionEvaluation JavaDoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/evaluation/regression/RegressionEvaluation.html)
 
 ### [Performing Multiple Evaluations Simultaneously](evaluation.md)
 
@@ -146,7 +146,7 @@ The EvaluationBinary is used for evaluating networks with binary classification 
 EvaluationBinary eval = new EvaluationBinary(int size)
 ```
 
-See [EvaluationBinary JavaDoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-beta7/org/nd4j/evaluation/classification/EvaluationBinary.html)
+See [EvaluationBinary JavaDoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/evaluation/classification/EvaluationBinary.html)
 
 ### [ROC](evaluation.md)
 
@@ -167,7 +167,7 @@ Note that all three support two modes of operation/calculation
 
 The number of bins can be set using the constructors. Exact can be set using the default constructor `new ROC()` or explicitly using `new ROC(0)`
 
-See [ROCBinary JavaDoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-beta7/org/nd4j/evaluation/classification/ROCBinary.html) is used to evaluate Binary Classifiers.
+See [ROCBinary JavaDoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/evaluation/classification/ROCBinary.html) is used to evaluate Binary Classifiers.
 
 ### [Evaluating Classifier Calibration](evaluation.md)
 
@@ -197,9 +197,9 @@ A multi-task network is a network that is trained to produce multiple outputs. F
 
 Evaluation Classes useful for Multi-Task Network
 
-See [ROCMultiClass JavaDoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-beta7/org/nd4j/evaluation/classification/ROCMultiClass.html)
+See [ROCMultiClass JavaDoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/evaluation/classification/ROCMultiClass.html)
 
-See [ROCBinary JavaDoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-beta7/org/nd4j/evaluation/classification/ROCBinary.html)
+See [ROCBinary JavaDoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/evaluation/classification/ROCBinary.html)
 
 ## Available evaluations
 

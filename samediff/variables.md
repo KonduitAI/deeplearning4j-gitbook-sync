@@ -110,7 +110,7 @@ SDVariable weights = samediff.var("weights", new XavierInitScheme('c', 784, 10),
 
 Now, the weights will be randomly initialized using the Xavier scheme. There are other ways to create and
 
-fill variables: you may look them up in the 'known subclasses' section [of our javadoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-beta7/org/nd4j/weightinit/WeightInitScheme.html).
+fill variables: you may look them up in the 'known subclasses' section [of our javadoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/weightinit/WeightInitScheme.html).
 
 ### Constants
 
@@ -144,7 +144,7 @@ as in MNIST example. Here we specify name, data type and then shape of your plac
 
 Variables of `ARRAY` type appear as outputs of [operations](samediff/samediff/ops) within `SameDiff`. Accordingly, the data type of an array-type variable depends on the kind of operation it is produced by and variable type\(s\) ot its argument\(s\). Arrays are not persistent - they are one-time values that will be recalculated from scratch at the next step. However, unlike placeholders, gradients are computed for them, as those are needed to update the values of `VARIABLE`'s.
 
-There are as many ways array-type variables are created as there are operations, so you're better up focusing on our [operations section](samediff/samediff/ops), our [javadoc](https://javadoc.io/doc/org.nd4j/nd4j-api/1.0.0-beta7/org/nd4j/autodiff/samediff/SameDiff.html) and [examples](samediff/samediff/exampes).
+There are as many ways array-type variables are created as there are operations, so you're better up focusing on our [operations section](samediff/samediff/ops), our [javadoc](https://javadoc.io/doc/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/autodiff/samediff/SameDiff.html) and [examples](samediff/samediff/exampes).
 
 ## Recap table
 

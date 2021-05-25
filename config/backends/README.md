@@ -20,7 +20,7 @@ If you have CUDA v9.2+ installed and NVIDIA-compatible hardware, then your depen
 <dependency>
  <groupId>org.nd4j</groupId>
  <artifactId>nd4j-cuda-10.2</artifactId>
- <version>1.0.0-beta7</version>
+ <version>1.0.0-M1</version>
 </dependency>
 ```
 
@@ -34,7 +34,7 @@ Otherwise you will need to use the native implementation of ND4J as a CPU backen
 <dependency>
  <groupId>org.nd4j</groupId>
  <artifactId>nd4j-native</artifactId>
- <version>1.0.0-beta7</version>
+ <version>1.0.0-M1</version>
 </dependency>
 ```
 

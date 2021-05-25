@@ -6,6 +6,11 @@ category: Language Processing
 weight: 10
 ---
 
+Notes to write on:
+1. Tokenizer factory interface
+2. Tokenizer interface
+2. How to write your own factory and tokenizer
+
 # Tokenization
 
 ## What is Tokenization?

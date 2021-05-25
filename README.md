@@ -12,24 +12,34 @@ weight: 1
 如果您希望阅读中文文档，请查看[中文文档](https://deeplearning4j.konduit.ai/v/zhong-wen-v1.0.0/)。
 {% endhint %}
 
-Eclipse Deeplearning4j is the first commercial-grade, open-source, distributed deep-learning library written for Java and Scala. Integrated with Hadoop and Apache Spark, DL4J brings AI to business environments for use on distributed GPUs and CPUs.
+Eclipse Deeplearning4j is a model import deployment framework for retraining models (pytorch, tensorflow,keras) and deploying in JVM Micro service environments, mobile devices, iot, and Apache Spark. It is a great compliment to your python environment for running models built in python, deployed to or packaged for other environments.
 
-**Distributed**
+Deeplearning4j has several submodules including:
 
-DL4J takes advantage of the latest distributed computing frameworks including Apache Spark and Hadoop to accelerate training. On multi-GPUs, it is equal to Caffe in performance.
+1. Samediff: a tensorflow/pytorch like framework for execution of complex graphs. This framework is lower level, but very flexible. It's also the base api for running onnx and tensorflow graphs.
+
+2. Nd4j: numpy ++ for java. Contains a mix of numpy operations and tensorflow/pytorch operations.
+
+3. Libnd4j: A lightweight, standalone c++ library enable math code to run on different devices. Optimizable for running on a wide variety of devices.
+
+4. Python4j: A python script execution framework easing deployment of python scripts in to production.
+
+5. Apache spark integration: An integration with the apache spark framework enabling execution of deep learning pipeliens on spark
+
+6. Datavec: A data transformation library converting raw input data to tensors suitable for running neural networks on.
+
+
 
 **Open Source**
 
-The libraries are completely open-source, Apache 2.0, and maintained by the developer community and Konduit team.
+The libraries are completely open-source, Apache 2.0 under open governance at the [Eclipse foundation](https://eclipse.org/).
+The Eclipse Deeplearning4j project welcomes all contributions. See our [community](https://community.konduit.ai/) and our 
+[Contribution guide](https://github.com/eclipse/deeplearning4j/blob/master/CONTRIBUTING.md) to get involved.
+
 
 **JVM/Python/C++**
 
-Deeplearning4j is written in Java and is compatible with any JVM language, such as Scala, Clojure or Kotlin. The underlying computations are written in C, C++ and Cuda. Keras will serve as the Python API.
-
-### What's included?
-
-Deep neural nets are capable of record-breaking accuracy. For a quick neural net introduction, please visit our [overview ](getting-started/core-concepts.md)page. In a nutshell, Deeplearning4j lets you compose deep neural nets from various shallow nets, each of which form a so-called \`layer\`. This flexibility lets you combine variational autoencoders, sequence-to-sequence autoencoders, convolutional nets or recurrent nets as needed in a distributed, production-grade framework that works with Spark and Hadoop on top of distributed CPUs or GPUs.
-
-There are a lot of parameters to adjust when you're training a deep-learning network. We've done our best to explain them, so that Deeplearning4j can serve as a DIY tool for Java, Scala, Clojure and Kotlin programmers.  
+Deeplearning4j can either be a compliment to your existing workflows in python and c++ or a standalone library for you to build and deploy models.
+Use what components you find useful.
 
 
