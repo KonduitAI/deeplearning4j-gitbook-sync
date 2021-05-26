@@ -11,13 +11,9 @@ layout: default
 
 ## About Eclipse Deeplearning4j
 
-Eclipse Deeplearning4j is an open-source, distributed deep-learning project in Java and Scala spearheaded by the people at [Konduit](https://konduit.ai/), a business intelligence and enterprise software firm. We're a team of data scientists, deep-learning specialists, Java systems engineers and semi-sentient robots.
+Eclipse Deeplearning4j is a suite of tools for deploying and executing machine learning pipelins using the java virtual machine maintained by the team at [Konduit](https://konduit.ai/) with contributions from the broader open source community fostered with the help of the [eclipse foundation](https://eclipse.org)
 
-There are a lot of knobs to turn when you're training a distributed deep-learning network. We've done our best to explain them, so that Eclipse Deeplearning4j can serve as a DIY tool for Java, Scala and Clojure programmers working on Hadoop and other file systems.
-
-## Media
-
-Deeplearning4j has been featured in [Wired](http://www.wired.com/2014/06/skymind-deep-learning/), [GigaOM](http://gigaom.com/2014/06/02/a-startup-called-skymind-launches-pushing-open-source-deep-learning/), [Businessweek](http://www.businessweek.com/articles/2014-06-03/teaching-smaller-companies-how-to-probe-deep-learning-on-their-own), [Venturebeat](http://venturebeat.com/2014/06/02/skymind-launches-with-open-source-plug-and-play-deep-learning-features-for-your-app/), [The Wall Street Journal](http://blogs.wsj.com/cio/2014/06/03/the-morning-download-apple-relies-on-ecosystem-for-innovation/), [Fusion](http://fusion.net/story/177825/privacy-conscious-siris-that-dont-give-up-your-secrets-are-coming/) and [Java Magazine](https://www.oracle.com/a/ocom/docs/corporate/java-magazine-nov-dec-2018.pdf).
+DL4J was donated to the eclipse foundation in 2017 and was started in 2013. It evolved from a single neural net training framework to a big data oriented one, now down to a simpler framework focused on interop with the broader ecosystem making it easier to deliver intelligent applications to the market through a mix of model import, python bundling, and easily accessible hardware optimized math distributed via maven central.
 
 ## Cite Eclipse Deeplearning4j
 

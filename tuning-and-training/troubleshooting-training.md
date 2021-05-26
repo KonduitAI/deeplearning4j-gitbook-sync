@@ -28,7 +28,6 @@ Many of these tips have already been discussed in the academic literature. Our p
 * [Gradient Normalization](troubleshooting-training.md#gradient-normalization)
 * [Recurrent Neural Networks](troubleshooting-training.md#recurrent-neural-networks-truncated-backpropagation-through-time)
 * [Deep Belief Network](troubleshooting-training.md#visible-hidden-unit)
-* [Restricted Boltzmann Machines](troubleshooting-training.md#restricted-boltzmann-machines-rbms)
 * [NaN, Not a Number issues](troubleshooting-training.md#nan-not-a-number-errors)
 
 ## [Data Normalization](troubleshooting-training.md)
@@ -116,11 +115,7 @@ When training a neural network, it can sometimes be helpful to apply gradient no
 
 When training recurrent networks with long time series, it is generally advisable to use truncated backpropagation through time. With 'standard' backpropagation through time \(the default in DL4J\) the cost per parameter update can become prohibative. For more details, see [this page](../models/recurrent.md#truncated-back-propagation-through-time).
 
-## [Visible/Hidden Unit](troubleshooting-training.md)
 
-When using a deep-belief network, pay close attention here. An RBM \(the component of the DBN used for feature extraction\) is stochastic and will sample from different probability distributions relative to the visible or hidden units specified.
-
-See Geoff Hinton's definitive work, [A Practical Guide to Training Restricted Boltzmann Machines](https://www.cs.toronto.edu/~hinton/absps/guideTR.pdf), for a list of all of the different probability distributions.
 
 ## [NaN, Not a Number Errors](troubleshooting-training.md)
 
