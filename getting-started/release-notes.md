@@ -88,6 +88,7 @@ We've upgraded arrow to 4.0.0 enabling the associated nd4j-arrow and datavec-arr
 * [Fix for obtaining the UI port from a property](https://github.com/eclipse/deeplearning4j/pull/9162)
 
 
+
 ### Nd4j
 
 
@@ -125,7 +126,7 @@ https://github.com/eclipse/deeplearning4j/issues?q=is%3Apr+author%3Amjlorenzo305
 
 ## Version 1.0.0-M1
 
-Read the announcement at [https://blog.konduit.ai/2020/05/14/deeplearning4j-1-0-0-M1-released/](https://blog.konduit.ai/2020/05/14/deeplearning4j-1-0-0-M1-released/) for the highlights of this release.
+Read the announcement at [https://blog.konduit.ai/2020/05/14/deeplearning4j-1-0-0-beta7-released/](https://blog.konduit.ai/2020/05/14/deeplearning4j-1-0-0-beta7-released/) for the highlights of this release.
 
 ### Deeplearning4j
 

@@ -11,7 +11,7 @@ weight: 3
 ## Using Deeplearning4j with cuDNN
 
 
-There are 2 ways of using cudnn with deeplearning4j. One is an older way described below that is built in to the various deep learning4j layers at the java level.
+There are 2 ways of using cudnn with deeplearning4j. One is an older way described below that is built in to the various deeplearning4j layers at the java level.
 
 The other is to use the new nd4j cuda bindings that link to cudnn at the c++ level. Both will be described below. The newer way first, followed by the old way.
 

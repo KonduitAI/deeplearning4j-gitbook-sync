@@ -68,6 +68,14 @@ This step may also involve invoking tests with specific tags if only running a s
 To ensure the examples stay compatible with the current release, we also tag the release version to be the latest version found on maven central.
 This step may also involve adding or removing examples for new or deprecated features respectivley.
 
+## Ensure different classifiers work
+
+1. Different supported cuda versions with and without cudnn
+2. Onednn and associated classifiers per platform
+
+## Android
+Ensure testing happens on the android emulator.
+
 
 ##  Run the deeplearning4j-examples as a litmus tests on all platforms (including embedded)
 
@@ -86,6 +94,14 @@ If your team has specific requirements on a release, please contact us on the [c
 This means after [closing a staging repository](https://central.sonatype.org/publish/publish-guide/), hitting the release button
 initiating a sync of the staging repository with the desired version to maven central. Sync usually takes 2 hours or less.
 
+## Ensure a tag exists
+
+After a release happens, a version update to the stable version + a github tag needs to happen. This is achived in the desktop app by going to:
+1. History
+2. Right click on target commit you want to tag
+3. Click tag
+4. Push the revision
+5. Update the version back to snapshot after tag.
 
 
 
