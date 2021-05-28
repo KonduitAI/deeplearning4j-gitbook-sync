@@ -8,11 +8,9 @@ weight: 1
 
 # Eclipse DeepLearning4J
 
-{% hint style="info" %}
-如果您希望阅读中文文档，请查看[中文文档](https://deeplearning4j.konduit.ai/v/zhong-wen-v1.0.0/)。
-{% endhint %}
+Eclipse Deeplearning4j is a suite of tools for running deep learning on the JVM. It's the only framework that allows you to train models from java while interopping with the python ecosystem through a mix of python execution via our cpython bindings, model import support, and interop of other runtimes such as tensorflow-java and onnxruntime.
 
-Eclipse Deeplearning4j is a model import deployment framework for retraining models (pytorch, tensorflow,keras) and deploying in JVM Micro service environments, mobile devices, iot, and Apache Spark. It is a great compliment to your python environment for running models built in python, deployed to or packaged for other environments.
+The use cases include importing and retraining models (pytorch, tensorflow,keras) models and deploying in JVM Micro service environments, mobile devices, iot, and Apache Spark. It is a great compliment to your python environment for running models built in python, deployed to or packaged for other environments.
 
 Deeplearning4j has several submodules including:
 
@@ -28,6 +26,28 @@ Deeplearning4j has several submodules including:
 
 6. Datavec: A data transformation library converting raw input data to tensors suitable for running neural networks on.
 
+# How to use this website
+
+This website follows the [divio framework](https://documentation.divio.com/) layout. This website has several sections
+of documentation following this layout. Below is an overview of the sections of the site:
+
+1. [Multi project](./multi-project) - this contains all cross project documentation such as end to end training and other whole project related documentation. This should be the default entry point for those getting started.
+
+2. [Deeplearning4j](./deeplearning4j) - this contains all of the documentation related to the core deeplearning4j apis
+such as the multi layer network and the computation graph. Consider this the high level framework for building neural networks. If you would like something lower level like tensorflow or pytorch, consider using samediff
+
+3. [Samediff](./samediff) - this contains all the documentation related to the samediff submodule of nd4j. Samediff is a lower level api for building neural networks similar to pytorch or tensorflow with built in automatic differentiation.
+
+4. [Datavec](./datavec) - this contains all the documentation related to our data transformation library datavec.
+
+5. [Python4j](./python4j) - this contains all the documentation related to our cpython execution framework python4j.
+
+6. [Libnd4j](./libnd4j) - this contains all the documentation related to our underlying c++ framework libnd4j.
+
+7. [Apache spark](./spark) - this contains all of the documentation related to our apache spark integration.
+
+8. [Concepts/Theory](./concepts) - this contains all of the documenation related to general mathematical or 
+computer science theory needed to understand various aspects of the framework.
 
 
 **Open Source**
