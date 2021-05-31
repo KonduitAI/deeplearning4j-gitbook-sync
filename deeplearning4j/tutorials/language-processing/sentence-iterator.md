@@ -43,25 +43,8 @@ SentenceIterator iter = new FileSentenceIterator(new File("your dir or file"));
 
 This will parse the files line by line and return individual sentences on each one.
 
-For anything complex, we recommend an actual machine-learning level pipeline, represented by the UimaSentenceIterator.
+For anything complex, we recommend any pipeline that can implement more in depth support than space separated tokens.
 
-The UimaSentenceIterator is capable of tokenization, part-of-speech tagging and lemmatization, among other things. The UimaSentenceIterator iterates over a set of files and can segment sentences. You can customize its behavior based on the AnalysisEngine passed into it.
 
-The AnalysisEngine is the [UIMA](http://uima.apache.org/) concept of a text-processing pipeline. DeepLearning4j comes with standard analysis engines for all of these common tasks, allowing you to customize which text is being passed in and how you define sentences. The AnalysisEngines are thread-safe versions of the [opennlp](http://opennlp.apache.org/) pipelines. We also include [cleartk](https://cleartk.github.io/cleartk/)-based pipelines for handling common tasks.
 
-For those using UIMA or curious about it, this employs the cleartk type system for tokens, sentences, and other annotations within the type system.
-
-Here's how to create a UimaSentenceItrator.
-
-```java
-SentenceIterator iter = UimaSentenceIterator.create("path/to/your/text/documents");
-```
-
-You can also instantiate directly:
-
-```java
-SentenceIterator iter = new UimaSentenceIterator(path,AnalysisEngineFactory.createEngine(AnalysisEngineFactory.createEngineDescription(TokenizerAnnotator.getDescription(), SentenceAnnotator.getDescription())));
-```
-
-For those familiar with Uima, this uses Uimafit extensively to create analysis engines. You can also create custom sentence iterators by extending SentenceIterator.
 

@@ -26,7 +26,7 @@ Contents
 
 ### [Introduction to Word2Vec](word2vec.md)
 
-Word2vec is a two-layer neural net that processes text. Its input is a text corpus and its output is a set of vectors: feature vectors for words in that corpus. While Word2vec is not a [deep neural network](https://skymind.ai/wiki/neural-network), it turns text into a numerical form that deep nets can understand. [Deeplearning4j](../getting-started/quickstart.md) implements a distributed form of Word2vec for Java and Scala, which works on Spark with GPUs.
+Word2vec is a two-layer neural net that processes text. Its input is a text corpus and its output is a set of vectors: feature vectors for words in that corpus. While Word2vec is not a [deep neural network](https://skymind.ai/wiki/neural-network), it turns text into a numerical form that deep nets can understand. [Deeplearning4j](../getting-started/quickstart.md).
 
 Word2vec's applications extend beyond parsing sentences in the wild. It can be applied just as well to [genes, code, likes, playlists, social media graphs and other verbal or symbolic series](word2vec.md#sequence) in which patterns may be discerned.
 
@@ -34,7 +34,7 @@ Why? Because words are simply discrete states like the other data mentioned abov
 
 The purpose and usefulness of Word2vec is to group the vectors of similar words together in vectorspace. That is, it detects similarities mathematically. Word2vec creates vectors that are distributed numerical representations of word features, features such as the context of individual words. It does so without human intervention.
 
-Given enough data, usage and contexts, Word2vec can make highly accurate guesses about a word’s meaning based on past appearances. Those guesses can be used to establish a word's association with other words \(e.g. "man" is to "boy" what "woman" is to "girl"\), or cluster documents and classify them by topic. Those clusters can form the basis of search, [sentiment analysis](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/recurrent/word2vecsentiment/Word2VecSentimentRNN.java) and recommendations in such diverse fields as scientific research, legal discovery, e-commerce and customer relationship management.
+Given enough data, usage and contexts, Word2vec can make highly accurate guesses about a word’s meaning based on past appearances. Those guesses can be used to establish a word's association with other words \(e.g. "man" is to "boy" what "woman" is to "girl"\), or cluster documents and classify them by topic. Those clusters can form the basis of search, sentiment analysis and recommendations in such diverse fields as scientific research, legal discovery, e-commerce and customer relationship management.
 
 The output of the Word2vec neural net is a vocabulary in which each item has a vector attached to it, which can be fed into a deep-learning net or simply queried to detect relationships between words.
 
@@ -214,7 +214,6 @@ This configuration accepts a number of hyperparameters. A few require some expla
 * _tokenizer_ feeds it the words from the current batch. 
 * _vec.fit\(\)_ tells the configured net to begin training. 
 
-An example for [uptraining your previously trained word vectors is here](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/nlp/word2vec/Word2VecUptrainingExample.java).
 
 #### [Evaluating the Model, Using Word2vec](word2vec.md)
 
@@ -227,9 +226,6 @@ WordVectorSerializer.writeWordVectors(vec, "pathToWriteto.txt");
 log.info("Closest Words:");
 Collection<String> lst = vec.wordsNearest("day", 10);
 System.out.println(lst);
-UiServer server = UiServer.getInstance();
-System.out.println("Started on port " + server.getPort());
-
 //output: [night, week, year, game, season, during, office, until, -]
 ```
 
@@ -249,43 +245,7 @@ System.out.println(lst3);
 //output: [director, company, program, former, university, family, group, such, general]
 ```
 
-#### Visualizing the Model
 
-We rely on [TSNE](https://lvdmaaten.github.io/tsne/) to reduce the dimensionality of word feature vectors and project words into a two or three-dimensional space. The full [DL4J/ND4J example for TSNE is here](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/nlp/tsne/TSNEStandardExample.java).
-
-```java
-Nd4j.setDataType(DataBuffer.Type.DOUBLE);
-List<String> cacheList = new ArrayList<>(); //cacheList is a dynamic array of strings used to hold all words
-
-//STEP 2: Turn text input into a list of words
-log.info("Load & Vectorize data....");
-File wordFile = new ClassPathResource("words.txt").getFile();   //Open the file
-//Get the data of all unique word vectors
-Pair<InMemoryLookupTable,VocabCache> vectors = WordVectorSerializer.loadTxt(wordFile);
-VocabCache cache = vectors.getSecond();
-INDArray weights = vectors.getFirst().getSyn0();    //seperate weights of unique words into their own list
-
-for(int i = 0; i < cache.numWords(); i++)   //seperate strings of words into their own list
-    cacheList.add(cache.wordAtIndex(i));
-
-//STEP 3: build a dual-tree tsne to use later
-log.info("Build model....");
-BarnesHutTsne tsne = new BarnesHutTsne.Builder()
-        .setMaxIter(iterations).theta(0.5)
-        .normalize(false)
-        .learningRate(500)
-        .useAdaGrad(false)
-//      .usePca(false)
-        .build();
-
-//STEP 4: establish the tsne values and save them to a file
-log.info("Store TSNE Coordinates for Plotting....");
-String outputFile = "target/archive-tmp/tsne-standard-coords.csv";
-(new File(outputFile)).getParentFile().mkdirs();
-
-tsne.fit(weights);
-tsne.saveAsFile(cacheList, outputFile);
-```
 
 #### Saving, Reloading & Using the Model
 

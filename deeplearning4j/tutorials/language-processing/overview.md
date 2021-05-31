@@ -10,7 +10,9 @@ weight: 0
 
 Although not designed to be comparable to tools such as Stanford CoreNLP or NLTK, deepLearning4J does include some core text processing tools that are described here.
 
-Deeplearning4j's NLP relies on [ClearTK](https://cleartk.github.io/cleartk/), an open-source machine learning and natural language processing framework for the Apache [Unstructured Information Management Architecture](https://uima.apache.org/), or UIMA. UIMA enables us to perform language identification, language-specific segmentation, sentence boundary detection and entity detection \(proper nouns: persons, corporations, places and things\).
+Deeplearning4j's NLP support contains interfaces for different NLP libraries. A user wraps third party libraries via our interfaces.
+Deeplearning4j as of M1, does not support any 3rd party libraries directly. This is due to the lack of maintenance and custom work needed to make this work well for users. Instead, we expose interfaces to allow users to implement their own tokenizers.
+
 
 ## SentenceIterator
 

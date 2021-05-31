@@ -12,6 +12,8 @@ weight: 2
 
 While not every concept in DL4J has an equivalent in Keras and vice versa, many of the key concepts can be matched. Importing keras models into DL4J is done in our [deeplearning4j-modelimport](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras) module. Below is a comprehensive list of currently supported features.
 
+Note that we also support importing tf.keras models as well. The format only changed a little bit from keras to tf.keras. We handle this transition from beta7 and above.
+
 * [Layers](./#layers)
 * [Losses](./#losses)
 * [Activations](./#activations)

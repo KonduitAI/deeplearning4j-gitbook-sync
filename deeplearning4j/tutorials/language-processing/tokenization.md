@@ -15,15 +15,14 @@ Notes to write on:
 
 ## What is Tokenization?
 
-Tokenization is the process of breaking text down into individual words. Word windows are also composed of tokens. [Word2Vec](deeplearning4j-nlp/word2vec.html) can output text windows that comprise training examples for input into neural nets, as seen here.
+Tokenization is the process of breaking text down into individual words. Word windows are also composed of tokens. [Word2Vec](./word2vec) can output text windows that comprise training examples for input into neural nets, as seen here.
 
 ## Example
 
 Here's an example of tokenization done with DL4J tools:
 
 ```java
-//tokenization with lemmatization,part of speech taggin,sentence segmentation
-TokenizerFactory tokenizerFactory = new UimaTokenizerFactory();
+TokenizerFactory tokenizerFactory = new DefaultTokenizerFactory();
 Tokenizer tokenizer = tokenizerFactory.tokenize("mystring");
 
 //iterate over the tokens

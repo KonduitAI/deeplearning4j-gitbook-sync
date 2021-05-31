@@ -14,6 +14,14 @@ weight: 0
 
 Once you have imported your model into DL4J, our full production stack is at your disposal. We support import of all Keras model types, most layers and practically all utility functionality. Please check [here](supported-features/) for a complete list of supported Keras features.
 
+Note to users: tf.keras models are also supported. Please check [here](supported-features/) 
+for an overview of what to expect for tf.keras as well as other features. Our documentation needs to be updated to reflect the changes between keras and tf.keras. For now, users should aware of this as you read the below docs. Migrating from keras to tf.keras mainly involves changing the imports in your python script.
+The equivalent kind of changes needed to happen for the model import in deeplearning4j. Those changes happened in beta7.
+
+
+
+
+
 ## Getting started: Import a Keras model in 60 seconds
 
 To import a Keras model, you need to create and [serialize](https://keras.io/getting-started/faq/#how-can-i-save-a-keras-model) such a model first. Here's a simple example that you can use. The model is a simple MLP that takes mini-batches of vectors of length 100, has two Dense layers and predicts a total of 10 categories. After defining the model, we serialize it in HDF5 format.
