@@ -42,13 +42,67 @@ nexus sonatype. This releaseRepoId should be passed to subsequent builds so all 
 ```
 to skip a libnd4j compile. This can speed builds up significantly. 
 
-8. libnd4jUrl: In tandem with modules, you can specify a libnd4j zip file distribution that was compiled before for download. The builds will download a libnd4j 
+8. libnd4jDownload/libnd4jUrl: In tandem with modules, you can specify a libnd4j zip file distribution that was compiled before for download. The builds will download a libnd4j 
 distribution and use that for linking. This can be handy when recompiling the nd4j-native/nd4j-cuda backends for a specific platform without needing to recompile
-the whole c++ codebase.
+the whole c++ codebase. A url in a matrix build will be sourced from a hard coded file name from 
+[this repo](https://github.com/KonduitAI/gh-actions-libnd4j-urls) - each file name will be updated to point to a zip file distribution appropriate for an individual matrix build. This was done because 1 url is not going to be suitable for individual matrix builds.  
 
 9. runsOn: This is the operating system upon which to run the build. For linux, this defaults to ubuntu-16.04. For windows, windows-2019.
 self-hosted can also be specified for faster builds.
 
+
+# Matrix builds
+
+Many configurations on cpu and cuda require a matrix based build structure to capture the various combinations of optimization and software versions people may want to use. In order to accomodate these workflows, we need to attach variables proxying the values of the manual inputs to the individual matrix workers themselves. These parameters are analogous to the above described parameters. Note we will not repeat the descriptions here, but the values can be seen 
+from their values in the form of ${{ github.even.inputs.$SOME_VALUE}} where SOME_VALUE is one of the values above.
+
+The configuration to look for is as follows:
+```yml
+          - mvn_ext: ${{ github.event.inputs.mvnFlags }}
+            experimental: true
+            name: Extra maven flags
+
+          - debug_enabled: ${{ github.event.inputs.debug_enabled }}
+            experimental: true
+            name: Debug enabled
+
+          - runs_on: ${{ github.event.inputs.runsOn }}
+            experimental: true
+            name: OS to run on
+
+          - libnd4j_file_download: ${{ github.event.inputs.libnd4jDownload }}
+            experimental: true
+            name: OS to run on
+
+          - deploy_to_release_staging: ${{ github.event.inputs.deployToReleaseStaging }}
+            experimental: true
+            name: Whether to deploy to release staging or not
+
+          - release_version: ${{ github.event.inputs.releaseVersion }}
+            experimental: true
+            name: Release version
+
+          - snapshot_version: ${{ github.event.inputs.snapshotVersion }}
+            experimental: true
+            name: Snapshot version
+
+          - server_id: ${{ github.event.inputs.serverId }}
+            experimental: true
+            name: Server id
+
+          - release_repo_id: ${{ github.event.inputs.releaseRepoId }}
+            experimental: true
+            name: The release repository to run on
+
+          - mvn_flags: ${{ github.event.inputs.mvnFlags }}
+            experimental: true
+            name: Extra maven flags to use as part of the build
+
+          - build_threads: ${{ github.event.inputs.buildThreads }}
+            experimental: true
+            name: The number of threads to build libnd4j with
+
+```
 
 
 # Expected timings
@@ -73,7 +127,7 @@ all steps terminated, this maybe one of the reasons.
 
 
 # Environment variables:
-1. MAVEN_GPG_KEY: The maven gpg key secrete for a release
+1. MAVEN_GPG_KEY: The maven gpg key secret for a release
 2. CROSS_COMPILER_DIR: For the pi_build.sh script in libnd4j. This contains the root directory
 for cross compiler invocation. We need this because all cross compilation for various libnd4j builds happens
 on x86. We cross compile for speed reasons also easily allowing us to run on github actions.
@@ -104,3 +158,4 @@ to maven central. Use that id for further buidls to ensure that all uploads for 
 19. MODULES: Extra maven flags for pi_build.sh if more flags are needed (such as for debugging or only building specific modules)
 20. LIBND4J_URL: Used when building nd4j-native. If a user does not want to recompile libnd4j for their particular build, you can instead
 skip this step and specify a libnd4j zip file download (generally built with the maven assembly plugin)
+

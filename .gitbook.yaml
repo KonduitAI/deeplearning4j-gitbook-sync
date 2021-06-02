@@ -6,3 +6,96 @@ redirects:
   nd4j/backend: config/backends/README.md
   quickstart: getting-started/quickstart.md
   contribute: getting-started/contribute.md
+  android/faq: multi-project/explanation/deprecation
+  android/first-steps: mmulti-project/explanation/deprecation
+  android/image-classification: multi-project/explanation/deprecation
+  android/linear-classifier: multi-project/explanation/deprecation
+  android/press: multi-project/explanation/deprecation
+  android/setup: multi-project/explanation/deprecation
+  android/support: multi-project/explanation/deprecation
+  android/why-deep-learning: multi-project/explanation/deprecation
+  arbiter/layer-spaces: multi-project/explanation/deprecation
+  arbiter/overview: multi-project/explanation/deprecation
+  arbiter/parameter-spaces: multi-project/explanation/deprecation
+  config/backends: multi-project/config/backends/
+  config/backends/config-cudnn: multi-project/config/backends/config-cudnn
+  config/backends/cpu: multi-project/config/backends/cpu
+  config/backends/performance-issues: multi-project/config/backends/performance-issues
+  config/config-memory: multi-project/config/config-memory/
+  config/config-/config-workspaces: multi-project/config/config-memory/config-workspaces
+  config/buildtools: multi-project/config/buildtools
+  config/config-snapshots: multi-project/config/config-snapshots
+  config/maven: multi-project/config/maven
+  datavec/analysis: datavec/explanation/analysis
+  datavec/conditions: datavec/explanation/conditions
+  datavec/executors: datavec/explanation/executors
+  datavec/filters: datavec/explanation/filters
+  datavec/normalization: datavec/explanation/normalization
+  datavec/operations: datavec/explanation/operations
+  datavec/readers: datavec/explanation/readers
+  datavec/records: datavec/explanation/records
+  datavec/reductions: datavec/explanation/reductions
+  datavec/schema: datavec/explanation/schema
+  datavec/serialization: datavec/explanation/serialization
+  datavec/transforms: datavec/explanation/transforms
+  datavec/visualization: datavec/explanation/visualization
+  distributed-deep-learning/apiref: spark/explanation/apiref
+  distributed-deep-learning/data-howto: spark/how-to-guides/data-howto
+  distributed-deep-learning/howto: spark/how-to-guides/howto
+  distributed-deep-learning/intro: spark/tutorials/intro
+  distributed-deep-learning/parameter-server: spark/reference/parameter-server
+  distributed-deep-pearning/technicalref: spark/reference/technicalref
+  getting-started/contribute: multi-project/how-to-guides/contribute
+  getting-started/contribute/eclipse-contributors: multi-project/how-to-guides/contribute/eclipse-contributors
+  getting-started/about: multi-project/explanation/about
+  getting-started/beginners: multi-project/how-to-guides/beginners
+  getting-started/benchmark: multi-project/how-to-guides/benchmark
+  getting-started/build-from-source: multi-project/how-to-guides/build-from-source
+  getting-started/cheat-sheet: multi-project/explanation/cheat-sheet
+  getting-started/core-concepts: multi-project/explanation/core-concepts
+  getting-started/examples-tour: multi-project/reference/examples-tour
+  getting-started/quickstart:  multi-project/tutorials/quickstart
+  getting-started/release-notes: multi-project/reference/release-notes
+  getting-started/tutorials/advanced-autoencoder: multi-project/explanation/deprecation
+  getting-started/tutorials/basic-autoencoder: multi-project/explanation/deprecation
+  getting-started/tutorials/built-in-data-iterators: multi-project/explanation/deprecation
+  getting-started/tutorials/clinicial-time-series-lstm: multi-project/explanation/deprecation
+  getting-started/tutorials/cloud-detection-example: multi-project/explanation/deprecation
+  getting-started/tutorials/convolutional-networks: multi-project/explanation/deprecation
+  getting-started/tutorials/early-stopping: multi-project/explanation/deprecation
+  getting-started/tutorials/feed-forward-networks: multi-project/explanation/deprecation
+  getting-started/tutorials/hyperparameter-optimization: multi-project/explanation/deprecation
+  getting-started/tutorials/instacart-multi-task-example: multi-project/explanation/deprecation
+  getting-started/tutorials/instacart-single-task-example: multi-project/explanation/deprecation
+  getting-started/tutorials/layers-and-preprocessors: multi-project/explanation/deprecation
+  getting-started/tutorials/logistic-regression: multi-project/explanation/deprecation
+  getting-started/tutorials/multilayernetwork-and-computationgraph: multi-project/explanation/deprecation
+  getting-started/tutorials/quickstart-with-mnist: multi-project/explanation/deprecation
+  getting-started/tutorials/recurrent-networks: multi-project/explanation/deprecation
+  getting-started/tutorials/sea-teamperature-convolutional-lstm-example-2: multi-project/explanation/deprecation
+  getting-started/tutorials/sea-temperature-convolutional-lstm: multi-project/explanation/deprecation
+  getting-started/tutorials/using-multiple-gpus: multi-project/explanation/deprecation
+  keras-import: deeplearning4j/explanation/keras-import
+  language-processing: deeplearning4j/tutorials/language-processing
+  model-zoo: deeplearning4j/explanation/model-zoo
+  models: deeplearning4j/explanation/
+  nd4j/basics: nd4j/how-to-guides/basics
+  nd4j/elementwise: nd4j-how-to-guides/elementwise
+  nd4j/matrix-manipulation: nd4j/how-to-guides/matrix-manipulation
+  nd4j/overview: nd4j/explanation/overview
+  nd4j/quickstart: nd4j/tutorials/quickstart
+  nd4j/tensor: nd4j/reference/tensor
+  nd4j/syntax: nd4j/reference/syntax
+  nd4j/operation-namespaces: samediff/reference/operation-namespaces
+  samediff/adding-ops: samediff/how-to-guides/adding-ops
+  samediff/importing-tensorflow: samediff/how-to-guides/importing-tensorflow
+  samediff/ops: samediff/explanation/ops
+  samediff/variables: samediff/explanation/variables
+  tuning-and-training: deeplearning4j/how-to-guides/tuning-and-training
+
+
+
+
+
+
+

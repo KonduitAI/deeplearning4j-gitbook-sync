@@ -49,6 +49,7 @@ In maven, add the following dependency:
 
 
 Note, this depends on javacpp's tensorflow bindings. This means tensorflow's native binaries are managed by javacpp.
+Javacpp will bundle all native binaries for all platforms by default unless you specify a platform.
 You can do this by specifying a -Dplatform=your-platform-of-choice. You may find more [here](https://github.com/bytedeco/javacpp-presets/wiki/Reducing-the-Number-of-Dependencies) in the javacpp docs.
 
 

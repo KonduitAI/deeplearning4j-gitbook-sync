@@ -88,7 +88,24 @@ In order to obtain results, (read: real INDArrays with actual data) there are a 
         INDArray mulTenArr = sd.getArrForVarName("mulTen");     //Or also by name, from the Samediff instance
 ```
 
+Another way of executing results is to use the SDVariable eval(..) api as follows:
+```java
+        //We can also do the forward pass by calling eval on the SDVariable directly.
+        //Note that this will clear the sd graph and set all it's variable arrays that are not on the path of the forward pass to null
+        plusOneArr = plusOne.eval();
+        variableArr = variable.getArr();               //We can get arrays directly from the variables
+        mulTenArr = sd.getArrForVarName("mulTen");     //Or also by name, from the Samediff instance
+```
 
+eval(..) returns the resulting value for that variable from the forward pass.
+You may also obtain the result from getArr(..) since the actual SDVariable stores the current state of the computation.
+ 
+ Breaking down what happens a bit:
+
+ 1. A neural network forward pass requires computing state in a sequence construted as a DAG.
+ 2. Each node in the graph is an operation that has input and output variables. 
+ 3. Variables represent a named parameter for an operation and may or may not contain a current value as an INDArray.
+ 
 
 
 

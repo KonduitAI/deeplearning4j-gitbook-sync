@@ -89,7 +89,7 @@ Note for jetson nano users, please see [this thread](https://community.konduit.a
 for successfully compiling deeplearning4j on jetson nano.
 
 In short: relies on cuda  10.0. The [javacpp presets](https://github.com/bytedeco/javacpp-presets) for cuda are also only compiled for arm64 for cuda 10.0. You can find the supported cuda versions for cuda 10.0 [here](https://repo1.maven.org/maven2/org/bytedeco/cuda/10.0-7.4-1.5/)
-If you would like something more up to date, please feel free to contact us over at [our forums](https://community.konduit.ai/)
+If you would like something more up to date, please feel free to contact us over at [our forums](https://community.ko)
 
 
 Note for windows users:
