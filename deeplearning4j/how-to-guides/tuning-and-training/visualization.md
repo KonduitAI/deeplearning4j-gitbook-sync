@@ -39,6 +39,9 @@ DL4J Provides a user interface to visualize in your browser \(in real time\) the
 This is relatively straightforward:
 
 ```java
+    MultiLayerNetwork net = ...;
+    //Also CompuptationGraph
+    //ComputationGraph net = ...;
     //Initialize the user interface backend
     UIServer uiServer = UIServer.getInstance();
 
