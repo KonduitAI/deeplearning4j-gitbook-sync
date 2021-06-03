@@ -73,7 +73,6 @@
 
 * [Overview](nd4j/overview.md)
 * [Quickstart](nd4j/quickstart.md)
-* [Backend](nd4j/backend.md)
 * [Basics](nd4j/basics.md)
 * [Elementwise Operations](nd4j/elementwise.md)
 * [Matrix Manipulation](nd4j/matrix-manipulation.md)
@@ -87,6 +86,20 @@
 * [Ops](samediff/ops.md)
 * [Adding Ops](samediff/adding-ops.md)
 
+## ND4J & SameDiff Ops <a id="operation-namespaces"></a>
+
+* [Overview](operation-namespaces/overview.md)
+* [Bitwise](operation-namespaces/bitwise.md)
+* [Linalg](operation-namespaces/linalg.md)
+* [Math](operation-namespaces/math.md)
+* [Random](operation-namespaces/random.md)
+* [BaseOps](operation-namespaces/baseops.md)
+* [CNN](operation-namespaces/cnn.md)
+* [Image](operation-namespaces/image.md)
+* [Loss](operation-namespaces/loss.md)
+* [NN](operation-namespaces/nn.md)
+* [RNN](operation-namespaces/rnn.md)
+
 ## Tuning & Training
 
 * [Evaluation](tuning-and-training/evaluation.md)
@@ -95,15 +108,6 @@
 * [Early Stopping](tuning-and-training/early-stopping.md)
 * [t-SNE Visualization](tuning-and-training/tsne-visualization.md)
 * [Transfer Learning](tuning-and-training/transfer-learning.md)
-
-## DISTRIBUTED DEEP LEARNING
-
-* [Introduction/Getting Started](distributed-deep-learning/intro.md)
-* [Technical Explanation](distributed-deep-learning/technicalref.md)
-* [Spark Guide](distributed-deep-learning/howto.md)
-* [Spark Data Pipelines Guide](distributed-deep-learning/data-howto.md)
-* [API Reference](distributed-deep-learning/apiref.md)
-* [Parameter Server](distributed-deep-learning/parameter-server.md)
 
 ## Keras Import
 
@@ -118,6 +122,7 @@
   * [Optimizers](keras-import/supported-features/optimizers.md)
 * [Functional Model](keras-import/model-functional.md)
 * [Sequential Model](keras-import/model-sequential.md)
+* [Custom Layers](keras-import/custom-layers.md)
 * [API Reference](keras-import/api-reference/README.md)
   * [Core Layers](keras-import/api-reference/core-layers.md)
   * [Convolutional Layers](keras-import/api-reference/convolutional-layers.md)
@@ -129,6 +134,15 @@
   * [Recurrent Layers](keras-import/api-reference/recurrent-layers.md)
   * [Wrapper Layers](keras-import/api-reference/wrapper-layers.md)
   * [Advanced Activations](keras-import/api-reference/advanced-activations.md)
+
+## DISTRIBUTED DEEP LEARNING
+
+* [Introduction/Getting Started](distributed-deep-learning/intro.md)
+* [Technical Explanation](distributed-deep-learning/technicalref.md)
+* [Spark Guide](distributed-deep-learning/howto.md)
+* [Spark Data Pipelines Guide](distributed-deep-learning/data-howto.md)
+* [API Reference](distributed-deep-learning/apiref.md)
+* [Parameter Server](distributed-deep-learning/parameter-server.md)
 
 ## Arbiter
 
@@ -168,8 +182,8 @@
 * [Tutorial: First Steps](android/first-steps.md)
 * [Tutorial: Classifier](android/linear-classifier.md)
 * [Tutorial: Image Classifier](android/image-classification.md)
-* [FAQ](faq.md)
-* [Press](press.md)
-* [Support](support.md)
-* [Why Deep Learning?](why-deep-learning.md)
+* [FAQ](android/faq.md)
+* [Press](android/press.md)
+* [Support](android/support.md)
+* [Why Deep Learning?](android/why-deep-learning.md)
 
