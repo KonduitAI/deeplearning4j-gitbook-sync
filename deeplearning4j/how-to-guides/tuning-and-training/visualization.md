@@ -59,9 +59,9 @@ To access the UI, open your browser and go to `http://localhost:9000/train/overv
 
 Information will then be collected and routed to the UI when you call the `fit` method on your network.
 
-**Example:** [See a UI example here](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/userInterface/UIExample.java)
+**Example:** [See a UI example here](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/quickstart/features/userinterface/BasicUIExample.java)
 
-The full set of UI examples are available [here](https://github.com/eclipse/deeplearning4j-examples/tree/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/userInterface).
+The full set of UI examples are available [here](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/quickstart/features/userinterface).
 
 ### [Deeplearning4j UI: The Overview Page](visualization.md)
 
@@ -208,40 +208,6 @@ This chart simply shows the learning rates of the parameters of selected layer, 
 
 If you are not using learning rate schedules, the chart will be flat. If you _are_ using learning rate schedules, you can use this chart to track the current value of the learning rate \(for each parameter\), over time.
 
-## [TSNE and Word2vec](visualization.md)
-
-We rely on [TSNE](https://lvdmaaten.github.io/tsne/) to reduce the dimensionality of [word feature vectors](../language-processing/word2vec.md) and project words into a two or three-dimensional space. Here's some code for using TSNE with Word2Vec:
-
-```java
-log.info("Plot TSNE....");
-BarnesHutTsne tsne = new BarnesHutTsne.Builder()
-        .setMaxIter(1000)
-        .stopLyingIteration(250)
-        .learningRate(500)
-        .useAdaGrad(false)
-        .theta(0.5)
-        .setMomentum(0.5)
-        .normalize(true)
-        .usePca(false)
-        .build();
-vec.lookupTable().plotVocab(tsne);
-```
-
-## [Fixing UI Issue: "No configuration setting" exception](visualization.md)
-
-A possible exception that can occur with the DL4J UI is the following:
-
-```text
-com.typesafe.config.ConfigException$Missing: No configuration setting found for key 'play.crypto.provider'
-        at com.typesafe.config.impl.SimpleConfig.findKeyOrNull(SimpleConfig.java:152)
-        at com.typesafe.config.impl.SimpleConfig.findOrNull(SimpleConfig.java:170)
-        ...
-        at play.server.Server.forRouter(Server.java:96)
-        at org.deeplearning4j.ui.play.PlayUIServer.runMain(PlayUIServer.java:206)
-        at org.deeplearning4j.ui.api.UIServer.getInstance(UIServer.java:27)
-```
-
-This exception is not due to DL4J directly, but is due to a missing application.conf file, required by the Play framework \(the library that DL4J's UI is based on\). This is originally present in the deeplearning4j-play dependency: however, if an uber-jar \(i.e., a JAR file with dependencies\) is built \(say, via `mvn package`\), it may not be copied over correctly. For example, using the `maven-assembly-plugin` has caused this exception for some users.
 
 The recommended solution \(for Maven\) is to use the Maven Shade plugin to produce an uber-jar, configured as follows:
 
