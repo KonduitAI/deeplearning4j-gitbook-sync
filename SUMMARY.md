@@ -33,12 +33,12 @@
 * [Reference](multi-project/reference.md)
     * [Examples Tour](multi-project/reference/examples-tour.md)
     * [Release notes](multi-project/reference/release-notes.md)
-* [Tutorials](multi-project/tutorials.md)
-    * [Quickstart](multi-project/tutorials/quickstart.md)
+* [Tutorials](multi-project/tutorials)
+    * [Quickstart](multi-project/README.md)
   
 
 ## Deeplearning4j
-
+    
   * [Tutorials](deeplearning4j/tutorials)
     * [Language Processing](deeplearning4j/tutorials/language-processing)
         * [Doc2Vec](deeplearning4j/tutorials/language-processing/doc2vec.md)
@@ -47,7 +47,7 @@
         * [Tokenization](deeplearning4j/tutorial/language-processing/tokenization.md)
         * [Vocabulary Cache](deeplearning4j/tutorial/language-processing/vocab-cache.md)
 
-* [How To Guides](deeplearning4j/how-to-guides)
+  * [How To Guides](deeplearning4j/how-to-guides)
     * [Keras Import](deeplearning4j/how-to-guides/keras-import)
         * [API Reference](deeplearning4j/how-to-guides/keras-import/api-reference)
             * [Advanced Activations](deeplearning4j/how-to-guides/keras-import/api-reference/advanced-activations.md)
@@ -93,18 +93,36 @@
       * [Multi Layer Network](deeplearning4j/explanation/multilayernetwork.md)
       * [Recurrent](deeplearning4j/explanation/recurrent.md)
       * [Updaters](deeplearning4j/explanation/updaters.md)
-      * [Vertices](deeplearning4j/epxlanation/vertices.md)
+      * [Vertices](deeplearning4j/explanation/vertices.md)
 
  
   * [Reference](deeplearning4j/reference)   
       * [Word2vec](deeplearning4j/reference/word2vec.md)
    
+## Datavec
+ * [Tutorials](datavec/tutorials)
+ * [How To Guides](datavec/how-to-guides)
+ * [Explanation](datavec/explanation)
+   * [Analysis](datavec/explanation/analysis.md)
+   * [Conditions](datavec/explanation/conditions.md)
+   * [Executors](datavec/explanation/executors.md)
+   * [Filters](datavec/explanation/filters.md)
+   * [Normalization](datavec/explanation/normalization.md)
+   * [Operations](datavec/explanation/operations.md)
+   * [Readers](datavec/explanation/readers.md)
+   * [Records](datavec/explanation/records.md)
+   * [Reductions](datavec/explanation/reductions.md)
+   * [Schema](datavec/explanation/schema.md)
+   * [Serialization](datavec/explanation/serialization.md)
+   * [Transforms](datavec/explanation/transforms.md)
+   * [Visualizations](datavec/explanation/visualization.md) 
+* [Reference](datavec/reference)
 
 ## Nd4j
-  * [Tutorials](nd4j/tutorials)
+  * Tutorials
       * [Quickstart](nd4j/tutorials/quickstart.md)
     
-  * [How To Guides](nd4j/how-to-guides)
+  * How To Guides
       * [Other framework Interop](nd4j/how-to-guides/other-framework-interop)
       * [Onnx](nd4j/how-to-guides/other-framework-interop/onnx.md)
       * [Tensorflow](nd4j/how-to-guides/other-framework-interop/tensorflow.md)
@@ -113,10 +131,10 @@
       * [Element wise operations](nd4j/how-to-guides/elementwise.md)
       * [Matrix Manipulation](nd4j/how-to-guides/matrix-manipulation.md)
     
-  * [Explanation](nd4j/explanation)
-      * [Overview](nd4j/explanation/overview)
+  * Explanation
+     
     
-  * [Reference](nd4j/reference)
+  * Reference
      * [Architecture](nd4j/reference/architecture.md)
      * [Op Descriptor format](nd4j/reference/op-descriptor-format.md)
      * [Overview](nd4j/reference/overview.md)
@@ -125,22 +143,21 @@
 
 
 ## Libnd4j
-  * [Tutorials](libnd4j/tutorials)
-  * [How To Guides](libnd4j/how-to-guides)   
-  * [Explanation](libnd4j/explanation)
-  * [Reference](libnd4j/reference)
-
+* Tutorials
+* How To Guides
+* Explanation
+* Referenc
 
 ## Samediff
-  * [Tutorials](samediff/tutorials)
+  * Tutorials
     * [Quickstart](samediff/tutorials/quickstart.md)
-  * [How To Guides](samediff/how-to-guides)
+  * How To Guides
     * [Adding Ops](samediff/how-to-guides/adding-ops.md)
     * [Importing Tensorflow](samediff/how-to-guides/importing-tensorflow.md)
-     
-  * [Explanation](samediff/explanation)
+ 
+  * Explanation
      * [Ops](samediff/explanation/ops.md)
-  * [Reference](samediff/reference)
+  * Reference
        * [Model Import Framework](samediff/reference/model-import-framework.md)
             * [Architecture](samediff/reference/model-import-framework/architecture.md)
             * [Custom Framework](samediff/reference/model-import-framework/custom-framework.md)
@@ -163,17 +180,18 @@
 
 
 ## Rl4j
-  * [Tutorials](rl4j/tutorials)
-  * [How To Guides](rl4j/how-to-guides)
-  * [Explanation](rl4j/explanation)
-  * [Reference](rl4j/reference)
+* Tutorials
+* How To Guides
+* Explanation
+* Reference
+
 
 ## Python4j
-  * [Tutorials](python4j/tutorials)
-  * [How To Guides](python4j/how-to-guides)
+  * Tutorials 
+  * How To Guides
       * [Write a python script](python4j/how-to-guides/write-python-script.md)
-  * [Explanation](python4j/explanation)
-  * [Reference](python4j/reference)
+  * Explanation
+  * Reference
         * [Execution](python4j/reference/execution.md)
         * [Garbage Collection](python4j/reference/garbage-collection.md)
         * [Python Path](python4j/reference/python-path.md)
@@ -181,8 +199,8 @@
  
 
 ## Spark
-  * [Tutorials](spark/tutorials)
-    * [Introduction](spark/tutorials/intro.md)
+  * Tutorials
+    * [Introduction](spark/README.md)
   * [How To Guides](spark/how-to-guides)
     * [Dealing with data](spark/how-to-guides/data-howto.md)
     * [How to use spark](spark/how-to-guides/howto.md)

@@ -4,7 +4,7 @@ structure:
   summary: SUMMARY.md
 redirects:
   nd4j/backend: config/backends/README.md
-  quickstart: getting-started/quickstart.md
+  quickstart: getting-started/README.md
   contribute: getting-started/contribute.md
   android/faq: multi-project/explanation/deprecation
   android/first-steps: mmulti-project/explanation/deprecation
