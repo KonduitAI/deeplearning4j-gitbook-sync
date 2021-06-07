@@ -33,6 +33,18 @@ Or set environment variable ND4J_IGNORE_AVX=true to suppress this warning
 ************************************************************************************************
 ```
 
+This warning has been removed in more recent versions as it's more confusing to users and out of date.
+
+## Configure mkl usage
+
+When using the nd4j-native backend on intel platforms, our openblas bindings
+give the ability to also use mkl instead.
+In order to use mkl, set the system property as follows eitehr on launch or before Nd4j is initialized with
+Nd4j.create():
+```java
+ System.setProperty("org.bytedeco.openblas.load", "mkl");
+```
+
 ## Configuring AVX in ND4J/DL4J
 
 As noted earlier, for best performance you should use the version of ND4J that matches your CPU's supported AVX level.
