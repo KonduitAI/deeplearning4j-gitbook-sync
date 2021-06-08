@@ -162,7 +162,7 @@
             * [Custom Override](samediff/reference/model-import-framework/custom-override.md)
             * [Overview](samediff/reference/model-import-framework/overview.md)
          
-      * [Operation Namespaces](samediff/reference/operation-namespaces.md)
+      * [Operation Namespaces](samediff/reference/operation-namespaces)
         * [Base Operations](samediff/reference/operation-namespaces/baseops.md)
         * [Bitwise operations](samediff/reference/operation-namespaces/bitwise.md)
         * [CNN Operations](samediff/reference/operation-namespaces/cnn.md)
