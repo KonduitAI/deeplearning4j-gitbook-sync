@@ -119,6 +119,27 @@
   * [Tutorials](nd4j/tutorials)
      * [Quickstart](nd4j/tutorials/quickstart)
 
+## Datavec
+  * [Explanation](datavec/explanation)
+       * [Analysis](datavec/explanation/analysis)
+       * [Conditions](datavec/explanation/conditions)
+       * [Executors](datavec/explanation/executors)
+       * [Filters](datavec/explanation/filters)
+       * [Normalization](datavec/explanation/normalization)
+       * [Operations](datavec/explanation/operations)
+       * [Readers](datavec/explanation/readers)
+       * [Records](datavec/explanation/records)
+       * [Reductions](datavec/explanation/reductions)
+       * [Schema](datavec/explanation/schema)
+       * [Serialization](datavec/explanation/serialization)
+       * [Transforms](datavec/explanation/transforms)
+       * [Visualization](datavec/explanation/visualization)
+
+  * [How To Guides](datavec/how-to-guides)
+  * [Reference](datavec/reference)
+  * [Tutorials](datavec/tutorials)
+     * [Overivew](datavec/tutorials/overview)
+
 ## Libnd4j
   * [Explanation](libnd4j/explanation)
   * [How To Guides](libnd4j/how-to-guides)
