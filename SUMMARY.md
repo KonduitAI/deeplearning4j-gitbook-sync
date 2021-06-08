@@ -11,7 +11,7 @@
         * [Cpu](multi-project/explanation/config/backends/cpu.md)
         * [Performance issues](multi-project/explanation/config/backends/performance-issues.md)
      * [Memory](multi-project/explanation/config/config-memory)
-          * [Workspaces](multi-project/explanation/config-memory/config-workspaces.md)
+          * [Workspaces](multi-project/explanation/config/config-memory/config-workspaces.md)
      * [Build Tools](multi-project/explanation/config/buildtools.md)
      * [Snapshots](multi-project/explanation/config/config-snapshots.md)
      * [Maven](multi-project/explanation/config/maven.md)
