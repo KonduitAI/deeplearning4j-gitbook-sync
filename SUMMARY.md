@@ -33,8 +33,8 @@
 * [Reference](multi-project/reference)
     * [Examples Tour](multi-project/reference/examples-tour.md)
     * [Release notes](multi-project/reference/release-notes.md)
-* [Tutorials](multi-project/tutorials)
-    * [Quickstart](multi-project/README.md)
+  
+* [Quickstart](multi-project/README.md)
   
 
 ## Deeplearning4j
