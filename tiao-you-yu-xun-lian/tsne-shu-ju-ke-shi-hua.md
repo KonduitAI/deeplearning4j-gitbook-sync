@@ -61,5 +61,5 @@ public class TSNEStandardExample {
 
 ![](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)​这是使用gnuplot绘制的tsne-standard-coords.csv文件的图像。
 
-![Tsne data plot](../.gitbook/assets/tsne_output%20%283%29.png)
+![Tsne data plot](../.gitbook/assets/tsne_output%20%284%29%20%284%29.png)
 

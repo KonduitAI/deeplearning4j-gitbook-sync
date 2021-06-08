@@ -101,8 +101,8 @@ $ cd dl4j-examples/
 $ mvn clean install
 ```
 
-1. 打开IntelliJ并选择Import Project。然后选择dl4j-examples主要的目录（注意：以下的示例中阐述的是一个过期的仓库名为dl4j-0.4-examples。尽管如此，你将要下载和安装的仓库为 dl4j-examples）。  ![](../.gitbook/assets/install_intj_1.png) 
-2. 选择 ‘Import project from external model’ 并确保Maven被选择  ![](../.gitbook/assets/install_intj_2%20%284%29.png) 
+1. 打开IntelliJ并选择Import Project。然后选择dl4j-examples主要的目录（注意：以下的示例中阐述的是一个过期的仓库名为dl4j-0.4-examples。尽管如此，你将要下载和安装的仓库为 dl4j-examples）。  ![](../.gitbook/assets/install_intj_1%20%284%29.png) 
+2. 选择 ‘Import project from external model’ 并确保Maven被选择  ![](../.gitbook/assets/install_intj_2%20%284%29%20%284%29.png) 
 3. 通过向导选项继续。选择以jdk开头的SDK。（你也许需要点击一个加号来查看你的选项）然后点击 finish。等待IntelliJ下载完所有的依赖。你将看到右下角水平的进度条。
 4. 在左边文件树中选择一个例子 ，右击文件来运行 ![&#x70B9;&#x51FB;&#x67E5;&#x770B;&#x539F;&#x59CB;&#x5927;&#x5C0F;&#x56FE;&#x7247;](http://upload-images.jianshu.io/upload_images/14495907-0d9da1e2f4aaaaf1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
