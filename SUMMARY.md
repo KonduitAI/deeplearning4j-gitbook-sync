@@ -20,7 +20,7 @@
      * [Deprecation](multi-project/explanation/deprecation.md)
      * [Platform Summary](multi-project/explanation/platform-summary.md)
 * [How To Guides](multi-project/how-to-guides)
-    * [Contribute](multiproject/how-to-guides/contribute.md)
+    * [Contribute](multiproject/how-to-guides/contribute)
          * [Eclipse Contributors](multi-project/how-to-guides/eclipse-contributors.md)
     * [Developer documentation](multi-project/how-to-guides/developer-docs.md)
         * [Github Actions](multi-project/how-to-guides/developer-docs/github-actions-overview.md)
