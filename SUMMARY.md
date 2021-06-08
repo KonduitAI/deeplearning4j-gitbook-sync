@@ -5,7 +5,7 @@
 ## Multi-project(#multi-project)
 
 * [Explanation](multi-project/explanation)
-  * [Configuration](multi-project/explanation/config.md)
+  * [Configuration](multi-project/explanation/config)
      * [Backends](multi-project/explanation/config/backends.md)
         * [Cudnn](multi-project/explanation/config/backends/config-cudnn.md)
         * [Cpu](multi-project/explanation/config/backends/cpu.md)
