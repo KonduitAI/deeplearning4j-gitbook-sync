@@ -191,11 +191,11 @@
       * [Write a python script](python4j/how-to-guides/write-python-script.md)
   * Explanation
   * Reference
-        * [Execution](python4j/reference/execution.md)
-        * [Garbage Collection](python4j/reference/garbage-collection.md)
-        * [Python Path](python4j/reference/python-path.md)
-        * [Python Types](python4j/reference/python-types.md)
-    
+    * [Execution](python4j/reference/execution.md)
+    * [Garbage Collection](python4j/reference/garbage-collection.md)
+    * [Python Path](python4j/reference/python-path.md)
+    * [Python Types](python4j/reference/python-types.md)
+  
 ## Spark
   * Tutorials
     * [Introduction](spark/README.md)
@@ -206,5 +206,5 @@
       * [Api Reference](spark/explanation/apiref)
 
   * [Reference](spark/reference)
-        * [Parameter Server](spark/reference/parameter-server.md)
-        * [Technical Reference](spark/reference/technicalref.md)
+    * [Parameter Server](spark/reference/parameter-server.md)
+    * [Technical Reference](spark/reference/technicalref.md)
