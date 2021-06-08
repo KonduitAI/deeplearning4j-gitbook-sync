@@ -27,7 +27,7 @@ Conversely, data for RNNs are time series. Thus, they have 3 dimensions: one add
 
 When importing time series data using the class CSVSequenceRecordReader each line in the data files represents one time step with the earliest time series observation in the first row \(or first row after header if present\) and the most recent observation in the last row of the csv. Each feature time series is a separate column of the of the csv file. For example if you have five features in time series, each with 120 observations, and a training & test set of size 53 then there will be 106 input csv files\(53 input, 53 labels\). The 53 input csv files will each have five columns and 120 rows. The label csv files will have one column \(the label\) and one row.
 
-![](../.gitbook/assets/rnn_data.png)
+![](../.gitbook/assets/rnn_data%20%281%29.png)
 
 #### RnnOutputLayer
 
@@ -52,7 +52,7 @@ Truncated backpropagation through time \(BPTT\) was developed in order to reduce
 
 Consider what happens when training a recurrent neural network with a time series of length 12 time steps. Here, we need to do a forward pass of 12 steps, calculate the error \(based on predicted vs. actual\), and do a backward pass of 12 time steps:
 
-![](../.gitbook/assets/rnn_tbptt_1.png)
+![](../.gitbook/assets/rnn_tbptt_1%20%281%29.png)
 
 For 12 time steps, in the image above, this is not a problem. Consider, however, that instead the input time series was 10,000 or more time steps. In this case, standard backpropagation through time would require 10,000 time steps for each of the forward and backward passes for each and every parameter update. This is of course very computationally demanding.
 
@@ -85,7 +85,7 @@ DL4J supports a number of related training features for RNNs, based on the idea 
 
 Suppose we want to train a recurrent neural network with inputs or outputs that don't occur at every time step. Examples of this \(for a single example\) are shown in the image below. DL4J supports training networks for all of these situations:
 
-![](../.gitbook/assets/rnn_masking_1.png)
+![](../.gitbook/assets/rnn_masking_1%20%281%29.png)
 
 Without masking and padding, we are restricted to the many-to-many case \(above, left\): that is, \(a\) All examples are of the same length, and \(b\) Examples have both inputs and outputs at all time steps.
 
@@ -97,7 +97,7 @@ Recall that with RNNs, our minibatch data has 3 dimensions, with shape \[miniBat
 
 For a single example, the input and output masking arrays are shown below:
 
-![](../.gitbook/assets/rnn_masking_2.png)
+![](../.gitbook/assets/rnn_masking_2%20%281%29.png)
 
 For the “Masking not required” cases, we could equivalently use a masking array of all 1s, which will give the same result as not having a mask array at all. Also note that it is possible to use zero, one or two masking arrays when learning RNNs - for example, the many-to-one case could have a masking array for the output only.
 
@@ -348,7 +348,7 @@ DataSetIterator variableLengthIter = new SequenceRecordReaderDataSetIterator(fea
 
 Alignment modes are relatively straightforward. They specify whether to pad the start or the end of the shorter time series. The diagram below shows how this works, along with the masking arrays \(as discussed earlier in this document\):
 
-![](../.gitbook/assets/rnn_seq_alignment%20%281%29.png)
+![](../.gitbook/assets/rnn_seq_alignment%20%281%29%20%281%29.png)
 
 The one-to-many case \(similar to the last case above, but with only one input\) is done by using AlignmentMode.ALIGN\_START.
 

@@ -12,7 +12,7 @@ weight: 10
 
 While it can be used for any data, t-SNE \(pronounced Tee-Snee\) is only really meaningful with labeled data, which clarify how the input is clustering. Below, you can see the kind of graphic you can generate in DL4J with t-SNE working on MNIST data.
 
-![Alt text](../.gitbook/assets/tsne.png)
+![Alt text](../.gitbook/assets/tsne%20%284%29.png)
 
 Look closely and you can see the numerals clustered near their likes, alongside the dots.
 
@@ -68,5 +68,5 @@ public class TSNEStandardExample {
 
 Here is an image of the tsne-standard-coords.csv file plotted using gnuplot.
 
-![Tsne data plot](../.gitbook/assets/tsne_output%20%283%29.png)
+![Tsne data plot](../.gitbook/assets/tsne_output%20%284%29%20%284%29.png)
 

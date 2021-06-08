@@ -168,6 +168,9 @@
 * [Tutorial: First Steps](android/first-steps.md)
 * [Tutorial: Classifier](android/linear-classifier.md)
 * [Tutorial: Image Classifier](android/image-classification.md)
+
+---
+
 * [FAQ](faq.md)
 * [Press](press.md)
 * [Support](support.md)
