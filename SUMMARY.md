@@ -21,7 +21,7 @@
      * [Platform Summary](multi-project/explanation/platform-summary.md)
 * [How To Guides](multi-project/how-to-guides)
     * [Contribute](multi-project/how-to-guides/contribute)
-         * [Eclipse Contributors](multi-project/how-to-guides/eclipse-contributors.md)
+         * [Eclipse Contributors](multi-project/how-to-guides/contribute/eclipse-contributors.md)
     * [Developer documentation](multi-project/how-to-guides/developer-docs.md)
         * [Github Actions](multi-project/how-to-guides/developer-docs/github-actions-overview.md)
         * [Javacpp](multi-project/how-to-guides/developer-docs/javacpp.md)
