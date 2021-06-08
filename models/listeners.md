@@ -23,8 +23,6 @@ model.init();
 model.setListeners(new ScoreIterationListener(1));
 ```
 
-
-
 ## Available listeners
 
 ### EvaluativeListener
@@ -36,7 +34,7 @@ This TrainingListener implementation provides simple way for model evaluation du
 **EvaluativeListener**
 
 ```text
-public EvaluativeListener(@NonNull DataSetIterator iterator, int frequency) 
+public EvaluativeListener(@NonNull DataSetIterator iterator, int frequency)
 ```
 
 This callback will be invoked after evaluation finished
@@ -44,7 +42,7 @@ This callback will be invoked after evaluation finished
 **iterationDone**
 
 ```text
-public void iterationDone(Model model, int iteration, int epoch) 
+public void iterationDone(Model model, int iteration, int epoch)
 ```
 
 * param iterator Iterator to provide data for evaluation
@@ -60,7 +58,7 @@ Score iteration listener. Reports the score \(value of the loss function \)of th
 **ScoreIterationListener**
 
 ```text
-public ScoreIterationListener(int printIterations) 
+public ScoreIterationListener(int printIterations)
 ```
 
 * param printIterations frequency with which to print scores \(i.e., every printIterations parameter updates\)
@@ -80,7 +78,7 @@ CollectScoresIterationListener simply stores the model scores internally \(along
 **CollectScoresIterationListener**
 
 ```text
-public CollectScoresIterationListener() 
+public CollectScoresIterationListener()
 ```
 
 Constructor for collecting scores with default saving frequency of 1
@@ -88,7 +86,7 @@ Constructor for collecting scores with default saving frequency of 1
 **iterationDone**
 
 ```text
-public void iterationDone(Model model, int iteration, int epoch) 
+public void iterationDone(Model model, int iteration, int epoch)
 ```
 
 Constructor for collecting scores with the specified frequency.
@@ -98,7 +96,7 @@ Constructor for collecting scores with the specified frequency.
 **exportScores**
 
 ```text
-public void exportScores(OutputStream outputStream) throws IOException 
+public void exportScores(OutputStream outputStream) throws IOException
 ```
 
 Export the scores in tab-delimited \(one per line\) UTF-8 format.
@@ -106,7 +104,7 @@ Export the scores in tab-delimited \(one per line\) UTF-8 format.
 **exportScores**
 
 ```text
-public void exportScores(OutputStream outputStream, String delimiter) throws IOException 
+public void exportScores(OutputStream outputStream, String delimiter) throws IOException
 ```
 
 Export the scores in delimited \(one per line\) UTF-8 format with the specified delimiter
@@ -117,7 +115,7 @@ Export the scores in delimited \(one per line\) UTF-8 format with the specified 
 **exportScores**
 
 ```text
-public void exportScores(File file) throws IOException 
+public void exportScores(File file) throws IOException
 ```
 
 Export the scores to the specified file in delimited \(one per line\) UTF-8 format, tab delimited
@@ -127,7 +125,7 @@ Export the scores to the specified file in delimited \(one per line\) UTF-8 form
 **exportScores**
 
 ```text
-public void exportScores(File file, String delimiter) throws IOException 
+public void exportScores(File file, String delimiter) throws IOException
 ```
 
 Export the scores to the specified file in delimited \(one per line\) UTF-8 format, using the specified delimiter
@@ -140,8 +138,7 @@ Export the scores to the specified file in delimited \(one per line\) UTF-8 form
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/listeners//CheckpointListener.java)
 
 CheckpointListener: The goal of this listener is to periodically save a copy of the model during training..  
-Model saving may be done:  
-
+Model saving may be done:
 
 1. Every N epochs 
 2. Every N iterations 
@@ -154,7 +151,6 @@ Model saving may be done:
 }
 ```
 
-  
 **Example 2**: Saving a checkpoint every 1000 iterations, but keeping only the last 3 models \(all older model files will be automatically deleted\)
 
 ```text
@@ -164,7 +160,6 @@ Model saving may be done:
 }
 ```
 
-  
 **Example 3**: Saving a checkpoint every 15 minutes, keeping the most recent 3 and otherwise every 4th checkpoint file:
 
 ```text
@@ -174,11 +169,9 @@ Model saving may be done:
 }
 ```
 
-  
 Note that you can mix these: for example, to save every epoch and every 15 minutes \(independent of last save time\):  
 To save every epoch, and every 15 minutes, since the last model save use:  
-Note that is this last example, the sinceLast parameter is true. This means the 15-minute counter will be reset any time a model is saved.  
-
+Note that is this last example, the sinceLast parameter is true. This means the 15-minute counter will be reset any time a model is saved.
 
 **CheckpointListener**
 
@@ -206,7 +199,7 @@ PLEASE NOTE: All timers treat time values as milliseconds. PLEASE NOTE: Do not u
 **onEpochStart**
 
 ```text
-public void onEpochStart(Model model) 
+public void onEpochStart(Model model)
 ```
 
 In this mode parkNanos\(\) call will be used, to make process really idle
@@ -226,7 +219,7 @@ Simple IterationListener that tracks time spend on training per iteration.
 **PerformanceListener**
 
 ```text
-public PerformanceListener build() 
+public PerformanceListener build()
 ```
 
 This method defines, if iteration number should be reported together with other data
@@ -239,8 +232,7 @@ This method defines, if iteration number should be reported together with other 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/listeners//ParamAndGradientIterationListener.java)
 
 An iteration listener that provides details on parameters and gradients at each iteration during traning. Attempts to provide much of the same information as the UI histogram iteration listener, but in a text-based format \(for example, when learning on a system accessed via SSH etc\). i.e., is intended to aid network tuning and debugging  
-This iteration listener is set up to calculate mean, min, max, and mean absolute value of each type of parameter and gradient in the network at each iteration.  
-
+This iteration listener is set up to calculate mean, min, max, and mean absolute value of each type of parameter and gradient in the network at each iteration.
 
 ### TimeIterationListener
 
@@ -251,7 +243,7 @@ Time Iteration Listener. This listener displays into INFO logs the remaining tim
 **TimeIterationListener**
 
 ```text
-public TimeIterationListener(int iterationCount) 
+public TimeIterationListener(int iterationCount)
 ```
 
 Constructor

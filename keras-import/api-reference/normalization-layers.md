@@ -1,6 +1,6 @@
 # Normalization Layers
 
-#### KerasBatchNormalization <a id="kerasbatchnormalization"></a>
+## KerasBatchNormalization <a id="kerasbatchnormalization"></a>
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/normalization/KerasBatchNormalization.java)
 
@@ -9,7 +9,7 @@ Imports a BatchNormalization layer from Keras.
 **KerasBatchNormalization**
 
 ```text
-public KerasBatchNormalization(Integer kerasVersion) throws UnsupportedKerasConfigurationException 
+public KerasBatchNormalization(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
 Pass-through constructor from KerasLayer
@@ -20,7 +20,7 @@ Pass-through constructor from KerasLayer
 **getBatchNormalizationLayer**
 
 ```text
-public BatchNormalization getBatchNormalizationLayer() 
+public BatchNormalization getBatchNormalizationLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -32,7 +32,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -44,7 +44,7 @@ Get layer output type.
 **getNumParams**
 
 ```text
-public int getNumParams() 
+public int getNumParams()
 ```
 
 Returns number of trainable parameters in layer.
@@ -54,7 +54,7 @@ Returns number of trainable parameters in layer.
 **setWeights**
 
 ```text
-public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException 
+public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException
 ```
 
 Set weights for layer.

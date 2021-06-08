@@ -8,9 +8,7 @@ Regression is a process that helps show the relations between the independent va
 
 A simple logistic regression calculates `x*w + b = y`. Where `x` is an instance of input data, `w` is the weight or coefficient that transforms that input, `b` is the bias and `y` is the output, or prediction about the data. The biological terms show how this artificial neuron loosely maps to a neuron in the human brain. The most important point is how data flows through and is transformed by this structure.
 
-
-
-![  Source:  http://cs231n.github.io/neural-networks-1/](https://i.pinimg.com/736x/61/fe/81/61fe81589ab491d1d3ba612b3bdf5b51--convolutional-neural-network-neuron-model.jpg)
+![ Source: http://cs231n.github.io/neural-networks-1/](https://i.pinimg.com/736x/61/fe/81/61fe81589ab491d1d3ba612b3bdf5b51--convolutional-neural-network-neuron-model.jpg)
 
 ## What will we learn in this tutorial?
 

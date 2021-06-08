@@ -10,7 +10,7 @@ Imports PReLU layer from Keras
 
 ```text
 public KerasPReLU(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -22,7 +22,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -35,7 +35,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getPReLULayer**
 
 ```text
-public PReLULayer getPReLULayer() 
+public PReLULayer getPReLULayer()
 ```
 
 Get DL4J ActivationLayer.
@@ -45,7 +45,7 @@ Get DL4J ActivationLayer.
 **setWeights**
 
 ```text
-public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException 
+public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException
 ```
 
 Set weights for layer.
@@ -62,7 +62,7 @@ Imports ThresholdedReLU layer from Keras
 
 ```text
 public KerasThresholdedReLU(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -74,7 +74,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -87,7 +87,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getActivationLayer**
 
 ```text
-public ActivationLayer getActivationLayer() 
+public ActivationLayer getActivationLayer()
 ```
 
 Get DL4J ActivationLayer.
@@ -104,7 +104,7 @@ Imports LeakyReLU layer from Keras
 
 ```text
 public KerasLeakyReLU(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -116,7 +116,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -129,7 +129,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getActivationLayer**
 
 ```text
-public ActivationLayer getActivationLayer() 
+public ActivationLayer getActivationLayer()
 ```
 
 Get DL4J ActivationLayer.

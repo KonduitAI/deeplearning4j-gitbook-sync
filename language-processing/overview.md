@@ -23,13 +23,13 @@ String filePath = new File(dataLocalPath,"raw_sentences.txt").getAbsolutePath();
 SentenceIterator iter = new BasicLineIterator(filePath);
 ```
 
- The SentenceIterator encapsulates a corpus or text, organizing it, say, as one Tweet per line. It is responsible for feeding text piece by piece into your natural language processor. The SentenceIterator is not analogous to a similarly named class, the DatasetIterator, which creates a dataset for training a neural net. Instead it creates a collection of strings by segmenting a corpus. 
+The SentenceIterator encapsulates a corpus or text, organizing it, say, as one Tweet per line. It is responsible for feeding text piece by piece into your natural language processor. The SentenceIterator is not analogous to a similarly named class, the DatasetIterator, which creates a dataset for training a neural net. Instead it creates a collection of strings by segmenting a corpus.
 
-## Tokenizer 
+## Tokenizer
 
-A Tokenizer further segments the text at the level of single words, also alternatively as n-grams. ClearTK contains the underlying tokenizers, such as parts of speech \(PoS\) and parse trees, which allow for both dependency and constituency parsing, like that employed by a recursive neural tensor network \(RNTN\). 
+A Tokenizer further segments the text at the level of single words, also alternatively as n-grams. ClearTK contains the underlying tokenizers, such as parts of speech \(PoS\) and parse trees, which allow for both dependency and constituency parsing, like that employed by a recursive neural tensor network \(RNTN\).
 
-A Tokenizer is created and wrapped by a [TokenizerFactory](https://github.com/eclipse/deeplearning4j/blob/6f027fd5075e3e76a38123ae5e28c00c17db4361/deeplearning4j-scaleout/deeplearning4j-nlp/src/main/java/org/deeplearning4j/text/tokenization/tokenizerfactory/UimaTokenizerFactory.java). The default tokens are words separated by spaces. The tokenization process also involves some machine learning to differentiate between ambibuous symbols like . which end sentences and also abbreviate words such as Mr. and vs. 
+A Tokenizer is created and wrapped by a [TokenizerFactory](https://github.com/eclipse/deeplearning4j/blob/6f027fd5075e3e76a38123ae5e28c00c17db4361/deeplearning4j-scaleout/deeplearning4j-nlp/src/main/java/org/deeplearning4j/text/tokenization/tokenizerfactory/UimaTokenizerFactory.java). The default tokens are words separated by spaces. The tokenization process also involves some machine learning to differentiate between ambibuous symbols like . which end sentences and also abbreviate words such as Mr. and vs.
 
 Both Tokenizers and SentenceIterators work with Preprocessors to deal with anomalies in messy text like Unicode, and to render such text, say, as lowercase characters uniformly.
 
@@ -45,14 +45,13 @@ Both Tokenizers and SentenceIterators work with Preprocessors to deal with anoma
         SentenceIterator iter = new BasicLineIterator(filePath);
         // Split on white spaces in the line to get words
         TokenizerFactory t = new DefaultTokenizerFactory();
-        
+
         /*
             CommonPreprocessor will apply the following regex to each token: [\d\.:,"'\(\)\[\]|/?!;]+
             So, effectively all numbers, punctuation symbols and some special symbols are stripped off.
             Additionally it forces lower case for all tokens.
          */
         t.setTokenPreProcessor(new CommonPreprocessor());
-
 ```
 
 ## Vocab

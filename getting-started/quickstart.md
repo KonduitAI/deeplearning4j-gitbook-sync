@@ -76,7 +76,7 @@ If you are working on a Mac, you can simply enter the following into the command
 brew install maven
 ```
 
-Maven is widely used among Java developers and it's pretty much mandatory for working with DL4J. If you come from a different background, and Maven is new to you, check out [Apache's Maven overview](http://maven.apache.org/what-is-maven.html) and our [introduction to Maven for non-Java programmers](../config/maven.md), which includes some additional troubleshooting tips. [Other build tools](deeplearning4j/deeplearning4j-config-buildtools) such as Ivy and Gradle can also work, but we support Maven best.
+Maven is widely used among Java developers and it's pretty much mandatory for working with DL4J. If you come from a different background, and Maven is new to you, check out [Apache's Maven overview](http://maven.apache.org/what-is-maven.html) and our [introduction to Maven for non-Java programmers](../config/maven.md), which includes some additional troubleshooting tips. [Other build tools](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/getting-started/deeplearning4j/deeplearning4j-config-buildtools/README.md) such as Ivy and Gradle can also work, but we support Maven best.
 
 * [Paul Dubs' guide to maven](http://www.dubs.tech/guides/maven-essentials/)
 * [Maven In Five Minutes](http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html)
@@ -115,15 +115,15 @@ xcode-select --install
    mvn clean install
    ```
 
-2. Open IntelliJ and choose Import Project. Then select the main 'dl4j-examples' directory. \(Note: the example in the illustration below refers to an outdated repository named dl4j-0.4-examples. However, the repository that you will download and install will be called dl4j-examples\).![select directory](../.gitbook/assets/install_intj_1%20%282%29.png)
-3. Choose 'Import project from external model' and ensure that Maven is selected. 
+2. Open IntelliJ and choose Import Project. Then select the main 'dl4j-examples' directory. \(Note: the example in the illustration below refers to an outdated repository named dl4j-0.4-examples. However, the repository that you will download and install will be called dl4j-examples\).![select directory](../.gitbook/assets/install_intj_1%20%284%29%20%282%29.png)
+3. Choose 'Import project from external model' and ensure that Maven is selected.
 
-   ![select directory](../.gitbook/assets/install_intj_2%20%282%29.png)
+   ![select directory](../.gitbook/assets/install_intj_2%20%284%29%20%285%29.png)
 
 4. Continue through the wizard's options. Select the SDK that begins with `jdk`. \(You may need to click on a plus sign to see your options...\) Then click Finish. Wait a moment for IntelliJ to download all the dependencies. You'll see the horizontal bar working on the lower right.
-5. Pick an example from the file tree on the left.  Right-click the file to run.
+5. Pick an example from the file tree on the left. Right-click the file to run.
 
-   ![run IntelliJ example](../.gitbook/assets/install_intj_3%20%283%29.png)
+   ![run IntelliJ example](../.gitbook/assets/install_intj_3%20%284%29.png)
 
 ## Using DL4J In Your Own Projects: Configuring the POM.xml File
 
@@ -143,7 +143,7 @@ To run the example, right click on it and select the green button in the drop-do
 
 In another window, a graph will appear, showing you how the multilayer perceptron \(MLP\) has classified the data in the example. It will look like this:
 
-![](../.gitbook/assets/mlp_classifier_viz.png)
+![](../.gitbook/assets/mlp_classifier_viz%20%284%29%20%282%29.png)
 
 Congratulations! You just trained your first neural network with Deeplearning4j.
 
@@ -151,7 +151,7 @@ Congratulations! You just trained your first neural network with Deeplearning4j.
 
 1. Join our community forums on [community.konduit.ai](https://community.konduit.ai/).
 2. Read the [introduction to deep neural networks](https://skymind.ai/wiki/neural-network).
-3. Check out the more detailed [Comprehensive Setup Guide](deeplearning4j/deeplearning4j-quickstart).
+3. Check out the more detailed [Comprehensive Setup Guide](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/getting-started/deeplearning4j/deeplearning4j-quickstart/README.md).
 4. Browse the [DL4J documentation](https://deeplearning4j.org).
 5. **Python folks**: If you plan to run benchmarks on Deeplearning4j comparing it to well-known Python framework \[x\], please read [these instructions](benchmark.md) on how to optimize heap space, garbage collection and ETL on the JVM. By following them, you will see at least a _10x speedup in training time_.
 
@@ -214,7 +214,7 @@ To use the template:
 
 Deeplearning4j is a framework that lets you pick and choose with everything available from the beginning. We're not Tensorflow \(a low-level numerical computing library with automatic differentiation\) or Pytorch. Deeplearning4j has several subprojects that make it easy-ish to build end-to-end applications.
 
-If you'd like to deploy models to production, you might like our [model import from Keras](deeplearning4j/keras-import-get-started).
+If you'd like to deploy models to production, you might like our [model import from Keras](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/getting-started/deeplearning4j/keras-import-get-started/README.md).
 
 Deeplearning4j has several submodules. These range from a visualization UI to distributed training on Spark. For an overview of these modules, please look at the [**Deeplearning4j examples on Github**](https://github.com/eclipse/deeplearning4j-examples).
 
@@ -232,10 +232,10 @@ We deploy optimized code for various hardware architectures natively. We use C++
 
 Deeplearning4j has two other notable components:
 
-* [Arbiter: hyperparameter optimization and model evaluation](deeplearning4j/arbiter-overview)
-* [DataVec: built-in ETL for machine-learning data pipelines](deeplearning4j/datavec-overview)
+* [Arbiter: hyperparameter optimization and model evaluation](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/getting-started/deeplearning4j/arbiter-overview/README.md)
+* [DataVec: built-in ETL for machine-learning data pipelines](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/getting-started/deeplearning4j/datavec-overview/README.md)
 
 Deeplearning4j is meant to be an end-to-end platform for building real applications, not just a tensor library with automatic differentiation. If you want a tensor library with autodiff, please see ND4J and [Samediff](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/autodiff). Samediff is still in beta, but if you want to contribute, please join our [community forum](https://community.konduit.ai/).
 
-Lastly, if you are benchmarking Deeplearnin4j, please consider coming in to our [community forum](https://community.konduit.ai/) and asking for tips. Deeplearning4j has [all the knobs](deeplearning4j/deeplearning4j-config-gpu-cpu), but some may not work exactly like the Python frameworks do.
+Lastly, if you are benchmarking Deeplearnin4j, please consider coming in to our [community forum](https://community.konduit.ai/) and asking for tips. Deeplearning4j has [all the knobs](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/getting-started/deeplearning4j/deeplearning4j-config-gpu-cpu/README.md), but some may not work exactly like the Python frameworks do.
 

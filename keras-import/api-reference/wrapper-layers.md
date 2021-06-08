@@ -1,7 +1,5 @@
 # Wrapper Layers
 
-
-
 ## KerasBidirectional
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/wrappers/KerasBidirectional.java)
@@ -11,7 +9,7 @@ Builds a DL4J Bidirectional layer from a Keras Bidirectional layer wrapper
 **KerasBidirectional**
 
 ```text
-public KerasBidirectional(Integer kerasVersion) throws UnsupportedKerasConfigurationException 
+public KerasBidirectional(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
 Pass-through constructor from KerasLayer
@@ -22,7 +20,7 @@ Pass-through constructor from KerasLayer
 **getUnderlyingRecurrentLayer**
 
 ```text
-public Layer getUnderlyingRecurrentLayer() 
+public Layer getUnderlyingRecurrentLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -34,7 +32,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getBidirectionalLayer**
 
 ```text
-public Bidirectional getBidirectionalLayer() 
+public Bidirectional getBidirectionalLayer()
 ```
 
 Get DL4J Bidirectional layer.
@@ -44,7 +42,7 @@ Get DL4J Bidirectional layer.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -56,7 +54,7 @@ Get layer output type.
 **getNumParams**
 
 ```text
-public int getNumParams() 
+public int getNumParams()
 ```
 
 Returns number of trainable parameters in layer.
@@ -66,7 +64,7 @@ Returns number of trainable parameters in layer.
 **getInputPreprocessor**
 
 ```text
-public InputPreProcessor getInputPreprocessor(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputPreProcessor getInputPreprocessor(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Gets appropriate DL4J InputPreProcessor for given InputTypes.
@@ -79,7 +77,7 @@ Gets appropriate DL4J InputPreProcessor for given InputTypes.
 **setWeights**
 
 ```text
-public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException 
+public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException
 ```
 
 Set weights for Bidirectional layer.

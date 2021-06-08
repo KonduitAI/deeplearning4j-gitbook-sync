@@ -79,11 +79,11 @@ To check if cuDNN is being used, the simplest approach is to look at the log out
 ```text
 o.d.n.l.c.ConvolutionLayer - cuDNN not found: use cuDNN for better GPU performance by including the deeplearning4j-cuda module. For more information, please refer to: https://deeplearning4j.org/cudnn
 java.lang.ClassNotFoundException: org.deeplearning4j.nn.layers.convolution.CudnnConvolutionHelper
-	at java.net.URLClassLoader.findClass(URLClassLoader.java:381)
-	at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
-	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:335)
-	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
-	at java.lang.Class.forName0(Native Method)
+    at java.net.URLClassLoader.findClass(URLClassLoader.java:381)
+    at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+    at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:335)
+    at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+    at java.lang.Class.forName0(Native Method)
 ```
 
 If cuDNN is available and was loaded successfully, no message will be logged.
@@ -128,7 +128,7 @@ net.setListeners(new PerformanceListener(1));       //Logs ETL and iteration spe
 When training, you will see output such as:
 
 ```text
-.d.o.l.PerformanceListener - ETL: 0 ms; iteration 16; iteration time: 65 ms; samples/sec: 492.308; batches/sec: 15.384; 
+.d.o.l.PerformanceListener - ETL: 0 ms; iteration 16; iteration time: 65 ms; samples/sec: 492.308; batches/sec: 15.384;
 ```
 
 The above output shows that there is no ETL bottleneck \(i.e., `ETL: 0 ms`\). However, if ETL time is greater than 0 consistently \(after the first iteration\), an ETL bottleneck is present.

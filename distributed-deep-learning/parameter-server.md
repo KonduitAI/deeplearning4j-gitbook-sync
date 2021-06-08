@@ -24,7 +24,7 @@ Here are a few more perks were added to original algorithm proposed by Nikko Str
 * Dense bitmap encoding: If the number of updates gets too high, another encoding scheme is used, which provides guarantees of "maximum number of bytes" being sent over the wire for any given update message.
 * Periodically, we send "shake up" messages, encoded with a significantly smaller threshold, to share delayed weights that can't get above current threshold.
 
-![](../.gitbook/assets/distributed%20%281%29.png)
+![](../.gitbook/assets/distributed%20%284%29%20%282%29.png)
 
 Note that using Spark entails overhead. In order to determine whether Spark will help you or not, consider using the [Performance Listener](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/listeners/PerformanceListener.java) and look at the millisecond iteration time. If it's &lt;= 150ms, Spark may not be worth it.
 
@@ -34,7 +34,7 @@ All you need to run training is a Spark 1.x/2.x cluster and at least one open UD
 
 ### Cluster Setup
 
-As mentioned above, DeepLearning4j supports both Spark 1.x and Spark 2.x clusters. However, this particular implementation also requires Java 8+ to run. If your cluster is running Java 7, you'll either have to upgrade or use our [Parameters Averaging training mode](deeplearning4j-scaleout/deeplearning4j-spark-training).
+As mentioned above, DeepLearning4j supports both Spark 1.x and Spark 2.x clusters. However, this particular implementation also requires Java 8+ to run. If your cluster is running Java 7, you'll either have to upgrade or use our [Parameters Averaging training mode](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/distributed-deep-learning/deeplearning4j-scaleout/deeplearning4j-spark-training/README.md).
 
 ### Network Environment
 

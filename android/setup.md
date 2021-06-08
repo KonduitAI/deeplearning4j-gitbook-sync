@@ -17,7 +17,7 @@ While neural networks are typically run on powerful computers using multiple GPU
 * Within Android studio, the Android SDK Manager can be used to install Android Build tools 24.0.1 or later, SDK platform 24 or later, and the Android Support Repository. 
 * An Android device or an emulator running API level 21 or higher. A minimum of 200 MB of internal storage space free is recommended.
 
-It is also recommended that you download and install IntelliJ IDEA, Maven, and the complete dl4j-examples directory for building and building and training neural nets on your desktop instead of android studio. With the setup we are giving you here you can use dl4j on your android device and emulator. You need to add the regular dependencies to use dl4j in the `\app\src\test\java\` tests. 
+It is also recommended that you download and install IntelliJ IDEA, Maven, and the complete dl4j-examples directory for building and building and training neural nets on your desktop instead of android studio. With the setup we are giving you here you can use dl4j on your android device and emulator. You need to add the regular dependencies to use dl4j in the `\app\src\test\java\` tests.
 
 ## Required Dependencies
 
@@ -63,7 +63,7 @@ compileOptions {
 
 DL4J depends on ND4J, which is a library that offers fast n-dimensional arrays. ND4J in turn depends on a platform-specific native code library called JavaCPP, therefore you must load a version of ND4J that matches the architecture of the Android device. Both -x86 and -arm types can be included to support multiple device processor types.
 
-After adding the above to the build.gradle file, try syncing Gradle with to see if any exclusions are needed. The error message will identify the file path that should be added to the list of exclusions. An example error message with file path is: _&gt; More than one file was found with OS independent path 'org/bytedeco/javacpp/ windows-x86\_64/msvp120.dll'_ 
+After adding the above to the build.gradle file, try syncing Gradle with to see if any exclusions are needed. The error message will identify the file path that should be added to the list of exclusions. An example error message with file path is: _&gt; More than one file was found with OS independent path 'org/bytedeco/javacpp/ windows-x86\_64/msvp120.dll'_
 
 A conflict in the junit module versions often causes the following error: _&gt; Conflict with dependency 'junit:junit' in project ':app'. Resolved versions for app \(4.8.2\) and test app \(4.12\) differ_. This can be suppressed by forcing all of the junit modules to use the same version with the following:
 
@@ -126,7 +126,7 @@ Nd4j.getMemoryManager().setAutoGcWindow(5000)
 Nd4j.getMemoryManager().togglePeriodicGc(false);
 ```
 
-The example below illustrates the use of a Workspace for memory allocation.  More information concerning ND4J Workspaces can be found [here](../config/config-memory/config-workspaces.md).
+The example below illustrates the use of a Workspace for memory allocation. More information concerning ND4J Workspaces can be found [here](../config/config-memory/config-workspaces.md).
 
 ```java
 import org.nd4j.linalg.api.memory.MemoryWorkspace;
@@ -149,21 +149,21 @@ protected INDArray doInBackground(String... params) {
 
     try(MemoryWorkspace ws = Nd4j.getWorkspaceManager().getAndActivateWorkspace(initialConfig, "SOME_ID")) {
         // now, INDArrays created within this try block will be allocated from this workspace pool
-    
+
         //Load a trained model
         File file = new File(Environment.getExternalStorageDirectory() + "/trained_model.zip");
         MultiLayerNetwork restored = ModelSerializer.restoreMultiLayerNetwork(file);
-    
+
         // Create input in INDArray
         INDArray inputData = Nd4j.zeros(1, 4);
-    
+
         inputData.putScalar(new int[]{0, 0}, 1);
         inputData.putScalar(new int[]{0, 1}, 0);
         inputData.putScalar(new int[]{0, 2}, 1);
         inputData.putScalar(new int[]{0, 3}, 0);
-    
+
         result = restored.output(inputData);
-    
+
     }
     catch(IOException ex){Log.d("AsyncTaskRunner2 ", "catchIOException = " + ex  );}
 
@@ -309,6 +309,4 @@ If you choose to use a SNAPSHOT version of the dependencies with gradle, you wil
     </repositories>
 </project>
 ```
-
-
 

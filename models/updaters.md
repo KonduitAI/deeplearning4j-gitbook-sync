@@ -29,12 +29,12 @@ ComputationGraphConfiguration conf = new NeuralNetConfiguration.Builder()
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/learning//NadamUpdater.java)
 
-The Nadam updater. https://arxiv.org/pdf/1609.04747.pdf
+The Nadam updater. [https://arxiv.org/pdf/1609.04747.pdf](https://arxiv.org/pdf/1609.04747.pdf)
 
 **applyUpdater**
 
 ```text
-public void applyUpdater(INDArray gradient, int iteration, int epoch) 
+public void applyUpdater(INDArray gradient, int iteration, int epoch)
 ```
 
 Calculate the update based on the given gradient
@@ -52,7 +52,7 @@ Nesterov’s momentum. Keep track of the previous layer’s gradient and use it 
 **applyUpdater**
 
 ```text
-public void applyUpdater(INDArray gradient, int iteration, int epoch) 
+public void applyUpdater(INDArray gradient, int iteration, int epoch)
 ```
 
 Get the nesterov update
@@ -67,7 +67,7 @@ Get the nesterov update
 
 RMS Prop updates:
 
-http://www.cs.toronto.edu/~tijmen/csc321/slides/lecture\_slides\_lec6.pdf http://cs231n.github.io/neural-networks-3/\#ada
+[http://www.cs.toronto.edu/~tijmen/csc321/slides/lecture\_slides\_lec6.pdf](http://www.cs.toronto.edu/~tijmen/csc321/slides/lecture_slides_lec6.pdf) [http://cs231n.github.io/neural-networks-3/\#ada](http://cs231n.github.io/neural-networks-3/#ada)
 
 ### AdaGradUpdater
 
@@ -75,12 +75,12 @@ http://www.cs.toronto.edu/~tijmen/csc321/slides/lecture\_slides\_lec6.pdf http:/
 
 Vectorized Learning Rate used per Connection Weight
 
-Adapted from: http://xcorr.net/2014/01/23/adagrad-eliminating-learning-rates-in-stochastic-gradient-descent See also http://cs231n.github.io/neural-networks-3/\#ada
+Adapted from: [http://xcorr.net/2014/01/23/adagrad-eliminating-learning-rates-in-stochastic-gradient-descent](http://xcorr.net/2014/01/23/adagrad-eliminating-learning-rates-in-stochastic-gradient-descent) See also [http://cs231n.github.io/neural-networks-3/\#ada](http://cs231n.github.io/neural-networks-3/#ada)
 
 **applyUpdater**
 
 ```text
-public void applyUpdater(INDArray gradient, int iteration, int epoch) 
+public void applyUpdater(INDArray gradient, int iteration, int epoch)
 ```
 
 Gets feature specific learning rates Adagrad keeps a history of gradients being passed in. Note that each gradient passed in becomes adapted over time, hence the opName adagrad
@@ -92,12 +92,12 @@ Gets feature specific learning rates Adagrad keeps a history of gradients being 
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/learning//AdaMaxUpdater.java)
 
-The AdaMax updater, a variant of Adam. http://arxiv.org/abs/1412.6980
+The AdaMax updater, a variant of Adam. [http://arxiv.org/abs/1412.6980](http://arxiv.org/abs/1412.6980)
 
 **applyUpdater**
 
 ```text
-public void applyUpdater(INDArray gradient, int iteration, int epoch) 
+public void applyUpdater(INDArray gradient, int iteration, int epoch)
 ```
 
 Calculate the update based on the given gradient
@@ -116,12 +116,12 @@ NoOp updater: gradient updater that makes no changes to the gradient
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/learning//AdamUpdater.java)
 
-The Adam updater. http://arxiv.org/abs/1412.6980
+The Adam updater. [http://arxiv.org/abs/1412.6980](http://arxiv.org/abs/1412.6980)
 
 **applyUpdater**
 
 ```text
-public void applyUpdater(INDArray gradient, int iteration, int epoch) 
+public void applyUpdater(INDArray gradient, int iteration, int epoch)
 ```
 
 Calculate the update based on the given gradient
@@ -134,14 +134,14 @@ Calculate the update based on the given gradient
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/learning//AdaDeltaUpdater.java)
 
-http://www.matthewzeiler.com/pubs/googleTR2012/googleTR2012.pdf https://arxiv.org/pdf/1212.5701v1.pdf
+[http://www.matthewzeiler.com/pubs/googleTR2012/googleTR2012.pdf](http://www.matthewzeiler.com/pubs/googleTR2012/googleTR2012.pdf) [https://arxiv.org/pdf/1212.5701v1.pdf](https://arxiv.org/pdf/1212.5701v1.pdf)
 
 Ada delta updater. More robust adagrad that keeps track of a moving window average of the gradient rather than the every decaying learning rates of adagrad
 
 **applyUpdater**
 
 ```text
-public void applyUpdater(INDArray gradient, int iteration, int epoch) 
+public void applyUpdater(INDArray gradient, int iteration, int epoch)
 ```
 
 Get the updated gradient for the given gradient and also update the state of ada delta.
@@ -167,5 +167,5 @@ Gradient modifications: Calculates an update and tracks related information for 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/learning//AMSGradUpdater.java)
 
 The AMSGrad updater  
-Reference: On the Convergence of Adam and Beyond - https://openreview.net/forum?id=ryQu7f-RZ
+Reference: On the Convergence of Adam and Beyond - [https://openreview.net/forum?id=ryQu7f-RZ](https://openreview.net/forum?id=ryQu7f-RZ)
 

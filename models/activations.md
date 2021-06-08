@@ -54,7 +54,7 @@ f\(x\) = max\(0, x\)
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl//ActivationRationalTanh.java)
 
-Rational tanh approximation From https://arxiv.org/pdf/1508.01292v3
+Rational tanh approximation From [https://arxiv.org/pdf/1508.01292v3](https://arxiv.org/pdf/1508.01292v3)
 
 f\(x\) = 1.7159 tanh\(2x/3\) where tanh is approximated as follows, tanh\(y\) ~ sgn\(y\) { 1 - 1/\(1+\|y\|+y^2+1.41645y^4\)}
 
@@ -158,7 +158,7 @@ f\(x\) = \(exp\(x\) - exp\(-x\)\) / \(exp\(x\) + exp\(-x\)\)
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl//ActivationSELU.java)
 
-https://arxiv.org/pdf/1706.02515.pdf
+[https://arxiv.org/pdf/1706.02515.pdf](https://arxiv.org/pdf/1706.02515.pdf)
 
 ## ActivationLReLU
 
@@ -176,6 +176,5 @@ f\(x\) = x sigmoid\(x\)
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl//ActivationSoftPlus.java)
 
-f\(x\) = log\(1+e^x\)  
-
+f\(x\) = log\(1+e^x\)
 

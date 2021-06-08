@@ -31,7 +31,7 @@ Activation layer is a simple layer that applies the specified activation functio
 **clone**
 
 ```text
-public ActivationLayer clone() 
+public ActivationLayer clone()
 ```
 
 * param activation Activation function for the layer
@@ -39,7 +39,7 @@ public ActivationLayer clone()
 **activation**
 
 ```text
-public Builder activation(String activationFunction) 
+public Builder activation(String activationFunction)
 ```
 
 Activation function for the layer
@@ -47,7 +47,7 @@ Activation function for the layer
 **activation**
 
 ```text
-public Builder activation(IActivation activationFunction) 
+public Builder activation(IActivation activationFunction)
 ```
 
 * param activationFunction Activation function for the layer
@@ -55,7 +55,7 @@ public Builder activation(IActivation activationFunction)
 **activation**
 
 ```text
-public Builder activation(Activation activation) 
+public Builder activation(Activation activation)
 ```
 
 * param activation Activation function for the layer
@@ -69,7 +69,7 @@ Dense layer: a standard fully connected feed forward layer
 **hasBias**
 
 ```text
-public Builder hasBias(boolean hasBias) 
+public Builder hasBias(boolean hasBias)
 ```
 
 If true \(default\): include bias parameters in the model. False: no bias.
@@ -91,7 +91,7 @@ Dropout layer. This layer simply applies dropout at training time, and passes ac
 **build**
 
 ```text
-public DropoutLayer build() 
+public DropoutLayer build()
 ```
 
 Create a dropout layer with standard {- link Dropout}, with the specified probability of retaining the input activation. See {- link Dropout} for the full details
@@ -110,7 +110,7 @@ Note also that embedding layer has an activation function \(set to IDENTITY to d
 **hasBias**
 
 ```text
-public Builder hasBias(boolean hasBias) 
+public Builder hasBias(boolean hasBias)
 ```
 
 If true: include bias parameters in the layer. False \(default\): no bias.
@@ -147,7 +147,7 @@ Note also that embedding layer has an activation function \(set to IDENTITY to d
 **hasBias**
 
 ```text
-public Builder hasBias(boolean hasBias) 
+public Builder hasBias(boolean hasBias)
 ```
 
 If true: include bias parameters in the layer. False \(default\): no bias.
@@ -155,7 +155,7 @@ If true: include bias parameters in the layer. False \(default\): no bias.
 **inputLength**
 
 ```text
-public Builder inputLength(int inputLength) 
+public Builder inputLength(int inputLength)
 ```
 
 Set input sequence length for this embedding layer.
@@ -166,7 +166,7 @@ Set input sequence length for this embedding layer.
 **inferInputLength**
 
 ```text
-public Builder inferInputLength(boolean inferInputLength) 
+public Builder inferInputLength(boolean inferInputLength)
 ```
 
 Set input sequence inference mode for embedding layer.
@@ -201,28 +201,27 @@ Initialize the embedding layer using values from the specified array. Note that 
 Global pooling layer - used to do pooling over time for RNNs, and 2d pooling for CNNs.  
 Supports the following
 
-Global pooling layer can also handle mask arrays when dealing with variable length inputs. Mask arrays are assumed to be 2d, and are fed forward through the network during training or post-training forward pass:  
-- Time series: mask arrays are shape \[miniBatchSize, maxTimeSeriesLength\] and contain values 0 or 1 only  
-- CNNs: mask have shape \[miniBatchSize, height\] or \[miniBatchSize, width\]. Important: the current implementation assumes that for CNNs + variable length \(masking\), the input shape is \[miniBatchSize, channels, height, 1\] or \[miniBatchSize, channels, 1, width\] respectively. This is the case with global pooling in architectures like CNN for sentence classification.  
+Global pooling layer can also handle mask arrays when dealing with variable length inputs. Mask arrays are assumed to be 2d, and are fed forward through the network during training or post-training forward pass:
 
+* Time series: mask arrays are shape \[miniBatchSize, maxTimeSeriesLength\] and contain values 0 or 1 only  
+* CNNs: mask have shape \[miniBatchSize, height\] or \[miniBatchSize, width\]. Important: the current implementation assumes that for CNNs + variable length \(masking\), the input shape is \[miniBatchSize, channels, height, 1\] or \[miniBatchSize, channels, 1, width\] respectively. This is the case with global pooling in architectures like CNN for sentence classification.  
 
-Behaviour with default settings:  
-- 3d \(time series\) input with shape \[miniBatchSize, vectorSize, timeSeriesLength\] -&gt; 2d output \[miniBatchSize, vectorSize\]  
-- 4d \(CNN\) input with shape \[miniBatchSize, channels, height, width\] -&gt; 2d output \[miniBatchSize, channels\]  
-- 5d \(CNN3D\) input with shape \[miniBatchSize, channels, depth, height, width\] -&gt; 2d output \[miniBatchSize, channels\]  
+Behaviour with default settings:
 
+* 3d \(time series\) input with shape \[miniBatchSize, vectorSize, timeSeriesLength\] -&gt; 2d output \[miniBatchSize, vectorSize\]  
+* 4d \(CNN\) input with shape \[miniBatchSize, channels, height, width\] -&gt; 2d output \[miniBatchSize, channels\]  
+* 5d \(CNN3D\) input with shape \[miniBatchSize, channels, depth, height, width\] -&gt; 2d output \[miniBatchSize, channels\]  
 
-Alternatively, by setting collapseDimensions = false in the configuration, it is possible to retain the reduced dimensions as 1s: this gives  
-- \[miniBatchSize, vectorSize, 1\] for RNN output,  
-- \[miniBatchSize, channels, 1, 1\] for CNN output, and  
-- \[miniBatchSize, channels, 1, 1, 1\] for CNN3D output.  
-  
+Alternatively, by setting collapseDimensions = false in the configuration, it is possible to retain the reduced dimensions as 1s: this gives
 
+* \[miniBatchSize, vectorSize, 1\] for RNN output,  
+* \[miniBatchSize, channels, 1, 1\] for CNN output, and  
+* \[miniBatchSize, channels, 1, 1, 1\] for CNN3D output.  
 
 **poolingDimensions**
 
 ```text
-public Builder poolingDimensions(int... poolingDimensions) 
+public Builder poolingDimensions(int... poolingDimensions)
 ```
 
 Pooling type for global pooling
@@ -230,7 +229,7 @@ Pooling type for global pooling
 **poolingType**
 
 ```text
-public Builder poolingType(PoolingType poolingType) 
+public Builder poolingType(PoolingType poolingType)
 ```
 
 * param poolingType Pooling type for global pooling
@@ -238,27 +237,26 @@ public Builder poolingType(PoolingType poolingType)
 **collapseDimensions**
 
 ```text
-public Builder collapseDimensions(boolean collapseDimensions) 
+public Builder collapseDimensions(boolean collapseDimensions)
 ```
 
-Whether to collapse dimensions when pooling or not. Usually you do want to do this. Default: true. If true:  
-- 3d \(time series\) input with shape \[miniBatchSize, vectorSize, timeSeriesLength\] -&gt; 2d output \[miniBatchSize, vectorSize\]  
-- 4d \(CNN\) input with shape \[miniBatchSize, channels, height, width\] -&gt; 2d output \[miniBatchSize, channels\]  
-- 5d \(CNN3D\) input with shape \[miniBatchSize, channels, depth, height, width\] -&gt; 2d output \[miniBatchSize, channels\]  
+Whether to collapse dimensions when pooling or not. Usually you do want to do this. Default: true. If true:
 
+* 3d \(time series\) input with shape \[miniBatchSize, vectorSize, timeSeriesLength\] -&gt; 2d output \[miniBatchSize, vectorSize\]  
+* 4d \(CNN\) input with shape \[miniBatchSize, channels, height, width\] -&gt; 2d output \[miniBatchSize, channels\]  
+* 5d \(CNN3D\) input with shape \[miniBatchSize, channels, depth, height, width\] -&gt; 2d output \[miniBatchSize, channels\]  
 
-If false:  
-- 3d \(time series\) input with shape \[miniBatchSize, vectorSize, timeSeriesLength\] -&gt; 3d output \[miniBatchSize, vectorSize, 1\]  
-- 4d \(CNN\) input with shape \[miniBatchSize, channels, height, width\] -&gt; 2d output \[miniBatchSize, channels, 1, 1\]  
-- 5d \(CNN3D\) input with shape \[miniBatchSize, channels, depth, height, width\] -&gt; 2d output \[miniBatchSize, channels, 1, 1, 1\]  
+If false:
 
-
+* 3d \(time series\) input with shape \[miniBatchSize, vectorSize, timeSeriesLength\] -&gt; 3d output \[miniBatchSize, vectorSize, 1\]  
+* 4d \(CNN\) input with shape \[miniBatchSize, channels, height, width\] -&gt; 2d output \[miniBatchSize, channels, 1, 1\]  
+* 5d \(CNN3D\) input with shape \[miniBatchSize, channels, depth, height, width\] -&gt; 2d output \[miniBatchSize, channels, 1, 1, 1\]  
 * param collapseDimensions Whether to collapse the dimensions or not
 
 **pnorm**
 
 ```text
-public Builder pnorm(int pnorm) 
+public Builder pnorm(int pnorm)
 ```
 
 P-norm constant. Only used if using {- link PoolingType\#PNORM} for the pooling type
@@ -275,7 +273,7 @@ See section 3.3 of [http://www.cs.toronto.edu/~fritz/absps/imagenet.pdf](http://
 **k**
 
 ```text
-public Builder k(double k) 
+public Builder k(double k)
 ```
 
 LRN scaling constant k. Default: 2
@@ -283,7 +281,7 @@ LRN scaling constant k. Default: 2
 **n**
 
 ```text
-public Builder n(double n) 
+public Builder n(double n)
 ```
 
 Number of adjacent kernel maps to use when doing LRN. default: 5
@@ -293,7 +291,7 @@ Number of adjacent kernel maps to use when doing LRN. default: 5
 **alpha**
 
 ```text
-public Builder alpha(double alpha) 
+public Builder alpha(double alpha)
 ```
 
 LRN scaling constant alpha. Default: 1e-4
@@ -303,7 +301,7 @@ LRN scaling constant alpha. Default: 1e-4
 **beta**
 
 ```text
-public Builder beta(double beta) 
+public Builder beta(double beta)
 ```
 
 Scaling constant beta. Default: 0.75
@@ -313,7 +311,7 @@ Scaling constant beta. Default: 0.75
 **cudnnAllowFallback**
 
 ```text
-public Builder cudnnAllowFallback(boolean allowFallback) 
+public Builder cudnnAllowFallback(boolean allowFallback)
 ```
 
 When using CuDNN and an error is encountered, should fallback to the non-CuDNN implementatation be allowed? If set to false, an exception in CuDNN will be propagated back to the user. If false, the built-in \(non-CuDNN\) implementation for BatchNormalization will be used
@@ -329,7 +327,7 @@ SameDiff version of a 1D locally connected layer.
 **nIn**
 
 ```text
-public Builder nIn(int nIn) 
+public Builder nIn(int nIn)
 ```
 
 Number of inputs to the layer \(input size\)
@@ -337,7 +335,7 @@ Number of inputs to the layer \(input size\)
 **nOut**
 
 ```text
-public Builder nOut(int nOut) 
+public Builder nOut(int nOut)
 ```
 
 * param nOut Number of outputs \(output size\)
@@ -345,7 +343,7 @@ public Builder nOut(int nOut)
 **activation**
 
 ```text
-public Builder activation(Activation activation) 
+public Builder activation(Activation activation)
 ```
 
 * param activation Activation function for the layer
@@ -353,7 +351,7 @@ public Builder activation(Activation activation)
 **kernelSize**
 
 ```text
-public Builder kernelSize(int k) 
+public Builder kernelSize(int k)
 ```
 
 * param k Kernel size for the layer
@@ -361,7 +359,7 @@ public Builder kernelSize(int k)
 **stride**
 
 ```text
-public Builder stride(int s) 
+public Builder stride(int s)
 ```
 
 * param s Stride for the layer
@@ -369,7 +367,7 @@ public Builder stride(int s)
 **padding**
 
 ```text
-public Builder padding(int p) 
+public Builder padding(int p)
 ```
 
 * param p Padding for the layer. Not used if {- link ConvolutionMode\#Same} is set
@@ -377,7 +375,7 @@ public Builder padding(int p)
 **convolutionMode**
 
 ```text
-public Builder convolutionMode(ConvolutionMode cm) 
+public Builder convolutionMode(ConvolutionMode cm)
 ```
 
 * param cm Convolution mode for the layer. See {- link ConvolutionMode} for details
@@ -385,7 +383,7 @@ public Builder convolutionMode(ConvolutionMode cm)
 **dilation**
 
 ```text
-public Builder dilation(int d) 
+public Builder dilation(int d)
 ```
 
 * param d Dilation for the layer
@@ -393,7 +391,7 @@ public Builder dilation(int d)
 **hasBias**
 
 ```text
-public Builder hasBias(boolean hasBias) 
+public Builder hasBias(boolean hasBias)
 ```
 
 * param hasBias If true \(default is false\) the layer will have a bias
@@ -401,7 +399,7 @@ public Builder hasBias(boolean hasBias)
 **setInputSize**
 
 ```text
-public Builder setInputSize(int inputSize) 
+public Builder setInputSize(int inputSize)
 ```
 
 Set input filter size for this locally connected 1D layer
@@ -418,7 +416,7 @@ SameDiff version of a 2D locally connected layer.
 **setKernel**
 
 ```text
-public void setKernel(int... kernel) 
+public void setKernel(int... kernel)
 ```
 
 Number of inputs to the layer \(input size\)
@@ -426,7 +424,7 @@ Number of inputs to the layer \(input size\)
 **setStride**
 
 ```text
-public void setStride(int... stride) 
+public void setStride(int... stride)
 ```
 
 * param stride Stride for the layer. Must be 2 values \(height/width\)
@@ -434,7 +432,7 @@ public void setStride(int... stride)
 **setPadding**
 
 ```text
-public void setPadding(int... padding) 
+public void setPadding(int... padding)
 ```
 
 * param padding Padding for the layer. Not used if {- link ConvolutionMode\#Same} is set. Must be 2 values \(height/width\)
@@ -442,7 +440,7 @@ public void setPadding(int... padding)
 **setDilation**
 
 ```text
-public void setDilation(int... dilation) 
+public void setDilation(int... dilation)
 ```
 
 * param dilation Dilation for the layer. Must be 2 values \(height/width\)
@@ -450,7 +448,7 @@ public void setDilation(int... dilation)
 **nIn**
 
 ```text
-public Builder nIn(int nIn) 
+public Builder nIn(int nIn)
 ```
 
 * param nIn Number of inputs to the layer \(input size\)
@@ -458,7 +456,7 @@ public Builder nIn(int nIn)
 **nOut**
 
 ```text
-public Builder nOut(int nOut) 
+public Builder nOut(int nOut)
 ```
 
 * param nOut Number of outputs \(output size\)
@@ -466,7 +464,7 @@ public Builder nOut(int nOut)
 **activation**
 
 ```text
-public Builder activation(Activation activation) 
+public Builder activation(Activation activation)
 ```
 
 * param activation Activation function for the layer
@@ -474,7 +472,7 @@ public Builder activation(Activation activation)
 **kernelSize**
 
 ```text
-public Builder kernelSize(int... k) 
+public Builder kernelSize(int... k)
 ```
 
 * param k Kernel size for the layer. Must be 2 values \(height/width\)
@@ -482,7 +480,7 @@ public Builder kernelSize(int... k)
 **stride**
 
 ```text
-public Builder stride(int... s) 
+public Builder stride(int... s)
 ```
 
 * param s Stride for the layer. Must be 2 values \(height/width\)
@@ -490,7 +488,7 @@ public Builder stride(int... s)
 **padding**
 
 ```text
-public Builder padding(int... p) 
+public Builder padding(int... p)
 ```
 
 * param p Padding for the layer. Not used if {- link ConvolutionMode\#Same} is set. Must be 2 values \(height/width\)
@@ -498,7 +496,7 @@ public Builder padding(int... p)
 **convolutionMode**
 
 ```text
-public Builder convolutionMode(ConvolutionMode cm) 
+public Builder convolutionMode(ConvolutionMode cm)
 ```
 
 * param cm Convolution mode for the layer. See {- link ConvolutionMode} for details
@@ -506,7 +504,7 @@ public Builder convolutionMode(ConvolutionMode cm)
 **dilation**
 
 ```text
-public Builder dilation(int... d) 
+public Builder dilation(int... d)
 ```
 
 * param d Dilation for the layer. Must be 2 values \(height/width\)
@@ -514,7 +512,7 @@ public Builder dilation(int... d)
 **hasBias**
 
 ```text
-public Builder hasBias(boolean hasBias) 
+public Builder hasBias(boolean hasBias)
 ```
 
 * param hasBias If true \(default is false\) the layer will have a bias
@@ -522,7 +520,7 @@ public Builder hasBias(boolean hasBias)
 **setInputSize**
 
 ```text
-public Builder setInputSize(int... inputSize) 
+public Builder setInputSize(int... inputSize)
 ```
 
 Set input filter size \(h,w\) for this locally connected 2D layer
@@ -540,7 +538,7 @@ LossLayer is does not have any parameters. Consequently, setting nIn/nOut isn’
 **nIn**
 
 ```text
-public Builder nIn(int nIn) 
+public Builder nIn(int nIn)
 ```
 
 * param lossFunction Loss function for the loss layer
@@ -554,7 +552,7 @@ Output layer used for training via backpropagation based on labels and a specifi
 **build**
 
 ```text
-public OutputLayer build() 
+public OutputLayer build()
 ```
 
 * param lossFunction Loss function for the output layer
@@ -575,15 +573,14 @@ Supports the following pooling types: MAX, AVG, SUM, PNORM, NONE
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/nn/conf/layers/Subsampling1DLayer.java)
 
-sequenceLength\]}. This layer accepts RNN InputTypes instead of CNN InputTypes.  
-
+sequenceLength\]}. This layer accepts RNN InputTypes instead of CNN InputTypes.
 
 Supports the following pooling types: MAX, AVG, SUM, PNORM
 
 **setKernelSize**
 
 ```text
-public void setKernelSize(int... kernelSize) 
+public void setKernelSize(int... kernelSize)
 ```
 
 Kernel size
@@ -593,7 +590,7 @@ Kernel size
 **setStride**
 
 ```text
-public void setStride(int... stride) 
+public void setStride(int... stride)
 ```
 
 Stride
@@ -603,7 +600,7 @@ Stride
 **setPadding**
 
 ```text
-public void setPadding(int... padding) 
+public void setPadding(int... padding)
 ```
 
 Padding
@@ -629,7 +626,7 @@ Then output with size = 2 is:
 **size**
 
 ```text
-public Builder size(int size) 
+public Builder size(int size)
 ```
 
 Upsampling size
@@ -639,7 +636,7 @@ Upsampling size
 **size**
 
 ```text
-public Builder size(int[] size) 
+public Builder size(int[] size)
 ```
 
 Upsampling size int array with a single element. Array must be length 1
@@ -668,7 +665,7 @@ Output (slice for one example and channel)
 **size**
 
 ```text
-public Builder size(int size) 
+public Builder size(int size)
 ```
 
 Upsampling size int, used for both height and width
@@ -678,7 +675,7 @@ Upsampling size int, used for both height and width
 **size**
 
 ```text
-public Builder size(int[] size) 
+public Builder size(int[] size)
 ```
 
 Upsampling size array
@@ -695,7 +692,7 @@ Repeats each value \(all channel values for each x/y/z location\) by size\[0\], 
 **size**
 
 ```text
-public Builder size(int size) 
+public Builder size(int size)
 ```
 
 Upsampling size as int, so same upsampling size is used for depth, width and height
@@ -705,7 +702,7 @@ Upsampling size as int, so same upsampling size is used for depth, width and hei
 **size**
 
 ```text
-public Builder size(int[] size) 
+public Builder size(int[] size)
 ```
 
 Upsampling size as int, so same upsampling size is used for depth, width and height
@@ -721,7 +718,7 @@ Zero padding 1D layer for convolutional neural networks. Allows padding to be do
 **setPadding**
 
 ```text
-public void setPadding(int... padding) 
+public void setPadding(int... padding)
 ```
 
 Padding value for left and right. Must be length 2 array
@@ -729,7 +726,7 @@ Padding value for left and right. Must be length 2 array
 **build**
 
 ```text
-public ZeroPadding1DLayer build() 
+public ZeroPadding1DLayer build()
 ```
 
 * param padding Padding for both the left and right
@@ -743,7 +740,7 @@ Zero padding 3D layer for convolutional neural networks. Allows padding to be do
 **setPadding**
 
 ```text
-public void setPadding(int... padding) 
+public void setPadding(int... padding)
 ```
 
 \[padLeftD, padRightD, padLeftH, padRightH, padLeftW, padRightW\]
@@ -751,7 +748,7 @@ public void setPadding(int... padding)
 **build**
 
 ```text
-public ZeroPadding3DLayer build() 
+public ZeroPadding3DLayer build()
 ```
 
 * param padding Padding for both the left and right in all three spatial dimensions
@@ -765,7 +762,7 @@ Zero padding layer for convolutional neural networks \(2D CNNs\). Allows padding
 **setPadding**
 
 ```text
-public void setPadding(int... padding) 
+public void setPadding(int... padding)
 ```
 
 Padding value for top, bottom, left, and right. Must be length 4 array
@@ -773,7 +770,7 @@ Padding value for top, bottom, left, and right. Must be length 4 array
 **build**
 
 ```text
-public ZeroPaddingLayer build() 
+public ZeroPaddingLayer build()
 ```
 
 * param padHeight Padding for both the top and bottom
@@ -783,10 +780,11 @@ public ZeroPaddingLayer build()
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/nn/conf/layers/misc/ElementWiseMultiplicationLayer.java)
 
-is a learnable weight vector of length nOut  
-- “.” is element-wise multiplication  
-- b is a bias vector  
-  
+is a learnable weight vector of length nOut
+
+* “.” is element-wise multiplication  
+* b is a bias vector  
+
 Note that the input and output sizes of the element-wise layer are the same for this layer
 
 created by jingshu
@@ -794,7 +792,7 @@ created by jingshu
 **getMemoryReport**
 
 ```text
-public LayerMemoryReport getMemoryReport(InputType inputType) 
+public LayerMemoryReport getMemoryReport(InputType inputType)
 ```
 
 This is a report of the estimated memory consumption for the given layer
@@ -813,7 +811,7 @@ RepeatVector takes a mini-batch of vectors of shape \(mb, length\) and a repeat 
 **getRepetitionFactor**
 
 ```text
-public int getRepetitionFactor() 
+public int getRepetitionFactor()
 ```
 
 Set repetition factor for RepeatVector layer
@@ -821,7 +819,7 @@ Set repetition factor for RepeatVector layer
 **setRepetitionFactor**
 
 ```text
-public void setRepetitionFactor(int n) 
+public void setRepetitionFactor(int n)
 ```
 
 Set repetition factor for RepeatVector layer
@@ -831,7 +829,7 @@ Set repetition factor for RepeatVector layer
 **repetitionFactor**
 
 ```text
-public Builder repetitionFactor(int n) 
+public Builder repetitionFactor(int n)
 ```
 
 Set repetition factor for RepeatVector layer
@@ -845,15 +843,14 @@ Set repetition factor for RepeatVector layer
 Output \(loss\) layer for YOLOv2 object detection model, based on the papers: YOLO9000: Better, Faster, Stronger - Redmon & Farhadi \(2016\) - [https://arxiv.org/abs/1612.08242](https://arxiv.org/abs/1612.08242)  
 and  
 You Only Look Once: Unified, Real-Time Object Detection - Redmon et al. \(2016\) - [http://www.cv-foundation.org/openaccess/content\_cvpr\_2016/papers/Redmon\_You\_Only\_Look\_CVPR\_2016\_paper.pdf](http://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Redmon_You_Only_Look_CVPR_2016_paper.pdf)  
-This loss function implementation is based on the YOLOv2 version of the paper. However, note that it doesn’t currently support simultaneous training on both detection and classification datasets as described in the YOlO9000 paper.  
-
+This loss function implementation is based on the YOLOv2 version of the paper. However, note that it doesn’t currently support simultaneous training on both detection and classification datasets as described in the YOlO9000 paper.
 
 Note: Input activations to the Yolo2OutputLayer should have shape: \[minibatch, b\(5+c\), H, W\], where:  
 b = number of bounding boxes \(determined by config - see papers for details\)  
 c = number of classes  
 H = output/label height  
-W = output/label width  
-  
+W = output/label width
+
 Important: In practice, this means that the last convolutional layer before your Yolo2OutputLayer should have output depth of b\(5+c\). Thus if you change the number of bounding boxes, or change the number of object classes, the number of channels \(nOut of the last convolution layer\) needs to also change.  
 Label format: \[minibatch, 4+C, H, W\]  
 Order for labels depth: \[x1,y1,x2,y2,\(class labels\)\]  
@@ -867,7 +864,7 @@ Note also that mask arrays are not required - this implementation infers the pre
 **lambdaCoord**
 
 ```text
-public Builder lambdaCoord(double lambdaCoord) 
+public Builder lambdaCoord(double lambdaCoord)
 ```
 
 Loss function coefficient for position and size/scale components of the loss function. Default \(as per paper\): 5
@@ -875,7 +872,7 @@ Loss function coefficient for position and size/scale components of the loss fun
 **lambbaNoObj**
 
 ```text
-public Builder lambbaNoObj(double lambdaNoObj) 
+public Builder lambbaNoObj(double lambdaNoObj)
 ```
 
 Loss function coefficient for the “no object confidence” components of the loss function. Default \(as per paper\): 0.5
@@ -885,7 +882,7 @@ Loss function coefficient for the “no object confidence” components of the l
 **lossPositionScale**
 
 ```text
-public Builder lossPositionScale(ILossFunction lossPositionScale) 
+public Builder lossPositionScale(ILossFunction lossPositionScale)
 ```
 
 Loss function for position/scale component of the loss function
@@ -895,7 +892,7 @@ Loss function for position/scale component of the loss function
 **lossClassPredictions**
 
 ```text
-public Builder lossClassPredictions(ILossFunction lossClassPredictions) 
+public Builder lossClassPredictions(ILossFunction lossClassPredictions)
 ```
 
 Loss function for the class predictions - defaults to L2 loss \(i.e., sum of squared errors, as per the paper\), however Loss MCXENT could also be used \(which is more common for classification\).
@@ -905,7 +902,7 @@ Loss function for the class predictions - defaults to L2 loss \(i.e., sum of squ
 **boundingBoxPriors**
 
 ```text
-public Builder boundingBoxPriors(INDArray boundingBoxes) 
+public Builder boundingBoxPriors(INDArray boundingBoxes)
 ```
 
 Bounding box priors dimensions \[width, height\]. For N bounding boxes, input has shape \[rows, columns\] = \[N, 2\] Note that dimensions should be specified as fraction of grid size. For example, a network with 13x13 output, a value of 1.0 would correspond to one grid cell; a value of 13 would correspond to the entire image.

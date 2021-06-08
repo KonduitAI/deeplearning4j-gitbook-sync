@@ -1,6 +1,6 @@
 # Sea Temperature Convolutional LSTM
 
-In this tutorial we will use a neural network to forecast daily sea temperatures. The data consists of 2-dimensional temperature grids of 8 seas: Bengal, Korean, Black, Mediterranean, Arabian, Japan, Bohai, and Okhotsk Seas from 1981 to 2017. The raw data was taken from the Earth System Research Laboratory \(https://www.esrl.noaa.gov/psd/\) and preprocessed into CSV file. Each example consists of fifty 2-dimensional temperature grids, and every grid is represented by a single row in a CSV file. Thus, each sequence is represented by a CSV file with 50 rows.
+In this tutorial we will use a neural network to forecast daily sea temperatures. The data consists of 2-dimensional temperature grids of 8 seas: Bengal, Korean, Black, Mediterranean, Arabian, Japan, Bohai, and Okhotsk Seas from 1981 to 2017. The raw data was taken from the Earth System Research Laboratory \([https://www.esrl.noaa.gov/psd/\](https://www.esrl.noaa.gov/psd/\)\) and preprocessed into CSV file. Each example consists of fifty 2-dimensional temperature grids, and every grid is represented by a single row in a CSV file. Thus, each sequence is represented by a CSV file with 50 rows.
 
 For this task, we will use a convolutional LSTM neural network to forecast next-day sea temperatures for a given sequence of temperature grids. Recall, a convolutional network is most often used for image data like the MNIST dataset \(dataset of handwritten images\). A convolutional network is appropriate for this type of gridded data, since each point in the 2-dimensional grid is related to its neighbor points. Furthermore, the data is sequential, and each temperature grid is related to the previous grids. Because of these long and short term dependencies, a LSTM is fitting for this task too. For these two reasons, we will combine the aspects from these two different neural network architectures into a single convolutional LSTM network.
 
@@ -47,8 +47,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-
-
 ```
 
 ## Download Data
@@ -69,7 +67,7 @@ val archiveFile = new File(archizePath)
 val extractedPath = DATA_PATH + "sea_temp" 
 val extractedFile = new File(extractedPath)
 
-FileUtils.copyURLToFile(new URL(DATA_URL), archiveFile) 
+FileUtils.copyURLToFile(new URL(DATA_URL), archiveFile)
 ```
 
 We will then extract the data from the tar.gz file, recreate directories within the tar.gz file into our temporary directories, and copy the files from the tar.gz file.
@@ -89,25 +87,25 @@ while(entry != null){
         fileCount = 0
     }
     else {
-        
+
         val data = new Array[scala.Byte](4 * BUFFER_SIZE)
 
         val fos = new FileOutputStream(DATA_PATH + entry.getName());
         val dest = new BufferedOutputStream(fos, BUFFER_SIZE);
         var count = tais.read(data, 0, BUFFER_SIZE)
-        
+
         while (count != -1) {
             dest.write(data, 0, count)
             count = tais.read(data, 0, BUFFER_SIZE)
         }
-        
+
         dest.close()
         fileCount = fileCount + 1
     }
     if(fileCount % 1000 == 0){
         print(".")
     }
-    
+
     entry = tais.getNextEntry().asInstanceOf[TarArchiveEntry]
 }
 ```
@@ -137,8 +135,8 @@ trainTargets.initialize(new NumberedFileInputSplit(targetsBaseDir + "/%d.csv", 1
 
 val train = new SequenceRecordReaderDataSetIterator(trainFeatures, trainTargets, batchSize,
                 10, regression, SequenceRecordReaderDataSetIterator.AlignmentMode.EQUAL_LENGTH);
-                
-                
+
+
 val testFeatures = new CSVSequenceRecordReader(numSkipLines, ",");
 testFeatures.initialize( new NumberedFileInputSplit(featureBaseDir + "/%d.csv", 1937, 2089));
 val testTargets = new CSVSequenceRecordReader(numSkipLines, ",");
@@ -191,7 +189,7 @@ val conf = new NeuralNetConfiguration.Builder()
                 .inputPreProcessor(0, new RnnToCnnPreProcessor(V_HEIGHT, V_WIDTH, numChannels))
                 .inputPreProcessor(1, new CnnToRnnPreProcessor(6, 2, 7 ))
                 .build();
-                
+
 val net = new MultiLayerNetwork(conf);
 net.init();
 ```

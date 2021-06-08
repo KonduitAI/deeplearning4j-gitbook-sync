@@ -38,5 +38,5 @@ DL4J relies on ND4J for hardware-specific implementations and tensor operations.
 </dependencies>
 ```
 
-You can also swap the standard CPU implementation for [GPUs](deeplearning4j/deeplearning4j-config-gpu-cpu).
+You can also swap the standard CPU implementation for [GPUs](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/config/deeplearning4j/deeplearning4j-config-gpu-cpu/README.md).
 

@@ -54,5 +54,3 @@ The tutorials are currently being reworked. You will likely find stumbling point
 
 {% page-ref page="cloud-detection-example.md" %}
 
-
-

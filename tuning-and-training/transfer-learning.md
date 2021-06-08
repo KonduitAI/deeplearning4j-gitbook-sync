@@ -34,7 +34,7 @@ This example will use VGG16 to classify images belonging to five categories of f
 
 ### I.  Import a zoo model
 
-Deeplearning4j has a new native model zoo. Read about the [deeplearning4j-zoo](/model-zoo) module for more information on using pretrained models. Here, we load a pretrained VGG-16 model initialized with weights trained on ImageNet:
+Deeplearning4j has a new native model zoo. Read about the [deeplearning4j-zoo](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/model-zoo/README.md) module for more information on using pretrained models. Here, we load a pretrained VGG-16 model initialized with weights trained on ImageNet:
 
 ```java
 ZooModel zooModel = VGG16.builder().build();

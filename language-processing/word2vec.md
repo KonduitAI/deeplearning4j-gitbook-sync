@@ -50,11 +50,11 @@ The vectors we use to represent words are called _neural word embeddings_, and r
 
 So a neural word embedding represents a word with numbers. It's a simple, yet unlikely, translation.
 
-Word2vec is similar to an autoencoder, encoding each word in a vector, but rather than training against the input words through [reconstruction](/wiki/variational-autoencoder) word2vec trains words against other words that neighbor them in the input corpus.
+Word2vec is similar to an autoencoder, encoding each word in a vector, but rather than training against the input words through [reconstruction](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/wiki/variational-autoencoder/README.md) word2vec trains words against other words that neighbor them in the input corpus.
 
 It does so in one of two ways, either using context to predict a target word \(a method known as continuous bag of words, or CBOW\), or using a word to predict a target context, which is called skip-gram. We use the latter method because it produces more accurate results on large datasets.
 
-![](../.gitbook/assets/word2vec_diagrams.png)
+![](../.gitbook/assets/word2vec_diagrams%20%281%29.png)
 
 When the feature vector assigned to a word cannot be used to accurately predict that word's context, the components of the vector are adjusted. Each word's context in the corpus is the _teacher_ sending error signals back to adjust the feature vector. The vectors of words judged similar by their context are nudged closer together by adjusting the numbers in the vector.
 
@@ -66,7 +66,7 @@ A well trained set of word vectors will place similar words close to each other 
 
 Similar things and ideas are shown to be "close". Their relative meanings have been translated to measurable distances. Qualities become quantities, and algorithms can do their work. But similarity is just the basis of many associations that Word2vec can learn. For example, it can gauge relations between words of one language, and map them to another.
 
-![](../.gitbook/assets/word2vec_translation%20%281%29.png)
+![](../.gitbook/assets/word2vec_translation.png)
 
 These vectors are the basis of a more comprehensive geometry of words. As shown in the graph, capital cities such as Rome, Paris, Berlin and Beijing cluster near each other, and they will each have similar distances in vectorspace to their countries; i.e. Rome - Italy = Beijing - China. If you only knew that Rome was the capital of Italy, and were wondering about the capital of China, then the equation Rome -Italy + China would return Beijing. No kidding.
 
@@ -136,7 +136,7 @@ While Word2vec refers to a family of related algorithms, this implementation use
 
 ### [Word2Vec Setup](word2vec.md)
 
-Create a new project in IntelliJ using Maven. If you don't know how to do that, see our [Quickstart page](deeplearning4j-nlp/deeplearning4j-quickstart). Then specify these properties and dependencies in the POM.xml file in your project's root directory \(You can [check Maven](https://search.maven.org/#search%7Cga%7C1%7Cnd4j) for the most recent versions -- please use those...\).
+Create a new project in IntelliJ using Maven. If you don't know how to do that, see our [Quickstart page](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/language-processing/deeplearning4j-nlp/deeplearning4j-quickstart/README.md). Then specify these properties and dependencies in the POM.xml file in your project's root directory \(You can [check Maven](https://search.maven.org/#search%7Cga%7C1%7Cnd4j) for the most recent versions -- please use those...\).
 
 #### Loading Data
 
@@ -365,7 +365,7 @@ This n-gram is then fed into a neural network to learn the significance of a giv
 
 Now that you have a basic idea of how to set up Word2Vec, here's [one example](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/nlp/word2vec/Word2VecRawTextExample.java) of how it can be used with DL4J's API:
 
-After following the instructions in the [Quickstart](deeplearning4j-nlp/deeplearning4j-quickstart), you can open this example in IntelliJ and hit run to see it work. If you query the Word2vec model with a word isn't contained in the training corpus, it will return null.
+After following the instructions in the [Quickstart](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/language-processing/deeplearning4j-nlp/deeplearning4j-quickstart/README.md), you can open this example in IntelliJ and hit run to see it work. If you query the Word2vec model with a word isn't contained in the training corpus, it will return null.
 
 #### [Troubleshooting & Tuning Word2Vec](word2vec.md)
 
@@ -407,7 +407,7 @@ _A:_ If all of your sentences have been loaded as _one_ sentence, Word2vec train
 
 _Q: Why is there such a difference in performance when feeding whole documents as one "sentence" vs splitting into Sentences?_
 
-_A:_If average sentence contains 6 words, and window size is 5, maximum theoretical number of 10 skipgram rounds will be achieved on 0 words. Sentence isn't long enough to have full window set with words. Rough maximum number of 5 sg rounds is available there for all words in such sentence.
+\_A:\_If average sentence contains 6 words, and window size is 5, maximum theoretical number of 10 skipgram rounds will be achieved on 0 words. Sentence isn't long enough to have full window set with words. Rough maximum number of 5 sg rounds is available there for all words in such sentence.
 
 But if your "sentence" is 1000k words length, you'll have 10 skipgram rounds for every word in this sentence, excluding the first 5 and last five. So, you'll have to spend WAY more time building model + cooccurrence statistics will be shifted due to the absense of sentence boundaries.
 

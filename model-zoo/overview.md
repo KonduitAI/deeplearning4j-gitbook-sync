@@ -107,7 +107,7 @@ The zoo comes with a couple additional features if you're looking to use the mod
 
 ### Changing Inputs
 
-Aside from passing certain configuration information to the constructor of a zoo model, you can also change its input shape using `.setInputShape()`. 
+Aside from passing certain configuration information to the constructor of a zoo model, you can also change its input shape using `.setInputShape()`.
 
 NOTE: this applies to fresh configurations only, and will not affect pretrained models:
 

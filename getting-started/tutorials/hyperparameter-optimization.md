@@ -83,8 +83,8 @@ val hyperparameterSpace  = new MultiLayerSpace.Builder()
             .lossFunction(LossFunctions.LossFunction.MCXENT)
             .build())
     .build()
-    
-val candidateGenerator = new RandomSearchGenerator(hyperparameterSpace, null)   
+
+val candidateGenerator = new RandomSearchGenerator(hyperparameterSpace, null)
 ```
 
 ## Loading Data

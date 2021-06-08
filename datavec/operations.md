@@ -111,15 +111,14 @@ supports a conversion to TextWritable. Created by huitseeker on 5/14/17.
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/rank/CalculateSortedRank.java)
 
 CalculateSortedRank: calculate the rank of each example, after sorting example. For example, we might have some numerical “score” column, and we want to know for the rank \(sort order\) for each example, according to that column.  
-The rank of each example \(after sorting\) will be added in a new Long column. Indexing is done from 0; examples will have values 0 to dataSetSize - 1.  
-
+The rank of each example \(after sorting\) will be added in a new Long column. Indexing is done from 0; examples will have values 0 to dataSetSize - 1.
 
 Currently, CalculateSortedRank can only be applied on standard \(i.e., non-sequence\) data. Furthermore, the current implementation can only sort on one column
 
 **transform**
 
 ```text
-public Schema transform(Schema inputSchema) 
+public Schema transform(Schema inputSchema)
 ```
 
 * param newColumnName Name of the new column \(will contain the rank for each example\)
@@ -129,7 +128,7 @@ public Schema transform(Schema inputSchema)
 **outputColumnName**
 
 ```text
-public String outputColumnName() 
+public String outputColumnName()
 ```
 
 The output column name after the operation has been applied
@@ -139,7 +138,7 @@ The output column name after the operation has been applied
 **columnName**
 
 ```text
-public String columnName() 
+public String columnName()
 ```
 
 The output column names This will often be the same as the input

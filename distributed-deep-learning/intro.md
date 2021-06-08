@@ -71,16 +71,16 @@ The following are key classes the user should be familiar with to get started wi
 * **SparkDl4jMultiLayer and SparkComputationGraph**: These are wrappers around the MultiLayerNetwork and ComputationGraph classes in DL4J that enable the functionality related to distributed training. For training, they are configured with a TrainingMaster.
 * **`RDD<DataSet>` and `RDD<MultiDataSet>`**: A Spark RDD with DL4J's DataSet or MultiDataSet classes define the source of the training data \(or evaluation data\). Note that the recommended best practice is to preprocess your data once, and save it to network storage such as HDFS. Refer to the [Deeplearning4j on Spark: How To Build Data Pipelines](data-howto.md) section for more details.
 
-The training workflow usually proceeds as follows: 
+The training workflow usually proceeds as follows:
 
 1. Prepare training code with a few components: a. Neural network configuration
-2. Create uber-JAR file \(see [Spark how-to guide](deeplearning4j-scaleout/deeplearning4j-scaleout-howto) for details\)
+2. Create uber-JAR file \(see [Spark how-to guide](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/distributed-deep-learning/deeplearning4j-scaleout/deeplearning4j-scaleout-howto/README.md) for details\)
 3. Determine the arguments \(memory, number of nodes, etc\) for Spark submit
 4. Submit the uber-JAR to Spark submit with the required arguments
 
 ## Minimal Examples
 
-The following code snippets outlines the general setup required. The [API reference](apiref.md) outlines detailed usage of the various classes. The user can submit a uber jar to Spark Submit for execution with the right options. See [Deeplearning4j on Spark: How To Guides](deeplearning4j-scaleout/deeplearning4j-scaleout-howto) for further details.
+The following code snippets outlines the general setup required. The [API reference](apiref.md) outlines detailed usage of the various classes. The user can submit a uber jar to Spark Submit for execution with the right options. See [Deeplearning4j on Spark: How To Guides](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/distributed-deep-learning/deeplearning4j-scaleout/deeplearning4j-scaleout-howto/README.md) for further details.
 
 ### Gradient Sharing \(Preferred Implementation\)
 

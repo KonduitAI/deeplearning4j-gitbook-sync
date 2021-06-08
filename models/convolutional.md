@@ -27,7 +27,7 @@ description: Also known as CNN.
 **hasBias**
 
 ```text
-public boolean hasBias() 
+public boolean hasBias()
 ```
 
 An optional dataFormat: “NDHWC” or “NCDHW”. Defaults to “NCDHW”.  
@@ -38,18 +38,17 @@ For “NDHWC” \(‘channels last’ format\), the data is stored in the order 
 **kernelSize**
 
 ```text
-public Builder kernelSize(int... kernelSize) 
+public Builder kernelSize(int... kernelSize)
 ```
 
 The data format for input and output activations.  
 NCDHW: activations \(in/out\) should have shape \[minibatch, channels, depth, height, width\]  
-NDHWC: activations \(in/out\) should have shape \[minibatch, depth, height, width, channels\]  
-
+NDHWC: activations \(in/out\) should have shape \[minibatch, depth, height, width, channels\]
 
 **stride**
 
 ```text
-public Builder stride(int... stride) 
+public Builder stride(int... stride)
 ```
 
 Set stride size for 3D convolutions in \(depth, height, width\) order
@@ -60,7 +59,7 @@ Set stride size for 3D convolutions in \(depth, height, width\) order
 **padding**
 
 ```text
-public Builder padding(int... padding) 
+public Builder padding(int... padding)
 ```
 
 Set padding size for 3D convolutions in \(depth, height, width\) order
@@ -71,7 +70,7 @@ Set padding size for 3D convolutions in \(depth, height, width\) order
 **dilation**
 
 ```text
-public Builder dilation(int... dilation) 
+public Builder dilation(int... dilation)
 ```
 
 Set dilation size for 3D convolutions in \(depth, height, width\) order
@@ -82,20 +81,19 @@ Set dilation size for 3D convolutions in \(depth, height, width\) order
 **dataFormat**
 
 ```text
-public Builder dataFormat(DataFormat dataFormat) 
+public Builder dataFormat(DataFormat dataFormat)
 ```
 
 The data format for input and output activations.  
 NCDHW: activations \(in/out\) should have shape \[minibatch, channels, depth, height, width\]  
-NDHWC: activations \(in/out\) should have shape \[minibatch, depth, height, width, channels\]  
-
+NDHWC: activations \(in/out\) should have shape \[minibatch, depth, height, width, channels\]
 
 * param dataFormat Data format to use for activations
 
 **setKernelSize**
 
 ```text
-public void setKernelSize(int... kernelSize) 
+public void setKernelSize(int... kernelSize)
 ```
 
 Set kernel size for 3D convolutions in \(depth, height, width\) order
@@ -105,7 +103,7 @@ Set kernel size for 3D convolutions in \(depth, height, width\) order
 **setStride**
 
 ```text
-public void setStride(int... stride) 
+public void setStride(int... stride)
 ```
 
 Set stride size for 3D convolutions in \(depth, height, width\) order
@@ -115,7 +113,7 @@ Set stride size for 3D convolutions in \(depth, height, width\) order
 **setPadding**
 
 ```text
-public void setPadding(int... padding) 
+public void setPadding(int... padding)
 ```
 
 Set padding size for 3D convolutions in \(depth, height, width\) order
@@ -125,7 +123,7 @@ Set padding size for 3D convolutions in \(depth, height, width\) order
 **setDilation**
 
 ```text
-public void setDilation(int... dilation) 
+public void setDilation(int... dilation)
 ```
 
 Set dilation size for 3D convolutions in \(depth, height, width\) order
@@ -136,8 +134,7 @@ Set dilation size for 3D convolutions in \(depth, height, width\) order
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/nn/conf/layers/Deconvolution2D.java)
 
-2D deconvolution layer configuration  
-
+2D deconvolution layer configuration
 
 Deconvolutions are also known as transpose convolutions or fractionally strided convolutions. In essence, deconvolutions swap forward and backward pass with regular 2D convolutions.
 
@@ -148,7 +145,7 @@ For an intuitive guide to convolution arithmetic and shapes, see: [https://arxiv
 **hasBias**
 
 ```text
-public boolean hasBias() 
+public boolean hasBias()
 ```
 
 Deconvolution2D layer nIn in the input layer is the number of channels nOut is the number of filters to be used in the net or in other words the channels The builder specifies the filter/kernel size, the stride and padding The pooling layer takes the kernel size
@@ -156,7 +153,7 @@ Deconvolution2D layer nIn in the input layer is the number of channels nOut is t
 **convolutionMode**
 
 ```text
-public Builder convolutionMode(ConvolutionMode convolutionMode) 
+public Builder convolutionMode(ConvolutionMode convolutionMode)
 ```
 
 Set the convolution mode for the Convolution layer. See {- link ConvolutionMode} for more details
@@ -166,7 +163,7 @@ Set the convolution mode for the Convolution layer. See {- link ConvolutionMode}
 **kernelSize**
 
 ```text
-public Builder kernelSize(int... kernelSize) 
+public Builder kernelSize(int... kernelSize)
 ```
 
 Size of the convolution rows/columns
@@ -182,7 +179,7 @@ Cropping layer for convolutional \(1d\) neural networks. Allows cropping to be d
 **getOutputType**
 
 ```text
-public InputType getOutputType(int layerIndex, InputType inputType) 
+public InputType getOutputType(int layerIndex, InputType inputType)
 ```
 
 * param cropTopBottom Amount of cropping to apply to both the top and the bottom of the input activations
@@ -190,7 +187,7 @@ public InputType getOutputType(int layerIndex, InputType inputType)
 **setCropping**
 
 ```text
-public void setCropping(int... cropping) 
+public void setCropping(int... cropping)
 ```
 
 Cropping amount for top/bottom \(in that order\). Must be length 1 or 2 array.
@@ -198,7 +195,7 @@ Cropping amount for top/bottom \(in that order\). Must be length 1 or 2 array.
 **build**
 
 ```text
-public Cropping1D build() 
+public Cropping1D build()
 ```
 
 * param cropping Cropping amount for top/bottom \(in that order\). Must be length 1 or 2 array.
@@ -212,7 +209,7 @@ Cropping layer for convolutional \(2d\) neural networks. Allows cropping to be d
 **getOutputType**
 
 ```text
-public InputType getOutputType(int layerIndex, InputType inputType) 
+public InputType getOutputType(int layerIndex, InputType inputType)
 ```
 
 * param cropTopBottom Amount of cropping to apply to both the top and the bottom of the input activations
@@ -221,7 +218,7 @@ public InputType getOutputType(int layerIndex, InputType inputType)
 **setCropping**
 
 ```text
-public void setCropping(int... cropping) 
+public void setCropping(int... cropping)
 ```
 
 Cropping amount for top/bottom/left/right \(in that order\). A length 4 array.
@@ -229,7 +226,7 @@ Cropping amount for top/bottom/left/right \(in that order\). A length 4 array.
 **build**
 
 ```text
-public Cropping2D build() 
+public Cropping2D build()
 ```
 
 * param cropping Cropping amount for top/bottom/left/right \(in that order\). Must be length 4 array.
@@ -243,7 +240,7 @@ Cropping layer for convolutional \(3d\) neural networks. Allows cropping to be d
 **getOutputType**
 
 ```text
-public InputType getOutputType(int layerIndex, InputType inputType) 
+public InputType getOutputType(int layerIndex, InputType inputType)
 ```
 
 * param cropDepth Amount of cropping to apply to both depth boundaries of the input activations
@@ -253,7 +250,7 @@ public InputType getOutputType(int layerIndex, InputType inputType)
 **setCropping**
 
 ```text
-public void setCropping(int... cropping) 
+public void setCropping(int... cropping)
 ```
 
 Cropping amount, a length 6 array, i.e. crop left depth, crop right depth, crop left height, crop right height, crop left width, crop right width
@@ -261,7 +258,7 @@ Cropping amount, a length 6 array, i.e. crop left depth, crop right depth, crop 
 **build**
 
 ```text
-public Cropping3D build() 
+public Cropping3D build()
 ```
 
 * param cropping Cropping amount, must be length 3 or 6 array, i.e. either crop depth, crop height, crop width or crop left depth, crop right depth, crop left height, crop right height, crop left width, crop right width

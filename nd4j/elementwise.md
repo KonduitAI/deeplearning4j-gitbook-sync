@@ -4,7 +4,7 @@ Elementwise operations are more intuitive than vectorwise operations, because th
 
 With vectorwise matrix operations, you will have to first build intuition and also perform multiple steps. There are two basic types of matrix multiplication: inner \(dot\) product and outer product. The inner product results in a matrix of reduced dimensions, the outer product results in one of expanded dimensions. A helpful mnemonic: Expand outward, contract inward.
 
-### Inner product <a id="inner-product"></a>
+## Inner product <a id="inner-product"></a>
 
 Unlike Hadamard products, which require that both matrices have equal rows and columns, inner products simply require that the number of columns of the first matrix equal the number of rows of the second. For example, this works
 
@@ -53,7 +53,7 @@ The equation will look like this
 [3.0 ,4.0] * [4.0 ,6.0] = (3.0 * 3.0) + (4.0 * 4.0), (3.0 * 5.0) + (4.0 * 6.0),] =  [25, 39]
 ```
 
-### Outer product <a id="outer-product"></a>
+## Outer product <a id="outer-product"></a>
 
 Taking the outer product of the two vectors we first worked with is as simple as reversing their order.
 

@@ -9,8 +9,6 @@ Training neural network models can be a computationally expensive task. In order
 * You must have multiple CUDA compatible GPUs, ideally of the same speed
 * You must setup your project to use the CUDA Backend, for help see [Backends](../../config/backends/)
 
-
-
 ## Imports
 
 ```scala

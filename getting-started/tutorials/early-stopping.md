@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
-
 ```
 
 ## Loading the data
@@ -82,7 +81,7 @@ val conf : MultiLayerConfiguration = new NeuralNetConfiguration.Builder()
                 .weightInit(WeightInit.XAVIER)
                 .build())
         .build()
-                
+
 val model : MultiLayerNetwork = new MultiLayerNetwork(conf)
 ```
 
@@ -101,12 +100,12 @@ dirFile.mkdir()
 val saver  = new LocalFileModelSaver(exampleDirectory)
 
 val esConf  = new EarlyStoppingConfiguration.Builder()
-		.epochTerminationConditions(new MaxEpochsTerminationCondition(10))
-		.iterationTerminationConditions(new MaxTimeIterationTerminationCondition(5, TimeUnit.MINUTES))
-		.scoreCalculator(new DataSetLossCalculator(mnistTest, true))
+        .epochTerminationConditions(new MaxEpochsTerminationCondition(10))
+        .iterationTerminationConditions(new MaxTimeIterationTerminationCondition(5, TimeUnit.MINUTES))
+        .scoreCalculator(new DataSetLossCalculator(mnistTest, true))
         .evaluateEveryNEpochs(1)
-		.modelSaver(saver)
-		.build()
+        .modelSaver(saver)
+        .build()
 
 val trainer  = new EarlyStoppingTrainer(esConf,conf,mnistTrain)
 val result = trainer.fit()

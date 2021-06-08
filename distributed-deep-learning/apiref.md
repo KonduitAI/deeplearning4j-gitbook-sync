@@ -7,16 +7,16 @@ description: >-
 
 # API Reference
 
-### SharedTrainingMaster
+## SharedTrainingMaster
 
- [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-scaleout/spark/dl4j-spark-parameterserver/src/main/java/org/deeplearning4j/spark/parameterserver/training/SharedTrainingMaster.java)
+[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-scaleout/spark/dl4j-spark-parameterserver/src/main/java/org/deeplearning4j/spark/parameterserver/training/SharedTrainingMaster.java)
 
 SharedTrainingMaster implements distributed training of neural networks using a compressed quantized gradient \(update\) sharing implementation based on the Strom 2015 paper “Scalable Distributed DNN Training Using Commodity GPU Cloud Computing”: [https://s3-us-west-2.amazonaws.com/amazon.jobs-public-documents/strom\_interspeech2015.pdf](https://s3-us-west-2.amazonaws.com/amazon.jobs-public-documents/strom_interspeech2015.pdf). The Deeplearning4j implementation makes a number of modifications, such as having the option to use a parameter-server based implementation for fault tolerance and execution where multicast networking support is not available.
 
 **fromJson**
 
 ```java
-public static SharedTrainingMaster fromJson(String jsonStr) 
+public static SharedTrainingMaster fromJson(String jsonStr)
 ```
 
 Create a SharedTrainingMaster instance by deserializing a JSON string that has been serialized with {- link \#toJson\(\)}
@@ -26,7 +26,7 @@ Create a SharedTrainingMaster instance by deserializing a JSON string that has b
 **fromYaml**
 
 ```java
-public static SharedTrainingMaster fromYaml(String yamlStr) 
+public static SharedTrainingMaster fromYaml(String yamlStr)
 ```
 
 Create a SharedTrainingMaster instance by deserializing a YAML string that has been serialized with {- link \#toYaml\(\)}
@@ -36,7 +36,7 @@ Create a SharedTrainingMaster instance by deserializing a YAML string that has b
 **collectTrainingStats**
 
 ```java
-public Builder collectTrainingStats(boolean enable) 
+public Builder collectTrainingStats(boolean enable)
 ```
 
 Create a SharedTrainingMaster with defaults other than the RDD number of examples
@@ -46,7 +46,7 @@ Create a SharedTrainingMaster with defaults other than the RDD number of example
 **repartitionData**
 
 ```java
-public Builder repartitionData(Repartition repartition) 
+public Builder repartitionData(Repartition repartition)
 ```
 
 This parameter defines when repartition is applied \(if applied\).
@@ -57,7 +57,7 @@ This parameter defines when repartition is applied \(if applied\).
 **repartitionStrategy**
 
 ```java
-public Builder repartitionStrategy(RepartitionStrategy repartitionStrategy) 
+public Builder repartitionStrategy(RepartitionStrategy repartitionStrategy)
 ```
 
 Used in conjunction with {- link \#repartitionData\(Repartition\)} \(which defines when repartitioning should be conducted\), repartitionStrategy defines how the repartitioning should be done. See {- link RepartitionStrategy} for details
@@ -68,7 +68,7 @@ Used in conjunction with {- link \#repartitionData\(Repartition\)} \(which defin
 **storageLevel**
 
 ```java
-public Builder storageLevel(StorageLevel storageLevel) 
+public Builder storageLevel(StorageLevel storageLevel)
 ```
 
 Set the storage level for {- code RDD}s.  
@@ -76,29 +76,27 @@ Default: StorageLevel.MEMORY\_ONLY\_SER\(\) - i.e., store in memory, in serializ
 To use no RDD persistence, use {- code null}  
 Note that this only has effect when {- code RDDTrainingApproach.Direct} is used \(which is not the default\), and when fitting from an {- code RDD}.
 
-**Note**: Spark’s StorageLevel.MEMORY\_ONLY\(\) and StorageLevel.MEMORY\_AND\_DISK\(\) can be problematic when it comes to off-heap data \(which DL4J/ND4J uses extensively\). Spark does not account for off-heap memory when deciding if/when to drop blocks to ensure enough free memory; consequently, for DataSet RDDs that are larger than the total amount of \(off-heap\) memory, this can lead to OOM issues. Put another way: Spark counts the on-heap size of DataSet and INDArray objects only \(which is negligible\) resulting in a significant underestimate of the true DataSet object sizes. More DataSets are thus kept in memory than we can really afford.  
-  
-Note also that fitting directly from an {- code RDD} is discouraged - it is better to export your prepared data once and call \(for example} {- code SparkDl4jMultiLayer.fit\(String savedDataDirectory\)}. See DL4J's Spark website documentation for details.  
+**Note**: Spark’s StorageLevel.MEMORY\_ONLY\(\) and StorageLevel.MEMORY\_AND\_DISK\(\) can be problematic when it comes to off-heap data \(which DL4J/ND4J uses extensively\). Spark does not account for off-heap memory when deciding if/when to drop blocks to ensure enough free memory; consequently, for DataSet RDDs that are larger than the total amount of \(off-heap\) memory, this can lead to OOM issues. Put another way: Spark counts the on-heap size of DataSet and INDArray objects only \(which is negligible\) resulting in a significant underestimate of the true DataSet object sizes. More DataSets are thus kept in memory than we can really afford.
 
+Note also that fitting directly from an {- code RDD} is discouraged - it is better to export your prepared data once and call \(for example} {- code SparkDl4jMultiLayer.fit\(String savedDataDirectory\)}. See DL4J's Spark website documentation for details.
 
 * param storageLevel Storage level to use for DataSet RDDs
 
 **rddTrainingApproach**
 
 ```java
-public Builder rddTrainingApproach(RDDTrainingApproach rddTrainingApproach) 
+public Builder rddTrainingApproach(RDDTrainingApproach rddTrainingApproach)
 ```
 
 The approach to use when training on a {- code RDD} or {- code RDD}. Default: {- link RDDTrainingApproach\#Export}, which exports data to a temporary directory first.  
-The default cluster temporary directory is used, though can be configured using {- link \#exportDirectory\(String\)} Note also that fitting directly from an {- code RDD} is discouraged - it is better to export your prepared data once and call \(for example} {- code SparkDl4jMultiLayer.fit\(String savedDataDirectory\)}. See DL4J's Spark website documentation for details.  
-
+The default cluster temporary directory is used, though can be configured using {- link \#exportDirectory\(String\)} Note also that fitting directly from an {- code RDD} is discouraged - it is better to export your prepared data once and call \(for example} {- code SparkDl4jMultiLayer.fit\(String savedDataDirectory\)}. See DL4J's Spark website documentation for details.
 
 * param rddTrainingApproach Training approach to use when training from a {- code RDD} or {- code RDD}
 
 **exportDirectory**
 
 ```java
-public Builder exportDirectory(String exportDirectory) 
+public Builder exportDirectory(String exportDirectory)
 ```
 
 When {- link \#rddTrainingApproach\(RDDTrainingApproach\)} is set to {- link RDDTrainingApproach\#Export} \(as it is by default\) the data is exported to a temporary directory first.
@@ -111,7 +109,7 @@ If you specify a directory, the directory {exportDirectory}/SOME\_UNIQUE\_ID/ wi
 **rngSeed**
 
 ```java
-public Builder rngSeed(long rngSeed) 
+public Builder rngSeed(long rngSeed)
 ```
 
 Random number generator seed, used mainly for enforcing repeatable splitting/repartitioning on RDDs Default: no seed set \(i.e., random seed\)
@@ -135,8 +133,8 @@ public Builder thresholdAlgorithm(ThresholdAlgorithm thresholdAlgorithm)
 Algorithm to use to determine the threshold for updates encoding. Lower values might improve convergence, but increase amount of network communication  
 Values that are too low may also impact network convergence. If convergence problems are observed, try increasing or decreasing this by a factor of 10 - say 1e-4 and 1e-2.  
 For technical details, see the paper [Scalable Distributed DNN Training Using Commodity GPU Cloud Computing](https://s3-us-west-2.amazonaws.com/amazon.jobs-public-documents/strom_interspeech2015.pdf)  
-See also {- link ThresholdAlgorithm}  
-  
+See also {- link ThresholdAlgorithm}
+
 Default: {- link AdaptiveThresholdAlgorithm} with default parameters
 
 * param thresholdAlgorithm Threshold algorithm to use to determine encoding threshold
@@ -156,7 +154,7 @@ Default: {- code new ResidualClippingPostProcessor\(5.0, 5\)} - i.e., a {- link 
 **batchSizePerWorker**
 
 ```java
-public Builder batchSizePerWorker(int batchSize) 
+public Builder batchSizePerWorker(int batchSize)
 ```
 
 Minibatch size to use when training workers. In principle, the source data \(i.e., {- code RDD} etc\) can have a different number of examples in each {- code DataSet} than we want to use when training. i.e., we can split or combine DataSets if required.
@@ -166,7 +164,7 @@ Minibatch size to use when training workers. In principle, the source data \(i.e
 **workersPerNode**
 
 ```java
-public Builder workersPerNode(int numWorkers) 
+public Builder workersPerNode(int numWorkers)
 ```
 
 This method allows to configure number of network training threads per cluster node.  
@@ -178,7 +176,7 @@ When training on GPUs, you should use 1 worker per GPU \(which is the default\).
 **debugLongerIterations**
 
 ```java
-public Builder debugLongerIterations(long timeMs) 
+public Builder debugLongerIterations(long timeMs)
 ```
 
 This method allows you to artificially extend iteration time using Thread.sleep\(\) for a given time.
@@ -191,7 +189,7 @@ PLEASE NOTE: Never use that option in production environment. It’s suited for 
 **transport**
 
 ```java
-public Builder transport(Transport transport) 
+public Builder transport(Transport transport)
 ```
 
 Optional method: Transport implementation to be used as TransportType.CUSTOM for VoidParameterAveraging method  
@@ -255,21 +253,20 @@ public Builder encodingDebugMode(boolean enabled)
 Enable debug mode for threshold encoding. When enabled, various statistics for the threshold and the residual will be calculated and logged on each worker \(at info log level\).  
 This information can be used to check if the encoding threshold is too big \(for example, virtually all updates are much smaller than the threshold\) or too big \(majority of updates are much larger than the threshold\).  
 encodingDebugMode is disabled by default.  
-**IMPORTANT**: enabling this has a performance overhead, and should not be enabled unless the debug information is actually required.  
-
+**IMPORTANT**: enabling this has a performance overhead, and should not be enabled unless the debug information is actually required.
 
 * param enabled True to enable
 
-### SparkComputationGraph
+## SparkComputationGraph
 
- [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-scaleout/spark/dl4j-spark/src/main/java/org/deeplearning4j/spark/impl/graph/SparkComputationGraph.java)
+[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-scaleout/spark/dl4j-spark/src/main/java/org/deeplearning4j/spark/impl/graph/SparkComputationGraph.java)
 
 Main class for training ComputationGraph networks using Spark. Also used for performing distributed evaluation and inference on these networks
 
 **getSparkContext**
 
 ```java
-public JavaSparkContext getSparkContext() 
+public JavaSparkContext getSparkContext()
 ```
 
 Instantiate a ComputationGraph instance with the given context, network and training master.
@@ -281,7 +278,7 @@ Instantiate a ComputationGraph instance with the given context, network and trai
 **getNetwork**
 
 ```java
-public ComputationGraph getNetwork() 
+public ComputationGraph getNetwork()
 ```
 
 * return The trained ComputationGraph
@@ -289,7 +286,7 @@ public ComputationGraph getNetwork()
 **getTrainingMaster**
 
 ```java
-public TrainingMaster getTrainingMaster() 
+public TrainingMaster getTrainingMaster()
 ```
 
 * return The TrainingMaster for this network
@@ -297,7 +294,7 @@ public TrainingMaster getTrainingMaster()
 **setNetwork**
 
 ```java
-public void setNetwork(ComputationGraph network) 
+public void setNetwork(ComputationGraph network)
 ```
 
 * param network The network to be used for any subsequent training, inference and evaluation steps
@@ -329,7 +326,7 @@ If it is not set explicitly, {- link \#DEFAULT\_EVAL\_WORKERS} will be used
 **fit**
 
 ```java
-public ComputationGraph fit(RDD<DataSet> rdd) 
+public ComputationGraph fit(RDD<DataSet> rdd)
 ```
 
 Fit the ComputationGraph with the given data set
@@ -340,7 +337,7 @@ Fit the ComputationGraph with the given data set
 **fit**
 
 ```java
-public ComputationGraph fit(JavaRDD<DataSet> rdd) 
+public ComputationGraph fit(JavaRDD<DataSet> rdd)
 ```
 
 Fit the ComputationGraph with the given data set
@@ -351,7 +348,7 @@ Fit the ComputationGraph with the given data set
 **fit**
 
 ```java
-public ComputationGraph fit(String path) 
+public ComputationGraph fit(String path)
 ```
 
 Fit the SparkComputationGraph network using a directory of serialized DataSet objects The assumption here is that the directory contains a number of {- link DataSet} objects, each serialized using {- link DataSet\#save\(OutputStream\)}
@@ -362,7 +359,7 @@ Fit the SparkComputationGraph network using a directory of serialized DataSet ob
 **fit**
 
 ```java
-public ComputationGraph fit(String path, int minPartitions) 
+public ComputationGraph fit(String path, int minPartitions)
 ```
 
 * deprecated Use {- link \#fit\(String\)}
@@ -370,7 +367,7 @@ public ComputationGraph fit(String path, int minPartitions)
 **fitPaths**
 
 ```java
-public ComputationGraph fitPaths(JavaRDD<String> paths) 
+public ComputationGraph fitPaths(JavaRDD<String> paths)
 ```
 
 Fit the network using a list of paths for serialized DataSet objects.
@@ -381,7 +378,7 @@ Fit the network using a list of paths for serialized DataSet objects.
 **fitPathsMultiDataSet**
 
 ```java
-public ComputationGraph fitPathsMultiDataSet(JavaRDD<String> paths) 
+public ComputationGraph fitPathsMultiDataSet(JavaRDD<String> paths)
 ```
 
 Fit the ComputationGraph with the given data set
@@ -392,7 +389,7 @@ Fit the ComputationGraph with the given data set
 **fitMultiDataSet**
 
 ```java
-public ComputationGraph fitMultiDataSet(String path, int minPartitions) 
+public ComputationGraph fitMultiDataSet(String path, int minPartitions)
 ```
 
 * deprecated use {- link \#fitMultiDataSet\(String\)}
@@ -400,7 +397,7 @@ public ComputationGraph fitMultiDataSet(String path, int minPartitions)
 **getScore**
 
 ```java
-public double getScore() 
+public double getScore()
 ```
 
 Gets the last \(average\) minibatch score from calling fit. This is the average score across all executors for the last minibatch executed in each worker
@@ -408,7 +405,7 @@ Gets the last \(average\) minibatch score from calling fit. This is the average 
 **calculateScore**
 
 ```java
-public double calculateScore(JavaRDD<DataSet> data, boolean average) 
+public double calculateScore(JavaRDD<DataSet> data, boolean average)
 ```
 
 Calculate the score for all examples in the provided {- code JavaRDD}, either by summing or averaging over the entire data set. To calculate a score for each example individually, use {- link \#scoreExamples\(JavaPairRDD, boolean\)} or one of the similar methods. Uses default minibatch size in each worker, {- link SparkComputationGraph\#DEFAULT\_EVAL\_SCORE\_BATCH\_SIZE}
@@ -419,7 +416,7 @@ Calculate the score for all examples in the provided {- code JavaRDD}, either by
 **calculateScore**
 
 ```java
-public double calculateScore(JavaRDD<DataSet> data, boolean average, int minibatchSize) 
+public double calculateScore(JavaRDD<DataSet> data, boolean average, int minibatchSize)
 ```
 
 Calculate the score for all examples in the provided {- code JavaRDD}, either by summing or averaging over the entire data set. To calculate a score for each example individually, use {- link \#scoreExamples\(JavaPairRDD, boolean\)} or one of the similar methods
@@ -431,7 +428,7 @@ Calculate the score for all examples in the provided {- code JavaRDD}, either by
 **calculateScoreMultiDataSet**
 
 ```java
-public double calculateScoreMultiDataSet(JavaRDD<MultiDataSet> data, boolean average) 
+public double calculateScoreMultiDataSet(JavaRDD<MultiDataSet> data, boolean average)
 ```
 
 Calculate the score for all examples in the provided {- code JavaRDD}, either by summing or averaging over the entire data set. Uses default minibatch size in each worker, {- link SparkComputationGraph\#DEFAULT\_EVAL\_SCORE\_BATCH\_SIZE}
@@ -442,7 +439,7 @@ Calculate the score for all examples in the provided {- code JavaRDD}, either by
 **calculateScoreMultiDataSet**
 
 ```java
-public double calculateScoreMultiDataSet(JavaRDD<MultiDataSet> data, boolean average, int minibatchSize) 
+public double calculateScoreMultiDataSet(JavaRDD<MultiDataSet> data, boolean average, int minibatchSize)
 ```
 
 Calculate the score for all examples in the provided {- code JavaRDD}, either by summing or averaging over the entire data set.
@@ -454,7 +451,7 @@ Calculate the score for all examples in the provided {- code JavaRDD}, either by
 **scoreExamples**
 
 ```java
-public JavaDoubleRDD scoreExamples(JavaRDD<DataSet> data, boolean includeRegularizationTerms) 
+public JavaDoubleRDD scoreExamples(JavaRDD<DataSet> data, boolean includeRegularizationTerms)
 ```
 
 DataSet version of {- link \#scoreExamples\(JavaRDD, boolean\)}
@@ -462,7 +459,7 @@ DataSet version of {- link \#scoreExamples\(JavaRDD, boolean\)}
 **scoreExamples**
 
 ```java
-public JavaDoubleRDD scoreExamples(JavaRDD<DataSet> data, boolean includeRegularizationTerms, int batchSize) 
+public JavaDoubleRDD scoreExamples(JavaRDD<DataSet> data, boolean includeRegularizationTerms, int batchSize)
 ```
 
 DataSet version of {- link \#scoreExamples\(JavaPairRDD, boolean, int\)}
@@ -470,7 +467,7 @@ DataSet version of {- link \#scoreExamples\(JavaPairRDD, boolean, int\)}
 **scoreExamplesMultiDataSet**
 
 ```java
-public JavaDoubleRDD scoreExamplesMultiDataSet(JavaRDD<MultiDataSet> data, boolean includeRegularizationTerms) 
+public JavaDoubleRDD scoreExamplesMultiDataSet(JavaRDD<MultiDataSet> data, boolean includeRegularizationTerms)
 ```
 
 DataSet version of {- link \#scoreExamples\(JavaPairRDD, boolean\)}
@@ -479,7 +476,7 @@ DataSet version of {- link \#scoreExamples\(JavaPairRDD, boolean\)}
 
 ```java
 public JavaDoubleRDD scoreExamplesMultiDataSet(JavaRDD<MultiDataSet> data, boolean includeRegularizationTerms,
-                    int batchSize) 
+                    int batchSize)
 ```
 
 Score the examples individually, using a specified batch size. Unlike {- link \#calculateScore\(JavaRDD, boolean\)}, this method returns a score for each example separately. If scoring is needed for specific examples use either {- link \#scoreExamples\(JavaPairRDD, boolean\)} or {- link \#scoreExamples\(JavaPairRDD, boolean, int\)} which can have a key for each example.
@@ -520,19 +517,19 @@ Evaluate the single-output network on a directory containing a set of MultiDataS
 **evaluateROCMDS**
 
 ```java
-public ROC evaluateROCMDS(JavaRDD<MultiDataSet> data) 
+public ROC evaluateROCMDS(JavaRDD<MultiDataSet> data)
 ```
 
 {- code RDD} overload of {- link \#evaluate\(JavaRDD\)}
 
-#### SparkDl4jMultiLayer [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-scaleout/spark/dl4j-spark/src/main/java/org/deeplearning4j/spark/impl/multilayer/SparkDl4jMultiLayer.java) <a id="sparkdl4jmultilayer"></a>
+### SparkDl4jMultiLayer [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-scaleout/spark/dl4j-spark/src/main/java/org/deeplearning4j/spark/impl/multilayer/SparkDl4jMultiLayer.java) <a id="sparkdl4jmultilayer"></a>
 
 Main class for training MultiLayerNetwork networks using Spark. Also used for performing distributed evaluation and inference on these networks
 
 **getSparkContext**
 
 ```java
-public JavaSparkContext getSparkContext() 
+public JavaSparkContext getSparkContext()
 ```
 
 Instantiate a multi layer spark instance with the given context and network. This is the prediction constructor
@@ -543,7 +540,7 @@ Instantiate a multi layer spark instance with the given context and network. Thi
 **getNetwork**
 
 ```java
-public MultiLayerNetwork getNetwork() 
+public MultiLayerNetwork getNetwork()
 ```
 
 * return The MultiLayerNetwork underlying the SparkDl4jMultiLayer
@@ -551,7 +548,7 @@ public MultiLayerNetwork getNetwork()
 **getTrainingMaster**
 
 ```java
-public TrainingMaster getTrainingMaster() 
+public TrainingMaster getTrainingMaster()
 ```
 
 * return The TrainingMaster for this network
@@ -559,7 +556,7 @@ public TrainingMaster getTrainingMaster()
 **setNetwork**
 
 ```java
-public void setNetwork(MultiLayerNetwork network) 
+public void setNetwork(MultiLayerNetwork network)
 ```
 
 Set the network that underlies this SparkDl4jMultiLayer instacne
@@ -593,7 +590,7 @@ If it is not set explicitly, {- link \#DEFAULT\_EVAL\_WORKERS} will be used
 **setCollectTrainingStats**
 
 ```java
-public void setCollectTrainingStats(boolean collectTrainingStats) 
+public void setCollectTrainingStats(boolean collectTrainingStats)
 ```
 
 Set whether training statistics should be collected for debugging purposes. Statistics collection is disabled by default
@@ -603,7 +600,7 @@ Set whether training statistics should be collected for debugging purposes. Stat
 **getSparkTrainingStats**
 
 ```java
-public SparkTrainingStats getSparkTrainingStats() 
+public SparkTrainingStats getSparkTrainingStats()
 ```
 
 Get the training statistics, after collection of stats has been enabled using {- link \#setCollectTrainingStats\(boolean\)}
@@ -613,7 +610,7 @@ Get the training statistics, after collection of stats has been enabled using {-
 **predict**
 
 ```java
-public Matrix predict(Matrix features) 
+public Matrix predict(Matrix features)
 ```
 
 Predict the given feature matrix
@@ -624,7 +621,7 @@ Predict the given feature matrix
 **predict**
 
 ```java
-public Vector predict(Vector point) 
+public Vector predict(Vector point)
 ```
 
 Predict the given vector
@@ -635,7 +632,7 @@ Predict the given vector
 **fit**
 
 ```java
-public MultiLayerNetwork fit(RDD<DataSet> trainingData) 
+public MultiLayerNetwork fit(RDD<DataSet> trainingData)
 ```
 
 Fit the DataSet RDD. Equivalent to fit\(trainingData.toJavaRDD\(\)\)
@@ -646,7 +643,7 @@ Fit the DataSet RDD. Equivalent to fit\(trainingData.toJavaRDD\(\)\)
 **fit**
 
 ```java
-public MultiLayerNetwork fit(JavaRDD<DataSet> trainingData) 
+public MultiLayerNetwork fit(JavaRDD<DataSet> trainingData)
 ```
 
 Fit the DataSet RDD
@@ -657,7 +654,7 @@ Fit the DataSet RDD
 **fit**
 
 ```java
-public MultiLayerNetwork fit(String path) 
+public MultiLayerNetwork fit(String path)
 ```
 
 Fit the SparkDl4jMultiLayer network using a directory of serialized DataSet objects The assumption here is that the directory contains a number of {- link DataSet} objects, each serialized using {- link DataSet\#save\(OutputStream\)}
@@ -668,7 +665,7 @@ Fit the SparkDl4jMultiLayer network using a directory of serialized DataSet obje
 **fit**
 
 ```java
-public MultiLayerNetwork fit(String path, int minPartitions) 
+public MultiLayerNetwork fit(String path, int minPartitions)
 ```
 
 * deprecated Use {- link \#fit\(String\)}
@@ -676,7 +673,7 @@ public MultiLayerNetwork fit(String path, int minPartitions)
 **fitPaths**
 
 ```java
-public MultiLayerNetwork fitPaths(JavaRDD<String> paths) 
+public MultiLayerNetwork fitPaths(JavaRDD<String> paths)
 ```
 
 Fit the network using a list of paths for serialized DataSet objects.
@@ -687,7 +684,7 @@ Fit the network using a list of paths for serialized DataSet objects.
 **fitLabeledPoint**
 
 ```java
-public MultiLayerNetwork fitLabeledPoint(JavaRDD<LabeledPoint> rdd) 
+public MultiLayerNetwork fitLabeledPoint(JavaRDD<LabeledPoint> rdd)
 ```
 
 Fit a MultiLayerNetwork using Spark MLLib LabeledPoint instances. This will convert the labeled points to the internal DL4J data format and train the model on that
@@ -698,7 +695,7 @@ Fit a MultiLayerNetwork using Spark MLLib LabeledPoint instances. This will conv
 **fitContinuousLabeledPoint**
 
 ```java
-public MultiLayerNetwork fitContinuousLabeledPoint(JavaRDD<LabeledPoint> rdd) 
+public MultiLayerNetwork fitContinuousLabeledPoint(JavaRDD<LabeledPoint> rdd)
 ```
 
 Fits a MultiLayerNetwork using Spark MLLib LabeledPoint instances This will convert labeled points that have continuous labels used for regression to the internal DL4J data format and train the model on that
@@ -709,7 +706,7 @@ Fits a MultiLayerNetwork using Spark MLLib LabeledPoint instances This will conv
 **getScore**
 
 ```java
-public double getScore() 
+public double getScore()
 ```
 
 Gets the last \(average\) minibatch score from calling fit. This is the average score across all executors for the last minibatch executed in each worker
@@ -717,7 +714,7 @@ Gets the last \(average\) minibatch score from calling fit. This is the average 
 **calculateScore**
 
 ```java
-public double calculateScore(RDD<DataSet> data, boolean average) 
+public double calculateScore(RDD<DataSet> data, boolean average)
 ```
 
 Overload of {- link \#calculateScore\(JavaRDD, boolean\)} for {- code RDD} instead of {- code JavaRDD}
@@ -725,7 +722,7 @@ Overload of {- link \#calculateScore\(JavaRDD, boolean\)} for {- code RDD} inste
 **calculateScore**
 
 ```java
-public double calculateScore(JavaRDD<DataSet> data, boolean average) 
+public double calculateScore(JavaRDD<DataSet> data, boolean average)
 ```
 
 Calculate the score for all examples in the provided {- code JavaRDD}, either by summing or averaging over the entire data set. To calculate a score for each example individually, use {- link \#scoreExamples\(JavaPairRDD, boolean\)} or one of the similar methods. Uses default minibatch size in each worker, {- link SparkDl4jMultiLayer\#DEFAULT\_EVAL\_SCORE\_BATCH\_SIZE}
@@ -736,7 +733,7 @@ Calculate the score for all examples in the provided {- code JavaRDD}, either by
 **calculateScore**
 
 ```java
-public double calculateScore(JavaRDD<DataSet> data, boolean average, int minibatchSize) 
+public double calculateScore(JavaRDD<DataSet> data, boolean average, int minibatchSize)
 ```
 
 Calculate the score for all examples in the provided {- code JavaRDD}, either by summing or averaging over the entire data set. To calculate a score for each example individually, use {- link \#scoreExamples\(JavaPairRDD, boolean\)} or one of the similar methods
@@ -748,7 +745,7 @@ Calculate the score for all examples in the provided {- code JavaRDD}, either by
 **scoreExamples**
 
 ```java
-public JavaDoubleRDD scoreExamples(RDD<DataSet> data, boolean includeRegularizationTerms) 
+public JavaDoubleRDD scoreExamples(RDD<DataSet> data, boolean includeRegularizationTerms)
 ```
 
 {- code RDD} overload of {- link \#scoreExamples\(JavaPairRDD, boolean\)}
@@ -756,7 +753,7 @@ public JavaDoubleRDD scoreExamples(RDD<DataSet> data, boolean includeRegularizat
 **scoreExamples**
 
 ```java
-public JavaDoubleRDD scoreExamples(JavaRDD<DataSet> data, boolean includeRegularizationTerms) 
+public JavaDoubleRDD scoreExamples(JavaRDD<DataSet> data, boolean includeRegularizationTerms)
 ```
 
 Score the examples individually, using the default batch size {- link \#DEFAULT\_EVAL\_SCORE\_BATCH\_SIZE}. Unlike {- link \#calculateScore\(JavaRDD, boolean\)}, this method returns a score for each example separately. If scoring is needed for specific examples use either {- link \#scoreExamples\(JavaPairRDD, boolean\)} or {- link \#scoreExamples\(JavaPairRDD, boolean, int\)} which can have a key for each example.
@@ -769,7 +766,7 @@ Score the examples individually, using the default batch size {- link \#DEFAULT\
 **scoreExamples**
 
 ```java
-public JavaDoubleRDD scoreExamples(RDD<DataSet> data, boolean includeRegularizationTerms, int batchSize) 
+public JavaDoubleRDD scoreExamples(RDD<DataSet> data, boolean includeRegularizationTerms, int batchSize)
 ```
 
 {- code RDD} overload of {- link \#scoreExamples\(JavaRDD, boolean, int\)}
@@ -777,7 +774,7 @@ public JavaDoubleRDD scoreExamples(RDD<DataSet> data, boolean includeRegularizat
 **scoreExamples**
 
 ```java
-public JavaDoubleRDD scoreExamples(JavaRDD<DataSet> data, boolean includeRegularizationTerms, int batchSize) 
+public JavaDoubleRDD scoreExamples(JavaRDD<DataSet> data, boolean includeRegularizationTerms, int batchSize)
 ```
 
 Score the examples individually, using a specified batch size. Unlike {- link \#calculateScore\(JavaRDD, boolean\)}, this method returns a score for each example separately. If scoring is needed for specific examples use either {- link \#scoreExamples\(JavaPairRDD, boolean\)} or {- link \#scoreExamples\(JavaPairRDD, boolean, int\)} which can have a key for each example.
@@ -788,16 +785,16 @@ Score the examples individually, using a specified batch size. Unlike {- link \#
 * return A JavaDoubleRDD containing the scores of each example
 * see MultiLayerNetwork\#scoreExamples\(DataSet, boolean\)
 
-### ParameterAveragingTrainingMaster
+## ParameterAveragingTrainingMaster
 
- [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-scaleout/spark/dl4j-spark/src/main/java/org/deeplearning4j/spark/impl/paramavg/ParameterAveragingTrainingMaster.java)
+[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-scaleout/spark/dl4j-spark/src/main/java/org/deeplearning4j/spark/impl/paramavg/ParameterAveragingTrainingMaster.java)
 
 implementation for training networks on Spark. This is standard parameter averaging with a configurable averaging period.
 
 **removeHook**
 
 ```java
-public void removeHook(TrainingHook trainingHook) 
+public void removeHook(TrainingHook trainingHook)
 ```
 
 * param saveUpdater If true: save \(and average\) the updater state when doing parameter averaging
@@ -814,7 +811,7 @@ public void removeHook(TrainingHook trainingHook)
 **addHook**
 
 ```java
-public void addHook(TrainingHook trainingHook) 
+public void addHook(TrainingHook trainingHook)
 ```
 
 Add a hook for the master for pre and post training
@@ -824,7 +821,7 @@ Add a hook for the master for pre and post training
 **fromJson**
 
 ```java
-public static ParameterAveragingTrainingMaster fromJson(String jsonStr) 
+public static ParameterAveragingTrainingMaster fromJson(String jsonStr)
 ```
 
 Create a ParameterAveragingTrainingMaster instance by deserializing a JSON string that has been serialized with {- link \#toJson\(\)}
@@ -834,7 +831,7 @@ Create a ParameterAveragingTrainingMaster instance by deserializing a JSON strin
 **fromYaml**
 
 ```java
-public static ParameterAveragingTrainingMaster fromYaml(String yamlStr) 
+public static ParameterAveragingTrainingMaster fromYaml(String yamlStr)
 ```
 
 Create a ParameterAveragingTrainingMaster instance by deserializing a YAML string that has been serialized with {- link \#toYaml\(\)}
@@ -844,7 +841,7 @@ Create a ParameterAveragingTrainingMaster instance by deserializing a YAML strin
 **trainingHooks**
 
 ```java
-public Builder trainingHooks(Collection<TrainingHook> trainingHooks) 
+public Builder trainingHooks(Collection<TrainingHook> trainingHooks)
 ```
 
 Adds training hooks to the master. The training master will setup the workers with the desired hooks for training. This can allow for tings like parameter servers and async updates as well as collecting statistics.
@@ -855,7 +852,7 @@ Adds training hooks to the master. The training master will setup the workers wi
 **trainingHooks**
 
 ```java
-public Builder trainingHooks(TrainingHook... hooks) 
+public Builder trainingHooks(TrainingHook... hooks)
 ```
 
 Adds training hooks to the master. The training master will setup the workers with the desired hooks for training. This can allow for tings like parameter servers and async updates as well as collecting statistics.
@@ -866,7 +863,7 @@ Adds training hooks to the master. The training master will setup the workers wi
 **batchSizePerWorker**
 
 ```java
-public Builder batchSizePerWorker(int batchSizePerWorker) 
+public Builder batchSizePerWorker(int batchSizePerWorker)
 ```
 
 Same as {- link \#Builder\(Integer, int\)} but automatically set number of workers based on JavaSparkContext.defaultParallelism\(\)
@@ -876,12 +873,11 @@ Same as {- link \#Builder\(Integer, int\)} but automatically set number of worke
 **averagingFrequency**
 
 ```java
-public Builder averagingFrequency(int averagingFrequency) 
+public Builder averagingFrequency(int averagingFrequency)
 ```
 
 Frequency with which to average worker parameters.  
-**Note**: Too high or too low can be bad for different reasons.  
-
+**Note**: Too high or too low can be bad for different reasons.
 
 * Too low \(such as 1\) can result in a lot of network traffic 
 * Too high \(» 20 or so\) can result in accuracy issues or problems with network convergence
@@ -890,18 +886,17 @@ Frequency with which to average worker parameters.
 **aggregationDepth**
 
 ```java
-public Builder aggregationDepth(int aggregationDepth) 
+public Builder aggregationDepth(int aggregationDepth)
 ```
 
-The number of levels in the aggregation tree for parameter synchronization. \(default: 2\) **Note**: For large models trained with many partitions, increasing this number will reduce the load on the driver and help prevent it from becoming a bottleneck.  
-
+The number of levels in the aggregation tree for parameter synchronization. \(default: 2\) **Note**: For large models trained with many partitions, increasing this number will reduce the load on the driver and help prevent it from becoming a bottleneck.
 
 * param aggregationDepth RDD tree aggregation channels when averaging parameter updates.
 
 **workerPrefetchNumBatches**
 
 ```java
-public Builder workerPrefetchNumBatches(int prefetchNumBatches) 
+public Builder workerPrefetchNumBatches(int prefetchNumBatches)
 ```
 
 Set the number of minibatches to asynchronously prefetch in the worker.
@@ -913,11 +908,10 @@ Default: 0 \(no prefetching\)
 **saveUpdater**
 
 ```java
-public Builder saveUpdater(boolean saveUpdater) 
+public Builder saveUpdater(boolean saveUpdater)
 ```
 
-Set whether the updater \(i.e., historical state for momentum, adagrad, etc should be saved\). **NOTE**: This can **double** \(or more\) the amount of network traffic in each direction, but might improve network training performance \(and can be more stable for certain updaters such as adagrad\).  
-
+Set whether the updater \(i.e., historical state for momentum, adagrad, etc should be saved\). **NOTE**: This can **double** \(or more\) the amount of network traffic in each direction, but might improve network training performance \(and can be more stable for certain updaters such as adagrad\).
 
 This is **enabled** by default.
 
@@ -926,7 +920,7 @@ This is **enabled** by default.
 **repartionData**
 
 ```java
-public Builder repartionData(Repartition repartition) 
+public Builder repartionData(Repartition repartition)
 ```
 
 Set if/when repartitioning should be conducted for the training data.  
@@ -937,7 +931,7 @@ Default value: always repartition \(if required to guarantee correct number of p
 **repartitionStrategy**
 
 ```java
-public Builder repartitionStrategy(RepartitionStrategy repartitionStrategy) 
+public Builder repartitionStrategy(RepartitionStrategy repartitionStrategy)
 ```
 
 Used in conjunction with {- link \#repartionData\(Repartition\)} \(which defines when repartitioning should be conducted\), repartitionStrategy defines how the repartitioning should be done. See {- link RepartitionStrategy} for details
@@ -947,13 +941,12 @@ Used in conjunction with {- link \#repartionData\(Repartition\)} \(which defines
 **storageLevel**
 
 ```java
-public Builder storageLevel(StorageLevel storageLevel) 
+public Builder storageLevel(StorageLevel storageLevel)
 ```
 
 Set the storage level for {- code RDD}s.  
 Default: StorageLevel.MEMORY\_ONLY\_SER\(\) - i.e., store in memory, in serialized form  
-To use no RDD persistence, use {- code null}  
-
+To use no RDD persistence, use {- code null}
 
 **Note**: Spark’s StorageLevel.MEMORY\_ONLY\(\) and StorageLevel.MEMORY\_AND\_DISK\(\) can be problematic when it comes to off-heap data \(which DL4J/ND4J uses extensively\). Spark does not account for off-heap memory when deciding if/when to drop blocks to ensure enough free memory; consequently, for DataSet RDDs that are larger than the total amount of \(off-heap\) memory, this can lead to OOM issues. Put another way: Spark counts the on-heap size of DataSet and INDArray objects only \(which is negligible\) resulting in a significant underestimate of the true DataSet object sizes. More DataSets are thus kept in memory than we can really afford.
 
@@ -962,11 +955,10 @@ To use no RDD persistence, use {- code null}
 **storageLevelStreams**
 
 ```java
-public Builder storageLevelStreams(StorageLevel storageLevelStreams) 
+public Builder storageLevelStreams(StorageLevel storageLevelStreams)
 ```
 
-Set the storage level RDDs used when fitting data from Streams: either PortableDataStreams \(sc.binaryFiles via {- link SparkDl4jMultiLayer\#fit\(String\)} and {- link SparkComputationGraph\#fit\(String\)}\) or String paths \(via {- link SparkDl4jMultiLayer\#fitPaths\(JavaRDD\)}, {- link SparkComputationGraph\#fitPaths\(JavaRDD\)} and {- link SparkComputationGraph\#fitPathsMultiDataSet\(JavaRDD\)}\).  
-
+Set the storage level RDDs used when fitting data from Streams: either PortableDataStreams \(sc.binaryFiles via {- link SparkDl4jMultiLayer\#fit\(String\)} and {- link SparkComputationGraph\#fit\(String\)}\) or String paths \(via {- link SparkDl4jMultiLayer\#fitPaths\(JavaRDD\)}, {- link SparkComputationGraph\#fitPaths\(JavaRDD\)} and {- link SparkComputationGraph\#fitPathsMultiDataSet\(JavaRDD\)}\).
 
 Default storage level is StorageLevel.MEMORY\_ONLY\(\) which should be appropriate in most cases.
 
@@ -975,7 +967,7 @@ Default storage level is StorageLevel.MEMORY\_ONLY\(\) which should be appropria
 **rddTrainingApproach**
 
 ```java
-public Builder rddTrainingApproach(RDDTrainingApproach rddTrainingApproach) 
+public Builder rddTrainingApproach(RDDTrainingApproach rddTrainingApproach)
 ```
 
 The approach to use when training on a {- code RDD} or {- code RDD}. Default: {- link RDDTrainingApproach\#Export}, which exports data to a temporary directory first
@@ -985,7 +977,7 @@ The approach to use when training on a {- code RDD} or {- code RDD}. Default: {-
 **exportDirectory**
 
 ```java
-public Builder exportDirectory(String exportDirectory) 
+public Builder exportDirectory(String exportDirectory)
 ```
 
 When {- link \#rddTrainingApproach\(RDDTrainingApproach\)} is set to {- link RDDTrainingApproach\#Export} \(as it is by default\) the data is exported to a temporary directory first.
@@ -998,7 +990,7 @@ If you specify a directory, the directory {exportDirectory}/SOME\_UNIQUE\_ID/ wi
 **rngSeed**
 
 ```java
-public Builder rngSeed(long rngSeed) 
+public Builder rngSeed(long rngSeed)
 ```
 
 Random number generator seed, used mainly for enforcing repeatable splitting on RDDs Default: no seed set \(i.e., random seed\)

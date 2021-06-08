@@ -148,7 +148,7 @@ val listsByDigit = new util.HashMap[Integer, ArrayList[Pair[Double, INDArray]]]
 (0 to featuresTest.size-1).foreach{ i =>
     val testData = featuresTest.get(i)
     val labels = labelsTest.get(i)
-    
+
     (0 to testData.rows-1).foreach{ j =>
         val example = testData.getRow(j)
         val digit = labels.getDouble(j).toInt
@@ -174,7 +174,7 @@ val worst = new util.ArrayList[INDArray](50)
 
 (0 to 9).foreach{ i => 
     val list = listsByDigit.get(i)
-    
+
     (0 to 4).foreach{ j=>
         best.add(list.get(j).getRight)
         worst.add(list.get(list.size - j - 1).getRight)

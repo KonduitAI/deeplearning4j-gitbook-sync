@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory
 
 Now that everything needed is imported, we can start by configuring a convolutional neural network for a MultiLayerNetwork. This network will consist of two convolutional layers, two max pooling layers, one dense layer, and an output layer. This is easy to do using DL4J’s functionality; we simply add a dense layer after the max pooling layer to convert the output into vectorized form before passing it to the output layer. The neural network will then attempt to classify an observation using the vectorized data in the output layer.
 
-The only tricky part is getting the dimensions of the input to the dense layer correctly after the convolutional and max pooling layers. Note that we first start off with a 28 by 28 matrix and after applying the convolution layer with a 5 by 5 kernel we end up with twenty 24 by 24 matrices. Once the input is passed through the max pooling layer with a 2 by 2 kernel and a stride of 2 by 2, we end up with twenty 12 by 12 matrices. After the second convolutional layer with a 5 by 5 kernel, we end up with fifty 8 by 8 matrices. This output is reduced to fifty 4 by 4 matrices after the second max pooling layer which has the same kernel size and stride of the first max pooling layer. To vectorize these final matrices, we require an input of dimension 50_4_4 or 800 in the dense layer.
+The only tricky part is getting the dimensions of the input to the dense layer correctly after the convolutional and max pooling layers. Note that we first start off with a 28 by 28 matrix and after applying the convolution layer with a 5 by 5 kernel we end up with twenty 24 by 24 matrices. Once the input is passed through the max pooling layer with a 2 by 2 kernel and a stride of 2 by 2, we end up with twenty 12 by 12 matrices. After the second convolutional layer with a 5 by 5 kernel, we end up with fifty 8 by 8 matrices. This output is reduced to fifty 4 by 4 matrices after the second max pooling layer which has the same kernel size and stride of the first max pooling layer. To vectorize these final matrices, we require an input of dimension 50\_4\_4 or 800 in the dense layer.
 
 ```scala
 val nChannels = 1; // Number of input channels
@@ -81,7 +81,7 @@ val conf : MultiLayerConfiguration = new NeuralNetConfiguration.Builder()
         .build())
     .setInputType(InputType.convolutionalFlat(28,28,1)) 
     .build()
-	
+
 val model = new MultiLayerNetwork(conf)
 ```
 
@@ -96,8 +96,6 @@ val scaler : DataNormalization = new ImagePreProcessingScaler(0,1);
 scaler.fit(mnistTrain);
 mnistTrain.setPreProcessor(scaler);
 mnistTest.setPreProcessor(scaler);
-
-
 ```
 
 To train the neural network, we use 5 epochs or complete passes through the training set by simply calling the fit method.

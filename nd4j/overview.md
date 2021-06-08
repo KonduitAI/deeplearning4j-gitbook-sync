@@ -64,11 +64,11 @@ So see how views can be powerful, consider a simple task: adding 1.0 to the firs
 
 Let's break down what is happening here. First, the `getRow(0)` operation returns an INDArray that is a view of the original. Note that both `myArrays` and `myArray.getRow(0)` point to the same area in memory:
 
-![](../.gitbook/assets/row_addi.png)
+![](../.gitbook/assets/row_addi%20%281%29.png)
 
 then, after the addi\(1.0\) is performed, we have the following situation:
 
-![](../.gitbook/assets/row_addi_2%20%281%29.png)
+![](../.gitbook/assets/row_addi_2%20%282%29.png)
 
 As we can see, changes to the NDArray returned by `myArray.getRow(0)` will be reflected in the original array `myArray`; similarly, changes to `myArray` will be reflected in the row vector.
 
@@ -340,7 +340,7 @@ The tensor along dimension method takes two arguments:
 
 The simplest case is a tensor along a single row or column of a 2d array. Consider the following diagram \(where dimension 0 \(rows\) are indexed going down the page, and dimension 1 \(columns\) are indexed going across the page\):
 
-![](../.gitbook/assets/tad_2d%20%281%29.png)
+![](../.gitbook/assets/tad_2d%20%282%29.png)
 
 Note that the output of the tensorAlongDimension call with one dimension is a row vector in all cases.
 

@@ -12,7 +12,7 @@ Operations in `SameDiff` work mostly the way you'd expect them to. You take vari
 
 ## Common properties of operations
 
-* Variables of any _variable type_ may be used in any operation, as long as their _data types_ match those that are 
+* Variables of any _variable type_ may be used in any operation, as long as their _data types_ match those that are
 
   required by the operation \(again, see our [variables](variables.md) section for what variable types are\). Most
 
@@ -28,17 +28,17 @@ Operations in `SameDiff` work mostly the way you'd expect them to. You take vari
   SDVariable output = sameDiff.nn.sigmoid("output", linear);
   ```
 
-  Named variables may be accessed from outside using a `SameDiff` method `getVariable(String name)`. For the code above, 
+  Named variables may be accessed from outside using a `SameDiff` method `getVariable(String name)`. For the code above,
 
-  this method will allow you to infer the value of both `output` as well as the result of `mmul` operation. Note that we 
+  this method will allow you to infer the value of both `output` as well as the result of `mmul` operation. Note that we
 
-  haven't even explicitly defined this result as a separate `SDVariable`, and yet a corresponding `SDVariable` will be 
+  haven't even explicitly defined this result as a separate `SDVariable`, and yet a corresponding `SDVariable` will be
 
   created internally and added to our instance of `SameDiff` under the `String` name `"matrix_product"`. In fact, a unique
 
-  `String` name is given to every `SDVariable` you produce by operations: if you don't give a name explicitly, it is 
+  `String` name is given to every `SDVariable` you produce by operations: if you don't give a name explicitly, it is
 
-  assigned to the resulting `SDVariable` automatically based on the operation's name. 
+  assigned to the resulting `SDVariable` automatically based on the operation's name.
 
 ## Overview of operations
 
@@ -60,20 +60,20 @@ Among `SDVariable` methods, you will find:
 
 * `BLAS`-type operations to perform linear algebra: things like `add`, `neg`, `mul` \(used for both scaling and elementwise
 
-  multiplication\) and `mmul` \(matrix multiplication\), `dot`, `rdiv`,  etc.;
+  multiplication\) and `mmul` \(matrix multiplication\), `dot`, `rdiv`, etc.;
 
-* comparison operations like `gt` or `lte`, used both to compare each element to a fixed `double` value as well as for 
+* comparison operations like `gt` or `lte`, used both to compare each element to a fixed `double` value as well as for
 
   elementwise comparison with another `SDVariable` of the same shape, and alike;
 
 * basic reduction operations: things like `min`, `sum`, `prod` \(product of elements in array\), `mean`, `norm2`,
 
-  `argmax` \(index of the maximal element\), `squaredDifference` and so on, which may be taken along specified dimensions; 
+  `argmax` \(index of the maximal element\), `squaredDifference` and so on, which may be taken along specified dimensions;
 
-* basic statistics operations for computing mean and standard deviation along given dimensions: `mean` and `std`. 
-* operations for restructuring of the underlying array: `reshape` and `permute`, along with `shape` - an operation that 
+* basic statistics operations for computing mean and standard deviation along given dimensions: `mean` and `std`.
+* operations for restructuring of the underlying array: `reshape` and `permute`, along with `shape` - an operation that
 
-  delivers the shape of a variable as an array of integers - the dimension sizes; 
+  delivers the shape of a variable as an array of integers - the dimension sizes;
 
 `SDVariable` operations may be easily chained, producing lines like:
 
@@ -92,7 +92,7 @@ The operations that are methods of `SameDiff` are called via one of 6 auxiliary 
 * `rnn` - recurrent neural network tools;
 * `loss` - loss functions;
 
-  In order to use a particular operation, you need to call one of these 6 objects form your `SameDiff` instance, and then 
+  In order to use a particular operation, you need to call one of these 6 objects form your `SameDiff` instance, and then
 
   an operation itself, like that:
 
@@ -100,17 +100,17 @@ The operations that are methods of `SameDiff` are called via one of 6 auxiliary 
   SDVariable y = sameDiff.math.sin(x);
   ```
 
-  or 
+  or
 
   ```java
   SDVariable y = samediff.math().sin(x);
   ```
 
-  The distribution of operations among the auxiliary objects has no structural bearing beyond organizing things in a more 
+  The distribution of operations among the auxiliary objects has no structural bearing beyond organizing things in a more
 
-  intuitive way. So, for instance, if you're not sure whether to seek for, say, `tanh` operation in `math` or in `nn`, 
+  intuitive way. So, for instance, if you're not sure whether to seek for, say, `tanh` operation in `math` or in `nn`,
 
-  don't worry: we have it in both. 
+  don't worry: we have it in both.
 
 Let us briefly describe what kinds of operations you may expect to find in each of the branches:
 
@@ -121,16 +121,16 @@ Math module mostly consists of general mathematical functions and statistics met
 * power functions, e.g. `square`, `cube`, `sqrt`, `pow`, `reciprocal` etc.;
 * trigonometric functions, e.g. `sin`, `atan` etc.;
 * exponential/hyperbolic functions, like `exp`, `sinh`, `log`, `atanh` etc.;
-* miscellaneous elementwise operations, like taking absolute value, rounding and clipping, such as `abs`, `sign`, 
+* miscellaneous elementwise operations, like taking absolute value, rounding and clipping, such as `abs`, `sign`,
 
-  `ceil`, `round`, `clipByValue`, `clipByNorm` etc.; 
+  `ceil`, `round`, `clipByValue`, `clipByNorm` etc.;
 
-* reductions along specified dimensions: `min`, `amax`, `mean`, `asum`, `logEntropy`, and similar; 
-* distance \(reduction\) operations, such as `euclideanDistance`, `manhattanDistance`, `jaccardDistance`, `cosineDistance`, 
+* reductions along specified dimensions: `min`, `amax`, `mean`, `asum`, `logEntropy`, and similar;
+* distance \(reduction\) operations, such as `euclideanDistance`, `manhattanDistance`, `jaccardDistance`, `cosineDistance`,
 
   `hammingDistance`, `cosineSimilarity`, along specified dimensions, for two identically shaped `SDVariables`;
 
-* specific matrix operations: `matrixInverse`, `matrixDeterminant`, `diag` \(creating a diagonal matrix\), `trace`, `eye` 
+* specific matrix operations: `matrixInverse`, `matrixDeterminant`, `diag` \(creating a diagonal matrix\), `trace`, `eye`
 
   \(creating identity matrix with variable dimensions\), and several others;
 
@@ -138,11 +138,11 @@ Math module mostly consists of general mathematical functions and statistics met
 
   its complementary\);
 
-* counting and indexing reductions: methods like `conuntZero` \(number of zero elements\), `iamin` \(index of the element 
+* counting and indexing reductions: methods like `conuntZero` \(number of zero elements\), `iamin` \(index of the element
 
   with the smallest absolute value\), `firstIndex` \(an index of the first element satisfying a specified `Condition` function\);
 
-* reductions indicating properties of the underlying arrays. These include e.g. `isNaN` \(elementwise checking\), `isMax` 
+* reductions indicating properties of the underlying arrays. These include e.g. `isNaN` \(elementwise checking\), `isMax`
 
   \(shape-preserving along specified dimensions\), `isNonDecreasing` \(reduction along specified dimensions\);
 
@@ -179,7 +179,7 @@ These operations create variables whose underlying arrays will be filled with ra
 
   The shape of you random variable may vary. Suppose, for instance, that you have audio signals of varying length, and you
 
-  want to add noise to them. Then, you need to specify an `SDVariable`, say, `windowShape` with an integer 
+  want to add noise to them. Then, you need to specify an `SDVariable`, say, `windowShape` with an integer
 
   [data type](variables.md#data-types), and proceed like that
 
@@ -191,11 +191,11 @@ These operations create variables whose underlying arrays will be filled with ra
 
 Here we store methods for neural networks that are not necessarily associated with convolutional ones. Among them are
 
-* creation of dense linear and ReLU layers \(with or without bias\), and separate bias addition: `linear`, `reluLayer`, 
+* creation of dense linear and ReLU layers \(with or without bias\), and separate bias addition: `linear`, `reluLayer`,
 
   `biasAdd`;
 
-* popular activation functions, e.g. `relu`, `sigmoid`, `tanh`, `softmax` as well as their less used versions like 
+* popular activation functions, e.g. `relu`, `sigmoid`, `tanh`, `softmax` as well as their less used versions like
 
   `leakyRelu`, `elu`, `hardTanh`, and many more;
 
@@ -204,7 +204,7 @@ Here we store methods for neural networks that are not necessarily associated wi
 
 Some methods were created for internal use, but are openly available. Those include:
 
-* derivatives for several popular activation functions - these are mostly designed for speeding up 
+* derivatives for several popular activation functions - these are mostly designed for speeding up
 
   backpropagation;
 
@@ -229,11 +229,11 @@ SDVariable output = sameDiff.nn.softmax(linear);
 
 The `cnn` module contains layers and operations typically used in convolutional neural networks - different activations may be picked up from the `nn` module. Among `cnn` operations we currently have creation of:
 
-* linear convolution layers, currently for tensors of dimension up to 3 \(minibatch not included\): `conv1d`, `conv2d`, 
+* linear convolution layers, currently for tensors of dimension up to 3 \(minibatch not included\): `conv1d`, `conv2d`,
 
-  `conv3d`, `depthWiseConv2d`, `separableConv2D`/`sconv2d`; 
+  `conv3d`, `depthWiseConv2d`, `separableConv2D`/`sconv2d`;
 
-* linear deconvolution layers, currently `deconv1d`, `deconv2d`, `deconv3d`; 
+* linear deconvolution layers, currently `deconv1d`, `deconv2d`, `deconv3d`;
 * pooling, e.g. `maxPoooling2D`, `avgPooling1D`;
 * specialized reshaping methods: `batchToSpace`, `spaceToDepth`, `col2Im` and alike;
 * upsampling, currently presented by `upsampling2d` operation;
@@ -284,22 +284,22 @@ Some loss operations may allow/require further arguments, depending on their typ
 
 As for reduction methods, over the minibatch, there are currently 4 of them available. Thus, initially loss values for each sample of the minibatch are computed, then they are multiplied by weights \(if specified\), and finally one of the following routines takes place:
 
-* `NONE` - leaving the resulting \(weighted\)loss values as-is; the result is an `INDArray` with the length of the 
+* `NONE` - leaving the resulting \(weighted\)loss values as-is; the result is an `INDArray` with the length of the
 
   minibatch: `sum_loss = sum(weights * loss_per_sample)`.
 
 * `SUM` - summing the values, producing a scalar result.
-* `MEAN_BY_WEIGHT` - first computes the sum as above, and then divides it by the sum of all weights, producing a scalar 
+* `MEAN_BY_WEIGHT` - first computes the sum as above, and then divides it by the sum of all weights, producing a scalar
 
   value: `mean_loss = sum(weights * loss_per_sample) / sum(weights)`. If weights are not
 
-  specified, they all are set to `1.0` and this reduction is equivalent to getting mean loss value over the minibatch.  
+  specified, they all are set to `1.0` and this reduction is equivalent to getting mean loss value over the minibatch.
 
-* `MEAN_BY_NONZERO_WEIGHT_COUNT` - divides the weighted sum by the number of nonzero weight, producing a scalar: 
+* `MEAN_BY_NONZERO_WEIGHT_COUNT` - divides the weighted sum by the number of nonzero weight, producing a scalar:
 
   `mean_count_loss = sum(weights * loss_per_sample) / count(weights != 0)`. Useful e.g. when you want to compute the mean
 
-  only over a subset of _valid_ samples, setting weights by either `0.` or `1.`. When weights are not given, it just 
+  only over a subset of _valid_ samples, setting weights by either `0.` or `1.`. When weights are not given, it just
 
   produces mean, and thus equivalent to `MEAN_BY_WEIGHT`.
 
@@ -307,9 +307,9 @@ As for reduction methods, over the minibatch, there are currently 4 of them avai
 
 In order for `SameDiff` operations to work properly, several main rules are to be upheld. Failing to do so may result in an exception or, worse even, to a working code producing undesired results. All the things we mention in the current section describe what **you better not** do.
 
-* All variables in an operation have to belong to the same instance of `SamdeDiff` \(see the [variables](samediff/samediff/variables)
+* All variables in an operation have to belong to the same instance of `SamdeDiff` \(see the [variables](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/samediff/samediff/samediff/variables/README.md)
 
-  section on how variables are added to a `SameDiff` instance\). In other words, **you better not** 
+  section on how variables are added to a `SameDiff` instance\). In other words, **you better not**
 
   ```java
   SDVariable x = sameDiff0.var(DataType.FLOAT, 1);
@@ -317,9 +317,9 @@ In order for `SameDiff` operations to work properly, several main rules are to b
   SDVariable z = x.add(y);
   ```
 
-* At best, a new variable is to be created for a result of an operation or a chain of operations. In other words, \*\*you 
+* At best, a new variable is to be created for a result of an operation or a chain of operations. In other words, \*\*you
 
-  better not **redefine existing variables** and better not\*\* leave operations returning no result. In other words, try to 
+  better not **redefine existing variables** and better not\*\* leave operations returning no result. In other words, try to
 
   **avoid** the code like this:
 
@@ -338,5 +338,5 @@ In order for `SameDiff` operations to work properly, several main rules are to b
   w = _2z.mul(y);
   ```
 
-  To learn more why it functions like that, see our [graph section](samediff/samediff/graph).
+  To learn more why it functions like that, see our [graph section](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/samediff/samediff/samediff/graph/README.md).
 

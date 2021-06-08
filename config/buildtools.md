@@ -28,7 +28,7 @@ Add a backend by adding the following:
 implementation "org.nd4j:nd4j-native-platform:1.0.0-beta6"
 ```
 
-You can also swap the standard CPU implementation for [GPUs](deeplearning4j/deeplearning4j-config-gpu-cpu).
+You can also swap the standard CPU implementation for [GPUs](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/config/deeplearning4j/deeplearning4j-config-gpu-cpu/README.md).
 
 ## SBT
 
@@ -44,7 +44,7 @@ Add a backend by adding the following:
 libraryDependencies += "org.nd4j" % "nd4j-native-platform" % "1.0.0-beta6"
 ```
 
-You can also swap the standard CPU implementation for [GPUs](deeplearning4j/deeplearning4j-config-gpu-cpu).
+You can also swap the standard CPU implementation for [GPUs](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/config/deeplearning4j/deeplearning4j-config-gpu-cpu/README.md).
 
 ## Ivy
 
@@ -60,7 +60,7 @@ Add a backend by adding the following:
 <dependency org="org.nd4j" name="nd4j-native-platform" rev="1.0.0-beta6" conf="build" />
 ```
 
-You can also swap the standard CPU implementation for [GPUs](deeplearning4j/deeplearning4j-config-gpu-cpu).
+You can also swap the standard CPU implementation for [GPUs](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/config/deeplearning4j/deeplearning4j-config-gpu-cpu/README.md).
 
 ## Leinengen
 

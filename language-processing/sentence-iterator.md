@@ -8,13 +8,13 @@ weight: 10
 
 # Sentence Iteration
 
-A sentence iterator is used in both [Word2vec](word2vec.md) and [Bag of Words](deeplearning4j-nlp/bagofwords-tf-idf.html).
+A sentence iterator is used in both [Word2vec](word2vec.md) and [Bag of Words](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/language-processing/deeplearning4j-nlp/bagofwords-tf-idf.html).
 
 It feeds bits of text into a neural network in the form of vectors, and also covers the concept of documents in text processing.
 
 In natural-language processing, a document or sentence is typically used to encapsulate a context which an algorithm should learn.
 
-A few examples include analyzing Tweets and full-blown news articles. The purpose of the [sentence iterator](deeplearning4j-nlp/doc/org/deeplearning4j/word2vec/sentenceiterator/SentenceIterator.html) is to divide text into processable bits. Note the sentence iterator is input agnostic. So bits of text \(a document\) can come from a file system, the Twitter API or Hadoop.
+A few examples include analyzing Tweets and full-blown news articles. The purpose of the [sentence iterator](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/language-processing/deeplearning4j-nlp/doc/org/deeplearning4j/word2vec/sentenceiterator/SentenceIterator.html) is to divide text into processable bits. Note the sentence iterator is input agnostic. So bits of text \(a document\) can come from a file system, the Twitter API or Hadoop.
 
 Depending on how input is processed, the output of a sentence iterator will then be passed to a [tokenizer](tokenization.md) for the processing of individual tokens, which are usually words, but could also be ngrams, skipgrams or other units. The tokenizer is created on a per-sentence basis by a [tokenizer factory](tokenization.md#example). The tokenizer factory is what is passed into a text-processing vectorizer.
 

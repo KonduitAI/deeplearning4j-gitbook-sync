@@ -8,7 +8,7 @@ weight: 2
 
 # Spark Guide
 
-This page contains a number of how-to guides for common distributed training tasks. Note that for guides on building data pipelines, see [here](deeplearning4j-scaleout-data-howto).
+This page contains a number of how-to guides for common distributed training tasks. Note that for guides on building data pipelines, see [here](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/distributed-deep-learning/deeplearning4j-scaleout-data-howto/README.md).
 
 Before going through these guides, make sure you have read the introduction guide for deeplearning4j Spark training [here](intro.md).
 
@@ -60,7 +60,7 @@ When the CUDA toolkit and CuDNN are available on the cluster nodes, we can use a
 
 * If the OS building the uber-jar is the same OS as the cluster: include nd4j-cuda-x.x
 * If the OS building the uber-jar is different to the cluster OS \(i.e., build on Windows, execute Spark on Linux cluster\): include nd4j-cuda-x.x-platform
-* In both cases, include 
+* In both cases, include
 
   where x.x is the CUDA version - for example, x.x=9.2 for CUDA 9.2.
 
@@ -69,7 +69,7 @@ When the CUDA toolkit and CuDNN are available on the cluster nodes, we can use a
 When CUDA/CuDNN are NOT installed on the cluster nodes, we can do the following:
 
 * First, include the dependencies as per 'Case 1' above
-* Then include the "redist" javacpp-presets for the cluster operating system, as described here: [DL4J CuDNN Docs](deeplearning4j-config-cudnn)
+* Then include the "redist" javacpp-presets for the cluster operating system, as described here: [DL4J CuDNN Docs](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/distributed-deep-learning/deeplearning4j-config-cudnn/README.md)
 
 **Step 2: Configure your pom.xml file for building an uber-jar**
 
@@ -145,7 +145,7 @@ When running on GPUs, there are a few components: \(a\) The ND4J CUDA backend \(
 
 Both \(a\) and \(b\) must be available for ND4J/DL4J to run using an available CUDA GPU run. \(c\) and \(d\) are optional, though are recommended to get optimal performance - NVIDIA's cuDNN library is able to significantly speed up training for many layers, such as convolutional layers \(ConvolutionLayer, SubsamplingLayer, BatchNormalization, etc\) and LSTM RNN layers.
 
-For configuring dependencies for Spark jobs, see the [uber-jar section](howto.md#how-to-build-an-uber-jar-for-training-via-spark-submit-using-maven) above. For configuring cuDNN on a single node, see [Using Deeplearning4j with CuDNN](deeplearning4j-config-cudnn)
+For configuring dependencies for Spark jobs, see the [uber-jar section](howto.md#how-to-build-an-uber-jar-for-training-via-spark-submit-using-maven) above. For configuring cuDNN on a single node, see [Using Deeplearning4j with CuDNN](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/distributed-deep-learning/deeplearning4j-config-cudnn/README.md)
 
 ### How to use CPUs on master, GPUs on the workers
 
@@ -157,7 +157,7 @@ When multiple backends are present on the classpath, by default the CUDA backend
 
 ### How to configure memory settings for Spark
 
-For important background on how memory and memory configuration works for DL4J and ND4J, start by reading [Memory management for ND4J/DL4J](deeplearning4j-config-memory).
+For important background on how memory and memory configuration works for DL4J and ND4J, start by reading [Memory management for ND4J/DL4J](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/distributed-deep-learning/deeplearning4j-config-memory/README.md).
 
 The memory management on Spark is similar to memory management for single node training:
 
@@ -241,11 +241,11 @@ Note that when using Deeplearning4j's SparkDl4jMultiLayer or SparkComputationGra
 
 ### How to use YARN and GPUs
 
-For DL4J, the only requirement for CUDA GPUs is to use the appropriate backend, with the appropriate NVIDIA libraries either installed on each node, or provided in the uber-JAR \(see [Spark how-to guide](deeplearning4j-scaleout-howto) for more details\). For recent versions of YARN, some additional configuration may be required in some cases - see the [YARN GPU documentation](https://hadoop.apache.org/docs/r3.1.0/hadoop-yarn/hadoop-yarn-site/UsingGpus.html) for more details.
+For DL4J, the only requirement for CUDA GPUs is to use the appropriate backend, with the appropriate NVIDIA libraries either installed on each node, or provided in the uber-JAR \(see [Spark how-to guide](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/distributed-deep-learning/deeplearning4j-scaleout-howto/README.md) for more details\). For recent versions of YARN, some additional configuration may be required in some cases - see the [YARN GPU documentation](https://hadoop.apache.org/docs/r3.1.0/hadoop-yarn/hadoop-yarn-site/UsingGpus.html) for more details.
 
 Earlier version of YARN \(for example, 2.7.x and similar\) did not support GPUs natively. For these versions, it is possible to utilize node labels to ensure that jobs are scheduled onto GPU-only nodes. For more details, see the Hadoop Yarn [documentation](https://hadoop.apache.org/docs/r2.7.3/hadoop-yarn/hadoop-yarn-site/NodeLabel.html)
 
-Note that YARN-specific memory configuration \(see [memory how-to](deeplearning4j-scaleout-howto#memory)\) is also required.
+Note that YARN-specific memory configuration \(see [memory how-to](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/distributed-deep-learning/deeplearning4j-scaleout-howto/README.md#memory)\) is also required.
 
 ### How to Configure Spark Locality Configuration
 
@@ -259,7 +259,7 @@ For more details, see [link 1](https://spark.apache.org/docs/latest/tuning.html#
 
 ### How to Configure Encoding Thresholds
 
-Deeplearning4j's Spark implementation uses a threshold encoding scheme for sending parameter updates between nodes. This encoding scheme results in a small quantized message, which significantly reduces the network cost of communicating updates. See the [technical explanation page](deeplearning4j-scaleout-technicalref) for more details on this encoding process.
+Deeplearning4j's Spark implementation uses a threshold encoding scheme for sending parameter updates between nodes. This encoding scheme results in a small quantized message, which significantly reduces the network cost of communicating updates. See the [technical explanation page](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/distributed-deep-learning/deeplearning4j-scaleout-technicalref/README.md) for more details on this encoding process.
 
 This threshold encoding process introduces a "distributed training specific" hyperparameter - the encoding threshold. Both too large thresholds and too small thresholds can result in sub-optimal performance:
 
@@ -297,9 +297,9 @@ Finally, DL4J's SharedTrainingMaster also has an encoding debug mode, enabled by
 
 ### How to perform distributed test set evaluation
 
-Deeplearning4j supports most standard evaluation metrics for neural networks. For basic information on evaluation, see the [Deeplearning4j Evaluation Page](deeplearning4j-nn-evaluation)
+Deeplearning4j supports most standard evaluation metrics for neural networks. For basic information on evaluation, see the [Deeplearning4j Evaluation Page](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/distributed-deep-learning/deeplearning4j-nn-evaluation/README.md)
 
-All of the [evaluation metrics](deeplearning4j-nn-evaluation) that Deeplearning4j supports can be calculated in a distributed manner using Spark.
+All of the [evaluation metrics](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/distributed-deep-learning/deeplearning4j-nn-evaluation/README.md) that Deeplearning4j supports can be calculated in a distributed manner using Spark.
 
 **Step 1: Prepare Your Data**
 

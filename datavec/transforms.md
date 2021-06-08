@@ -72,7 +72,7 @@ A TransformProcess defines an ordered list of transformations to be executed on 
 **getFinalSchema**
 
 ```text
-public Schema getFinalSchema() 
+public Schema getFinalSchema()
 ```
 
 Get the action list that this transform process will execute
@@ -82,7 +82,7 @@ Get the action list that this transform process will execute
 **getSchemaAfterStep**
 
 ```text
-public Schema getSchemaAfterStep(int step) 
+public Schema getSchemaAfterStep(int step)
 ```
 
 Return the schema after executing all steps up to and including the specified step. Steps are indexed from 0: so getSchemaAfterStep\(0\) is after one transform has been executed.
@@ -93,7 +93,7 @@ Return the schema after executing all steps up to and including the specified st
 **toJson**
 
 ```text
-public String toJson() 
+public String toJson()
 ```
 
 Execute the full sequence of transformations for a single example. May return null if example is filtered **NOTE:** Some TransformProcess operations cannot be done on examples individually. Most notably, ConvertToSequence and ConvertFromSequence operations require the full data set to be processed at once
@@ -104,7 +104,7 @@ Execute the full sequence of transformations for a single example. May return nu
 **toYaml**
 
 ```text
-public String toYaml() 
+public String toYaml()
 ```
 
 Convert the TransformProcess to a YAML string
@@ -114,7 +114,7 @@ Convert the TransformProcess to a YAML string
 **fromJson**
 
 ```text
-public static TransformProcess fromJson(String json) 
+public static TransformProcess fromJson(String json)
 ```
 
 Deserialize a JSON String \(created by {- link \#toJson\(\)}\) to a TransformProcess
@@ -124,7 +124,7 @@ Deserialize a JSON String \(created by {- link \#toJson\(\)}\) to a TransformPro
 **fromYaml**
 
 ```text
-public static TransformProcess fromYaml(String yaml) 
+public static TransformProcess fromYaml(String yaml)
 ```
 
 Deserialize a JSON String \(created by {- link \#toJson\(\)}\) to a TransformProcess
@@ -134,7 +134,7 @@ Deserialize a JSON String \(created by {- link \#toJson\(\)}\) to a TransformPro
 **transform**
 
 ```text
-public Builder transform(Transform transform) 
+public Builder transform(Transform transform)
 ```
 
 Infer the categories for the given record reader for a particular column Note that each “column index” is a column in the context of: List record = ...; record.get\(columnIndex\);
@@ -152,7 +152,7 @@ Note that the returned categories will be sorted alphabetically
 **filter**
 
 ```text
-public Builder filter(Filter filter) 
+public Builder filter(Filter filter)
 ```
 
 Add a filter operation to be executed after the previously-added operations have been executed
@@ -162,7 +162,7 @@ Add a filter operation to be executed after the previously-added operations have
 **filter**
 
 ```text
-public Builder filter(Condition condition) 
+public Builder filter(Condition condition)
 ```
 
 Add a filter operation, based on the specified condition.
@@ -175,7 +175,7 @@ If condition is not satisfied \(returns false\): keep the example or sequence
 **removeColumns**
 
 ```text
-public Builder removeColumns(String... columnNames) 
+public Builder removeColumns(String... columnNames)
 ```
 
 Remove all of the specified columns, by name
@@ -185,7 +185,7 @@ Remove all of the specified columns, by name
 **removeColumns**
 
 ```text
-public Builder removeColumns(Collection<String> columnNames) 
+public Builder removeColumns(Collection<String> columnNames)
 ```
 
 Remove all of the specified columns, by name
@@ -195,7 +195,7 @@ Remove all of the specified columns, by name
 **removeAllColumnsExceptFor**
 
 ```text
-public Builder removeAllColumnsExceptFor(String... columnNames) 
+public Builder removeAllColumnsExceptFor(String... columnNames)
 ```
 
 Remove all columns, except for those that are specified here
@@ -205,7 +205,7 @@ Remove all columns, except for those that are specified here
 **removeAllColumnsExceptFor**
 
 ```text
-public Builder removeAllColumnsExceptFor(Collection<String> columnNames) 
+public Builder removeAllColumnsExceptFor(Collection<String> columnNames)
 ```
 
 Remove all columns, except for those that are specified here
@@ -215,7 +215,7 @@ Remove all columns, except for those that are specified here
 **renameColumn**
 
 ```text
-public Builder renameColumn(String oldName, String newName) 
+public Builder renameColumn(String oldName, String newName)
 ```
 
 Rename a single column
@@ -226,7 +226,7 @@ Rename a single column
 **renameColumns**
 
 ```text
-public Builder renameColumns(List<String> oldNames, List<String> newNames) 
+public Builder renameColumns(List<String> oldNames, List<String> newNames)
 ```
 
 Rename multiple columns
@@ -237,7 +237,7 @@ Rename multiple columns
 **reorderColumns**
 
 ```text
-public Builder reorderColumns(String... newOrder) 
+public Builder reorderColumns(String... newOrder)
 ```
 
 Reorder the columns using a partial or complete new ordering. If only some of the column names are specified for the new order, the remaining columns will be placed at the end, according to their current relative ordering
@@ -247,7 +247,7 @@ Reorder the columns using a partial or complete new ordering. If only some of th
 **duplicateColumn**
 
 ```text
-public Builder duplicateColumn(String column, String newName) 
+public Builder duplicateColumn(String column, String newName)
 ```
 
 Duplicate a single column
@@ -258,7 +258,7 @@ Duplicate a single column
 **duplicateColumns**
 
 ```text
-public Builder duplicateColumns(List<String> columnNames, List<String> newNames) 
+public Builder duplicateColumns(List<String> columnNames, List<String> newNames)
 ```
 
 Duplicate a set of columns
@@ -269,7 +269,7 @@ Duplicate a set of columns
 **integerMathOp**
 
 ```text
-public Builder integerMathOp(String column, MathOp mathOp, int scalar) 
+public Builder integerMathOp(String column, MathOp mathOp, int scalar)
 ```
 
 Perform a mathematical operation \(add, subtract, scalar max etc\) on the specified integer column, with a scalar
@@ -281,7 +281,7 @@ Perform a mathematical operation \(add, subtract, scalar max etc\) on the specif
 **integerColumnsMathOp**
 
 ```text
-public Builder integerColumnsMathOp(String newColumnName, MathOp mathOp, String... columnNames) 
+public Builder integerColumnsMathOp(String newColumnName, MathOp mathOp, String... columnNames)
 ```
 
 Calculate and add a new integer column by performing a mathematical operation on a number of existing columns. New column is added to the end.
@@ -293,7 +293,7 @@ Calculate and add a new integer column by performing a mathematical operation on
 **longMathOp**
 
 ```text
-public Builder longMathOp(String columnName, MathOp mathOp, long scalar) 
+public Builder longMathOp(String columnName, MathOp mathOp, long scalar)
 ```
 
 Perform a mathematical operation \(add, subtract, scalar max etc\) on the specified long column, with a scalar
@@ -305,7 +305,7 @@ Perform a mathematical operation \(add, subtract, scalar max etc\) on the specif
 **longColumnsMathOp**
 
 ```text
-public Builder longColumnsMathOp(String newColumnName, MathOp mathOp, String... columnNames) 
+public Builder longColumnsMathOp(String newColumnName, MathOp mathOp, String... columnNames)
 ```
 
 Calculate and add a new long column by performing a mathematical operation on a number of existing columns. New column is added to the end.
@@ -317,7 +317,7 @@ Calculate and add a new long column by performing a mathematical operation on a 
 **floatMathOp**
 
 ```text
-public Builder floatMathOp(String columnName, MathOp mathOp, float scalar) 
+public Builder floatMathOp(String columnName, MathOp mathOp, float scalar)
 ```
 
 Perform a mathematical operation \(add, subtract, scalar max etc\) on the specified double column, with a scalar
@@ -329,7 +329,7 @@ Perform a mathematical operation \(add, subtract, scalar max etc\) on the specif
 **floatColumnsMathOp**
 
 ```text
-public Builder floatColumnsMathOp(String newColumnName, MathOp mathOp, String... columnNames) 
+public Builder floatColumnsMathOp(String newColumnName, MathOp mathOp, String... columnNames)
 ```
 
 Calculate and add a new float column by performing a mathematical operation on a number of existing columns. New column is added to the end.
@@ -341,7 +341,7 @@ Calculate and add a new float column by performing a mathematical operation on a
 **floatMathFunction**
 
 ```text
-public Builder floatMathFunction(String columnName, MathFunction mathFunction) 
+public Builder floatMathFunction(String columnName, MathFunction mathFunction)
 ```
 
 Perform a mathematical operation \(such as sin\(x\), ceil\(x\), exp\(x\) etc\) on a column
@@ -352,7 +352,7 @@ Perform a mathematical operation \(such as sin\(x\), ceil\(x\), exp\(x\) etc\) o
 **doubleMathOp**
 
 ```text
-public Builder doubleMathOp(String columnName, MathOp mathOp, double scalar) 
+public Builder doubleMathOp(String columnName, MathOp mathOp, double scalar)
 ```
 
 Perform a mathematical operation \(add, subtract, scalar max etc\) on the specified double column, with a scalar
@@ -364,7 +364,7 @@ Perform a mathematical operation \(add, subtract, scalar max etc\) on the specif
 **doubleColumnsMathOp**
 
 ```text
-public Builder doubleColumnsMathOp(String newColumnName, MathOp mathOp, String... columnNames) 
+public Builder doubleColumnsMathOp(String newColumnName, MathOp mathOp, String... columnNames)
 ```
 
 Calculate and add a new double column by performing a mathematical operation on a number of existing columns. New column is added to the end.
@@ -376,7 +376,7 @@ Calculate and add a new double column by performing a mathematical operation on 
 **doubleMathFunction**
 
 ```text
-public Builder doubleMathFunction(String columnName, MathFunction mathFunction) 
+public Builder doubleMathFunction(String columnName, MathFunction mathFunction)
 ```
 
 Perform a mathematical operation \(such as sin\(x\), ceil\(x\), exp\(x\) etc\) on a column
@@ -387,7 +387,7 @@ Perform a mathematical operation \(such as sin\(x\), ceil\(x\), exp\(x\) etc\) o
 **timeMathOp**
 
 ```text
-public Builder timeMathOp(String columnName, MathOp mathOp, long timeQuantity, TimeUnit timeUnit) 
+public Builder timeMathOp(String columnName, MathOp mathOp, long timeQuantity, TimeUnit timeUnit)
 ```
 
 Perform a mathematical operation \(add, subtract, scalar min/max only\) on the specified time column
@@ -400,7 +400,7 @@ Perform a mathematical operation \(add, subtract, scalar min/max only\) on the s
 **categoricalToOneHot**
 
 ```text
-public Builder categoricalToOneHot(String... columnNames) 
+public Builder categoricalToOneHot(String... columnNames)
 ```
 
 Convert the specified column\(s\) from a categorical representation to a one-hot representation. This involves the creation of multiple new columns each.
@@ -410,7 +410,7 @@ Convert the specified column\(s\) from a categorical representation to a one-hot
 **categoricalToInteger**
 
 ```text
-public Builder categoricalToInteger(String... columnNames) 
+public Builder categoricalToInteger(String... columnNames)
 ```
 
 Convert the specified column\(s\) from a categorical representation to an integer representation. This will replace the specified categorical column\(s\) with an integer repreesentation, where each integer has the value 0 to numCategories-1.
@@ -420,7 +420,7 @@ Convert the specified column\(s\) from a categorical representation to an intege
 **integerToCategorical**
 
 ```text
-public Builder integerToCategorical(String columnName, List<String> categoryStateNames) 
+public Builder integerToCategorical(String columnName, List<String> categoryStateNames)
 ```
 
 Convert the specified column from an integer representation \(assume values 0 to numCategories-1\) to a categorical representation, given the specified state names
@@ -431,7 +431,7 @@ Convert the specified column from an integer representation \(assume values 0 to
 **integerToCategorical**
 
 ```text
-public Builder integerToCategorical(String columnName, Map<Integer, String> categoryIndexNameMap) 
+public Builder integerToCategorical(String columnName, Map<Integer, String> categoryIndexNameMap)
 ```
 
 Convert the specified column from an integer representation to a categorical representation, given the specified mapping between integer indexes and state names
@@ -442,7 +442,7 @@ Convert the specified column from an integer representation to a categorical rep
 **integerToOneHot**
 
 ```text
-public Builder integerToOneHot(String columnName, int minValue, int maxValue) 
+public Builder integerToOneHot(String columnName, int minValue, int maxValue)
 ```
 
 Convert an integer column to a set of 1 hot columns, based on the value in integer column
@@ -454,7 +454,7 @@ Convert an integer column to a set of 1 hot columns, based on the value in integ
 **addConstantColumn**
 
 ```text
-public Builder addConstantColumn(String newColumnName, ColumnType newColumnType, Writable fixedValue) 
+public Builder addConstantColumn(String newColumnName, ColumnType newColumnType, Writable fixedValue)
 ```
 
 Add a new column, where all values in the column are identical and as specified.
@@ -466,7 +466,7 @@ Add a new column, where all values in the column are identical and as specified.
 **addConstantDoubleColumn**
 
 ```text
-public Builder addConstantDoubleColumn(String newColumnName, double value) 
+public Builder addConstantDoubleColumn(String newColumnName, double value)
 ```
 
 Add a new double column, where the value for that column \(for all records\) are identical
@@ -477,7 +477,7 @@ Add a new double column, where the value for that column \(for all records\) are
 **addConstantIntegerColumn**
 
 ```text
-public Builder addConstantIntegerColumn(String newColumnName, int value) 
+public Builder addConstantIntegerColumn(String newColumnName, int value)
 ```
 
 Add a new integer column, where th e value for that column \(for all records\) are identical
@@ -488,7 +488,7 @@ Add a new integer column, where th e value for that column \(for all records\) a
 **addConstantLongColumn**
 
 ```text
-public Builder addConstantLongColumn(String newColumnName, long value) 
+public Builder addConstantLongColumn(String newColumnName, long value)
 ```
 
 Add a new integer column, where the value for that column \(for all records\) are identical
@@ -499,7 +499,7 @@ Add a new integer column, where the value for that column \(for all records\) ar
 **convertToString**
 
 ```text
-public Builder convertToString(String inputColumn) 
+public Builder convertToString(String inputColumn)
 ```
 
 Convert the specified column to a string.
@@ -510,7 +510,7 @@ Convert the specified column to a string.
 **convertToDouble**
 
 ```text
-public Builder convertToDouble(String inputColumn) 
+public Builder convertToDouble(String inputColumn)
 ```
 
 Convert the specified column to a double.
@@ -521,7 +521,7 @@ Convert the specified column to a double.
 **convertToInteger**
 
 ```text
-public Builder convertToInteger(String inputColumn) 
+public Builder convertToInteger(String inputColumn)
 ```
 
 Convert the specified column to an integer.
@@ -532,7 +532,7 @@ Convert the specified column to an integer.
 **normalize**
 
 ```text
-public Builder normalize(String column, Normalize type, DataAnalysis da) 
+public Builder normalize(String column, Normalize type, DataAnalysis da)
 ```
 
 Normalize the specified column with a given type of normalization
@@ -544,7 +544,7 @@ Normalize the specified column with a given type of normalization
 **convertToSequence**
 
 ```text
-public Builder convertToSequence(String keyColumn, SequenceComparator comparator) 
+public Builder convertToSequence(String keyColumn, SequenceComparator comparator)
 ```
 
 Convert a set of independent records/examples into a sequence, according to some key. Within each sequence, values are ordered using the provided {- link SequenceComparator}
@@ -555,7 +555,7 @@ Convert a set of independent records/examples into a sequence, according to some
 **convertToSequence**
 
 ```text
-public Builder convertToSequence() 
+public Builder convertToSequence()
 ```
 
 Convert a set of independent records/examples into a sequence; each example is simply treated as a sequence of length 1, without any join/group operations. Note that more commonly, joining/grouping is required; use {- link \#convertToSequence\(List, SequenceComparator\)} for this functionality
@@ -563,7 +563,7 @@ Convert a set of independent records/examples into a sequence; each example is s
 **convertToSequence**
 
 ```text
-public Builder convertToSequence(List<String> keyColumns, SequenceComparator comparator) 
+public Builder convertToSequence(List<String> keyColumns, SequenceComparator comparator)
 ```
 
 Convert a set of independent records/examples into a sequence, where each sequence is grouped according to one or more key values \(i.e., the values in one or more columns\) Within each sequence, values are ordered using the provided {- link SequenceComparator}
@@ -574,7 +574,7 @@ Convert a set of independent records/examples into a sequence, where each sequen
 **convertFromSequence**
 
 ```text
-public Builder convertFromSequence() 
+public Builder convertFromSequence()
 ```
 
 Convert a sequence to a set of individual values \(by treating each value in each sequence as a separate example\)
@@ -582,7 +582,7 @@ Convert a sequence to a set of individual values \(by treating each value in eac
 **splitSequence**
 
 ```text
-public Builder splitSequence(SequenceSplit split) 
+public Builder splitSequence(SequenceSplit split)
 ```
 
 Split sequences into 1 or more other sequences. Used for example to split large sequences into a set of smaller sequences
@@ -592,7 +592,7 @@ Split sequences into 1 or more other sequences. Used for example to split large 
 **trimSequence**
 
 ```text
-public Builder trimSequence(int numStepsToTrim, boolean trimFromStart) 
+public Builder trimSequence(int numStepsToTrim, boolean trimFromStart)
 ```
 
 SequenceTrimTranform removes the first or last N values in a sequence. Note that the resulting sequence may be of length 0, if the input sequence is less than or equal to N.
@@ -604,7 +604,7 @@ SequenceTrimTranform removes the first or last N values in a sequence. Note that
 
 ```text
 public Builder offsetSequence(List<String> columnsToOffset, int offsetAmount,
-                                      SequenceOffsetTransform.OperationType operationType) 
+                                      SequenceOffsetTransform.OperationType operationType)
 ```
 
 Perform a sequence of operation on the specified columns. Note that this also truncates sequences by the specified offset amount by default. Use {- code transform\(new SequenceOffsetTransform\(…\)} to change this. See {- link SequenceOffsetTransform} for details on exactly what this operation does and how.
@@ -616,7 +616,7 @@ Perform a sequence of operation on the specified columns. Note that this also tr
 **reduce**
 
 ```text
-public Builder reduce(IAssociativeReducer reducer) 
+public Builder reduce(IAssociativeReducer reducer)
 ```
 
 Reduce \(i.e., aggregate/combine\) a set of examples \(typically by key\). **Note**: In the current implementation, reduction operations can be performed only on standard \(i.e., non-sequence\) data
@@ -626,7 +626,7 @@ Reduce \(i.e., aggregate/combine\) a set of examples \(typically by key\). **Not
 **reduceSequence**
 
 ```text
-public Builder reduceSequence(IAssociativeReducer reducer) 
+public Builder reduceSequence(IAssociativeReducer reducer)
 ```
 
 Reduce \(i.e., aggregate/combine\) a set of sequence examples - for each sequence individually. **Note**: This method results in non-sequence data. If you would instead prefer sequences of length 1 after the reduction, use {- code transform\(new ReduceSequenceTransform\(reducer\)\)}.
@@ -636,7 +636,7 @@ Reduce \(i.e., aggregate/combine\) a set of sequence examples - for each sequenc
 **reduceSequenceByWindow**
 
 ```text
-public Builder reduceSequenceByWindow(IAssociativeReducer reducer, WindowFunction windowFunction) 
+public Builder reduceSequenceByWindow(IAssociativeReducer reducer, WindowFunction windowFunction)
 ```
 
 Reduce \(i.e., aggregate/combine\) a set of sequence examples - for each sequence individually - using a window function. For example, take all records/examples in each 24-hour period \(i.e., using window function\), and convert them into a singe value \(using the reducer\). In this example, the output is a sequence, with time period of 24 hours.
@@ -647,7 +647,7 @@ Reduce \(i.e., aggregate/combine\) a set of sequence examples - for each sequenc
 **sequenceMovingWindowReduce**
 
 ```text
-public Builder sequenceMovingWindowReduce(String columnName, int lookback, ReduceOp op) 
+public Builder sequenceMovingWindowReduce(String columnName, int lookback, ReduceOp op)
 ```
 
 SequenceMovingWindowReduceTransform: Adds a new column, where the value is derived by:  
@@ -664,12 +664,11 @@ For example, for a simple moving average, length 20: {- code new SequenceMovingW
 **calculateSortedRank**
 
 ```text
-public Builder calculateSortedRank(String newColumnName, String sortOnColumn, WritableComparator comparator) 
+public Builder calculateSortedRank(String newColumnName, String sortOnColumn, WritableComparator comparator)
 ```
 
 CalculateSortedRank: calculate the rank of each example, after sorting example. For example, we might have some numerical “score” column, and we want to know for the rank \(sort order\) for each example, according to that column.  
-The rank of each example \(after sorting\) will be added in a new Long column. Indexing is done from 0; examples will have values 0 to dataSetSize-1.  
-
+The rank of each example \(after sorting\) will be added in a new Long column. Indexing is done from 0; examples will have values 0 to dataSetSize-1.
 
 Currently, CalculateSortedRank can only be applied on standard \(i.e., non-sequence\) data Furthermore, the current implementation can only sort on one column
 
@@ -681,12 +680,11 @@ Currently, CalculateSortedRank can only be applied on standard \(i.e., non-seque
 
 ```text
 public Builder calculateSortedRank(String newColumnName, String sortOnColumn, WritableComparator comparator,
-                                           boolean ascending) 
+                                           boolean ascending)
 ```
 
 CalculateSortedRank: calculate the rank of each example, after sorting example. For example, we might have some numerical “score” column, and we want to know for the rank \(sort order\) for each example, according to that column.  
-The rank of each example \(after sorting\) will be added in a new Long column. Indexing is done from 0; examples will have values 0 to dataSetSize-1.  
-
+The rank of each example \(after sorting\) will be added in a new Long column. Indexing is done from 0; examples will have values 0 to dataSetSize-1.
 
 Currently, CalculateSortedRank can only be applied on standard \(i.e., non-sequence\) data Furthermore, the current implementation can only sort on one column
 
@@ -698,7 +696,7 @@ Currently, CalculateSortedRank can only be applied on standard \(i.e., non-seque
 **stringToCategorical**
 
 ```text
-public Builder stringToCategorical(String columnName, List<String> stateNames) 
+public Builder stringToCategorical(String columnName, List<String> stateNames)
 ```
 
 Convert the specified String column to a categorical column. The state names must be provided.
@@ -709,7 +707,7 @@ Convert the specified String column to a categorical column. The state names mus
 **stringRemoveWhitespaceTransform**
 
 ```text
-public Builder stringRemoveWhitespaceTransform(String columnName) 
+public Builder stringRemoveWhitespaceTransform(String columnName)
 ```
 
 Remove all whitespace characters from the values in the specified String column
@@ -719,7 +717,7 @@ Remove all whitespace characters from the values in the specified String column
 **stringMapTransform**
 
 ```text
-public Builder stringMapTransform(String columnName, Map<String, String> mapping) 
+public Builder stringMapTransform(String columnName, Map<String, String> mapping)
 ```
 
 Replace one or more String values in the specified column with new values.
@@ -732,32 +730,32 @@ Keys in the map are the original values; the Values in the map are their replace
 **stringToTimeTransform**
 
 ```text
-public Builder stringToTimeTransform(String column, String format, DateTimeZone dateTimeZone) 
+public Builder stringToTimeTransform(String column, String format, DateTimeZone dateTimeZone)
 ```
 
 Convert a String column \(containing a date/time String\) to a time column \(by parsing the date/time String\)
 
 * param column String column containing the date/time Strings
-* param format Format of the strings. Time format is specified as per http://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html
+* param format Format of the strings. Time format is specified as per [http://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html](http://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html)
 * param dateTimeZone Timezone of the column
 
 **stringToTimeTransform**
 
 ```text
-public Builder stringToTimeTransform(String column, String format, DateTimeZone dateTimeZone, Locale locale) 
+public Builder stringToTimeTransform(String column, String format, DateTimeZone dateTimeZone, Locale locale)
 ```
 
 Convert a String column \(containing a date/time String\) to a time column \(by parsing the date/time String\)
 
 * param column String column containing the date/time Strings
-* param format Format of the strings. Time format is specified as per http://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html
+* param format Format of the strings. Time format is specified as per [http://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html](http://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html)
 * param dateTimeZone Timezone of the column
 * param locale Locale of the column
 
 **appendStringColumnTransform**
 
 ```text
-public Builder appendStringColumnTransform(String column, String toAppend) 
+public Builder appendStringColumnTransform(String column, String toAppend)
 ```
 
 Append a String to a specified column
@@ -768,7 +766,7 @@ Append a String to a specified column
 **conditionalReplaceValueTransform**
 
 ```text
-public Builder conditionalReplaceValueTransform(String column, Writable newValue, Condition condition) 
+public Builder conditionalReplaceValueTransform(String column, Writable newValue, Condition condition)
 ```
 
 Replace the values in a specified column with a specified new value, if some condition holds. If the condition does not hold, the original values are not modified.
@@ -780,7 +778,7 @@ Replace the values in a specified column with a specified new value, if some con
 **conditionalReplaceValueTransformWithDefault**
 
 ```text
-public Builder conditionalReplaceValueTransformWithDefault(String column, Writable yesVal, Writable noVal, Condition condition) 
+public Builder conditionalReplaceValueTransformWithDefault(String column, Writable yesVal, Writable noVal, Condition condition)
 ```
 
 Replace the values in a specified column with a specified “yes” value, if some condition holds. Replace it with a “no” value, otherwise.
@@ -793,12 +791,11 @@ Replace the values in a specified column with a specified “yes” value, if so
 **conditionalCopyValueTransform**
 
 ```text
-public Builder conditionalCopyValueTransform(String columnToReplace, String sourceColumn, Condition condition) 
+public Builder conditionalCopyValueTransform(String columnToReplace, String sourceColumn, Condition condition)
 ```
 
 Replace the value in a specified column with a new value taken from another column, if a condition is satisfied/true.  
-Note that the condition can be any generic condition, including on other column\(s\), different to the column that will be modified if the condition is satisfied/true.  
-
+Note that the condition can be any generic condition, including on other column\(s\), different to the column that will be modified if the condition is satisfied/true.
 
 * param columnToReplace Name of the column in which values will be replaced \(if condition is satisfied\)
 * param sourceColumn Name of the column from which the new values will be
@@ -807,7 +804,7 @@ Note that the condition can be any generic condition, including on other column\
 **replaceStringTransform**
 
 ```text
-public Builder replaceStringTransform(String columnName, Map<String, String> mapping) 
+public Builder replaceStringTransform(String columnName, Map<String, String> mapping)
 ```
 
 Replace one or more String values in the specified column that match regular expressions.
@@ -817,8 +814,8 @@ Keys in the map are the regular expressions; the Values in the map are their Str
 > | Original | Regex | Replacement | Result |
 > | :--- | :--- | :--- | :--- |
 > | Data\_Vec | \_ |  | DataVec |
-> | B1C2T3 | \\d | one | BoneConeTone |
-> | '&nbsp&nbsp4.25&nbsp' | ^\\s+\|\\s+$ |  | '4.25' |
+> | B1C2T3 | \d | one | BoneConeTone |
+> | '  4.25 ' | ^\s+\|\s+$ |  | '4.25' |
 
 * param columnName Name of the column in which to do replacement
 * param mapping Map of old values or regular expression to new values
@@ -826,7 +823,7 @@ Keys in the map are the regular expressions; the Values in the map are their Str
 **ndArrayScalarOpTransform**
 
 ```text
-public Builder ndArrayScalarOpTransform(String columnName, MathOp op, double value) 
+public Builder ndArrayScalarOpTransform(String columnName, MathOp op, double value)
 ```
 
 Element-wise NDArray math operation \(add, subtract, etc\) on an NDArray column
@@ -838,7 +835,7 @@ Element-wise NDArray math operation \(add, subtract, etc\) on an NDArray column
 **ndArrayColumnsMathOpTransform**
 
 ```text
-public Builder ndArrayColumnsMathOpTransform(String newColumnName, MathOp mathOp, String... columnNames) 
+public Builder ndArrayColumnsMathOpTransform(String newColumnName, MathOp mathOp, String... columnNames)
 ```
 
 Perform an element wise mathematical operation \(such as add, subtract, multiply\) on NDArray columns. The existing columns are unchanged, a new NDArray column is added
@@ -850,7 +847,7 @@ Perform an element wise mathematical operation \(such as add, subtract, multiply
 **ndArrayMathFunctionTransform**
 
 ```text
-public Builder ndArrayMathFunctionTransform(String columnName, MathFunction mathFunction) 
+public Builder ndArrayMathFunctionTransform(String columnName, MathFunction mathFunction)
 ```
 
 Apply an element wise mathematical function \(sin, tanh, abs etc\) to an NDArray column. This operation is performed in place.
@@ -862,7 +859,7 @@ Apply an element wise mathematical function \(sin, tanh, abs etc\) to an NDArray
 
 ```text
 public Builder ndArrayDistanceTransform(String newColumnName, Distance distance, String firstCol,
-                                                String secondCol) 
+                                                String secondCol)
 ```
 
 Calculate a distance \(cosine similarity, Euclidean, Manhattan\) on two equal-sized NDArray columns. This operation adds a new Double column \(with the specified name\) with the result.
@@ -883,8 +880,8 @@ For example, “3.1415” becomes “3” and “2.0” becomes “2”.
 Negative numbers ignore the sign: “-7.123” becomes “7”.  
 Note that two {- link FirstDigitTransform.Mode}s are supported, which determines how non-numerical entries should be handled:  
 EXCEPTION\_ON\_INVALID: output has 10 category values \(“0”, …, “9”\), and any non-numerical values result in an exception  
-INCLUDE\_OTHER\_CATEGORY: output has 11 category values \(“0”, …, “9”, “Other”\), all non-numerical values are mapped to “Other”  
-  
+INCLUDE\_OTHER\_CATEGORY: output has 11 category values \(“0”, …, “9”, “Other”\), all non-numerical values are mapped to “Other”
+
 FirstDigitTransform is useful \(combined with {- link CategoricalToOneHotTransform} and Reductions\) to implement [Benford’s law](https://en.wikipedia.org/wiki/Benford%27s_law).
 
 * param inputColumn Input column name
@@ -901,8 +898,8 @@ For example, “3.1415” becomes “3” and “2.0” becomes “2”.
 Negative numbers ignore the sign: “-7.123” becomes “7”.  
 Note that two {- link FirstDigitTransform.Mode}s are supported, which determines how non-numerical entries should be handled:  
 EXCEPTION\_ON\_INVALID: output has 10 category values \(“0”, …, “9”\), and any non-numerical values result in an exception  
-INCLUDE\_OTHER\_CATEGORY: output has 11 category values \(“0”, …, “9”, “Other”\), all non-numerical values are mapped to “Other”  
-  
+INCLUDE\_OTHER\_CATEGORY: output has 11 category values \(“0”, …, “9”, “Other”\), all non-numerical values are mapped to “Other”
+
 FirstDigitTransform is useful \(combined with {- link CategoricalToOneHotTransform} and Reductions\) to implement [Benford’s law](https://en.wikipedia.org/wiki/Benford%27s_law).
 
 * param inputColumn Input column name
@@ -912,7 +909,7 @@ FirstDigitTransform is useful \(combined with {- link CategoricalToOneHotTransfo
 **build**
 
 ```text
-public TransformProcess build() 
+public TransformProcess build()
 ```
 
 Create the TransformProcess object
@@ -926,7 +923,7 @@ Created by Alex on 4/03/2016.
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -937,7 +934,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -947,7 +944,7 @@ Transform a sequence
 **outputColumnName**
 
 ```text
-public String outputColumnName() 
+public String outputColumnName()
 ```
 
 The output column name after the operation has been applied
@@ -957,7 +954,7 @@ The output column name after the operation has been applied
 **columnName**
 
 ```text
-public String columnName() 
+public String columnName()
 ```
 
 The output column names This will often be the same as the input
@@ -973,7 +970,7 @@ Created by Alex on 4/03/2016.
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -984,7 +981,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -994,7 +991,7 @@ Transform a sequence
 **outputColumnName**
 
 ```text
-public String outputColumnName() 
+public String outputColumnName()
 ```
 
 The output column name after the operation has been applied
@@ -1004,7 +1001,7 @@ The output column name after the operation has been applied
 **columnName**
 
 ```text
-public String columnName() 
+public String columnName()
 ```
 
 The output column names This will often be the same as the input
@@ -1018,7 +1015,7 @@ The output column names This will often be the same as the input
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1029,7 +1026,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -1052,7 +1049,7 @@ When expanding columns, a default value is used - for example 0 for numerical co
 **transform**
 
 ```text
-public Schema transform(Schema inputSchema) 
+public Schema transform(Schema inputSchema)
 ```
 
 * param keyColumnName Key column to expand
@@ -1067,7 +1064,7 @@ Convert a String column to a categorical column
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1078,7 +1075,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -1100,7 +1097,7 @@ Duplicate one or more columns. The duplicated columns are placed immediately aft
 **transform**
 
 ```text
-public Schema transform(Schema inputSchema) 
+public Schema transform(Schema inputSchema)
 ```
 
 * param columnsToDuplicate List of columns to duplicate
@@ -1109,7 +1106,7 @@ public Schema transform(Schema inputSchema)
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1120,7 +1117,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -1130,7 +1127,7 @@ Transform a sequence
 **outputColumnName**
 
 ```text
-public String outputColumnName() 
+public String outputColumnName()
 ```
 
 The output column name after the operation has been applied
@@ -1140,7 +1137,7 @@ The output column name after the operation has been applied
 **columnName**
 
 ```text
-public String columnName() 
+public String columnName()
 ```
 
 The output column names This will often be the same as the input
@@ -1156,7 +1153,7 @@ Transform that removes all columns except for those that are explicitly specifie
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1167,7 +1164,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -1177,7 +1174,7 @@ Transform a sequence
 **outputColumnName**
 
 ```text
-public String outputColumnName() 
+public String outputColumnName()
 ```
 
 The output column name after the operation has been applied
@@ -1187,7 +1184,7 @@ The output column name after the operation has been applied
 **columnName**
 
 ```text
-public String columnName() 
+public String columnName()
 ```
 
 The output column names This will often be the same as the input
@@ -1203,7 +1200,7 @@ Remove the specified columns from the data. To specify only the columns to keep,
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1214,7 +1211,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -1224,7 +1221,7 @@ Transform a sequence
 **outputColumnName**
 
 ```text
-public String outputColumnName() 
+public String outputColumnName()
 ```
 
 The output column name after the operation has been applied
@@ -1234,7 +1231,7 @@ The output column name after the operation has been applied
 **columnName**
 
 ```text
-public String columnName() 
+public String columnName()
 ```
 
 The output column names This will often be the same as the input
@@ -1250,7 +1247,7 @@ Rename one or more columns
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1261,7 +1258,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -1271,7 +1268,7 @@ Transform a sequence
 **outputColumnName**
 
 ```text
-public String outputColumnName() 
+public String outputColumnName()
 ```
 
 The output column name after the operation has been applied
@@ -1281,7 +1278,7 @@ The output column name after the operation has been applied
 **columnName**
 
 ```text
-public String columnName() 
+public String columnName()
 ```
 
 The output column names This will often be the same as the input
@@ -1297,7 +1294,7 @@ Rearrange the order of the columns. Note: A partial list of columns can be used 
 **transform**
 
 ```text
-public Schema transform(Schema inputSchema) 
+public Schema transform(Schema inputSchema)
 ```
 
 * param newOrder A partial or complete order of the columns in the output
@@ -1305,7 +1302,7 @@ public Schema transform(Schema inputSchema)
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1316,7 +1313,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -1326,7 +1323,7 @@ Transform a sequence
 **outputColumnName**
 
 ```text
-public String outputColumnName() 
+public String outputColumnName()
 ```
 
 The output column name after the operation has been applied
@@ -1336,7 +1333,7 @@ The output column name after the operation has been applied
 **columnName**
 
 ```text
-public String columnName() 
+public String columnName()
 ```
 
 The output column names This will often be the same as the input
@@ -1355,7 +1352,7 @@ Note that the condition can be any generic condition, including on other column\
 **transform**
 
 ```text
-public Schema transform(Schema inputSchema) 
+public Schema transform(Schema inputSchema)
 ```
 
 * param columnToReplace Name of the column in which to replace the old value
@@ -1365,7 +1362,7 @@ public Schema transform(Schema inputSchema)
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1376,7 +1373,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -1386,7 +1383,7 @@ Transform a sequence
 **outputColumnName**
 
 ```text
-public String outputColumnName() 
+public String outputColumnName()
 ```
 
 The output column name after the operation has been applied
@@ -1396,7 +1393,7 @@ The output column name after the operation has been applied
 **columnName**
 
 ```text
-public String columnName() 
+public String columnName()
 ```
 
 The output column names This will often be the same as the input
@@ -1408,15 +1405,14 @@ The output column names This will often be the same as the input
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/transform/condition/ConditionalReplaceValueTransform.java)
 
 Replace the value in a specified column with a new value, if a condition is satisfied/true.  
-Note that the condition can be any generic condition, including on other column\(s\), different to the column that will be modified if the condition is satisfied/true.  
-
+Note that the condition can be any generic condition, including on other column\(s\), different to the column that will be modified if the condition is satisfied/true.
 
 **Note**: For sequences, this transform use the convention that each step in the sequence is passed to the condition, and replaced \(or not\) separately \(i.e., Condition.condition\(List\) is used on each time step individually\)
 
 **transform**
 
 ```text
-public Schema transform(Schema inputSchema) 
+public Schema transform(Schema inputSchema)
 ```
 
 * param columnToReplace Name of the column in which to replace the old value with ‘newValue’, if the condition holds
@@ -1426,7 +1422,7 @@ public Schema transform(Schema inputSchema)
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1437,7 +1433,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -1447,7 +1443,7 @@ Transform a sequence
 **outputColumnName**
 
 ```text
-public String outputColumnName() 
+public String outputColumnName()
 ```
 
 The output column name after the operation has been applied
@@ -1457,7 +1453,7 @@ The output column name after the operation has been applied
 **columnName**
 
 ```text
-public String columnName() 
+public String columnName()
 ```
 
 The output column names This will often be the same as the input
@@ -1469,8 +1465,7 @@ The output column names This will often be the same as the input
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/transform/condition/ConditionalReplaceValueTransformWithDefault.java)
 
 Replace the value in a specified column with a ‘yes’ value, if a condition is satisfied/true.  
-Replace the value of this same column with a ‘no’ value otherwise. Note that the condition can be any generic condition, including on other column\(s\), different to the column that will be modified if the condition is satisfied/true.  
-
+Replace the value of this same column with a ‘no’ value otherwise. Note that the condition can be any generic condition, including on other column\(s\), different to the column that will be modified if the condition is satisfied/true.
 
 **Note**: For sequences, this transform use the convention that each step in the sequence is passed to the condition, and replaced \(or not\) separately \(i.e., Condition.condition\(List\) is used on each time step individually\)
 
@@ -1483,7 +1478,7 @@ Convert any value to an Double
 **map**
 
 ```text
-public DoubleWritable map(Writable writable) 
+public DoubleWritable map(Writable writable)
 ```
 
 * param column Name of the column to convert to a Double column
@@ -1493,13 +1488,12 @@ public DoubleWritable map(Writable writable)
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/transform/doubletransform/DoubleColumnsMathOpTransform.java)
 
 Add a new double column, calculated from one or more other columns. A new column \(with the specified name\) is added as the final column of the output. No other columns are modified.  
-For example, if newColumnName==”newCol”, mathOp==Add, and columns=={“col1”,”col2”}, then the output column with name “newCol” has value col1+col2.  
-
+For example, if newColumnName==”newCol”, mathOp==Add, and columns=={“col1”,”col2”}, then the output column with name “newCol” has value col1+col2.
 
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1510,7 +1504,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -1521,8 +1515,7 @@ Transform a sequence
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/transform/doubletransform/DoubleMathFunctionTransform.java)
 
-A simple transform to do common mathematical operations, such as sin\(x\), ceil\(x\), etc.  
-
+A simple transform to do common mathematical operations, such as sin\(x\), ceil\(x\), etc.
 
 ### DoubleMathOpTransform
 
@@ -1534,7 +1527,7 @@ This is an in-place operation of the double column value and a double scalar.
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1545,7 +1538,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -1561,7 +1554,7 @@ Normalize by taking scale log2\(\(in-columnMin\)/\(mean-columnMin\) + 1\) Maps v
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1573,15 +1566,14 @@ Transform an object in to another object
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/transform/doubletransform/MinMaxNormalizer.java)
 
-Normalizer to map \(min to max\) -&gt; \(newMin-to newMax\) linearly.  
-
+Normalizer to map \(min to max\) -&gt; \(newMin-to newMax\) linearly.
 
 Mathematically: \(newMax-newMin\)/\(max-min\) \(x-min\) + newMin
 
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1598,7 +1590,7 @@ Normalize using \(x-mean\)/stdev. Also known as a standard score, standardizatio
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1615,7 +1607,7 @@ Normalize by substracting the mean
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1632,7 +1624,7 @@ Convert any value to an Integer.
 **map**
 
 ```text
-public IntWritable map(Writable writable) 
+public IntWritable map(Writable writable)
 ```
 
 * param column Name of the column to convert to an integer
@@ -1648,7 +1640,7 @@ For example, if newColumnName==”newCol”, mathOp==MathOp.Add, and columns=={�
 **toString**
 
 ```text
-public String toString() 
+public String toString()
 ```
 
 * param newColumnName Name of the new column \(output column\)
@@ -1658,7 +1650,7 @@ public String toString()
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1669,7 +1661,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -1686,7 +1678,7 @@ This is an in-place operation of the integer column value and an integer scalar.
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1703,7 +1695,7 @@ Convert an integer column to a set of one-hot columns.
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1714,7 +1706,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -1724,7 +1716,7 @@ Transform a sequence
 **outputColumnName**
 
 ```text
-public String outputColumnName() 
+public String outputColumnName()
 ```
 
 The output column name after the operation has been applied
@@ -1734,7 +1726,7 @@ The output column name after the operation has been applied
 **columnName**
 
 ```text
-public String columnName() 
+public String columnName()
 ```
 
 The output column names This will often be the same as the input
@@ -1750,7 +1742,7 @@ Replace an empty/missing integer with a certain value.
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1767,7 +1759,7 @@ Replace an invalid \(non-integer\) value in a column with a specified integer
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1786,7 +1778,7 @@ if a decimal output value is required.
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1797,7 +1789,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -1814,7 +1806,7 @@ This is an in-place operation of the long column value and an long scalar.
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1839,10 +1831,9 @@ Convert each text value in a sequence to a longer sequence of integer indices. F
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/transform/sequence/SequenceDifferenceTransform.java)
 
 SequenceDifferenceTransform: for an input sequence, calculate the difference on one column.  
-For each time t, calculate someColumn\(t\) - someColumn\(t-s\), where s &gt;= 1 is the ‘lookback’ period.  
-  
-Note: at t=0 \(i.e., the first step in a sequence; or more generally, for all times t &lt; s\), there is no previous value these time steps:  
+For each time t, calculate someColumn\(t\) - someColumn\(t-s\), where s &gt;= 1 is the ‘lookback’ period.
 
+Note: at t=0 \(i.e., the first step in a sequence; or more generally, for all times t &lt; s\), there is no previous value these time steps:
 
 1. Default: output = someColumn\(t\) - someColumn\(max\(t-s, 0\)\)
 2. SpecifiedValue: output = someColumn\(t\) - someColumn\(t-s\) if t-s &gt;= 0, or a custom Writable object \(for example, a DoubleWritable\(0\) or NullWritable\).
@@ -1852,7 +1843,7 @@ Note: this is an in-place operation: i.e., the values in each column are modifie
 **outputColumnName**
 
 ```text
-public String outputColumnName() 
+public String outputColumnName()
 ```
 
 Create a SequenceDifferenceTransform with default lookback of 1, and using FirstStepMode.Default. Output column name is the same as the input column name.
@@ -1862,7 +1853,7 @@ Create a SequenceDifferenceTransform with default lookback of 1, and using First
 **columnName**
 
 ```text
-public String columnName() 
+public String columnName()
 ```
 
 The output column names This will often be the same as the input
@@ -1872,7 +1863,7 @@ The output column names This will often be the same as the input
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1883,7 +1874,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -1902,7 +1893,7 @@ for example, this transformer can be used to implement a simple moving average o
 **defaultOutputColumnName**
 
 ```text
-public static String defaultOutputColumnName(String originalName, int lookback, ReduceOp op) 
+public static String defaultOutputColumnName(String originalName, int lookback, ReduceOp op)
 ```
 
 Enumeration to specify how each cases are handled: For example, for a look back period of 20, how should the first 19 output values be calculated?  
@@ -1912,7 +1903,7 @@ SpecifiedValue: use the given/specified value instead of the actual output value
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -1923,7 +1914,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -1933,7 +1924,7 @@ Transform a sequence
 **outputColumnName**
 
 ```text
-public String outputColumnName() 
+public String outputColumnName()
 ```
 
 The output column name after the operation has been applied
@@ -1943,7 +1934,7 @@ The output column name after the operation has been applied
 **columnName**
 
 ```text
-public String columnName() 
+public String columnName()
 ```
 
 The output column names This will often be the same as the input
@@ -1956,12 +1947,10 @@ The output column names This will often be the same as the input
 
 Sequence offset transform takes a sequence, and shifts The values in one or more columns by a specified number of times steps. It has 2 modes of operation \(OperationType enum\), with respect to the columns it operates on:  
 InPlace: operations may be performed in-place, modifying the values in the specified columns  
-NewColumn: operations may produce new columns, with the original \(source\) columns remaining unmodified  
-
+NewColumn: operations may produce new columns, with the original \(source\) columns remaining unmodified
 
 Additionally, there are 2 modes for handling values outside the original sequence \(EdgeHandling enum\): TrimSequence: the entire sequence is trimmed \(start or end\) by a specified number of steps  
-SpecifiedValue: for any values outside of the original sequence, they are given a specified value  
-
+SpecifiedValue: for any values outside of the original sequence, they are given a specified value
 
 Note 1: When specifying offsets, they are done as follows: Positive offsets: move the values in the specified columns to a later time. Earlier time steps are either be trimmed or Given specified values; the last values in these columns will be truncated/removed.
 
@@ -1976,7 +1965,7 @@ Append a String to the values in a single column
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -2001,7 +1990,7 @@ TODO: use new String Reduce functionality in DataVec?
 **transform**
 
 ```text
-public Schema transform(Schema inputSchema) 
+public Schema transform(Schema inputSchema)
 ```
 
 * param columnsToConcatenate A partial or complete order of the columns in the output
@@ -2009,7 +1998,7 @@ public Schema transform(Schema inputSchema)
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -2020,7 +2009,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -2030,7 +2019,7 @@ Transform a sequence
 **outputColumnName**
 
 ```text
-public String outputColumnName() 
+public String outputColumnName()
 ```
 
 The output column name after the operation has been applied
@@ -2040,7 +2029,7 @@ The output column name after the operation has been applied
 **columnName**
 
 ```text
-public String columnName() 
+public String columnName()
 ```
 
 The output column names This will often be the same as the input
@@ -2056,7 +2045,7 @@ Convert any value to a string.
 **map**
 
 ```text
-public Text map(Writable writable) 
+public Text map(Writable writable)
 ```
 
 Transform the writable in to a string
@@ -2067,7 +2056,7 @@ Transform the writable in to a string
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -2084,7 +2073,7 @@ This method maps all String values, except those is the specified list, to a sin
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -2101,7 +2090,7 @@ String transform that removes all whitespace charaters
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -2118,7 +2107,7 @@ Replace empty String values with the specified String
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -2135,7 +2124,7 @@ Replaces String values that match regular expressions.
 **map**
 
 ```text
-public Text map(final Writable writable) 
+public Text map(final Writable writable)
 ```
 
 Constructs a new ReplaceStringTransform using the specified
@@ -2152,7 +2141,7 @@ Convert a delimited String to a list of binary categorical columns. Suppose the 
 **transform**
 
 ```text
-public Schema transform(Schema inputSchema) 
+public Schema transform(Schema inputSchema)
 ```
 
 * param columnName The name of the column to convert
@@ -2163,7 +2152,7 @@ public Schema transform(Schema inputSchema)
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -2174,7 +2163,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -2184,7 +2173,7 @@ Transform a sequence
 **outputColumnName**
 
 ```text
-public String outputColumnName() 
+public String outputColumnName()
 ```
 
 The output column name after the operation has been applied
@@ -2194,7 +2183,7 @@ The output column name after the operation has been applied
 **columnName**
 
 ```text
-public String columnName() 
+public String columnName()
 ```
 
 The output column names This will often be the same as the input
@@ -2211,7 +2200,7 @@ Note that the original column is removed in the process
 **transform**
 
 ```text
-public Schema transform(Schema inputSchema) 
+public Schema transform(Schema inputSchema)
 ```
 
 * param columnName The name of the column to convert
@@ -2222,7 +2211,7 @@ public Schema transform(Schema inputSchema)
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -2233,7 +2222,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -2243,7 +2232,7 @@ Transform a sequence
 **outputColumnName**
 
 ```text
-public String outputColumnName() 
+public String outputColumnName()
 ```
 
 The output column name after the operation has been applied
@@ -2253,7 +2242,7 @@ The output column name after the operation has been applied
 **columnName**
 
 ```text
-public String columnName() 
+public String columnName()
 ```
 
 The output column names This will often be the same as the input
@@ -2277,7 +2266,7 @@ Keys in the map are the original values; the Values in the map are their replace
 **map**
 
 ```text
-public Text map(Writable writable) 
+public Text map(Writable writable)
 ```
 
 * param columnName Name of the column
@@ -2286,7 +2275,7 @@ public Text map(Writable writable)
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -2303,7 +2292,7 @@ Create a number of new columns by deriving their values from a Time column. Can 
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -2314,7 +2303,7 @@ Transform an object in to another object
 **mapSequence**
 
 ```text
-public Object mapSequence(Object sequence) 
+public Object mapSequence(Object sequence)
 ```
 
 Transform a sequence
@@ -2324,7 +2313,7 @@ Transform a sequence
 **toString**
 
 ```text
-public String toString() 
+public String toString()
 ```
 
 The output column name after the operation has been applied
@@ -2342,7 +2331,7 @@ Time format is specified as per [http://www.joda.org/joda-time/apidocs/org/joda/
 **getNewColumnMetaData**
 
 ```text
-public ColumnMetaData getNewColumnMetaData(String newName, ColumnMetaData oldColumnType) 
+public ColumnMetaData getNewColumnMetaData(String newName, ColumnMetaData oldColumnType)
 ```
 
 Instantiate this without a time format specified. If this constructor is used, this transform will be allowed to handle several common transforms as defined in the static formats array.
@@ -2353,7 +2342,7 @@ Instantiate this without a time format specified. If this constructor is used, t
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object
@@ -2373,7 +2362,7 @@ For ScalarMin/Max, the TimeUnit must be milliseconds - i.e., value must be in ep
 **map**
 
 ```text
-public Object map(Object input) 
+public Object map(Object input)
 ```
 
 Transform an object in to another object

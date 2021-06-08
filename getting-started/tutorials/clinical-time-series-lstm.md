@@ -94,25 +94,25 @@ while(entry != null){
         fileCount = 0
     }
     else {
-        
+
         val data = new Array[scala.Byte](4 * BUFFER_SIZE)
 
         val fos = new FileOutputStream(DATA_PATH + entry.getName());
         val dest = new BufferedOutputStream(fos, BUFFER_SIZE);
         var count = tais.read(data, 0, BUFFER_SIZE)
-        
+
         while (count != -1) {
             dest.write(data, 0, count)
             count = tais.read(data, 0, BUFFER_SIZE)
         }
-        
+
         dest.close()
         fileCount = fileCount + 1
     }
     if(fileCount % 1000 == 0){
         print(".")
     }
-    
+
     entry = tais.getNextEntry().asInstanceOf[TarArchiveEntry]
 }
 ```
@@ -146,12 +146,12 @@ trainLabels.initialize(new NumberedFileInputSplit(mortalityBaseDir + "/%d.csv", 
 
 val trainData = new SequenceRecordReaderDataSetIterator(trainFeatures, trainLabels,
               32, 2, false, SequenceRecordReaderDataSetIterator.AlignmentMode.ALIGN_END)
-              
-              
+
+
 // Load testing data
 val testFeatures = new CSVSequenceRecordReader(1, ",");
 testFeatures.initialize(new NumberedFileInputSplit(featureBaseDir + "/%d.csv", NB_TRAIN_EXAMPLES, NB_TRAIN_EXAMPLES + NB_TEST_EXAMPLES - 1));
-       
+
 val testLabels = new CSVSequenceRecordReader();
 testLabels.initialize(new NumberedFileInputSplit(mortalityBaseDir + "/%d.csv", NB_TRAIN_EXAMPLES, NB_TRAIN_EXAMPLES  + NB_TEST_EXAMPLES - 1));
 
@@ -195,7 +195,7 @@ val conf = new NeuralNetConfiguration.Builder()
                 .activation(Activation.SOFTMAX)
                 .nIn(LSTM_LAYER_SIZE).nOut(NUM_LABEL_CLASSES).build(),"L1")
         .build()
-        
+
 val model = new ComputationGraph(conf)
 ```
 

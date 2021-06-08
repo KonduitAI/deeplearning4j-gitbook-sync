@@ -26,7 +26,7 @@ The key feature of this approach is that opposed to relaying all parameters/upda
 
 Note that updates below the threshold are not discarded but accumulated in a “residual” vector to be applied later. Also of note is the absence of a centralized parameter server which is replaced by peer to peer communication as indicated in the image below.
 
-![](../.gitbook/assets/strom_asgd%20%281%29.svg)
+![](../.gitbook/assets/strom_asgd.svg)
 
 The update vectors, δi,j in the image above, are: 1. Sparse: only some of the gradients are communicated in each vector δi,j \(the remainder are assumed to be 0\) - sparse entries are encoded using an integer index 2. Quantized to a single bit: each element of the sparse update vector takes value +τ or −τ. This value of τ is the same for all elements of the vector, hence only a single bit is required to differentiate between the two options 3. Integer indexes \(used to identify the entries in the sparse array\) are optionally compressed using entropy coding to further reduce update sizes \(the author quotes a further 3x reduction at the cost of additional computation, though the benefit may not be worth the additional cost\)
 
@@ -38,23 +38,23 @@ However the approach is not without its downsides as described below: 1. Strom r
 
 The DL4J implementation differs from Strom's approach in the following ways:
 
-1. Not point-to-point: 
+1. Not point-to-point:
 
    The implementation allows the user to choose between two modes of network organization - plain mode and mesh mode. Plain mode is to be used when the number of nodes in the cluster are &lt; 32 nodes and mesh mode is to be used for larger clusters. Refer to the section on [different modes](technicalref.md#modes) for more details.
 
 2. Two encoding schemes:
 
-    DL4J uses two encoding schemes, dynamically switching between the two depending on which will provide less network communication. Refer to the section on [encoding](technicalref.md#encoding) for more details.
+   DL4J uses two encoding schemes, dynamically switching between the two depending on which will provide less network communication. Refer to the section on [encoding](technicalref.md#encoding) for more details.
 
 3. Quantization thresholds adjusted:
 
-    The quantization threshold is stepped up or down depending on the distribution of the updates after each iteration. This is done on each node independently to make sure that updates are indeed sparse. In practice, this is implemented via the [ThresholdAlgorithm](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/solvers/accumulation/encoding/ThresholdAlgorithm.java) interface and the [implementations](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/solvers/accumulation/encoding/threshold) there-of.
+   The quantization threshold is stepped up or down depending on the distribution of the updates after each iteration. This is done on each node independently to make sure that updates are indeed sparse. In practice, this is implemented via the [ThresholdAlgorithm](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/solvers/accumulation/encoding/ThresholdAlgorithm.java) interface and the [implementations](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/solvers/accumulation/encoding/threshold) there-of.
 
 4. Residual clipping
 
-    As noted earlier, the "left over" parts of the updates \(i.e., those parts not communicated\) are store in the residual vector. If the updates are much larger than the threshold, we can have a phenomenon we have termed "residual explosion" - that is, the residual values can continue to grow to many times the threshold \(hence would take many steps to communicate the gradient\). To avoid this, DL4J has a [ResidualPostProcessor](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/solvers/accumulation/encoding/ResidualPostProcessor.java) interface, with the default implementation being [ResidualClippingPostProcessor](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/solvers/accumulation/encoding/residual/ResidualClippingPostProcessor.java) which clips the residual vector to a maximum of 5x the current threshold, every 5 steps.
+   As noted earlier, the "left over" parts of the updates \(i.e., those parts not communicated\) are store in the residual vector. If the updates are much larger than the threshold, we can have a phenomenon we have termed "residual explosion" - that is, the residual values can continue to grow to many times the threshold \(hence would take many steps to communicate the gradient\). To avoid this, DL4J has a [ResidualPostProcessor](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/solvers/accumulation/encoding/ResidualPostProcessor.java) interface, with the default implementation being [ResidualClippingPostProcessor](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/solvers/accumulation/encoding/residual/ResidualClippingPostProcessor.java) which clips the residual vector to a maximum of 5x the current threshold, every 5 steps.
 
-5. Local parallelism via ParallelWrapper: 
+5. Local parallelism via ParallelWrapper:
 
    This enables multi-CPU/GPU nodes to share information faster
 
@@ -66,13 +66,13 @@ To enable fast out of spark communication DL4J uses [Aeron](https://github.com/r
 
 DL4J's gradient sharing implementation can be configured in 2 ways, depending on the cluster size.
 
-Below is an image describing how plain mode is organized: 
+Below is an image describing how plain mode is organized:
 
 ![](../.gitbook/assets/plainmode.png)
 
 In plain mode, quantized encoded updates are relayed by each node to the master and the master then relays them to the remaining nodes. This ensures that the master always has an up to date version of the model, which is necessary for fault tolerance. The master node however is a potential bottleneck in this implementation. To scale to larger sized cluster \(more than about 32 nodes - though this is network and hardware specific\) use mesh mode as described below.
 
-Below is an image describing how mesh mode is organized: 
+Below is an image describing how mesh mode is organized:
 
 ![](../.gitbook/assets/meshmode.png)
 
@@ -109,7 +109,7 @@ Parameter averaging is the conceptually simplest approach to data parallelism. I
 
 Steps 3a through 3c are demonstrated in the image below. In this diagram, W represents the parameters \(weights, biases\) in the neural network. Subscripts are used to index the version of the parameters over time, and where necessary for each worker machine.
 
-![](../.gitbook/assets/parameteraveraging%20%281%29.svg)
+![](../.gitbook/assets/parameteraveraging%20%282%29.svg)
 
 The implementation uses Spark's treeAggregate under the hood. There are a number of enhancements that can be made to this implementation that will result in faster training times. Even with these enhancements in place the asynchronous SGD approach with quantized compressed updates is expected to continue to be much faster. Therefore the user is strongly recommended to switch from the parameter averaging implementation to the asynchronous SGD gradient sharing approach.
 

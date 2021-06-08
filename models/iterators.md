@@ -64,7 +64,7 @@ Image: [https://archive.ics.uci.edu/ml/machine-learning-databases/synthetic\_con
 **UciSequenceDataSetIterator**
 
 ```text
-public UciSequenceDataSetIterator(int batchSize) 
+public UciSequenceDataSetIterator(int batchSize)
 ```
 
 Create an iterator for the training set, with the specified minibatch size. Randomized with RNG seed 123
@@ -82,7 +82,7 @@ This fetcher uses a cached version of the CIFAR dataset which is converted to PN
 **Cifar10DataSetIterator**
 
 ```text
-public Cifar10DataSetIterator(int batchSize) 
+public Cifar10DataSetIterator(int batchSize)
 ```
 
 Create an iterator for the training set, with random iteration order \(RNG seed fixed to 123\)
@@ -105,7 +105,7 @@ public IrisDataSetIterator()
 **next**
 
 ```text
-public DataSet next() 
+public DataSet next()
 ```
 
 IrisDataSetIterator handles traversing through the Iris Data Set.
@@ -127,7 +127,7 @@ See [http://vis-www.cs.umass.edu/lfw/](http://vis-www.cs.umass.edu/lfw/)
 ```text
 public LFWDataSetIterator(int batchSize, int numExamples, int[] imgDim, int numLabels, boolean useSubset,
                     PathLabelGenerator labelGenerator, boolean train, double splitTrainTest,
-                    ImageTransform imageTransform, Random rng) 
+                    ImageTransform imageTransform, Random rng)
 ```
 
 Create LFW data specific iterator
@@ -157,7 +157,7 @@ See: [http://cs231n.stanford.edu/](http://cs231n.stanford.edu/) and [https://tin
 **TinyImageNetDataSetIterator**
 
 ```text
-public TinyImageNetDataSetIterator(int batchSize) 
+public TinyImageNetDataSetIterator(int batchSize)
 ```
 
 Create an iterator for the training set, with random iteration order \(RNG seed fixed to 123\)
@@ -168,8 +168,7 @@ Create an iterator for the training set, with random iteration order \(RNG seed 
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-data/deeplearning4j-datasets/src/main/java/org/deeplearning4j/datasets/iterator/impl//EmnistDataSetIterator.java)
 
-EMNIST DataSetIterator  
-
+EMNIST DataSetIterator
 
 * COMPLETE: Also known as 'ByClass' split. 814,255 examples total \(train + test\), 62 classes
 * MERGE: Also known as 'ByMerge' split. 814,255 examples total. 47 unbalanced classes. Combines lower and upper case characters \(that are difficult to distinguish\) into one class for each letter \(instead of 2\), for letters C, I, J, K, L, M, O, P, S, U, V, W, X, Y and Z
@@ -177,13 +176,12 @@ EMNIST DataSetIterator
 * LETTERS: 145,600 examples total. 26 balanced classes
 * DIGITS: 280,000 examples total. 10 balanced classes
 
-  
 See: [https://www.nist.gov/itl/iad/image-group/emnist-dataset](https://www.nist.gov/itl/iad/image-group/emnist-dataset) and [https://arxiv.org/abs/1702.05373](https://arxiv.org/abs/1702.05373)
 
 **EmnistDataSetIterator**
 
 ```text
-public EmnistDataSetIterator(Set dataSet, int batch, boolean train) throws IOException 
+public EmnistDataSetIterator(Set dataSet, int batch, boolean train) throws IOException
 ```
 
 EMNIST dataset has multiple different subsets. See {- link EmnistDataSetIterator} Javadoc for details.
@@ -191,7 +189,7 @@ EMNIST dataset has multiple different subsets. See {- link EmnistDataSetIterator
 **numExamplesTrain**
 
 ```text
-public static int numExamplesTrain(Set dataSet) 
+public static int numExamplesTrain(Set dataSet)
 ```
 
 Create an EMNIST iterator with randomly shuffled data based on a specified RNG seed
@@ -204,7 +202,7 @@ Create an EMNIST iterator with randomly shuffled data based on a specified RNG s
 **numExamplesTest**
 
 ```text
-public static int numExamplesTest(Set dataSet) 
+public static int numExamplesTest(Set dataSet)
 ```
 
 Get the number of test examples for the specified subset
@@ -215,7 +213,7 @@ Get the number of test examples for the specified subset
 **numLabels**
 
 ```text
-public static int numLabels(Set dataSet) 
+public static int numLabels(Set dataSet)
 ```
 
 Get the number of labels for the specified subset
@@ -226,7 +224,7 @@ Get the number of labels for the specified subset
 **isBalanced**
 
 ```text
-public static boolean isBalanced(Set dataSet) 
+public static boolean isBalanced(Set dataSet)
 ```
 
 Get the labels as a character array
@@ -270,7 +268,7 @@ DataSetIterator iter = new RecordReaderDataSetIterator.Builder(rr, 128)
 **RecordReaderDataSetIterator**
 
 ```text
-public RecordReaderDataSetIterator(RecordReader recordReader, int batchSize) 
+public RecordReaderDataSetIterator(RecordReader recordReader, int batchSize)
 ```
 
 Constructor for classification, where:  
@@ -284,7 +282,7 @@ Note that if RecordReader.getLabels\(\) returns null, no output labels will be p
 **setCollectMetaData**
 
 ```text
-public void setCollectMetaData(boolean collectMetaData) 
+public void setCollectMetaData(boolean collectMetaData)
 ```
 
 Main constructor for classification. This will convert the input class index \(at position labelIndex, with integer values 0 to numPossibleLabels-1 inclusive\) to the appropriate one-hot output/labels representation.
@@ -297,7 +295,7 @@ Main constructor for classification. This will convert the input class index \(a
 **loadFromMetaData**
 
 ```text
-public DataSet loadFromMetaData(RecordMetaData recordMetaData) throws IOException 
+public DataSet loadFromMetaData(RecordMetaData recordMetaData) throws IOException
 ```
 
 Load a single example to a DataSet, using the provided RecordMetaData. Note that it is more efficient to load multiple instances at once, using {- link \#loadFromMetaData\(List\)}
@@ -309,7 +307,7 @@ Load a single example to a DataSet, using the provided RecordMetaData. Note that
 **loadFromMetaData**
 
 ```text
-public DataSet loadFromMetaData(List<RecordMetaData> list) throws IOException 
+public DataSet loadFromMetaData(List<RecordMetaData> list) throws IOException
 ```
 
 Load a multiple examples to a DataSet, using the provided RecordMetaData instances.
@@ -398,7 +396,7 @@ inputs and subsets.
 **RecordReaderMultiDataSetIterator**
 
 ```text
-public RecordReaderMultiDataSetIterator build() 
+public RecordReaderMultiDataSetIterator build()
 ```
 
 When dealing with time series data of different lengths, how should we align the input/labels time series? For equal length: use EQUAL\_LENGTH For sequence classification: use ALIGN\_END
@@ -406,7 +404,7 @@ When dealing with time series data of different lengths, how should we align the
 **loadFromMetaData**
 
 ```text
-public MultiDataSet loadFromMetaData(RecordMetaData recordMetaData) throws IOException 
+public MultiDataSet loadFromMetaData(RecordMetaData recordMetaData) throws IOException
 ```
 
 Load a single example to a DataSet, using the provided RecordMetaData. Note that it is more efficient to load multiple instances at once, using {- link \#loadFromMetaData\(List\)}
@@ -418,7 +416,7 @@ Load a single example to a DataSet, using the provided RecordMetaData. Note that
 **loadFromMetaData**
 
 ```text
-public MultiDataSet loadFromMetaData(List<RecordMetaData> list) throws IOException 
+public MultiDataSet loadFromMetaData(List<RecordMetaData> list) throws IOException
 ```
 
 Load a multiple sequence examples to a DataSet, using the provided RecordMetaData instances.
@@ -439,7 +437,7 @@ Supports padding for one-to-many and many-to-one type data loading \(i.e., with 
 
 ```text
 public SequenceRecordReaderDataSetIterator(SequenceRecordReader featuresReader, SequenceRecordReader labels,
-                    int miniBatchSize, int numPossibleLabels) 
+                    int miniBatchSize, int numPossibleLabels)
 ```
 
 Constructor where features and labels come from different RecordReaders \(for example, different files\), and labels are for classification.
@@ -452,7 +450,7 @@ Constructor where features and labels come from different RecordReaders \(for ex
 **hasNext**
 
 ```text
-public boolean hasNext() 
+public boolean hasNext()
 ```
 
 Constructor where features and labels come from different RecordReaders \(for example, different files\)
@@ -460,7 +458,7 @@ Constructor where features and labels come from different RecordReaders \(for ex
 **loadFromMetaData**
 
 ```text
-public DataSet loadFromMetaData(RecordMetaData recordMetaData) throws IOException 
+public DataSet loadFromMetaData(RecordMetaData recordMetaData) throws IOException
 ```
 
 Load a single sequence example to a DataSet, using the provided RecordMetaData. Note that it is more efficient to load multiple instances at once, using {- link \#loadFromMetaData\(List\)}
@@ -472,7 +470,7 @@ Load a single sequence example to a DataSet, using the provided RecordMetaData. 
 **loadFromMetaData**
 
 ```text
-public DataSet loadFromMetaData(List<RecordMetaData> list) throws IOException 
+public DataSet loadFromMetaData(List<RecordMetaData> list) throws IOException
 ```
 
 Load a multiple sequence examples to a DataSet, using the provided RecordMetaData instances.
@@ -486,15 +484,14 @@ Load a multiple sequence examples to a DataSet, using the provided RecordMetaDat
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-data/deeplearning4j-utility-iterators/src/main/java/org/deeplearning4j/datasets/iterator//AsyncMultiDataSetIterator.java)
 
 Async prefetching iterator wrapper for MultiDataSetIterator implementations This will asynchronously prefetch the specified number of minibatches from the underlying iterator.  
-Also has the option \(enabled by default for most constructors\) to use a cyclical workspace to avoid creating INDArrays with off-heap memory that needs to be cleaned up by the JVM garbage collector.  
-
+Also has the option \(enabled by default for most constructors\) to use a cyclical workspace to avoid creating INDArrays with off-heap memory that needs to be cleaned up by the JVM garbage collector.
 
 Note that appropriate DL4J fit methods automatically utilize this iterator, so users don’t need to manually wrap their iterators when fitting a network
 
 **next**
 
 ```text
-public MultiDataSet next(int num) 
+public MultiDataSet next(int num)
 ```
 
 We want to ensure, that background thread will have the same thread-&gt;device affinity, as master thread
@@ -502,7 +499,7 @@ We want to ensure, that background thread will have the same thread-&gt;device a
 **setPreProcessor**
 
 ```text
-public void setPreProcessor(MultiDataSetPreProcessor preProcessor) 
+public void setPreProcessor(MultiDataSetPreProcessor preProcessor)
 ```
 
 Set the preprocessor to be applied to each MultiDataSet, before each MultiDataSet is returned.
@@ -512,7 +509,7 @@ Set the preprocessor to be applied to each MultiDataSet, before each MultiDataSe
 **resetSupported**
 
 ```text
-public boolean resetSupported() 
+public boolean resetSupported()
 ```
 
 Is resetting supported by this DataSetIterator? Many DataSetIterators do support resetting, but some don’t
@@ -522,7 +519,7 @@ Is resetting supported by this DataSetIterator? Many DataSetIterators do support
 **asyncSupported**
 
 ```text
-public boolean asyncSupported() 
+public boolean asyncSupported()
 ```
 
 Does this DataSetIterator support asynchronous prefetching of multiple DataSet objects? Most DataSetIterators do, but in some cases it may not make sense to wrap this iterator in an iterator that does asynchronous prefetching. For example, it would not make sense to use asynchronous prefetching for the following types of iterators: \(a\) Iterators that store their full contents in memory already \(b\) Iterators that re-use features/labels arrays \(as future next\(\) calls will overwrite past contents\) \(c\) Iterators that already implement some level of asynchronous prefetching \(d\) Iterators that may return different data depending on when the next\(\) method is called
@@ -532,7 +529,7 @@ Does this DataSetIterator support asynchronous prefetching of multiple DataSet o
 **reset**
 
 ```text
-public void reset() 
+public void reset()
 ```
 
 Resets the iterator back to the beginning
@@ -540,7 +537,7 @@ Resets the iterator back to the beginning
 **shutdown**
 
 ```text
-public void shutdown() 
+public void shutdown()
 ```
 
 We want to ensure, that background thread will have the same thread-&gt;device affinity, as master thread
@@ -548,7 +545,7 @@ We want to ensure, that background thread will have the same thread-&gt;device a
 **hasNext**
 
 ```text
-public boolean hasNext() 
+public boolean hasNext()
 ```
 
 Returns {- code true} if the iteration has more elements. \(In other words, returns {- code true} if {- link \#next} would return an element rather than throwing an exception.\)
@@ -558,7 +555,7 @@ Returns {- code true} if the iteration has more elements. \(In other words, retu
 **next**
 
 ```text
-public MultiDataSet next() 
+public MultiDataSet next()
 ```
 
 Returns the next element in the iteration.
@@ -568,7 +565,7 @@ Returns the next element in the iteration.
 **remove**
 
 ```text
-public void remove() 
+public void remove()
 ```
 
 Removes from the underlying collection the last element returned by this iterator \(optional operation\). This method can be called only once per call to {- link \#next}. The behavior of an iterator is unspecified if the underlying collection is modified while the iteration is in progress in any way other than by calling this method.
@@ -581,8 +578,7 @@ Removes from the underlying collection the last element returned by this iterato
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-data/deeplearning4j-utility-iterators/src/main/java/org/deeplearning4j/datasets/iterator//IteratorDataSetIterator.java)
 
-required to get the specified batch size.  
-
+required to get the specified batch size.
 
 Typically used in Spark training, but may be used elsewhere.  
 NOTE: reset method is not supported here.
@@ -592,15 +588,14 @@ NOTE: reset method is not supported here.
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-data/deeplearning4j-utility-iterators/src/main/java/org/deeplearning4j/datasets/iterator//AsyncDataSetIterator.java)
 
 Async prefetching iterator wrapper for DataSetIterator implementations. This will asynchronously prefetch the specified number of minibatches from the underlying iterator.  
-Also has the option \(enabled by default for most constructors\) to use a cyclical workspace to avoid creating INDArrays with off-heap memory that needs to be cleaned up by the JVM garbage collector.  
-
+Also has the option \(enabled by default for most constructors\) to use a cyclical workspace to avoid creating INDArrays with off-heap memory that needs to be cleaned up by the JVM garbage collector.
 
 Note that appropriate DL4J fit methods automatically utilize this iterator, so users don’t need to manually wrap their iterators when fitting a network
 
 **AsyncDataSetIterator**
 
 ```text
-public AsyncDataSetIterator(DataSetIterator baseIterator) 
+public AsyncDataSetIterator(DataSetIterator baseIterator)
 ```
 
 Create an Async iterator with the default queue size of 8
@@ -610,7 +605,7 @@ Create an Async iterator with the default queue size of 8
 **next**
 
 ```text
-public DataSet next(int num) 
+public DataSet next(int num)
 ```
 
 Create an Async iterator with the default queue size of 8
@@ -621,7 +616,7 @@ Create an Async iterator with the default queue size of 8
 **inputColumns**
 
 ```text
-public int inputColumns() 
+public int inputColumns()
 ```
 
 Input columns for the dataset
@@ -631,7 +626,7 @@ Input columns for the dataset
 **totalOutcomes**
 
 ```text
-public int totalOutcomes() 
+public int totalOutcomes()
 ```
 
 The number of labels for the dataset
@@ -641,7 +636,7 @@ The number of labels for the dataset
 **resetSupported**
 
 ```text
-public boolean resetSupported() 
+public boolean resetSupported()
 ```
 
 Is resetting supported by this DataSetIterator? Many DataSetIterators do support resetting, but some don’t
@@ -651,7 +646,7 @@ Is resetting supported by this DataSetIterator? Many DataSetIterators do support
 **asyncSupported**
 
 ```text
-public boolean asyncSupported() 
+public boolean asyncSupported()
 ```
 
 Does this DataSetIterator support asynchronous prefetching of multiple DataSet objects? Most DataSetIterators do, but in some cases it may not make sense to wrap this iterator in an iterator that does asynchronous prefetching. For example, it would not make sense to use asynchronous prefetching for the following types of iterators: \(a\) Iterators that store their full contents in memory already \(b\) Iterators that re-use features/labels arrays \(as future next\(\) calls will overwrite past contents\) \(c\) Iterators that already implement some level of asynchronous prefetching \(d\) Iterators that may return different data depending on when the next\(\) method is called
@@ -661,7 +656,7 @@ Does this DataSetIterator support asynchronous prefetching of multiple DataSet o
 **reset**
 
 ```text
-public void reset() 
+public void reset()
 ```
 
 Resets the iterator back to the beginning
@@ -669,7 +664,7 @@ Resets the iterator back to the beginning
 **shutdown**
 
 ```text
-public void shutdown() 
+public void shutdown()
 ```
 
 We want to ensure, that background thread will have the same thread-&gt;device affinity, as master thread
@@ -677,7 +672,7 @@ We want to ensure, that background thread will have the same thread-&gt;device a
 **batch**
 
 ```text
-public int batch() 
+public int batch()
 ```
 
 Batch size
@@ -687,7 +682,7 @@ Batch size
 **setPreProcessor**
 
 ```text
-public void setPreProcessor(DataSetPreProcessor preProcessor) 
+public void setPreProcessor(DataSetPreProcessor preProcessor)
 ```
 
 Set a pre processor
@@ -697,7 +692,7 @@ Set a pre processor
 **getPreProcessor**
 
 ```text
-public DataSetPreProcessor getPreProcessor() 
+public DataSetPreProcessor getPreProcessor()
 ```
 
 Returns preprocessors, if defined
@@ -707,7 +702,7 @@ Returns preprocessors, if defined
 **hasNext**
 
 ```text
-public boolean hasNext() 
+public boolean hasNext()
 ```
 
 Get dataset iterator record reader labels
@@ -715,7 +710,7 @@ Get dataset iterator record reader labels
 **next**
 
 ```text
-public DataSet next() 
+public DataSet next()
 ```
 
 Returns the next element in the iteration.
@@ -725,7 +720,7 @@ Returns the next element in the iteration.
 **remove**
 
 ```text
-public void remove() 
+public void remove()
 ```
 
 Removes from the underlying collection the last element returned by this iterator \(optional operation\). This method can be called only once per call to {- link \#next}. The behavior of an iterator is unspecified if the underlying collection is modified while the iteration is in progress in any way other than by calling this method.
@@ -743,7 +738,7 @@ First value in pair is the features vector, second value in pair is the labels. 
 **DoublesDataSetIterator**
 
 ```text
-public DoublesDataSetIterator(@NonNull Iterable<Pair<double[], double[]>> iterable, int batchSize) 
+public DoublesDataSetIterator(@NonNull Iterable<Pair<double[], double[]>> iterable, int batchSize)
 ```
 
 * param iterable Iterable to source data from
@@ -753,8 +748,7 @@ public DoublesDataSetIterator(@NonNull Iterable<Pair<double[], double[]>> iterab
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-data/deeplearning4j-utility-iterators/src/main/java/org/deeplearning4j/datasets/iterator//IteratorMultiDataSetIterator.java)
 
-required to get a specified batch size.  
-
+required to get a specified batch size.
 
 Typically used in Spark training, but may be used elsewhere. NOTE: reset method is not supported here.
 
@@ -767,7 +761,7 @@ A wrapper for a dataset to sample from. This will randomly sample from the given
 **SamplingDataSetIterator**
 
 ```text
-public SamplingDataSetIterator(DataSet sampleFrom, int batchSize, int totalNumberSamples) 
+public SamplingDataSetIterator(DataSet sampleFrom, int batchSize, int totalNumberSamples)
 ```
 
 ### INDArrayDataSetIterator
@@ -779,7 +773,7 @@ First value in pair is the features vector, second value in pair is the labels.
 **INDArrayDataSetIterator**
 
 ```text
-public INDArrayDataSetIterator(@NonNull Iterable<Pair<INDArray, INDArray>> iterable, int batchSize) 
+public INDArrayDataSetIterator(@NonNull Iterable<Pair<INDArray, INDArray>> iterable, int batchSize)
 ```
 
 * param iterable Iterable to source data from
@@ -795,7 +789,7 @@ This is typically used for debugging and testing purposes, and should not be use
 **WorkspacesShieldDataSetIterator**
 
 ```text
-public WorkspacesShieldDataSetIterator(@NonNull DataSetIterator iterator) 
+public WorkspacesShieldDataSetIterator(@NonNull DataSetIterator iterator)
 ```
 
 * param iterator The underlying iterator to detach values from
@@ -804,17 +798,15 @@ public WorkspacesShieldDataSetIterator(@NonNull DataSetIterator iterator)
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-data/deeplearning4j-utility-iterators/src/main/java/org/deeplearning4j/datasets/iterator//MultiDataSetIteratorSplitter.java)
 
-This iterator virtually splits given MultiDataSetIterator into Train and Test parts. I.e. you have 100000 examples. Your batch size is 32. That means you have 3125 total batches. With split ratio of 0.7 that will give you 2187 training batches, and 938 test batches.  
-
+This iterator virtually splits given MultiDataSetIterator into Train and Test parts. I.e. you have 100000 examples. Your batch size is 32. That means you have 3125 total batches. With split ratio of 0.7 that will give you 2187 training batches, and 938 test batches.
 
 PLEASE NOTE: You can’t use Test iterator twice in a row. Train iterator should be used before Test iterator use.  
-PLEASE NOTE: You can’t use this iterator, if underlying iterator uses randomization/shuffle between epochs.  
-
+PLEASE NOTE: You can’t use this iterator, if underlying iterator uses randomization/shuffle between epochs.
 
 ### **MultiDataSetIteratorSplitter**
 
 ```text
-public MultiDataSetIteratorSplitter(@NonNull MultiDataSetIterator baseIterator, long totalBatches, double ratio) 
+public MultiDataSetIteratorSplitter(@NonNull MultiDataSetIterator baseIterator, long totalBatches, double ratio)
 ```
 
 * param baseIterator
@@ -824,7 +816,7 @@ public MultiDataSetIteratorSplitter(@NonNull MultiDataSetIterator baseIterator, 
 **getTrainIterator**
 
 ```text
-public MultiDataSetIterator getTrainIterator() 
+public MultiDataSetIterator getTrainIterator()
 ```
 
 This method returns train iterator instance
@@ -834,7 +826,7 @@ This method returns train iterator instance
 **next**
 
 ```text
-public MultiDataSet next(int num) 
+public MultiDataSet next(int num)
 ```
 
 This method returns test iterator instance
@@ -850,7 +842,7 @@ This wrapper takes your existing DataSetIterator implementation and prevents asy
 **AsyncShieldDataSetIterator**
 
 ```text
-public AsyncShieldDataSetIterator(@NonNull DataSetIterator iterator) 
+public AsyncShieldDataSetIterator(@NonNull DataSetIterator iterator)
 ```
 
 * param iterator Iterator to wrop, to disable asynchronous prefetching for
@@ -858,7 +850,7 @@ public AsyncShieldDataSetIterator(@NonNull DataSetIterator iterator)
 **next**
 
 ```text
-public DataSet next(int num) 
+public DataSet next(int num)
 ```
 
 Like the standard next method but allows a customizable number of examples returned
@@ -869,7 +861,7 @@ Like the standard next method but allows a customizable number of examples retur
 **inputColumns**
 
 ```text
-public int inputColumns() 
+public int inputColumns()
 ```
 
 Input columns for the dataset
@@ -879,7 +871,7 @@ Input columns for the dataset
 **totalOutcomes**
 
 ```text
-public int totalOutcomes() 
+public int totalOutcomes()
 ```
 
 The number of labels for the dataset
@@ -889,7 +881,7 @@ The number of labels for the dataset
 **resetSupported**
 
 ```text
-public boolean resetSupported() 
+public boolean resetSupported()
 ```
 
 Is resetting supported by this DataSetIterator? Many DataSetIterators do support resetting, but some don’t
@@ -899,7 +891,7 @@ Is resetting supported by this DataSetIterator? Many DataSetIterators do support
 **asyncSupported**
 
 ```text
-public boolean asyncSupported() 
+public boolean asyncSupported()
 ```
 
 Does this DataSetIterator support asynchronous prefetching of multiple DataSet objects?
@@ -911,7 +903,7 @@ PLEASE NOTE: This iterator ALWAYS returns FALSE
 **reset**
 
 ```text
-public void reset() 
+public void reset()
 ```
 
 Resets the iterator back to the beginning
@@ -919,7 +911,7 @@ Resets the iterator back to the beginning
 **batch**
 
 ```text
-public int batch() 
+public int batch()
 ```
 
 Batch size
@@ -929,7 +921,7 @@ Batch size
 **setPreProcessor**
 
 ```text
-public void setPreProcessor(DataSetPreProcessor preProcessor) 
+public void setPreProcessor(DataSetPreProcessor preProcessor)
 ```
 
 Set a pre processor
@@ -939,7 +931,7 @@ Set a pre processor
 **getPreProcessor**
 
 ```text
-public DataSetPreProcessor getPreProcessor() 
+public DataSetPreProcessor getPreProcessor()
 ```
 
 Returns preprocessors, if defined
@@ -949,7 +941,7 @@ Returns preprocessors, if defined
 **hasNext**
 
 ```text
-public boolean hasNext() 
+public boolean hasNext()
 ```
 
 Get dataset iterator record reader labels
@@ -957,7 +949,7 @@ Get dataset iterator record reader labels
 **next**
 
 ```text
-public DataSet next() 
+public DataSet next()
 ```
 
 Returns the next element in the iteration.
@@ -967,7 +959,7 @@ Returns the next element in the iteration.
 **remove**
 
 ```text
-public void remove() 
+public void remove()
 ```
 
 Removes from the underlying collection the last element returned by this iterator \(optional operation\). This method can be called only once per call to {- link \#next}. The behavior of an iterator is unspecified if the underlying collection is modified while the iteration is in progress in any way other than by calling this method.
@@ -997,7 +989,7 @@ This wrapper takes your existing MultiDataSetIterator implementation and prevent
 **next**
 
 ```text
-public MultiDataSet next(int num) 
+public MultiDataSet next(int num)
 ```
 
 Fetch the next ‘num’ examples. Similar to the next method, but returns a specified number of examples
@@ -1007,7 +999,7 @@ Fetch the next ‘num’ examples. Similar to the next method, but returns a spe
 **setPreProcessor**
 
 ```text
-public void setPreProcessor(MultiDataSetPreProcessor preProcessor) 
+public void setPreProcessor(MultiDataSetPreProcessor preProcessor)
 ```
 
 Set the preprocessor to be applied to each MultiDataSet, before each MultiDataSet is returned.
@@ -1017,7 +1009,7 @@ Set the preprocessor to be applied to each MultiDataSet, before each MultiDataSe
 **resetSupported**
 
 ```text
-public boolean resetSupported() 
+public boolean resetSupported()
 ```
 
 Is resetting supported by this DataSetIterator? Many DataSetIterators do support resetting, but some don’t
@@ -1027,7 +1019,7 @@ Is resetting supported by this DataSetIterator? Many DataSetIterators do support
 **asyncSupported**
 
 ```text
-public boolean asyncSupported() 
+public boolean asyncSupported()
 ```
 
 / Does this DataSetIterator support asynchronous prefetching of multiple DataSet objects?
@@ -1039,7 +1031,7 @@ PLEASE NOTE: This iterator ALWAYS returns FALSE
 **reset**
 
 ```text
-public void reset() 
+public void reset()
 ```
 
 Resets the iterator back to the beginning
@@ -1047,7 +1039,7 @@ Resets the iterator back to the beginning
 **hasNext**
 
 ```text
-public boolean hasNext() 
+public boolean hasNext()
 ```
 
 Returns {- code true} if the iteration has more elements. \(In other words, returns {- code true} if {- link \#next} would return an element rather than throwing an exception.\)
@@ -1057,7 +1049,7 @@ Returns {- code true} if the iteration has more elements. \(In other words, retu
 **next**
 
 ```text
-public MultiDataSet next() 
+public MultiDataSet next()
 ```
 
 Returns the next element in the iteration.
@@ -1067,7 +1059,7 @@ Returns the next element in the iteration.
 **remove**
 
 ```text
-public void remove() 
+public void remove()
 ```
 
 Removes from the underlying collection the last element returned by this iterator \(optional operation\). This method can be called only once per call to {- link \#next}. The behavior of an iterator is unspecified if the underlying collection is modified while the iteration is in progress in any way other than by calling this method.
@@ -1096,7 +1088,7 @@ public RandomMultiDataSetIterator(int numMiniBatches, @NonNull List<Triple<long[
 **addFeatures**
 
 ```text
-public Builder addFeatures(long[] shape, Values values) 
+public Builder addFeatures(long[] shape, Values values)
 ```
 
 * param numMiniBatches Number of minibatches per epoch
@@ -1116,7 +1108,7 @@ Add a new features array to the iterator
 **addLabels**
 
 ```text
-public Builder addLabels(long[] shape, Values values) 
+public Builder addLabels(long[] shape, Values values)
 ```
 
 Add a new labels array to the iterator
@@ -1139,7 +1131,7 @@ Add a new labels array to the iterator
 **generate**
 
 ```text
-public static INDArray generate(long[] shape, Values values) 
+public static INDArray generate(long[] shape, Values values)
 ```
 
 Generate a random array with the specified shape
@@ -1171,7 +1163,7 @@ Note that a call to .next\(num\) is counted as a call to return a minibatch rega
 **EarlyTerminationMultiDataSetIterator**
 
 ```text
-public EarlyTerminationMultiDataSetIterator(MultiDataSetIterator underlyingIterator, int terminationPoint) 
+public EarlyTerminationMultiDataSetIterator(MultiDataSetIterator underlyingIterator, int terminationPoint)
 ```
 
 Constructor takes the iterator to wrap and the number of minibatches after which the call to hasNext\(\) will return false
@@ -1186,7 +1178,7 @@ Constructor takes the iterator to wrap and the number of minibatches after which
 **ExistingDataSetIterator**
 
 ```text
-public ExistingDataSetIterator(@NonNull Iterator<DataSet> iterator) 
+public ExistingDataSetIterator(@NonNull Iterator<DataSet> iterator)
 ```
 
 Note that when using this constructor, resetting is not supported
@@ -1196,7 +1188,7 @@ Note that when using this constructor, resetting is not supported
 **next**
 
 ```text
-public DataSet next(int num) 
+public DataSet next(int num)
 ```
 
 Note that when using this constructor, resetting is not supported
@@ -1219,7 +1211,7 @@ Builds an iterator that terminates once the number of minibatches returned with 
 **EarlyTerminationDataSetIterator**
 
 ```text
-public EarlyTerminationDataSetIterator(DataSetIterator underlyingIterator, int terminationPoint) 
+public EarlyTerminationDataSetIterator(DataSetIterator underlyingIterator, int terminationPoint)
 ```
 
 Constructor takes the iterator to wrap and the number of minibatches after which the call to hasNext\(\) will return false
@@ -1236,7 +1228,7 @@ Wraps a data set iterator setting the first \(feature matrix\) as the labels.
 **next**
 
 ```text
-public DataSet next(int num) 
+public DataSet next(int num)
 ```
 
 Like the standard next method but allows a customizable number of examples returned
@@ -1247,7 +1239,7 @@ Like the standard next method but allows a customizable number of examples retur
 **inputColumns**
 
 ```text
-public int inputColumns() 
+public int inputColumns()
 ```
 
 Input columns for the dataset
@@ -1257,7 +1249,7 @@ Input columns for the dataset
 **totalOutcomes**
 
 ```text
-public int totalOutcomes() 
+public int totalOutcomes()
 ```
 
 The number of labels for the dataset
@@ -1267,7 +1259,7 @@ The number of labels for the dataset
 **reset**
 
 ```text
-public void reset() 
+public void reset()
 ```
 
 Resets the iterator back to the beginning
@@ -1275,7 +1267,7 @@ Resets the iterator back to the beginning
 **batch**
 
 ```text
-public int batch() 
+public int batch()
 ```
 
 Batch size
@@ -1285,7 +1277,7 @@ Batch size
 **hasNext**
 
 ```text
-public boolean hasNext() 
+public boolean hasNext()
 ```
 
 Returns {- code true} if the iteration has more elements. \(In other words, returns {- code true} if {- link \#next} would return an element rather than throwing an exception.\)
@@ -1295,7 +1287,7 @@ Returns {- code true} if the iteration has more elements. \(In other words, retu
 **next**
 
 ```text
-public DataSet next() 
+public DataSet next()
 ```
 
 Returns the next element in the iteration.
@@ -1305,7 +1297,7 @@ Returns the next element in the iteration.
 **remove**
 
 ```text
-public void remove() 
+public void remove()
 ```
 
 Removes from the underlying collection the last element returned by this iterator \(optional operation\). This method can be called only once per call to {- link \#next}. The behavior of an iterator is unspecified if the underlying collection is modified while the iteration is in progress in any way other than by calling this method.
@@ -1325,7 +1317,7 @@ PLEASE NOTE: You can’t use this iterator, if underlying iterator uses randomiz
 **DataSetIteratorSplitter**
 
 ```text
-public DataSetIteratorSplitter(@NonNull DataSetIterator baseIterator, long totalBatches, double ratio) 
+public DataSetIteratorSplitter(@NonNull DataSetIterator baseIterator, long totalBatches, double ratio)
 ```
 
 The only constructor
@@ -1337,7 +1329,7 @@ The only constructor
 **getTrainIterator**
 
 ```text
-public DataSetIterator getTrainIterator() 
+public DataSetIterator getTrainIterator()
 ```
 
 This method returns train iterator instance
@@ -1347,7 +1339,7 @@ This method returns train iterator instance
 **next**
 
 ```text
-public DataSet next(int i) 
+public DataSet next(int i)
 ```
 
 This method returns test iterator instance
@@ -1363,7 +1355,7 @@ This dataset iterator combines multiple DataSetIterators into 1 MultiDataSetIter
 **JointMultiDataSetIterator**
 
 ```text
-public JointMultiDataSetIterator(DataSetIterator... iterators) 
+public JointMultiDataSetIterator(DataSetIterator... iterators)
 ```
 
 * param iterators Underlying iterators to wrap
@@ -1371,7 +1363,7 @@ public JointMultiDataSetIterator(DataSetIterator... iterators)
 **next**
 
 ```text
-public MultiDataSet next(int num) 
+public MultiDataSet next(int num)
 ```
 
 * param outcome Index to get the label from. If &lt; 0, labels from all iterators will be used to create the final MultiDataSet
@@ -1380,7 +1372,7 @@ public MultiDataSet next(int num)
 **setPreProcessor**
 
 ```text
-public void setPreProcessor(MultiDataSetPreProcessor preProcessor) 
+public void setPreProcessor(MultiDataSetPreProcessor preProcessor)
 ```
 
 Set the preprocessor to be applied to each MultiDataSet, before each MultiDataSet is returned.
@@ -1390,7 +1382,7 @@ Set the preprocessor to be applied to each MultiDataSet, before each MultiDataSe
 **getPreProcessor**
 
 ```text
-public MultiDataSetPreProcessor getPreProcessor() 
+public MultiDataSetPreProcessor getPreProcessor()
 ```
 
 Get the {- link MultiDataSetPreProcessor}, if one has previously been set. Returns null if no preprocessor has been set
@@ -1400,7 +1392,7 @@ Get the {- link MultiDataSetPreProcessor}, if one has previously been set. Retur
 **resetSupported**
 
 ```text
-public boolean resetSupported() 
+public boolean resetSupported()
 ```
 
 Is resetting supported by this DataSetIterator? Many DataSetIterators do support resetting, but some don’t
@@ -1410,7 +1402,7 @@ Is resetting supported by this DataSetIterator? Many DataSetIterators do support
 **asyncSupported**
 
 ```text
-public boolean asyncSupported() 
+public boolean asyncSupported()
 ```
 
 Does this MultiDataSetIterator support asynchronous prefetching of multiple MultiDataSet objects? Most MultiDataSetIterators do, but in some cases it may not make sense to wrap this iterator in an iterator that does asynchronous prefetching. For example, it would not make sense to use asynchronous prefetching for the following types of iterators: \(a\) Iterators that store their full contents in memory already \(b\) Iterators that re-use features/labels arrays \(as future next\(\) calls will overwrite past contents\) \(c\) Iterators that already implement some level of asynchronous prefetching \(d\) Iterators that may return different data depending on when the next\(\) method is called
@@ -1420,7 +1412,7 @@ Does this MultiDataSetIterator support asynchronous prefetching of multiple Mult
 **reset**
 
 ```text
-public void reset() 
+public void reset()
 ```
 
 Resets the iterator back to the beginning
@@ -1428,7 +1420,7 @@ Resets the iterator back to the beginning
 **hasNext**
 
 ```text
-public boolean hasNext() 
+public boolean hasNext()
 ```
 
 Returns {- code true} if the iteration has more elements. \(In other words, returns {- code true} if {- link \#next} would return an element rather than throwing an exception.\)
@@ -1438,7 +1430,7 @@ Returns {- code true} if the iteration has more elements. \(In other words, retu
 **next**
 
 ```text
-public MultiDataSet next() 
+public MultiDataSet next()
 ```
 
 Returns the next element in the iteration.
@@ -1448,7 +1440,7 @@ Returns the next element in the iteration.
 **remove**
 
 ```text
-public void remove() 
+public void remove()
 ```
 
 PLEASE NOTE: This method is NOT implemented
@@ -1466,7 +1458,7 @@ First value in pair is the features vector, second value in pair is the labels. 
 **FloatsDataSetIterator**
 
 ```text
-public FloatsDataSetIterator(@NonNull Iterable<Pair<float[], float[]>> iterable, int batchSize) 
+public FloatsDataSetIterator(@NonNull Iterable<Pair<float[], float[]>> iterable, int batchSize)
 ```
 
 * param iterable Iterable to source data from
@@ -1481,7 +1473,7 @@ Simple iterator working with list of files. File to DataSet conversion will be h
 **FileSplitDataSetIterator**
 
 ```text
-public FileSplitDataSetIterator(@NonNull List<File> files, @NonNull FileCallback callback) 
+public FileSplitDataSetIterator(@NonNull List<File> files, @NonNull FileCallback callback)
 ```
 
 * param files List of files to iterate over
@@ -1498,7 +1490,7 @@ Use MultiLayerNetwork/ComputationGraph.fit\(DataSetIterator, int numEpochs\) ins
 **next**
 
 ```text
-public DataSet next(int num) 
+public DataSet next(int num)
 ```
 
 Like the standard next method but allows a customizable number of examples returned
@@ -1509,7 +1501,7 @@ Like the standard next method but allows a customizable number of examples retur
 **inputColumns**
 
 ```text
-public int inputColumns() 
+public int inputColumns()
 ```
 
 Input columns for the dataset
@@ -1519,7 +1511,7 @@ Input columns for the dataset
 **totalOutcomes**
 
 ```text
-public int totalOutcomes() 
+public int totalOutcomes()
 ```
 
 The number of labels for the dataset
@@ -1529,7 +1521,7 @@ The number of labels for the dataset
 **reset**
 
 ```text
-public void reset() 
+public void reset()
 ```
 
 Resets the iterator back to the beginning
@@ -1537,7 +1529,7 @@ Resets the iterator back to the beginning
 **batch**
 
 ```text
-public int batch() 
+public int batch()
 ```
 
 Batch size
@@ -1547,7 +1539,7 @@ Batch size
 **hasNext**
 
 ```text
-public boolean hasNext() 
+public boolean hasNext()
 ```
 
 Returns {- code true} if the iteration has more elements. \(In other words, returns {- code true} if {- link \#next} would return an element rather than throwing an exception.\)
@@ -1557,7 +1549,7 @@ Returns {- code true} if the iteration has more elements. \(In other words, retu
 **remove**
 
 ```text
-public void remove() 
+public void remove()
 ```
 
 Removes from the underlying collection the last element returned by this iterator \(optional operation\). This method can be called only once per call to {- link \#next}. The behavior of an iterator is unspecified if the underlying collection is modified while the iteration is in progress in any way other than by calling this method.
@@ -1576,7 +1568,7 @@ PLEASE NOTE: This only works if number of features/labels/masks is 1
 **MultiDataSetWrapperIterator**
 
 ```text
-public MultiDataSetWrapperIterator(MultiDataSetIterator iterator) 
+public MultiDataSetWrapperIterator(MultiDataSetIterator iterator)
 ```
 
 * param iterator Undelying iterator to wrap

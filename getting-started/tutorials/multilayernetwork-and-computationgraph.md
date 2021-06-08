@@ -47,7 +47,7 @@ val multiLayerConf: MultiLayerConfiguration = new NeuralNetConfiguration.Builder
 
 | **Function** | Details |
 | :--- | :--- |
-| seed |  For keeping the network outputs reproducible during runs by initializing weights and other network randomizations through a seed |
+| seed | For keeping the network outputs reproducible during runs by initializing weights and other network randomizations through a seed |
 | updater | Algorithm to be used for updating the parameters. The first value is the learning rate, the second one is the Nesterov's momentum. |
 
 #### **Configuration of Layers**
@@ -57,14 +57,14 @@ Here we are calling list\(\) to get the `ListBuilder`. It provides us the necess
 * The first parameter is the index of the position where the layer needs to be added.
 * The second parameter is the type of layer we need to add to the network.
 
-To build and add a layer we use a similar builder pattern as: 
+To build and add a layer we use a similar builder pattern as:
 
 | Function | Details |
 | :--- | :--- |
-| nIn  | The number of inputs coming from the previous layer. \(In the first layer, it represents the input it is going to take from the input layer\) |
-| nOut  | he number of outputs it’s going to send to the next layer. \(For output layer it represents the labels here\) |
-| weightInit  | The type of weights initialization to use for the layer parameters. |
-| activation  | The activation function between layers |
+| nIn | The number of inputs coming from the previous layer. \(In the first layer, it represents the input it is going to take from the input layer\) |
+| nOut | he number of outputs it’s going to send to the next layer. \(For output layer it represents the labels here\) |
+| weightInit | The type of weights initialization to use for the layer parameters. |
+| activation | The activation function between layers |
 
 #### **Building a Graph**
 
@@ -107,11 +107,11 @@ The only difference here is the way we are building layers. Instead of calling t
 
 | Function | Details |
 | :--- | :--- |
-| addInputs  | A list of strings telling the network what layers to use as input layers |
-| addLayer  | First parameter is the layer name, then the layer object and finally a list of strings defined previously to feed this layer as inputs |
-| setOutputs  | A list of strings telling the network what layers to use as output layers |
+| addInputs | A list of strings telling the network what layers to use as input layers |
+| addLayer | First parameter is the layer name, then the layer object and finally a list of strings defined previously to feed this layer as inputs |
+| setOutputs | A list of strings telling the network what layers to use as output layers |
 
-The output layers defined here use another function `lossFunction` to define what loss function to use. 
+The output layers defined here use another function `lossFunction` to define what loss function to use.
 
 ### Sanity checking for our ComputationGraphConfiguration
 

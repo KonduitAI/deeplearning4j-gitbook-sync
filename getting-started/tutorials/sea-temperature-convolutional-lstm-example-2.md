@@ -1,6 +1,6 @@
 # Sea Temperature Convolutional LSTM 2
 
-In this tutorial we will use a neural network to forecast daily sea temperatures. This tutorial will be similar to tutorial [Sea Temperature Convolutional LSTM Example](sea-temperature-convolutional-lstm.md). Recall, that the data consists of 2-dimensional temperature grids of 8 seas: Bengal, Korean, Black, Mediterranean, Arabian, Japan, Bohai, and Okhotsk Seas from 1981 to 2017. The raw data was taken from the Earth System Research Laboratory \(https://www.esrl.noaa.gov/psd/\) and preprocessed into CSV files. Each example consists of fifty 2-dimensional temperature grids, and every grid is represented by a single row in a CSV file. Thus, each sequence is represented by a CSV file with 50 rows.
+In this tutorial we will use a neural network to forecast daily sea temperatures. This tutorial will be similar to tutorial [Sea Temperature Convolutional LSTM Example](sea-temperature-convolutional-lstm.md). Recall, that the data consists of 2-dimensional temperature grids of 8 seas: Bengal, Korean, Black, Mediterranean, Arabian, Japan, Bohai, and Okhotsk Seas from 1981 to 2017. The raw data was taken from the Earth System Research Laboratory \([https://www.esrl.noaa.gov/psd/\](https://www.esrl.noaa.gov/psd/\)\) and preprocessed into CSV files. Each example consists of fifty 2-dimensional temperature grids, and every grid is represented by a single row in a CSV file. Thus, each sequence is represented by a CSV file with 50 rows.
 
 For this task, we will use a convolutional LSTM neural network to forecast 10 days worth of sea temperatures following a given sequence of temperature grids. The network will be trained similarly to the network trained tutorial 15. But the evaluation will be handled differently \(applied only to the 10 days following the sequences\).
 
@@ -69,7 +69,7 @@ val archiveFile = new File(archizePath)
 val extractedPath = DATA_PATH + "sea_temp" 
 val extractedFile = new File(extractedPath)
 
-FileUtils.copyURLToFile(new URL(DATA_URL), archiveFile) 
+FileUtils.copyURLToFile(new URL(DATA_URL), archiveFile)
 ```
 
 We will then extract the data from the tar.gz file, recreate directories within the tar.gz file into our temporary directories, and copy the files from the tar.gz file.
@@ -89,25 +89,25 @@ while(entry != null){
         fileCount = 0
     }
     else {
-        
+
         val data = new Array[scala.Byte](4 * BUFFER_SIZE)
 
         val fos = new FileOutputStream(DATA_PATH + entry.getName());
         val dest = new BufferedOutputStream(fos, BUFFER_SIZE);
         var count = tais.read(data, 0, BUFFER_SIZE)
-        
+
         while (count != -1) {
             dest.write(data, 0, count)
             count = tais.read(data, 0, BUFFER_SIZE)
         }
-        
+
         dest.close()
         fileCount = fileCount + 1
     }
     if(fileCount % 1000 == 0){
         print(".")
     }
-    
+
     entry = tais.getNextEntry().asInstanceOf[TarArchiveEntry]
 }
 ```
@@ -138,8 +138,8 @@ trainTargets.initialize(new NumberedFileInputSplit(targetsBaseDir + "/%d.csv", 1
 
 val train = new SequenceRecordReaderDataSetIterator(trainFeatures, trainTargets, batchSize,
                 10, regression, SequenceRecordReaderDataSetIterator.AlignmentMode.EQUAL_LENGTH);
-                
-                
+
+
 val testFeatures = new CSVSequenceRecordReader(numSkipLines, ",");
 testFeatures.initialize( new NumberedFileInputSplit(featureBaseDir + "/%d.csv", 1601, 1736));
 val testTargets = new CSVSequenceRecordReader(numSkipLines, ",");
@@ -147,7 +147,7 @@ testTargets.initialize(new NumberedFileInputSplit(targetsBaseDir + "/%d.csv", 16
 
 val test = new SequenceRecordReaderDataSetIterator(testFeatures, testTargets, batchSize,
                 10, regression, SequenceRecordReaderDataSetIterator.AlignmentMode.EQUAL_LENGTH);
-                
+
 val futureFeatures = new CSVSequenceRecordReader(numSkipLines, ",");
 futureFeatures.initialize( new NumberedFileInputSplit(futureBaseDir + "/%d.csv", 1601, 1736));
 val futureLabels = new CSVSequenceRecordReader(numSkipLines, ",");
@@ -203,7 +203,7 @@ val conf = new NeuralNetConfiguration.Builder()
     .inputPreProcessor(0, new RnnToCnnPreProcessor(V_HEIGHT, V_WIDTH, numChannels))
     .inputPreProcessor(2, new CnnToRnnPreProcessor(3, 1, 7 ))
     .build();
-    
+
 val net = new MultiLayerNetwork(conf);
 net.init();
 ```

@@ -24,19 +24,19 @@ All variables in `SameDiff` belong to one of four _variable types_, constituting
 
   to be both stored for further usage - we say, that they are _persistent_ - as well as being updated during training.
 
-* `CONSTANT`: are those parameters which, like variables, are persistent for the network, but are not being 
+* `CONSTANT`: are those parameters which, like variables, are persistent for the network, but are not being
 
-  trained; they, however, may be changed externally by the user. 
+  trained; they, however, may be changed externally by the user.
 
-* `PLACEHOLDER`: store temporary values that are to be supplied from the outside, like inputs and labels. 
+* `PLACEHOLDER`: store temporary values that are to be supplied from the outside, like inputs and labels.
 
-  Accordingly, since new placeholders' values are provided at each iteration, they are not stored: in other words, 
+  Accordingly, since new placeholders' values are provided at each iteration, they are not stored: in other words,
 
   unlike `VARIABLE` and `CONSTANT`, `PLACEHOLDER` is _not_ persistent.
 
-* `ARRAY`: are temporary values as well, representing outputs of [operations](ops.md) within a `SameDiff`, for 
+* `ARRAY`: are temporary values as well, representing outputs of [operations](ops.md) within a `SameDiff`, for
 
-  instance sums of vectors, activations of a layer, and many more. They are being recalculated at each iteration, and 
+  instance sums of vectors, activations of a layer, and many more. They are being recalculated at each iteration, and
 
   therefor, like `PLACEHOLDER`, are not persistent.
 
@@ -70,11 +70,11 @@ will require its `SDVariable` arguments `input` and `weights` to be of one of th
 
 Before we go to the differences between variables, let us first look at the properties they all share
 
-* All variables are ultimately derived from an instance of `SameDiff`, serving as parts of its 
+* All variables are ultimately derived from an instance of `SameDiff`, serving as parts of its
 
-  [graph](samediff/samediff/graphs). In fact, each variable has a `SameDiff` as one of its fields.
+  [graph](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/samediff/samediff/samediff/graphs/README.md). In fact, each variable has a `SameDiff` as one of its fields.
 
-* Results \(outputs\) of all operations are of `ARRAY` type. 
+* Results \(outputs\) of all operations are of `ARRAY` type.
 * All `SDVariable`'s involved in an operation are to belong to the _same_ `SameDiff`. 
 * All variables may or may not be given names - in the latter case, a name is actually created automatically. Either
 
@@ -144,9 +144,9 @@ as in MNIST example. Here we specify name, data type and then shape of your plac
 
 ### Arrays
 
-Variables of `ARRAY` type appear as outputs of [operations](samediff/samediff/ops) within `SameDiff`. Accordingly, the data type of an array-type variable depends on the kind of operation it is produced by and variable type\(s\) ot its argument\(s\). Arrays are not persistent - they are one-time values that will be recalculated from scratch at the next step. However, unlike placeholders, gradients are computed for them, as those are needed to update the values of `VARIABLE`'s.
+Variables of `ARRAY` type appear as outputs of [operations](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/samediff/samediff/samediff/ops/README.md) within `SameDiff`. Accordingly, the data type of an array-type variable depends on the kind of operation it is produced by and variable type\(s\) ot its argument\(s\). Arrays are not persistent - they are one-time values that will be recalculated from scratch at the next step. However, unlike placeholders, gradients are computed for them, as those are needed to update the values of `VARIABLE`'s.
 
-There are as many ways array-type variables are created as there are operations, so you're better up focusing on our [operations section](samediff/samediff/ops), our [javadoc](https://deeplearning4j.org/api/latest/) and [examples](samediff/samediff/exampes).
+There are as many ways array-type variables are created as there are operations, so you're better up focusing on our [operations section](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/samediff/samediff/samediff/ops/README.md), our [javadoc](https://deeplearning4j.org/api/latest/) and [examples](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/samediff/samediff/samediff/exampes/README.md).
 
 ## Recap table
 

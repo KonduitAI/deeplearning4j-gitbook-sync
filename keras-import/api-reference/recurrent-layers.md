@@ -9,7 +9,7 @@ Imports a Keras SimpleRNN layer as a DL4J SimpleRnn layer.
 **KerasSimpleRnn**
 
 ```text
-public KerasSimpleRnn(Integer kerasVersion) throws UnsupportedKerasConfigurationException 
+public KerasSimpleRnn(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
 Pass-through constructor from KerasLayer
@@ -20,7 +20,7 @@ Pass-through constructor from KerasLayer
 **getSimpleRnnLayer**
 
 ```text
-public Layer getSimpleRnnLayer() 
+public Layer getSimpleRnnLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -32,7 +32,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -44,7 +44,7 @@ Get layer output type.
 **getNumParams**
 
 ```text
-public int getNumParams() 
+public int getNumParams()
 ```
 
 Returns number of trainable parameters in layer.
@@ -54,7 +54,7 @@ Returns number of trainable parameters in layer.
 **getInputPreprocessor**
 
 ```text
-public InputPreProcessor getInputPreprocessor(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputPreProcessor getInputPreprocessor(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Gets appropriate DL4J InputPreProcessor for given InputTypes.
@@ -67,7 +67,7 @@ Gets appropriate DL4J InputPreProcessor for given InputTypes.
 **getUnroll**
 
 ```text
-public boolean getUnroll() 
+public boolean getUnroll()
 ```
 
 Get whether SimpleRnn layer should be unrolled \(for truncated BPTT\).
@@ -77,7 +77,7 @@ Get whether SimpleRnn layer should be unrolled \(for truncated BPTT\).
 **setWeights**
 
 ```text
-public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException 
+public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException
 ```
 
 Set weights for layer.
@@ -95,7 +95,7 @@ Utility functions for Keras RNN layers
 
 ```text
 public static boolean getUnrollRecurrentLayer(KerasLayerConfiguration conf, Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException 
+            throws InvalidKerasConfigurationException
 ```
 
 Get unroll parameter to decide whether to unroll RNN with BPTT or not.
@@ -109,7 +109,7 @@ Get unroll parameter to decide whether to unroll RNN with BPTT or not.
 
 ```text
 public static double getRecurrentDropout(KerasLayerConfiguration conf, Map<String, Object> layerConfig)
-            throws UnsupportedKerasConfigurationException, InvalidKerasConfigurationException 
+            throws UnsupportedKerasConfigurationException, InvalidKerasConfigurationException
 ```
 
 Get recurrent weight dropout from Keras layer configuration. Non-zero dropout rates are currently not supported.
@@ -128,7 +128,7 @@ Imports a Keras LSTM layer as a DL4J LSTM layer.
 **KerasLSTM**
 
 ```text
-public KerasLSTM(Integer kerasVersion) throws UnsupportedKerasConfigurationException 
+public KerasLSTM(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
 Pass-through constructor from KerasLayer
@@ -139,7 +139,7 @@ Pass-through constructor from KerasLayer
 **getLSTMLayer**
 
 ```text
-public Layer getLSTMLayer() 
+public Layer getLSTMLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -151,7 +151,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -163,7 +163,7 @@ Get layer output type.
 **getNumParams**
 
 ```text
-public int getNumParams() 
+public int getNumParams()
 ```
 
 Returns number of trainable parameters in layer.
@@ -173,7 +173,7 @@ Returns number of trainable parameters in layer.
 **getInputPreprocessor**
 
 ```text
-public InputPreProcessor getInputPreprocessor(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputPreProcessor getInputPreprocessor(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Gets appropriate DL4J InputPreProcessor for given InputTypes.
@@ -186,7 +186,7 @@ Gets appropriate DL4J InputPreProcessor for given InputTypes.
 **setWeights**
 
 ```text
-public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException 
+public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException
 ```
 
 Set weights for layer.
@@ -196,7 +196,7 @@ Set weights for layer.
 **getUnroll**
 
 ```text
-public boolean getUnroll() 
+public boolean getUnroll()
 ```
 
 Get whether LSTM layer should be unrolled \(for truncated BPTT\).
@@ -207,7 +207,7 @@ Get whether LSTM layer should be unrolled \(for truncated BPTT\).
 
 ```text
 public IActivation getGateActivationFromConfig(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Get LSTM gate activation function from Keras layer configuration.
@@ -220,7 +220,7 @@ Get LSTM gate activation function from Keras layer configuration.
 
 ```text
 public double getForgetBiasInitFromConfig(Map<String, Object> layerConfig, boolean train)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Get LSTM forget gate bias initialization from Keras layer configuration.

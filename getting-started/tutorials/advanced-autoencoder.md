@@ -144,7 +144,7 @@ import org.apache.spark.sql.functions._
 val positions = raw
     .withColumn("Timestamp", unix_timestamp(raw("# Timestamp"), "dd/MM/YYYY HH:mm:ss"))
     .select("Timestamp","MMSI","Longitude","Latitude")
-    
+
 positions.printSchema    
 positions.registerTempTable("positions")
 ```
@@ -155,7 +155,7 @@ val sequences = positions
     .map( row => (row.getInt(1), (row.getLong(0), (row.getDouble(3), row.getDouble(2)))) ) // a tuple of ship ID and timed coordinates
     .groupBy(_._1)
     .map( group => (group._1, group._2.map(pos => pos._2).toSeq.sortBy(_._1)))
-    
+
 case class Stats(numPositions: Int, minTime: Long, maxTime: Long, totalTime: Long)
 
 val stats = sequences
@@ -186,31 +186,31 @@ To reduce the complexity of this tutorial, we will be omitting anomalous traject
 // due to interpreter restrictions, we put this inside an object
 object Reductions extends Serializable {
     class GeoAveragingReduction(val columnOutputName: String="AveragedLatLon", val delim: String=",") extends AggregableColumnReduction {
-        
+
         override def reduceOp(): IAggregableReduceOp[Writable, java.util.List[Writable]] = {
             new AverageCoordinateReduceOp(delim)
         }
-        
+
         override def getColumnsOutputName(inputName: String): java.util.List[String] = List(columnOutputName)
-        
+
         override def getColumnOutputMetaData(newColumnName: java.util.List[String], columnInputMeta: ColumnMetaData): java.util.List[ColumnMetaData] = 
             List(new StringMetaData(columnOutputName))
-        
+
         override def transform(inputSchema: Schema) = inputSchema
-        
+
         override def outputColumnName: String = null
-        
+
         override def outputColumnNames: Array[String] = new Array[String](0)
-        
+
         override def columnNames: Array[String] = new Array[String](0)
-        
+
         override def columnName: String = null
-          
+
         def getInputSchema(): org.datavec.api.transform.schema.Schema = ???
-        
+
         def setInputSchema(x$1: org.datavec.api.transform.schema.Schema): Unit = ???
     }
-    
+
     class AverageCoordinateReduceOp(val delim: String) extends IAggregableReduceOp[Writable, java.util.List[Writable]] {
         final val PI_180 = Math.PI / 180.0
 
@@ -218,7 +218,7 @@ object Reductions extends Serializable {
         var sumy = 0.0
         var sumz = 0.0
         var count = 0
-        
+
         override def combine[W <: IAggregableReduceOp[Writable, java.util.List[Writable]]](accu: W): Unit = {
           if (accu.isInstanceOf[AverageCoordinateReduceOp]) {
             val r: AverageCoordinateReduceOp =
@@ -288,13 +288,13 @@ val schema = new Schema.Builder()
     .addColumnCategorical("SourceType")
     .addColumnsString("end")
     .build()
-    
+
 val transform = new TransformProcess.Builder(schema)
     .removeAllColumnsExceptFor("Timestamp","MMSI","Lat","Lon")
     .filter(BooleanCondition.OR(new DoubleColumnCondition("Lat",ConditionOp.GreaterThan,90.0), new DoubleColumnCondition("Lat",ConditionOp.LessThan,-90.0))) // remove erroneous lat
     .filter(BooleanCondition.OR(new DoubleColumnCondition("Lon",ConditionOp.GreaterThan,180.0), new DoubleColumnCondition("Lon",ConditionOp.LessThan,-180.0))) // remove erroneous lon
-    .transform(new MinMaxNormalizer("Lat", -90.0,	90.0, 0.0, 1.0))
-    .transform(new MinMaxNormalizer("Lon", -180.0,	180.0, 0.0, 1.0))
+    .transform(new MinMaxNormalizer("Lat", -90.0,    90.0, 0.0, 1.0))
+    .transform(new MinMaxNormalizer("Lon", -180.0,    180.0, 0.0, 1.0))
     .convertToString("Lat")
     .convertToString("Lon")
     .transform(new StringToTimeTransform("Timestamp","dd/MM/YYYY HH:mm:ss",DateTimeZone.UTC))
@@ -316,14 +316,14 @@ val transform = new TransformProcess.Builder(schema)
     )
     .removeAllColumnsExceptFor("LatLon")
     .build
-    
+
 // note we temporarily switch between java/scala APIs for convenience
 val rawData = sc
     .textFile(dataFile.getAbsolutePath)
     .filter(row => !row.startsWith("# Timestamp")) // filter out the header  
     .toJavaRDD // datavec API uses Spark's Java API
     .map(new StringToWritablesFunction(new CSVRecordReader()))
-    
+
 // once transform is applied, filter sequences we consider "too short"
 // decombine lat/lon then convert to arrays and split, then convert back to java APIs
 val records = SparkTransformExecutor
@@ -337,7 +337,7 @@ val records = SparkTransformExecutor
     .toJavaRDD
 
 val split = records.randomSplit(Array[Double](0.8,0.2))
-    
+
 val trainSequences = split(0)
 val testSequences = split(1)
 ```
@@ -381,14 +381,14 @@ object Preprocessor extends Serializable {
             val input: INDArray = mds.getFeatures(0)
             val features: Array[INDArray] = Array.ofDim[INDArray](2)
             val labels: Array[INDArray] = Array.ofDim[INDArray](1)
-            
+
             features(0) = input
-            
+
             val mb: Int = input.size(0)
             val nClasses: Int = input.size(1)
             val origMaxTsLength: Int = input.size(2)
             val goStopTokenPos: Int = nClasses
-            
+
             //1 new class, for GO/STOP. And one new time step for it also
             val newShape: Array[Int] = Array(mb, nClasses + 1, origMaxTsLength + 1)
             features(1) = Nd4j.create(newShape:_*)
@@ -399,9 +399,9 @@ object Preprocessor extends Serializable {
             features(1).get(all(), point(goStopTokenPos), all()).assign(1)
             //Create labels. Append existing at time 0 to end-1. Put STOP token at last time step - **Accounting for variable length / masks**
             labels(0).put(Array[INDArrayIndex](all(), interval(0, input.size(1)), interval(0, newShape(2) - 1)), input)
-            
+
             var lastTimeStepPos: Array[Int] = null
-            
+
             if (mds.getFeaturesMaskArray(0) == null) {//No masks
                 lastTimeStepPos = Array.ofDim[Int](input.size(0))
                 for (i <- 0 until lastTimeStepPos.length) {
@@ -418,7 +418,7 @@ object Preprocessor extends Serializable {
             //In practice: Just need to append an extra 1 at the start (as all existing time series are now 1 step longer)
             var featureMasks: Array[INDArray] = null
             var labelsMasks: Array[INDArray] = null
-            
+
             if (mds.getFeaturesMaskArray(0) != null) {//Masks are present - variable length
                 featureMasks = Array.ofDim[INDArray](2)
                 featureMasks(0) = mds.getFeaturesMaskArray(0)
@@ -439,7 +439,7 @@ object Preprocessor extends Serializable {
             mds.setFeaturesMaskArrays(featureMasks)
             mds.setLabelsMaskArray(labelsMasks)
         }
-        
+
     }
 }
 
@@ -451,7 +451,7 @@ val trainIter = new RecordReaderMultiDataSetIterator.Builder(batchSize)
             .addInput("records")
             .build()
 trainIter.setPreProcessor(new Preprocessor.Seq2SeqAutoencoderPreProcessor)
-            
+
 val testRR = new MapFileSequenceRecordReader()
 testRR.initialize(new FileSplit(testFiles))
 val testIter = new RecordReaderMultiDataSetIterator.Builder(batchSize)
@@ -488,7 +488,7 @@ val conf = new NeuralNetConfiguration.Builder()
                 .addLayer("output", new RnnOutputLayer.Builder().lossFunction(LossFunctions.LossFunction.MSE).activation(Activation.SIGMOID).nOut(3).build(), "decoder2")
                 .setOutputs("output")
                 .build()
-    
+
 val net = new ComputationGraph(conf)
 net.setListeners(new ScoreIterationListener(1))
 ```
@@ -554,7 +554,7 @@ testIter.reset()
     val feat = arr2Dub(mds.getFeatures(0))
     val orig = feat.map(format.format(_)).mkString(",")
     val recon = arr2Dub(output.get("output")).map(format.format(_)).take(feat.size).mkString(",")
-    
+
     println(s"Reconstruction error for example $i is $reconstructionError")
     println(s"Original array:        $orig")
     println(s"Reconstructed array:   $recon")
@@ -579,7 +579,7 @@ val encoder = new TransferLearning.GraphBuilder(net)
     .setInputs("encoderInput")
     .setInputTypes(InputType.recurrent(2))
     .build()
-    
+
 // grab a single batch to test feed forward
 val ds = testIter.next(1)
 val embedding = encoder.feedForward(ds.getFeatures(0), false)

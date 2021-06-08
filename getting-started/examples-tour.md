@@ -226,7 +226,7 @@ DeepLearning4j supports using a Spark Cluster for network training. Here are the
 
 ### MnistMLPExample.java
 
-This is an example of a Multi-Layer Perceptron training on the Mnist data set of handwritten digits. 
+This is an example of a Multi-Layer Perceptron training on the Mnist data set of handwritten digits.
 
 [Show me the code](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-spark-examples/dl4j-spark/src/main/java/org/deeplearning4j/legacyExamples/mlp/MnistMLPExample.java)
 

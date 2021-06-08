@@ -22,11 +22,11 @@ This quickstart follows the same layout and approach of the [Numpy quickstart](h
 
 ## Prerequisites
 
-You can use Nd4J from any [JVM Language](https://en.wikipedia.org/wiki/List_of_JVM_languages). \(For example: Scala, Kotlin\). You can use Nd4J with any build tool. The sample code in this quick start uses the following: 
+You can use Nd4J from any [JVM Language](https://en.wikipedia.org/wiki/List_of_JVM_languages). \(For example: Scala, Kotlin\). You can use Nd4J with any build tool. The sample code in this quick start uses the following:
 
-* [Java \(developer version\)](nd4j/deeplearning4j-quickstart#Java) 1.7 or later \(Only 64-Bit versions supported\)
-* [Apache Maven](nd4j/deeplearning4j-quickstart#Maven) \(automated build and dependency manager\)
-* [Git](nd4j/deeplearning4j-quickstart#Git) \(distributed version control system\)
+* [Java \(developer version\)](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/nd4j/nd4j/deeplearning4j-quickstart/README.md#Java) 1.7 or later \(Only 64-Bit versions supported\)
+* [Apache Maven](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/nd4j/nd4j/deeplearning4j-quickstart/README.md#Maven) \(automated build and dependency manager\)
+* [Git](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/nd4j/nd4j/deeplearning4j-quickstart/README.md#Git) \(distributed version control system\)
 
 To improve readability we show you the output of `System.out.println(...)`. But we have not show the print statement in the sample code. If you are confident you know how to use maven and git, please feel free to skip to the [Basics](quickstart.md#Basics). In the remainder of this section we will build a small 'hello ND4J' application to verify the prequisites are set up correctly.
 

@@ -168,8 +168,8 @@
 * [Tutorial: First Steps](android/first-steps.md)
 * [Tutorial: Classifier](android/linear-classifier.md)
 * [Tutorial: Image Classifier](android/image-classification.md)
-* [FAQ](faq.md)
-* [Press](press.md)
-* [Support](support.md)
-* [Why Deep Learning?](why-deep-learning.md)
+* [FAQ](android/faq.md)
+* [Press](android/press.md)
+* [Support](android/support.md)
+* [Why Deep Learning?](android/why-deep-learning.md)
 

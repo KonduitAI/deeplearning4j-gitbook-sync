@@ -68,7 +68,7 @@ Join class: used to specify a join \(like an SQL join\)
 **setSchemas**
 
 ```text
-public Builder setSchemas(Schema left, Schema right) 
+public Builder setSchemas(Schema left, Schema right)
 ```
 
 Type of join  
@@ -79,7 +79,7 @@ FullOuter: return all examples from both left/right, whether there is a matching
 **setKeyColumns**
 
 ```text
-public Builder setKeyColumns(String... keyColumnNames) 
+public Builder setKeyColumns(String... keyColumnNames)
 ```
 
 * deprecated Use {- link \#setJoinColumns\(String…\)}
@@ -87,7 +87,7 @@ public Builder setKeyColumns(String... keyColumnNames)
 **setKeyColumnsLeft**
 
 ```text
-public Builder setKeyColumnsLeft(String... keyColumnNames) 
+public Builder setKeyColumnsLeft(String... keyColumnNames)
 ```
 
 * deprecated Use {- link \#setJoinColumnsLeft\(String…\)}
@@ -95,7 +95,7 @@ public Builder setKeyColumnsLeft(String... keyColumnNames)
 **setKeyColumnsRight**
 
 ```text
-public Builder setKeyColumnsRight(String... keyColumnNames) 
+public Builder setKeyColumnsRight(String... keyColumnNames)
 ```
 
 * deprecated Use {- link \#setJoinColumnsRight\(String…\)}
@@ -103,7 +103,7 @@ public Builder setKeyColumnsRight(String... keyColumnNames)
 **setJoinColumnsLeft**
 
 ```text
-public Builder setJoinColumnsLeft(String... joinColumnNames) 
+public Builder setJoinColumnsLeft(String... joinColumnNames)
 ```
 
 Specify the names of the columns to join on, for the left data\) The idea: join examples where firstDataValues\(joinColumNamesLeft\[i\]\) == secondDataValues\(joinColumnNamesRight\[i\]\) for all i
@@ -113,7 +113,7 @@ Specify the names of the columns to join on, for the left data\) The idea: join 
 **setJoinColumnsRight**
 
 ```text
-public Builder setJoinColumnsRight(String... joinColumnNames) 
+public Builder setJoinColumnsRight(String... joinColumnNames)
 ```
 
 Specify the names of the columns to join on, for the right data\) The idea: join examples where firstDataValues\(joinColumNamesLeft\[i\]\) == secondDataValues\(joinColumnNamesRight\[i\]\) for all i
@@ -133,13 +133,12 @@ Only Double, Integer, Long, and String types are supported. If no number type ca
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/schema/Schema.java)
 
 A Schema defines the layout of tabular data. Specifically, it contains names f or each column, as well as details of types \(Integer, String, Long, Double, etc\).  
-Type information for each column may optionally include restrictions on the allowable values for each column.  
-
+Type information for each column may optionally include restrictions on the allowable values for each column.
 
 **sameTypes**
 
 ```text
-public boolean sameTypes(Schema schema) 
+public boolean sameTypes(Schema schema)
 ```
 
 Create a schema based on the given metadata
@@ -149,7 +148,7 @@ Create a schema based on the given metadata
 **newSchema**
 
 ```text
-public Schema newSchema(List<ColumnMetaData> columnMetaData) 
+public Schema newSchema(List<ColumnMetaData> columnMetaData)
 ```
 
 Compute the difference in {- link ColumnMetaData} between this schema and the passed in schema. This is useful during the {- link org.datavec.api.transform.TransformProcess} to identify what a process will do to a given {- link Schema}.
@@ -160,7 +159,7 @@ Compute the difference in {- link ColumnMetaData} between this schema and the pa
 **numColumns**
 
 ```text
-public int numColumns() 
+public int numColumns()
 ```
 
 Returns the number of columns or fields for this schema
@@ -170,7 +169,7 @@ Returns the number of columns or fields for this schema
 **getName**
 
 ```text
-public String getName(int column) 
+public String getName(int column)
 ```
 
 Returns the name of a given column at the specified index
@@ -181,7 +180,7 @@ Returns the name of a given column at the specified index
 **getType**
 
 ```text
-public ColumnType getType(int column) 
+public ColumnType getType(int column)
 ```
 
 Returns the {- link ColumnType} for the column at the specified index
@@ -192,7 +191,7 @@ Returns the {- link ColumnType} for the column at the specified index
 **getType**
 
 ```text
-public ColumnType getType(String columnName) 
+public ColumnType getType(String columnName)
 ```
 
 Returns the {- link ColumnType} for the column at the specified index
@@ -203,7 +202,7 @@ Returns the {- link ColumnType} for the column at the specified index
 **getMetaData**
 
 ```text
-public ColumnMetaData getMetaData(int column) 
+public ColumnMetaData getMetaData(int column)
 ```
 
 Returns the {- link ColumnMetaData} at the specified column index
@@ -214,7 +213,7 @@ Returns the {- link ColumnMetaData} at the specified column index
 **getMetaData**
 
 ```text
-public ColumnMetaData getMetaData(String column) 
+public ColumnMetaData getMetaData(String column)
 ```
 
 Retrieve the metadata for the given column name
@@ -225,7 +224,7 @@ Retrieve the metadata for the given column name
 **getIndexOfColumn**
 
 ```text
-public int getIndexOfColumn(String columnName) 
+public int getIndexOfColumn(String columnName)
 ```
 
 Return a copy of the list column names
@@ -235,7 +234,7 @@ Return a copy of the list column names
 **hasColumn**
 
 ```text
-public boolean hasColumn(String columnName) 
+public boolean hasColumn(String columnName)
 ```
 
 Return the indices of the columns, given their namess
@@ -246,7 +245,7 @@ Return the indices of the columns, given their namess
 **toJson**
 
 ```text
-public String toJson() 
+public String toJson()
 ```
 
 Serialize this schema to json
@@ -256,7 +255,7 @@ Serialize this schema to json
 **toYaml**
 
 ```text
-public String toYaml() 
+public String toYaml()
 ```
 
 Serialize this schema to yaml
@@ -266,7 +265,7 @@ Serialize this schema to yaml
 **fromJson**
 
 ```text
-public static Schema fromJson(String json) 
+public static Schema fromJson(String json)
 ```
 
 Create a schema from a given json string
@@ -277,7 +276,7 @@ Create a schema from a given json string
 **fromYaml**
 
 ```text
-public static Schema fromYaml(String yaml) 
+public static Schema fromYaml(String yaml)
 ```
 
 Create a schema from the given yaml string
@@ -288,7 +287,7 @@ Create a schema from the given yaml string
 **addColumnFloat**
 
 ```text
-public Builder addColumnFloat(String name) 
+public Builder addColumnFloat(String name)
 ```
 
 Add a Float column with no restrictions on the allowable values, except for no NaN/infinite values allowed
@@ -298,7 +297,7 @@ Add a Float column with no restrictions on the allowable values, except for no N
 **addColumnFloat**
 
 ```text
-public Builder addColumnFloat(String name, Float minAllowedValue, Float maxAllowedValue) 
+public Builder addColumnFloat(String name, Float minAllowedValue, Float maxAllowedValue)
 ```
 
 Add a Float column with the specified restrictions \(and no NaN/Infinite values allowed\)
@@ -312,7 +311,7 @@ Add a Float column with the specified restrictions \(and no NaN/Infinite values 
 
 ```text
 public Builder addColumnFloat(String name, Float minAllowedValue, Float maxAllowedValue, boolean allowNaN,
-                                       boolean allowInfinite) 
+                                       boolean allowInfinite)
 ```
 
 Add a Float column with the specified restrictions
@@ -326,7 +325,7 @@ Add a Float column with the specified restrictions
 **addColumnsFloat**
 
 ```text
-public Builder addColumnsFloat(String... columnNames) 
+public Builder addColumnsFloat(String... columnNames)
 ```
 
 Add multiple Float columns with no restrictions on the allowable values of the columns \(other than no NaN/Infinite\)
@@ -336,7 +335,7 @@ Add multiple Float columns with no restrictions on the allowable values of the c
 **addColumnsFloat**
 
 ```text
-public Builder addColumnsFloat(String pattern, int minIdxInclusive, int maxIdxInclusive) 
+public Builder addColumnsFloat(String pattern, int minIdxInclusive, int maxIdxInclusive)
 ```
 
 A convenience method for adding multiple Float columns. For example, to add columns “myFloatCol\_0”, “myFloatCol\_1”, “myFloatCol\_2”, use {- code addColumnsFloat\(“myFloatCol\_%d”,0,2\)}
@@ -349,7 +348,7 @@ A convenience method for adding multiple Float columns. For example, to add colu
 
 ```text
 public Builder addColumnsFloat(String pattern, int minIdxInclusive, int maxIdxInclusive,
-                                        Float minAllowedValue, Float maxAllowedValue, boolean allowNaN, boolean allowInfinite) 
+                                        Float minAllowedValue, Float maxAllowedValue, boolean allowNaN, boolean allowInfinite)
 ```
 
 A convenience method for adding multiple Float columns, with additional restrictions that apply to all columns For example, to add columns “myFloatCol\_0”, “myFloatCol\_1”, “myFloatCol\_2”, use {- code addColumnsFloat\(“myFloatCol\_%d”,0,2,null,null,false,false\)}
@@ -365,7 +364,7 @@ A convenience method for adding multiple Float columns, with additional restrict
 **addColumnDouble**
 
 ```text
-public Builder addColumnDouble(String name) 
+public Builder addColumnDouble(String name)
 ```
 
 Add a Double column with no restrictions on the allowable values, except for no NaN/infinite values allowed
@@ -375,7 +374,7 @@ Add a Double column with no restrictions on the allowable values, except for no 
 **addColumnDouble**
 
 ```text
-public Builder addColumnDouble(String name, Double minAllowedValue, Double maxAllowedValue) 
+public Builder addColumnDouble(String name, Double minAllowedValue, Double maxAllowedValue)
 ```
 
 Add a Double column with the specified restrictions \(and no NaN/Infinite values allowed\)
@@ -389,7 +388,7 @@ Add a Double column with the specified restrictions \(and no NaN/Infinite values
 
 ```text
 public Builder addColumnDouble(String name, Double minAllowedValue, Double maxAllowedValue, boolean allowNaN,
-                        boolean allowInfinite) 
+                        boolean allowInfinite)
 ```
 
 Add a Double column with the specified restrictions
@@ -403,7 +402,7 @@ Add a Double column with the specified restrictions
 **addColumnsDouble**
 
 ```text
-public Builder addColumnsDouble(String... columnNames) 
+public Builder addColumnsDouble(String... columnNames)
 ```
 
 Add multiple Double columns with no restrictions on the allowable values of the columns \(other than no NaN/Infinite\)
@@ -413,7 +412,7 @@ Add multiple Double columns with no restrictions on the allowable values of the 
 **addColumnsDouble**
 
 ```text
-public Builder addColumnsDouble(String pattern, int minIdxInclusive, int maxIdxInclusive) 
+public Builder addColumnsDouble(String pattern, int minIdxInclusive, int maxIdxInclusive)
 ```
 
 A convenience method for adding multiple Double columns. For example, to add columns “myDoubleCol\_0”, “myDoubleCol\_1”, “myDoubleCol\_2”, use {- code addColumnsDouble\(“myDoubleCol\_%d”,0,2\)}
@@ -426,7 +425,7 @@ A convenience method for adding multiple Double columns. For example, to add col
 
 ```text
 public Builder addColumnsDouble(String pattern, int minIdxInclusive, int maxIdxInclusive,
-                        Double minAllowedValue, Double maxAllowedValue, boolean allowNaN, boolean allowInfinite) 
+                        Double minAllowedValue, Double maxAllowedValue, boolean allowNaN, boolean allowInfinite)
 ```
 
 A convenience method for adding multiple Double columns, with additional restrictions that apply to all columns For example, to add columns “myDoubleCol\_0”, “myDoubleCol\_1”, “myDoubleCol\_2”, use {- code addColumnsDouble\(“myDoubleCol\_%d”,0,2,null,null,false,false\)}
@@ -442,7 +441,7 @@ A convenience method for adding multiple Double columns, with additional restric
 **addColumnInteger**
 
 ```text
-public Builder addColumnInteger(String name) 
+public Builder addColumnInteger(String name)
 ```
 
 Add an Integer column with no restrictions on the allowable values
@@ -452,7 +451,7 @@ Add an Integer column with no restrictions on the allowable values
 **addColumnInteger**
 
 ```text
-public Builder addColumnInteger(String name, Integer minAllowedValue, Integer maxAllowedValue) 
+public Builder addColumnInteger(String name, Integer minAllowedValue, Integer maxAllowedValue)
 ```
 
 Add an Integer column with the specified min/max allowable values
@@ -464,7 +463,7 @@ Add an Integer column with the specified min/max allowable values
 **addColumnsInteger**
 
 ```text
-public Builder addColumnsInteger(String... names) 
+public Builder addColumnsInteger(String... names)
 ```
 
 Add multiple Integer columns with no restrictions on the min/max allowable values
@@ -474,7 +473,7 @@ Add multiple Integer columns with no restrictions on the min/max allowable value
 **addColumnsInteger**
 
 ```text
-public Builder addColumnsInteger(String pattern, int minIdxInclusive, int maxIdxInclusive) 
+public Builder addColumnsInteger(String pattern, int minIdxInclusive, int maxIdxInclusive)
 ```
 
 A convenience method for adding multiple Integer columns. For example, to add columns “myIntegerCol\_0”, “myIntegerCol\_1”, “myIntegerCol\_2”, use {- code addColumnsInteger\(“myIntegerCol\_%d”,0,2\)}
@@ -487,7 +486,7 @@ A convenience method for adding multiple Integer columns. For example, to add co
 
 ```text
 public Builder addColumnsInteger(String pattern, int minIdxInclusive, int maxIdxInclusive,
-                        Integer minAllowedValue, Integer maxAllowedValue) 
+                        Integer minAllowedValue, Integer maxAllowedValue)
 ```
 
 A convenience method for adding multiple Integer columns. For example, to add columns “myIntegerCol\_0”, “myIntegerCol\_1”, “myIntegerCol\_2”, use {- code addColumnsInteger\(“myIntegerCol\_%d”,0,2\)}
@@ -501,7 +500,7 @@ A convenience method for adding multiple Integer columns. For example, to add co
 **addColumnCategorical**
 
 ```text
-public Builder addColumnCategorical(String name, String... stateNames) 
+public Builder addColumnCategorical(String name, String... stateNames)
 ```
 
 Add a Categorical column, with the specified state names
@@ -512,7 +511,7 @@ Add a Categorical column, with the specified state names
 **addColumnCategorical**
 
 ```text
-public Builder addColumnCategorical(String name, List<String> stateNames) 
+public Builder addColumnCategorical(String name, List<String> stateNames)
 ```
 
 Add a Categorical column, with the specified state names
@@ -523,7 +522,7 @@ Add a Categorical column, with the specified state names
 **addColumnLong**
 
 ```text
-public Builder addColumnLong(String name) 
+public Builder addColumnLong(String name)
 ```
 
 Add a Long column, with no restrictions on the min/max values
@@ -533,7 +532,7 @@ Add a Long column, with no restrictions on the min/max values
 **addColumnLong**
 
 ```text
-public Builder addColumnLong(String name, Long minAllowedValue, Long maxAllowedValue) 
+public Builder addColumnLong(String name, Long minAllowedValue, Long maxAllowedValue)
 ```
 
 Add a Long column with the specified min/max allowable values
@@ -545,7 +544,7 @@ Add a Long column with the specified min/max allowable values
 **addColumnsLong**
 
 ```text
-public Builder addColumnsLong(String... names) 
+public Builder addColumnsLong(String... names)
 ```
 
 Add multiple Long columns, with no restrictions on the allowable values
@@ -555,7 +554,7 @@ Add multiple Long columns, with no restrictions on the allowable values
 **addColumnsLong**
 
 ```text
-public Builder addColumnsLong(String pattern, int minIdxInclusive, int maxIdxInclusive) 
+public Builder addColumnsLong(String pattern, int minIdxInclusive, int maxIdxInclusive)
 ```
 
 A convenience method for adding multiple Long columns. For example, to add columns “myLongCol\_0”, “myLongCol\_1”, “myLongCol\_2”, use {- code addColumnsLong\(“myLongCol\_%d”,0,2\)}
@@ -568,7 +567,7 @@ A convenience method for adding multiple Long columns. For example, to add colum
 
 ```text
 public Builder addColumnsLong(String pattern, int minIdxInclusive, int maxIdxInclusive, Long minAllowedValue,
-                        Long maxAllowedValue) 
+                        Long maxAllowedValue)
 ```
 
 A convenience method for adding multiple Long columns. For example, to add columns “myLongCol\_0”, “myLongCol\_1”, “myLongCol\_2”, use {- code addColumnsLong\(“myLongCol\_%d”,0,2\)}
@@ -582,7 +581,7 @@ A convenience method for adding multiple Long columns. For example, to add colum
 **addColumn**
 
 ```text
-public Builder addColumn(ColumnMetaData metaData) 
+public Builder addColumn(ColumnMetaData metaData)
 ```
 
 Add a column
@@ -592,7 +591,7 @@ Add a column
 **addColumnString**
 
 ```text
-public Builder addColumnString(String name) 
+public Builder addColumnString(String name)
 ```
 
 Add a String column with no restrictions on the allowable values.
@@ -602,7 +601,7 @@ Add a String column with no restrictions on the allowable values.
 **addColumnsString**
 
 ```text
-public Builder addColumnsString(String... columnNames) 
+public Builder addColumnsString(String... columnNames)
 ```
 
 Add multiple String columns with no restrictions on the allowable values
@@ -613,7 +612,7 @@ Add multiple String columns with no restrictions on the allowable values
 
 ```text
 public Builder addColumnString(String name, String regex, Integer minAllowableLength,
-                        Integer maxAllowableLength) 
+                        Integer maxAllowableLength)
 ```
 
 Add a String column with the specified restrictions
@@ -626,7 +625,7 @@ Add a String column with the specified restrictions
 **addColumnsString**
 
 ```text
-public Builder addColumnsString(String pattern, int minIdxInclusive, int maxIdxInclusive) 
+public Builder addColumnsString(String pattern, int minIdxInclusive, int maxIdxInclusive)
 ```
 
 A convenience method for adding multiple numbered String columns. For example, to add columns “myStringCol\_0”, “myStringCol\_1”, “myStringCol\_2”, use {- code addColumnsString\(“myStringCol\_%d”,0,2\)}
@@ -639,7 +638,7 @@ A convenience method for adding multiple numbered String columns. For example, t
 
 ```text
 public Builder addColumnsString(String pattern, int minIdxInclusive, int maxIdxInclusive, String regex,
-                        Integer minAllowedLength, Integer maxAllowedLength) 
+                        Integer minAllowedLength, Integer maxAllowedLength)
 ```
 
 A convenience method for adding multiple numbered String columns. For example, to add columns “myStringCol\_0”, “myStringCol\_1”, “myStringCol\_2”, use {- code addColumnsString\(“myStringCol\_%d”,0,2\)}
@@ -654,7 +653,7 @@ A convenience method for adding multiple numbered String columns. For example, t
 **addColumnTime**
 
 ```text
-public Builder addColumnTime(String columnName, TimeZone timeZone) 
+public Builder addColumnTime(String columnName, TimeZone timeZone)
 ```
 
 Add a Time column with no restrictions on the min/max allowable times **NOTE**: Time columns are represented by LONG \(epoch millisecond\) values. For time values in human-readable formats, use String columns + StringToTimeTransform
@@ -665,7 +664,7 @@ Add a Time column with no restrictions on the min/max allowable times **NOTE**: 
 **addColumnTime**
 
 ```text
-public Builder addColumnTime(String columnName, DateTimeZone timeZone) 
+public Builder addColumnTime(String columnName, DateTimeZone timeZone)
 ```
 
 Add a Time column with no restrictions on the min/max allowable times **NOTE**: Time columns are represented by LONG \(epoch millisecond\) values. For time values in human-readable formats, use String columns + StringToTimeTransform
@@ -676,7 +675,7 @@ Add a Time column with no restrictions on the min/max allowable times **NOTE**: 
 **addColumnTime**
 
 ```text
-public Builder addColumnTime(String columnName, DateTimeZone timeZone, Long minValidValue, Long maxValidValue) 
+public Builder addColumnTime(String columnName, DateTimeZone timeZone, Long minValidValue, Long maxValidValue)
 ```
 
 Add a Time column with the specified restrictions **NOTE**: Time columns are represented by LONG \(epoch millisecond\) values. For time values in human-readable formats, use String columns + StringToTimeTransform
@@ -689,7 +688,7 @@ Add a Time column with the specified restrictions **NOTE**: Time columns are rep
 **addColumnNDArray**
 
 ```text
-public Builder addColumnNDArray(String columnName, long[] shape) 
+public Builder addColumnNDArray(String columnName, long[] shape)
 ```
 
 Add a NDArray column
@@ -700,7 +699,7 @@ Add a NDArray column
 **build**
 
 ```text
-public Schema build() 
+public Schema build()
 ```
 
 Create the Schema
@@ -708,7 +707,7 @@ Create the Schema
 **inferMultiple**
 
 ```text
-public static Schema inferMultiple(List<List<Writable>> record) 
+public static Schema inferMultiple(List<List<Writable>> record)
 ```
 
 Infers a schema based on the record. The column names are based on indexing.
@@ -719,7 +718,7 @@ Infers a schema based on the record. The column names are based on indexing.
 **infer**
 
 ```text
-public static Schema infer(List<Writable> record) 
+public static Schema infer(List<Writable> record)
 ```
 
 Infers a schema based on the record. The column names are based on indexing.
@@ -734,7 +733,7 @@ Infers a schema based on the record. The column names are based on indexing.
 **inferSequenceMulti**
 
 ```text
-public static SequenceSchema inferSequenceMulti(List<List<List<Writable>>> record) 
+public static SequenceSchema inferSequenceMulti(List<List<List<Writable>>> record)
 ```
 
 Infers a sequence schema based on the record
@@ -745,7 +744,7 @@ Infers a sequence schema based on the record
 **inferSequence**
 
 ```text
-public static SequenceSchema inferSequence(List<List<Writable>> record) 
+public static SequenceSchema inferSequence(List<List<Writable>> record)
 ```
 
 Infers a sequence schema based on the record

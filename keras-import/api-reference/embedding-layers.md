@@ -9,7 +9,7 @@ Imports an Embedding layer from Keras.
 **KerasEmbedding**
 
 ```text
-public KerasEmbedding() throws UnsupportedKerasConfigurationException 
+public KerasEmbedding() throws UnsupportedKerasConfigurationException
 ```
 
 Pass through constructor for unit tests
@@ -19,7 +19,7 @@ Pass through constructor for unit tests
 **getEmbeddingLayer**
 
 ```text
-public EmbeddingSequenceLayer getEmbeddingLayer() 
+public EmbeddingSequenceLayer getEmbeddingLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -31,7 +31,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -43,7 +43,7 @@ Get layer output type.
 **getNumParams**
 
 ```text
-public int getNumParams() 
+public int getNumParams()
 ```
 
 Returns number of trainable parameters in layer.
@@ -53,7 +53,7 @@ Returns number of trainable parameters in layer.
 **setWeights**
 
 ```text
-public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException 
+public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException
 ```
 
 Set weights for layer.

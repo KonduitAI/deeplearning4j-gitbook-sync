@@ -89,5 +89,3 @@ val conf = new NeuralNetConfiguration.Builder()
     .build()
 ```
 
-
-

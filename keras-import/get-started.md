@@ -14,7 +14,7 @@ tf.keras import is not supported yet.
 
 Below is a [video tutorial](https://www.youtube.com/embed/bI1aR1Tj2DM) demonstrating working code to load a Keras model into Deeplearning4j and validating the working network. Instructor Tom Hanlon provides an overview of a simple classifier over Iris data built in Keras with a Theano backend, and exported and loaded into Deeplearning4j:
 
-{% embed url="https://www.youtube.com/embed/bI1aR1Tj2DM" %}
+{% embed url="https://www.youtube.com/embed/bI1aR1Tj2DM" caption="" %}
 
 If you have trouble viewing the video, please click here to [view it on YouTube](https://www.youtube.com/embed/bI1aR1Tj2DM).
 

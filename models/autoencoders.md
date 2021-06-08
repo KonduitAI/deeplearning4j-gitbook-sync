@@ -19,7 +19,7 @@ Autoencoder layer. Adds noise to input and learn a reconstruction function.
 **corruptionLevel**
 
 ```text
-public Builder corruptionLevel(double corruptionLevel) 
+public Builder corruptionLevel(double corruptionLevel)
 ```
 
 Level of corruption - 0.0 \(none\) to 1.0 \(all values corrupted\)
@@ -27,7 +27,7 @@ Level of corruption - 0.0 \(none\) to 1.0 \(all values corrupted\)
 **sparsity**
 
 ```text
-public Builder sparsity(double sparsity) 
+public Builder sparsity(double sparsity)
 ```
 
 Autoencoder sparity parameter
@@ -49,7 +49,7 @@ A note on scores during pretraining: This implementation minimizes the negative 
 **encoderLayerSizes**
 
 ```text
-public Builder encoderLayerSizes(int... encoderLayerSizes) 
+public Builder encoderLayerSizes(int... encoderLayerSizes)
 ```
 
 Size of the encoder layers, in units. Each encoder layer is functionally equivalent to a {- link org.deeplearning4j.nn.conf.layers.DenseLayer}. Typically the number and size of the decoder layers \(set via {- link \#decoderLayerSizes\(int…\)} is similar to the encoder layers.
@@ -57,7 +57,7 @@ Size of the encoder layers, in units. Each encoder layer is functionally equival
 **setEncoderLayerSizes**
 
 ```text
-public void setEncoderLayerSizes(int... encoderLayerSizes) 
+public void setEncoderLayerSizes(int... encoderLayerSizes)
 ```
 
 Size of the encoder layers, in units. Each encoder layer is functionally equivalent to a {- link org.deeplearning4j.nn.conf.layers.DenseLayer}. Typically the number and size of the decoder layers \(set via {- link \#decoderLayerSizes\(int…\)} is similar to the encoder layers.
@@ -67,7 +67,7 @@ Size of the encoder layers, in units. Each encoder layer is functionally equival
 **decoderLayerSizes**
 
 ```text
-public Builder decoderLayerSizes(int... decoderLayerSizes) 
+public Builder decoderLayerSizes(int... decoderLayerSizes)
 ```
 
 Size of the decoder layers, in units. Each decoder layer is functionally equivalent to a {- link org.deeplearning4j.nn.conf.layers.DenseLayer}. Typically the number and size of the decoder layers is similar to the encoder layers \(set via {- link \#encoderLayerSizes\(int…\)}.
@@ -77,7 +77,7 @@ Size of the decoder layers, in units. Each decoder layer is functionally equival
 **setDecoderLayerSizes**
 
 ```text
-public void setDecoderLayerSizes(int... decoderLayerSizes) 
+public void setDecoderLayerSizes(int... decoderLayerSizes)
 ```
 
 Size of the decoder layers, in units. Each decoder layer is functionally equivalent to a {- link org.deeplearning4j.nn.conf.layers.DenseLayer}. Typically the number and size of the decoder layers is similar to the encoder layers \(set via {- link \#encoderLayerSizes\(int…\)}.
@@ -87,21 +87,20 @@ Size of the decoder layers, in units. Each decoder layer is functionally equival
 **reconstructionDistribution**
 
 ```text
-public Builder reconstructionDistribution(ReconstructionDistribution distribution) 
+public Builder reconstructionDistribution(ReconstructionDistribution distribution)
 ```
 
 The reconstruction distribution for the data given the hidden state - i.e., P\(data\|Z\).  
-This should be selected carefully based on the type of data being modelled. For example:  
-- {- link GaussianReconstructionDistribution} + {identity or tanh} for real-valued \(Gaussian\) data  
-- {- link BernoulliReconstructionDistribution} + sigmoid for binary-valued \(0 or 1\) data  
+This should be selected carefully based on the type of data being modelled. For example:
 
-
+* {- link GaussianReconstructionDistribution} + {identity or tanh} for real-valued \(Gaussian\) data  
+* {- link BernoulliReconstructionDistribution} + sigmoid for binary-valued \(0 or 1\) data  
 * param distribution Reconstruction distribution
 
 **lossFunction**
 
 ```text
-public Builder lossFunction(IActivation outputActivationFn, LossFunctions.LossFunction lossFunction) 
+public Builder lossFunction(IActivation outputActivationFn, LossFunctions.LossFunction lossFunction)
 ```
 
 Configure the VAE to use the specified loss function for the reconstruction, instead of a ReconstructionDistribution. Note that this is NOT following the standard VAE design \(as per Kingma & Welling\), which assumes a probabilistic output - i.e., some p\(x\|z\). It is however a valid network configuration, allowing for optimization of more traditional objectives such as mean squared error.  
@@ -113,7 +112,7 @@ Note: clearly, setting the loss function here will override any previously set r
 **lossFunction**
 
 ```text
-public Builder lossFunction(Activation outputActivationFn, LossFunctions.LossFunction lossFunction) 
+public Builder lossFunction(Activation outputActivationFn, LossFunctions.LossFunction lossFunction)
 ```
 
 Configure the VAE to use the specified loss function for the reconstruction, instead of a ReconstructionDistribution. Note that this is NOT following the standard VAE design \(as per Kingma & Welling\), which assumes a probabilistic output - i.e., some p\(x\|z\). It is however a valid network configuration, allowing for optimization of more traditional objectives such as mean squared error.  
@@ -125,7 +124,7 @@ Note: clearly, setting the loss function here will override any previously set r
 **lossFunction**
 
 ```text
-public Builder lossFunction(IActivation outputActivationFn, ILossFunction lossFunction) 
+public Builder lossFunction(IActivation outputActivationFn, ILossFunction lossFunction)
 ```
 
 Configure the VAE to use the specified loss function for the reconstruction, instead of a ReconstructionDistribution. Note that this is NOT following the standard VAE design \(as per Kingma & Welling\), which assumes a probabilistic output - i.e., some p\(x\|z\). It is however a valid network configuration, allowing for optimization of more traditional objectives such as mean squared error.  
@@ -137,18 +136,18 @@ Note: clearly, setting the loss function here will override any previously set r
 **pzxActivationFn**
 
 ```text
-public Builder pzxActivationFn(IActivation activationFunction) 
+public Builder pzxActivationFn(IActivation activationFunction)
 ```
 
 Activation function for the input to P\(z\|data\).  
-Care should be taken with this, as some activation functions \(relu, etc\) are not suitable due to being bounded in range \[0,infinity\). 
+Care should be taken with this, as some activation functions \(relu, etc\) are not suitable due to being bounded in range \[0,infinity\).
 
 * param activationFunction Activation function for p\(z\| x\)
 
 **pzxActivationFunction**
 
 ```text
-public Builder pzxActivationFunction(Activation activation) 
+public Builder pzxActivationFunction(Activation activation)
 ```
 
 Activation function for the input to P\(z\|data\).  
@@ -159,7 +158,7 @@ Care should be taken with this, as some activation functions \(relu, etc\) are n
 **nOut**
 
 ```text
-public Builder nOut(int nOut) 
+public Builder nOut(int nOut)
 ```
 
 Set the size of the VAE state Z. This is the output size during standard forward pass, and the size of the distribution P\(Z\|data\) during pretraining.
@@ -169,7 +168,7 @@ Set the size of the VAE state Z. This is the output size during standard forward
 **numSamples**
 
 ```text
-public Builder numSamples(int numSamples) 
+public Builder numSamples(int numSamples)
 ```
 
 Set the number of samples per data point \(from VAE state Z\) used when doing pretraining. Default value: 1.

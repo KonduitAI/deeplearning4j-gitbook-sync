@@ -66,8 +66,7 @@ val archiveFile = new File(archizePath)
 val extractedPath = DATA_PATH + "Cloud" 
 val extractedFile = new File(extractedPath)
 
-FileUtils.copyURLToFile(new URL(DATA_URL), archiveFile) 
-
+FileUtils.copyURLToFile(new URL(DATA_URL), archiveFile)
 ```
 
 Next, we must extract the data from the tar.gz file, recreate directories within the tar.gz file into our temporary directory, and copy the files into our temporary directory.
@@ -88,25 +87,25 @@ while(entry != null){
         fileCount = 0
     }
     else {
-        
+
         val data = new Array[scala.Byte](4 * BUFFER_SIZE)
 
         val fos = new FileOutputStream(DATA_PATH + entry.getName());
         val dest = new BufferedOutputStream(fos, BUFFER_SIZE);
         var count = tais.read(data, 0, BUFFER_SIZE)
-        
+
         while (count != -1) {
             dest.write(data, 0, count)
             count = tais.read(data, 0, BUFFER_SIZE)
         }
-        
+
         dest.close()
         fileCount = fileCount + 1
     }
     if(fileCount % 1000 == 0){
         print(".")
     }
-    
+
     entry = tais.getNextEntry().asInstanceOf[TarArchiveEntry]
 }
 ```

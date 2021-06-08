@@ -37,7 +37,7 @@ a[0:5,3:4,6:7]
 
 which would give you the first 5 channels, rows 3 to 4 and columns 6 to 7, and so forth for _n_ dimensions, which each individual dimension’s slice starting before the colon and ending after it.
 
-### Linear Buffer <a id="linear-buffer"></a>
+## Linear Buffer <a id="linear-buffer"></a>
 
 Now, while it is useful to imagine matrices as two-dimensional planes, and 3-D tensors are cubic volumes, we store all tensors as a linear buffer. That is, they are all flattened to a row of numbers.
 
@@ -45,7 +45,7 @@ For that linear buffer, we specify something called _stride_. Stride tells the c
 
 Here’s a brief video summarizing how tensors are converted into linear byte buffers for ND4J.
 
-### Additional Resources and Definitions <a id="additional-resources-and-definitions"></a>
+## Additional Resources and Definitions <a id="additional-resources-and-definitions"></a>
 
 The word tensor derives from the Latin _tendere_, or “to stretch”; therefore, tensor relates to _that which stretches, the stretcher_. Tensor was introduced to English from the German in 1915, after being coined by Woldemar Voigt in 1898. The mathematical object is called a tensor because an early application of the idea was the study of materials stretching under tension.
 

@@ -8,76 +8,76 @@ weight: 1
 
 # Layer Spaces
 
-### ActivationLayerSpace
+## ActivationLayerSpace
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/arbiter/arbiter-deeplearning4j/src/main/java/org/deeplearning4j/arbiter/layers/ActivationLayerSpace.java)
 
-### AutoEncoderLayerSpace
+## AutoEncoderLayerSpace
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/arbiter/arbiter-deeplearning4j/src/main/java/org/deeplearning4j/arbiter/layers/AutoEncoderLayerSpace.java)
 
 Layer space for autoencoder layers
 
-### BatchNormalizationSpace
+## BatchNormalizationSpace
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/arbiter/arbiter-deeplearning4j/src/main/java/org/deeplearning4j/arbiter/layers/BatchNormalizationSpace.java)
 
 LayerSpace for batch normalization layers
 
-### Bidirectional
+## Bidirectional
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/arbiter/arbiter-deeplearning4j/src/main/java/org/deeplearning4j/arbiter/layers/Bidirectional.java)
 
 Bidirectional layer wrapper. Can be used wrap an existing layer space, in the same way that
 
-### ConvolutionLayerSpace
+## ConvolutionLayerSpace
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/arbiter/arbiter-deeplearning4j/src/main/java/org/deeplearning4j/arbiter/layers/ConvolutionLayerSpace.java)
 
 Layer space for convolutional layers
 
-### DenseLayerSpace
+## DenseLayerSpace
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/arbiter/arbiter-deeplearning4j/src/main/java/org/deeplearning4j/arbiter/layers/DenseLayerSpace.java)
 
 layer hyperparameter configuration space for dense layers \(i.e., multi-layer perceptron layers\)
 
-### EmbeddingLayerSpace
+## EmbeddingLayerSpace
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/arbiter/arbiter-deeplearning4j/src/main/java/org/deeplearning4j/arbiter/layers/EmbeddingLayerSpace.java)
 
-### GlobalPoolingLayerSpace
+## GlobalPoolingLayerSpace
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/arbiter/arbiter-deeplearning4j/src/main/java/org/deeplearning4j/arbiter/layers/GlobalPoolingLayerSpace.java)
 
-### GravesBidirectionalLSTMLayerSpace
+## GravesBidirectionalLSTMLayerSpace
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/arbiter/arbiter-deeplearning4j/src/main/java/org/deeplearning4j/arbiter/layers/GravesBidirectionalLSTMLayerSpace.java)
 
 Layer space for Bidirectional LSTM layers
 
-### GravesLSTMLayerSpace
+## GravesLSTMLayerSpace
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/arbiter/arbiter-deeplearning4j/src/main/java/org/deeplearning4j/arbiter/layers/GravesLSTMLayerSpace.java)
 
 Layer space for LSTM layers
 
-### LSTMLayerSpace
+## LSTMLayerSpace
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/arbiter/arbiter-deeplearning4j/src/main/java/org/deeplearning4j/arbiter/layers/LSTMLayerSpace.java)
 
 Layer space for LSTM layers
 
-### OCNNLayerSpace
+## OCNNLayerSpace
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/arbiter/arbiter-deeplearning4j/src/main/java/org/deeplearning4j/arbiter/layers/OCNNLayerSpace.java)
 
 Use hiddenLayerSize instead
 
-#### **numHidden**
+### **numHidden**
 
 ```text
-public Builder numHidden(int numHidden) 
+public Builder numHidden(int numHidden)
 ```
 
 Use hiddenLayerSize instead
@@ -85,26 +85,25 @@ Use hiddenLayerSize instead
 * param numHidden
 * return
 
-### OutputLayerSpace
+## OutputLayerSpace
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/arbiter/arbiter-deeplearning4j/src/main/java/org/deeplearning4j/arbiter/layers/OutputLayerSpace.java)
 
 Layer hyperparameter configuration space for output layers
 
-### RnnOutputLayerSpace
+## RnnOutputLayerSpace
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/arbiter/arbiter-deeplearning4j/src/main/java/org/deeplearning4j/arbiter/layers/RnnOutputLayerSpace.java)
 
 Layer hyperparametor configuration space for RnnOutputLayer
 
-### SubsamplingLayerSpace
+## SubsamplingLayerSpace
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/arbiter/arbiter-deeplearning4j/src/main/java/org/deeplearning4j/arbiter/layers/SubsamplingLayerSpace.java)
 
 Layer hyperparameter configuration space for subsampling layers
 
-### VariationalAutoencoderLayerSpace
+## VariationalAutoencoderLayerSpace
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/arbiter/arbiter-deeplearning4j/src/main/java/org/deeplearning4j/arbiter/layers/VariationalAutoencoderLayerSpace.java)  
-
+[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/arbiter/arbiter-deeplearning4j/src/main/java/org/deeplearning4j/arbiter/layers/VariationalAutoencoderLayerSpace.java)
 

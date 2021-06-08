@@ -9,7 +9,7 @@ Keras wrapper for DL4J dropout layer with GaussianNoise.
 **KerasGaussianNoise**
 
 ```text
-public KerasGaussianNoise(Integer kerasVersion) throws UnsupportedKerasConfigurationException 
+public KerasGaussianNoise(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
 Pass-through constructor from KerasLayer
@@ -20,7 +20,7 @@ Pass-through constructor from KerasLayer
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -32,7 +32,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getGaussianNoiseLayer**
 
 ```text
-public DropoutLayer getGaussianNoiseLayer() 
+public DropoutLayer getGaussianNoiseLayer()
 ```
 
 Get DL4J DropoutLayer with Gaussian dropout.
@@ -48,7 +48,7 @@ Keras wrapper for DL4J dropout layer with AlphaDropout.
 **KerasAlphaDropout**
 
 ```text
-public KerasAlphaDropout(Integer kerasVersion) throws UnsupportedKerasConfigurationException 
+public KerasAlphaDropout(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
 Pass-through constructor from KerasLayer
@@ -59,7 +59,7 @@ Pass-through constructor from KerasLayer
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -71,7 +71,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getAlphaDropoutLayer**
 
 ```text
-public DropoutLayer getAlphaDropoutLayer() 
+public DropoutLayer getAlphaDropoutLayer()
 ```
 
 Get DL4J DropoutLayer with Alpha dropout.
@@ -87,7 +87,7 @@ Keras wrapper for DL4J dropout layer with GaussianDropout.
 **KerasGaussianDropout**
 
 ```text
-public KerasGaussianDropout(Integer kerasVersion) throws UnsupportedKerasConfigurationException 
+public KerasGaussianDropout(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
 Pass-through constructor from KerasLayer
@@ -98,7 +98,7 @@ Pass-through constructor from KerasLayer
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -110,7 +110,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getGaussianDropoutLayer**
 
 ```text
-public DropoutLayer getGaussianDropoutLayer() 
+public DropoutLayer getGaussianDropoutLayer()
 ```
 
 Get DL4J DropoutLayer with Gaussian dropout.

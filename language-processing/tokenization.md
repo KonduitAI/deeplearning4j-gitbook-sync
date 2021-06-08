@@ -10,7 +10,7 @@ weight: 10
 
 ## What is Tokenization?
 
-Tokenization is the process of breaking text down into individual words. Word windows are also composed of tokens. [Word2Vec](deeplearning4j-nlp/word2vec.html) can output text windows that comprise training examples for input into neural nets, as seen here.
+Tokenization is the process of breaking text down into individual words. Word windows are also composed of tokens. [Word2Vec](https://github.com/KonduitAI/deeplearning4j-gitbook-sync/tree/0dcfcae728f97b1a1ad90384c89e04c41555b489/language-processing/deeplearning4j-nlp/word2vec.html) can output text windows that comprise training examples for input into neural nets, as seen here.
 
 ## Example
 
