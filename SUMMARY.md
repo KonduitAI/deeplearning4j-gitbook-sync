@@ -44,8 +44,8 @@
         * [Doc2Vec](deeplearning4j/tutorials/language-processing/doc2vec.md)
         * [Overview](deeplearning4j/tutorials/language-processing/overview.md)
         * [Sentence Iterator](deeplearning4j/tutorials/language-processing/sentence-iterator.md)
-        * [Tokenization](deeplearning4j/tutorial/language-processing/tokenization.md)
-        * [Vocabulary Cache](deeplearning4j/tutorial/language-processing/vocab-cache.md)
+        * [Tokenization](deeplearning4j/tutorials/language-processing/tokenization.md)
+        * [Vocabulary Cache](deeplearning4j/tutorials/language-processing/vocab-cache.md)
 
   * [How To Guides](deeplearning4j/how-to-guides)
     * [Keras Import](deeplearning4j/how-to-guides/keras-import)
