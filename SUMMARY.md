@@ -43,7 +43,7 @@
     * [Language Processing](deeplearning4j/tutorials/language-processing)
         * [Doc2Vec](deeplearning4j/tutorials/language-processing/doc2vec.md)
         * [Overview](deeplearning4j/tutorials/language-processing/overview.md)
-        * [Sentence Iterator](deeplearning4j/tutorial/language-processing/sentence-iterator.md)
+        * [Sentence Iterator](deeplearning4j/tutorials/language-processing/sentence-iterator.md)
         * [Tokenization](deeplearning4j/tutorial/language-processing/tokenization.md)
         * [Vocabulary Cache](deeplearning4j/tutorial/language-processing/vocab-cache.md)
 
