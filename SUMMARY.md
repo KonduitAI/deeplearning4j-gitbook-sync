@@ -9,7 +9,7 @@
      * [Backends](multi-project/explanation/config/backends)
         * [Cudnn](multi-project/explanation/config/backends/config-cudnn.md)
         * [Cpu](multi-project/explanation/config/backends/cpu.md)
-        * [Performance issues](multi-project/config/backends/performance-issues.md)
+        * [Performance issues](multi-project/explanation/config/backends/performance-issues.md)
      * [Memory](multi-project/explanation/config/config-memory.md)
           * [Workspaces](multi-project/explanation/config-memory/workspaces.md)
      * [Build Tools](multi-project/explanation/config/buildtools.md)
