@@ -194,8 +194,7 @@
         * [Garbage Collection](python4j/reference/garbage-collection.md)
         * [Python Path](python4j/reference/python-path.md)
         * [Python Types](python4j/reference/python-types.md)
- 
-
+    
 ## Spark
   * Tutorials
     * [Introduction](spark/README.md)
