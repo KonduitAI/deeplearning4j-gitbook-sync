@@ -36,7 +36,7 @@ In terms of encoding, an NDArray can be encoded in either C \(row-major\) or For
 
 The following image shows how a simple 3x3 \(2d\) NDArray is stored in memory,
 
-![](../.gitbook/assets/c_vs_f_order%20%281%29.png)
+![](../.gitbook/assets/c_vs_f_order%20%281%29%20%281%29.png)
 
 In the above array, we have:
 
@@ -64,7 +64,7 @@ So see how views can be powerful, consider a simple task: adding 1.0 to the firs
 
 Let's break down what is happening here. First, the `getRow(0)` operation returns an INDArray that is a view of the original. Note that both `myArrays` and `myArray.getRow(0)` point to the same area in memory:
 
-![](../.gitbook/assets/row_addi.png)
+![](../.gitbook/assets/row_addi%20%281%29%20%281%29.png)
 
 then, after the addi\(1.0\) is performed, we have the following situation:
 
@@ -449,7 +449,7 @@ or equivalently,
 
 Suppose this was executed on a 3x3 input array. Visually, this sum operation along dimension 0 operation looks like:
 
-![](../.gitbook/assets/sum_dim0%20%281%29.png)
+![](../.gitbook/assets/sum_dim0%20%281%29%20%281%29.png)
 
 Note that here, the input has shape `[3,3]` \(3 rows, 3 columns\) and the output has shape `[1,3]` \(i.e., our output is a row vector\). Had we instead done the operation along dimension 1, we would get a column vector with shape `[3,1]`, with values `(12,13,11)`.
 

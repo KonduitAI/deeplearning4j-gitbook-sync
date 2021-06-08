@@ -121,15 +121,15 @@ xcode-select --install
    mvn clean install
    ```
 
-2. Open IntelliJ and choose Import Project. Then select the main 'dl4j-examples' directory. \(Note: the example in the illustration below refers to an outdated repository named dl4j-0.4-examples. However, the repository that you will download and install will be called dl4j-examples\).![select directory](../.gitbook/assets/install_intj_1%20%282%29.png)
+2. Open IntelliJ and choose Import Project. Then select the main 'dl4j-examples' directory. \(Note: the example in the illustration below refers to an outdated repository named dl4j-0.4-examples. However, the repository that you will download and install will be called dl4j-examples\).![select directory](../.gitbook/assets/install_intj_1%20%284%29%20%283%29.png)
 3. Choose 'Import project from external model' and ensure that Maven is selected. 
 
-   ![select directory](../.gitbook/assets/install_intj_2%20%282%29.png)
+   ![select directory](../.gitbook/assets/install_intj_2%20%284%29%20%282%29.png)
 
 4. Continue through the wizard's options. Select the SDK that begins with `jdk`. \(You may need to click on a plus sign to see your options...\) Then click Finish. Wait a moment for IntelliJ to download all the dependencies. You'll see the horizontal bar working on the lower right.
 5. Pick an example from the file tree on the left.  Right-click the file to run.
 
-   ![run IntelliJ example](../.gitbook/assets/install_intj_3%20%283%29.png)
+   ![run IntelliJ example](../.gitbook/assets/install_intj_3%20%284%29%20%284%29.png)
 
 ## Using DL4J In Your Own Projects: Configuring the POM.xml File
 
@@ -145,11 +145,11 @@ Within IntelliJ, you will need to choose the first Deeplearning4j example you're
 
 To run the example, right click on it and select the green button in the drop-down menu. You will see, in IntelliJ's bottom window, a series of scores. The rightmost number is the error score for the network's classifications. If your network is learning, then that number will decrease over time with each batch it processes. At the end, this window will tell you how accurate your neural-network model has become:
 
-![](../.gitbook/assets/mlp_classifier_results%20%284%29.png)
+![](../.gitbook/assets/mlp_classifier_results%20%284%29%20%284%29.png)
 
 In another window, a graph will appear, showing you how the multilayer perceptron \(MLP\) has classified the data in the example. It will look like this:
 
-![](../.gitbook/assets/mlp_classifier_viz.png)
+![](../.gitbook/assets/mlp_classifier_viz%20%284%29.png)
 
 Congratulations! You just trained your first neural network with Deeplearning4j.
 

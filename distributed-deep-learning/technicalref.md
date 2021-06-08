@@ -26,7 +26,7 @@ The key feature of this approach is that opposed to relaying all parameters/upda
 
 Note that updates below the threshold are not discarded but accumulated in a “residual” vector to be applied later. Also of note is the absence of a centralized parameter server which is replaced by peer to peer communication as indicated in the image below.
 
-![](../.gitbook/assets/strom_asgd%20%281%29.svg)
+![](../.gitbook/assets/strom_asgd%20%282%29.svg)
 
 The update vectors, δi,j in the image above, are: 1. Sparse: only some of the gradients are communicated in each vector δi,j \(the remainder are assumed to be 0\) - sparse entries are encoded using an integer index 2. Quantized to a single bit: each element of the sparse update vector takes value +τ or −τ. This value of τ is the same for all elements of the vector, hence only a single bit is required to differentiate between the two options 3. Integer indexes \(used to identify the entries in the sparse array\) are optionally compressed using entropy coding to further reduce update sizes \(the author quotes a further 3x reduction at the cost of additional computation, though the benefit may not be worth the additional cost\)
 
