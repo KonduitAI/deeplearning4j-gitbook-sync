@@ -22,7 +22,7 @@
 * [How To Guides](multi-project/how-to-guides)
     * [Contribute](multi-project/how-to-guides/contribute)
          * [Eclipse Contributors](multi-project/how-to-guides/contribute/eclipse-contributors.md)
-    * [Developer documentation](multi-project/how-to-guides/developer-docs.md)
+    * [Developer documentation](multi-project/how-to-guides/developer-docs)
         * [Github Actions](multi-project/how-to-guides/developer-docs/github-actions-overview.md)
         * [Javacpp](multi-project/how-to-guides/developer-docs/javacpp.md)
         * [Release](multi-project/how-to-guides/developer-docs/release.md)
