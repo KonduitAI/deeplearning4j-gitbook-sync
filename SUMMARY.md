@@ -114,7 +114,7 @@
    * [Serialization](datavec/explanation/serialization.md)
    * [Transforms](datavec/explanation/transforms.md)
    * [Visualizations](datavec/explanation/visualization.md) 
-* [Reference](datavec/reference)
+
 
 ## Nd4j
   * Tutorials
