@@ -144,7 +144,7 @@
 * Tutorials
 * How To Guides
 * Explanation
-* Referenc
+* Reference
 
 ## Samediff
   * Tutorials
@@ -156,7 +156,7 @@
   * Explanation
      * [Ops](samediff/explanation/ops.md)
   * Reference
-       * [Model Import Framework](samediff/reference/model-import-framework.md)
+       * [Model Import Framework](samediff/reference/model-import-framework)
             * [Architecture](samediff/reference/model-import-framework/architecture.md)
             * [Custom Framework](samediff/reference/model-import-framework/custom-framework.md)
             * [Custom Override](samediff/reference/model-import-framework/custom-override.md)
