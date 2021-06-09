@@ -117,7 +117,7 @@ xcode-select --install
 
    ```text
    git clone https://github.com/eclipse/deeplearning4j-examples.git
-   cd dl4j-examples/
+   cd deeplearning4j-examples/dl4j-examples/
    mvn clean install
    ```
 
