@@ -36,7 +36,7 @@ In terms of encoding, an NDArray can be encoded in either C \(row-major\) or For
 
 The following image shows how a simple 3x3 \(2d\) NDArray is stored in memory,
 
-![](../.gitbook/assets/c_vs_f_order%20%281%29.png)
+![](../../.gitbook/assets/c_vs_f_order%20%281%29.png)
 
 In the above array, we have:
 
@@ -64,11 +64,11 @@ So see how views can be powerful, consider a simple task: adding 1.0 to the firs
 
 Let's break down what is happening here. First, the `getRow(0)` operation returns an INDArray that is a view of the original. Note that both `myArrays` and `myArray.getRow(0)` point to the same area in memory:
 
-![](../.gitbook/assets/row_addi.png)
+![](../../.gitbook/assets/row_addi.png)
 
 then, after the addi\(1.0\) is performed, we have the following situation:
 
-![](../.gitbook/assets/row_addi_2%20%281%29.png)
+![](../../.gitbook/assets/row_addi_2%20%281%29.png)
 
 As we can see, changes to the NDArray returned by `myArray.getRow(0)` will be reflected in the original array `myArray`; similarly, changes to `myArray` will be reflected in the row vector.
 
@@ -340,7 +340,7 @@ The tensor along dimension method takes two arguments:
 
 The simplest case is a tensor along a single row or column of a 2d array. Consider the following diagram \(where dimension 0 \(rows\) are indexed going down the page, and dimension 1 \(columns\) are indexed going across the page\):
 
-![](../.gitbook/assets/tad_2d%20%281%29.png)
+![](../../.gitbook/assets/tad_2d%20%281%29.png)
 
 Note that the output of the tensorAlongDimension call with one dimension is a row vector in all cases.
 
@@ -397,9 +397,9 @@ Many ops have both in-place and copy operations. Suppose we want to add two arra
 
 Suppose we have two INDArrays `x` and `y` and we do `INDArray z = x.add(y)` or `INDArray z = x.addi(y)`. The results of these operations are shown below.
 
-![](../.gitbook/assets/add_v_addi_1.png)
+![](../../.gitbook/assets/add_v_addi_1.png)
 
-![](../.gitbook/assets/add_v_addi_2.png)
+![](../../.gitbook/assets/add_v_addi_2.png)
 
 Note that with the `x.add(y)` operation, the original array `x` is not modified. Comparatively, with the in-place version `x.addi(y)`, the array `x` is modified. In both versions of the add operation, an INDArray is returned that contains the result. Note however that in the case of the `addi` operation, the result array us actually just the original array `x`.
 
@@ -449,7 +449,7 @@ or equivalently,
 
 Suppose this was executed on a 3x3 input array. Visually, this sum operation along dimension 0 operation looks like:
 
-![](../.gitbook/assets/sum_dim0%20%281%29.png)
+![](../../.gitbook/assets/sum_dim0%20%281%29.png)
 
 Note that here, the input has shape `[3,3]` \(3 rows, 3 columns\) and the output has shape `[1,3]` \(i.e., our output is a row vector\). Had we instead done the operation along dimension 1, we would get a column vector with shape `[3,1]`, with values `(12,13,11)`.
 
@@ -471,7 +471,7 @@ Index accumulation ops are often most useful when executed along a dimension. Fo
 
 Suppose this was executed on a 3x3 input array. Visually, this argmax/IAMax operation along dimension 0 operation looks like:
 
-![](../.gitbook/assets/argmax_dim0.png)
+![](../../.gitbook/assets/argmax_dim0.png)
 
 As with the accumulation op described above, the output has shape `[1,3]`. Again, had we instead done the operation along dimension 1, we would get a column vector with shape `[3,1]`, with values `(1,0,2)`.
 
@@ -483,7 +483,7 @@ Some of the more useful operations are vector operations, such as addRowVector a
 
 Consider for example the operation `x.addRowVector(y)` where `x` is a matrix and `y` is a row vector. In this case, the `addRowVector` operation adds the row vector `y` to each row of the matrix `x`, as shown below.
 
-![](../.gitbook/assets/addrowvector.png)
+![](../../.gitbook/assets/addrowvector.png)
 
 As with other ops, there are inplace and copy versions. There are also column column versions of these operations, such as `addColumnVector`, which adds a column vector to each column of the original INDArray.
 
