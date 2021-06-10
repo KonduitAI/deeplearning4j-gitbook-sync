@@ -10,7 +10,7 @@ Imports a Keras 1D Pooling layer as a DL4J Subsampling layer.
 
 ```text
 public KerasPooling1D(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -22,7 +22,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getSubsampling1DLayer**
 
 ```text
-public Subsampling1DLayer getSubsampling1DLayer() 
+public Subsampling1DLayer getSubsampling1DLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -35,7 +35,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -54,7 +54,7 @@ Utility functionality for Keras pooling layers.
 
 ```text
 public static PoolingType mapPoolingType(String className, KerasLayerConfiguration conf)
-            throws UnsupportedKerasConfigurationException 
+            throws UnsupportedKerasConfigurationException
 ```
 
 Map Keras pooling layers to DL4J pooling types.
@@ -73,7 +73,7 @@ Imports a Keras 3D Pooling layer as a DL4J Subsampling3D layer.
 
 ```text
 public KerasPooling3D(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -85,7 +85,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getSubsampling3DLayer**
 
 ```text
-public Subsampling3DLayer getSubsampling3DLayer() 
+public Subsampling3DLayer getSubsampling3DLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -98,7 +98,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -117,7 +117,7 @@ Imports a Keras Pooling layer as a DL4J Subsampling layer.
 
 ```text
 public KerasGlobalPooling(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -129,7 +129,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getGlobalPoolingLayer**
 
 ```text
-public GlobalPoolingLayer getGlobalPoolingLayer() 
+public GlobalPoolingLayer getGlobalPoolingLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -142,7 +142,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getInputPreprocessor**
 
 ```text
-public InputPreProcessor getInputPreprocessor(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputPreProcessor getInputPreprocessor(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Gets appropriate DL4J InputPreProcessor for given InputTypes.
@@ -155,7 +155,7 @@ Gets appropriate DL4J InputPreProcessor for given InputTypes.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -174,7 +174,7 @@ Imports a Keras 2D Pooling layer as a DL4J Subsampling layer.
 
 ```text
 public KerasPooling2D(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -186,7 +186,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getSubsampling2DLayer**
 
 ```text
-public SubsamplingLayer getSubsampling2DLayer() 
+public SubsamplingLayer getSubsampling2DLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -199,7 +199,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.

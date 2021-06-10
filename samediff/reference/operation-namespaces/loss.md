@@ -42,7 +42,7 @@ SDVariable cosineDistance(String name, SDVariable label, SDVariable predictions,
 Cosine distance loss: `1 - cosineSimilarity(x,y)` or `1 - sum_i label[i] * prediction[i]`, which is
 
 equivalent to cosine distance when both the predictions and labels are normalized.  
- **Note**: This loss function assumes that both the predictions and labels are normalized to have unit l2 norm.
+**Note**: This loss function assumes that both the predictions and labels are normalized to have unit l2 norm.
 
 If this is not the case, you should normalize them first by dividing by norm2\(String, SDVariable, boolean, int...\)
 
@@ -92,15 +92,12 @@ SDVariable huberLoss(String name, SDVariable label, SDVariable predictions, SDVa
 Huber loss function, used for robust regression. It is similar both squared error loss and absolute difference loss,
 
 though is less sensitive to outliers than squared error.  
- Huber loss implements:
+Huber loss implements:
 
 ```text
-
-
 `L = 0.5 * (label[i] - predictions[i])^2 if abs(label[i] - predictions[i]) < delta`
 
 `L = delta * abs(label[i] - predictions[i]) - 0.5 * delta^2 otherwise`
-
 ```
 
 * **label**  \(NUMERIC\) - Label array
@@ -179,12 +176,11 @@ SDVariable meanPairwiseSquaredError(String name, SDVariable label, SDVariable pr
 ```
 
 Mean pairwise squared error.  
- MPWSE loss calculates the difference between pairs of consecutive elements in the predictions and labels arrays.
+MPWSE loss calculates the difference between pairs of consecutive elements in the predictions and labels arrays.
 
 For example, if predictions = \[p0, p1, p2\] and labels are \[l0, l1, l2\] then MPWSE is:
 
-{@code \[\(\(p0-p1\) - \(l0-l1\)\)^2 + \(\(p0-p2\) - \(l0-l2\)\)^2 + \(\(p1-p2\) - \(l1-l2\)\)^2\] / 3}  
-
+{@code \[\(\(p0-p1\) - \(l0-l1\)\)^2 + \(\(p0-p2\) - \(l0-l2\)\)^2 + \(\(p1-p2\) - \(l1-l2\)\)^2\] / 3}
 
 * **label**  \(NUMERIC\) - Label array
 * **predictions**  \(NUMERIC\) - Predictions array
@@ -231,22 +227,18 @@ Sigmoid cross entropy: applies the sigmoid activation function on the input logi
 and implements the binary cross entropy loss function. This implementation is numerically more stable than using
 
 standard \(but separate\) sigmoid activation function and log loss \(binary cross entropy\) loss function.  
- Implements:
+Implements:
 
 `-1/numExamples * sum_i (labels[i] * log(sigmoid(logits[i])) + (1-labels[i]) * log(1-sigmoid(logits[i])))`
 
-though this is done in a mathematically equivalent but more numerical stable form.  
-   
- When label smoothing is &gt; 0, the following label smoothing is used:  
+though this is done in a mathematically equivalent but more numerical stable form.
 
+When label smoothing is &gt; 0, the following label smoothing is used:
 
 ```text
-
-
 `numClasses = labels.size(1);
 
 label = (1.0 - labelSmoothing) * label + 0.5 * labelSmoothing`
-
 ```
 
 * **label**  \(NUMERIC\) - Label array
@@ -268,22 +260,17 @@ SDVariable softmaxCrossEntropy(String name, SDVariable oneHotLabels, SDVariable 
 ```
 
 Applies the softmax activation function to the input, then implement multi-class cross entropy:  
- {@code -sum\_classes label\[i\] \* log\(p\[c\]\)} where {@code p = softmax\(logits\)}  
- If LossReduce\#NONE is used, returned shape is \[numExamples\] out for \[numExamples, numClasses\] predicitons/labels;
+{@code -sum\_classes label\[i\] \* log\(p\[c\]\)} where {@code p = softmax\(logits\)}  
+If LossReduce\#NONE is used, returned shape is \[numExamples\] out for \[numExamples, numClasses\] predicitons/labels;
 
-otherwise, the output is a scalar.  
+otherwise, the output is a scalar.
 
-
-When label smoothing is &gt; 0, the following label smoothing is used:  
-
+When label smoothing is &gt; 0, the following label smoothing is used:
 
 ```text
-
-
 `numClasses = labels.size(1);
 
 oneHotLabel = (1.0 - labelSmoothing) * oneHotLabels + labelSmoothing/numClasses`
-
 ```
 
 * **oneHotLabels**  \(NUMERIC\) - Label array. Should be one-hot per example and same shape as predictions \(for example, \[mb, nOut\]\)
@@ -304,7 +291,7 @@ SDVariable sparseSoftmaxCrossEntropy(String name, SDVariable logits, SDVariable 
 As per softmaxCrossEntropy\(String, SDVariable, SDVariable, LossReduce\) but the labels variable
 
 is represented as an integer array instead of the equivalent one-hot array.  
- i.e., if logits are rank N, then labels have rank N-1
+i.e., if logits are rank N, then labels have rank N-1
 
 * **logits**  \(NUMERIC\) - Logits array \("pre-softmax activations"\)
 * **labels**  \(INT\) - Labels array. Must be an integer type.

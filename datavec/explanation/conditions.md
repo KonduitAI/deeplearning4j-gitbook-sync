@@ -10,7 +10,7 @@ As a BooleanCondition is a condition, these can be chained together, like NOT\(O
 #### **outputColumnName**
 
 ```text
-public String outputColumnName() 
+public String outputColumnName()
 ```
 
 The output column name after the operation has been applied
@@ -20,7 +20,7 @@ The output column name after the operation has been applied
 #### **columnName**
 
 ```text
-public String columnName() 
+public String columnName()
 ```
 
 The output column names This will often be the same as the input
@@ -30,7 +30,7 @@ The output column names This will often be the same as the input
 **condition**
 
 ```text
-public boolean condition(Object input) 
+public boolean condition(Object input)
 ```
 
 Condition on arbitrary input
@@ -41,7 +41,7 @@ Condition on arbitrary input
 **conditionSequence**
 
 ```text
-public boolean conditionSequence(Object sequence) 
+public boolean conditionSequence(Object sequence)
 ```
 
 Condition on arbitrary input
@@ -52,7 +52,7 @@ Condition on arbitrary input
 **transform**
 
 ```text
-public Schema transform(Schema inputSchema) 
+public Schema transform(Schema inputSchema)
 ```
 
 Get the output schema for this transformation, given an input schema
@@ -62,7 +62,7 @@ Get the output schema for this transformation, given an input schema
 ### **AND**
 
 ```text
-public static Condition AND(Condition... conditions) 
+public static Condition AND(Condition... conditions)
 ```
 
 And of all the given conditions
@@ -73,7 +73,7 @@ And of all the given conditions
 ### **OR**
 
 ```text
-public static Condition OR(Condition... conditions) 
+public static Condition OR(Condition... conditions)
 ```
 
 Or of all the given conditions
@@ -84,7 +84,7 @@ Or of all the given conditions
 ### **NOT**
 
 ```text
-public static Condition NOT(Condition condition) 
+public static Condition NOT(Condition condition)
 ```
 
 Not of the given condition
@@ -95,7 +95,7 @@ Not of the given condition
 ### **XOR**
 
 ```text
-public static Condition XOR(Condition first, Condition second) 
+public static Condition XOR(Condition first, Condition second)
 ```
 
 And of all the given conditions
@@ -122,7 +122,7 @@ Created by agibsonccc on 11/26/16.
 **columnCondition**
 
 ```text
-public boolean columnCondition(Writable writable) 
+public boolean columnCondition(Writable writable)
 ```
 
 Returns whether the given element meets the condition set by this operation
@@ -133,7 +133,7 @@ Returns whether the given element meets the condition set by this operation
 **condition**
 
 ```text
-public boolean condition(Object input) 
+public boolean condition(Object input)
 ```
 
 Condition on arbitrary input
@@ -148,7 +148,7 @@ Condition on arbitrary input
 **columnCondition**
 
 ```text
-public boolean columnCondition(Writable writable) 
+public boolean columnCondition(Writable writable)
 ```
 
 Constructor for conditions equal or not equal. Uses default sequence condition mode, {- link BaseColumnCondition\#DEFAULT\_SEQUENCE\_CONDITION\_MODE}
@@ -160,7 +160,7 @@ Constructor for conditions equal or not equal. Uses default sequence condition m
 **condition**
 
 ```text
-public boolean condition(Object input) 
+public boolean condition(Object input)
 ```
 
 Condition on arbitrary input
@@ -175,7 +175,7 @@ Condition on arbitrary input
 **columnCondition**
 
 ```text
-public boolean columnCondition(Writable writable) 
+public boolean columnCondition(Writable writable)
 ```
 
 Constructor for operations such as less than, equal to, greater than, etc. Uses default sequence condition mode, {- link BaseColumnCondition\#DEFAULT\_SEQUENCE\_CONDITION\_MODE}
@@ -187,7 +187,7 @@ Constructor for operations such as less than, equal to, greater than, etc. Uses 
 **condition**
 
 ```text
-public boolean condition(Object input) 
+public boolean condition(Object input)
 ```
 
 Condition on arbitrary input
@@ -204,7 +204,7 @@ A column condition that simply checks whether a floating point value is infinite
 **columnCondition**
 
 ```text
-public boolean columnCondition(Writable writable) 
+public boolean columnCondition(Writable writable)
 ```
 
 * param columnName Column check for the condition
@@ -216,7 +216,7 @@ public boolean columnCondition(Writable writable)
 **columnCondition**
 
 ```text
-public boolean columnCondition(Writable writable) 
+public boolean columnCondition(Writable writable)
 ```
 
 Constructor for operations such as less than, equal to, greater than, etc. Uses default sequence condition mode, {- link BaseColumnCondition\#DEFAULT\_SEQUENCE\_CONDITION\_MODE}
@@ -228,7 +228,7 @@ Constructor for operations such as less than, equal to, greater than, etc. Uses 
 **condition**
 
 ```text
-public boolean condition(Object input) 
+public boolean condition(Object input)
 ```
 
 Condition on arbitrary input
@@ -247,7 +247,7 @@ For example, if a Writable contains String values in an Integer column \(and the
 **condition**
 
 ```text
-public boolean condition(Object input) 
+public boolean condition(Object input)
 ```
 
 Condition on arbitrary input
@@ -262,7 +262,7 @@ Condition on arbitrary input
 **columnCondition**
 
 ```text
-public boolean columnCondition(Writable writable) 
+public boolean columnCondition(Writable writable)
 ```
 
 Constructor for operations such as less than, equal to, greater than, etc. Uses default sequence condition mode, {- link BaseColumnCondition\#DEFAULT\_SEQUENCE\_CONDITION\_MODE}
@@ -274,7 +274,7 @@ Constructor for operations such as less than, equal to, greater than, etc. Uses 
 **condition**
 
 ```text
-public boolean condition(Object input) 
+public boolean condition(Object input)
 ```
 
 Condition on arbitrary input
@@ -291,7 +291,7 @@ A column condition that simply checks whether a floating point value is NaN
 **columnCondition**
 
 ```text
-public boolean columnCondition(Writable writable) 
+public boolean columnCondition(Writable writable)
 ```
 
 * param columnName Name of the column to check the condition for
@@ -305,7 +305,7 @@ Condition that applies to the values in any column. Specifically, condition is t
 **condition**
 
 ```text
-public boolean condition(Object input) 
+public boolean condition(Object input)
 ```
 
 Condition on arbitrary input
@@ -320,7 +320,7 @@ Condition on arbitrary input
 **columnCondition**
 
 ```text
-public boolean columnCondition(Writable writable) 
+public boolean columnCondition(Writable writable)
 ```
 
 Constructor for conditions equal or not equal Uses default sequence condition mode, {- link BaseColumnCondition\#DEFAULT\_SEQUENCE\_CONDITION\_MODE}
@@ -332,7 +332,7 @@ Constructor for conditions equal or not equal Uses default sequence condition mo
 **condition**
 
 ```text
-public boolean condition(Object input) 
+public boolean condition(Object input)
 ```
 
 Condition on arbitrary input
@@ -349,7 +349,7 @@ Condition that applies to the values
 **columnCondition**
 
 ```text
-public boolean columnCondition(Writable writable) 
+public boolean columnCondition(Writable writable)
 ```
 
 Constructor for operations such as less than, equal to, greater than, etc. Uses default sequence condition mode, {- link BaseColumnCondition\#DEFAULT\_SEQUENCE\_CONDITION\_MODE}
@@ -361,7 +361,7 @@ Constructor for operations such as less than, equal to, greater than, etc. Uses 
 **condition**
 
 ```text
-public boolean condition(Object input) 
+public boolean condition(Object input)
 ```
 
 Condition on arbitrary input
@@ -391,7 +391,7 @@ Condition that applies to the values in a String column, using a provided regex.
 **condition**
 
 ```text
-public boolean condition(Object input) 
+public boolean condition(Object input)
 ```
 
 Condition on arbitrary input

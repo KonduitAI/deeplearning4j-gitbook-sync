@@ -57,8 +57,6 @@ DataAnalysis analysis = AnalyzeLocal.analyze(mySchema, csvRecordReader, maxHisto
 
 ## Utilities
 
-
-
 ### AnalyzeLocal
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-local/src/main/java/org/datavec/local/transforms/AnalyzeLocal.java)
@@ -80,7 +78,7 @@ Analyse the specified data - returns a DataAnalysis object with summary informat
 #### **analyzeQualitySequence**
 
 ```text
-public static DataQualityAnalysis analyzeQualitySequence(Schema schema, SequenceRecordReader data) 
+public static DataQualityAnalysis analyzeQualitySequence(Schema schema, SequenceRecordReader data)
 ```
 
 Analyze the data quality of sequence data - provides a report on missing values, values that don’t comply with schema, etc
@@ -92,7 +90,7 @@ Analyze the data quality of sequence data - provides a report on missing values,
 #### **analyzeQuality**
 
 ```text
-public static DataQualityAnalysis analyzeQuality(final Schema schema, final RecordReader data) 
+public static DataQualityAnalysis analyzeQuality(final Schema schema, final RecordReader data)
 ```
 
 Analyze the data quality of data - provides a report on missing values, values that don’t comply with schema, etc
@@ -111,7 +109,7 @@ AnalizeSpark: static methods for analyzing and
 
 ```text
 public static SequenceDataAnalysis analyzeSequence(Schema schema, JavaRDD<List<List<Writable>>> data,
-                    int maxHistogramBuckets) 
+                    int maxHistogramBuckets)
 ```
 
 * param schema
@@ -122,7 +120,7 @@ public static SequenceDataAnalysis analyzeSequence(Schema schema, JavaRDD<List<L
 #### **analyze**
 
 ```text
-public static DataAnalysis analyze(Schema schema, JavaRDD<List<Writable>> data) 
+public static DataAnalysis analyze(Schema schema, JavaRDD<List<Writable>> data)
 ```
 
 Analyse the specified data - returns a DataAnalysis object with summary information about each column
@@ -134,7 +132,7 @@ Analyse the specified data - returns a DataAnalysis object with summary informat
 #### **analyzeQualitySequence**
 
 ```text
-public static DataQualityAnalysis analyzeQualitySequence(Schema schema, JavaRDD<List<List<Writable>>> data) 
+public static DataQualityAnalysis analyzeQualitySequence(Schema schema, JavaRDD<List<List<Writable>>> data)
 ```
 
 Randomly sample values from a single column
@@ -148,7 +146,7 @@ Randomly sample values from a single column
 #### **analyzeQuality**
 
 ```text
-public static DataQualityAnalysis analyzeQuality(final Schema schema, final JavaRDD<List<Writable>> data) 
+public static DataQualityAnalysis analyzeQuality(final Schema schema, final JavaRDD<List<Writable>> data)
 ```
 
 Analyze the data quality of data - provides a report on missing values, values that don’t comply with schema, etc

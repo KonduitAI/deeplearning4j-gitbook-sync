@@ -36,7 +36,7 @@ A matrix that ordered its elements by row would look like this:
 ]
 ```
 
-### Elementwise scalar operations <a id="elementwise-scalar-operations"></a>
+## Elementwise scalar operations <a id="elementwise-scalar-operations"></a>
 
 The simplest operations you can perform on a matrix are elementwise scalar operations; for example, adding the scalar 1 to each element of the matrix, or multiplying each element by the scalar 5. Let’s try it.
 
@@ -91,7 +91,7 @@ If you perform all these operations on your initial 2 x 2 matrix, you should end
 ]
 ```
 
-### Elementwise vector operations <a id="elementwise-vector-operations"></a>
+## Elementwise vector operations <a id="elementwise-vector-operations"></a>
 
 When performed with simple units like scalars, the operations of arithmetic are unambiguous. But working with matrices, addition and multiplication can mean several things. With vector-on-matrix operations, you have to know what kind of addition or multiplication you’re performing in each case.
 
@@ -154,7 +154,7 @@ They will appear like this.
 
 Don’t be fooled. Getting the parameters right at the beginning is crucial. addRowVector and addColumnVector will not produce different results when using the same initial vector, because they do not change a vector’s orientation as row or column.
 
-### Elementwise matrix operations <a id="elementwise-matrix-operations"></a>
+## Elementwise matrix operations <a id="elementwise-matrix-operations"></a>
 
 To carry out scalar and vector elementwise operations, we basically pretend we have two matrices of equal shape. Elementwise scalar multiplication can be represented several ways.
 

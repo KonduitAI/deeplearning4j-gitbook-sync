@@ -177,8 +177,8 @@ SDVariable depthToSpace(String name, SDVariable x, int blockSize, DataFormat dat
 ```
 
 Convolution 2d layer batch to space operation on 4d input.  
- Reduces input channels dimension by rearranging data into a larger spatial dimensions  
- Example: if input has shape \[mb, 8, 2, 2\] and block size is 2, then output size is \[mb, 8/\(2_2\), 2_2, 2\*2\]
+Reduces input channels dimension by rearranging data into a larger spatial dimensions  
+Example: if input has shape \[mb, 8, 2, 2\] and block size is 2, then output size is \[mb, 8/\(2\_2\), 2\_2, 2\*2\]
 
 = \[mb, 2, 4, 4\]
 
@@ -362,8 +362,8 @@ SDVariable spaceToDepth(String name, SDVariable x, int blockSize, DataFormat dat
 ```
 
 Convolution 2d layer space to depth operation on 4d input.  
- Increases input channels \(reduced spatial dimensions\) by rearranging data into a larger channels dimension  
- Example: if input has shape \[mb, 2, 4, 4\] and block size is 2, then output size is \[mb, 8/\(2_2\), 2_2, 2\*2\]
+Increases input channels \(reduced spatial dimensions\) by rearranging data into a larger channels dimension  
+Example: if input has shape \[mb, 2, 4, 4\] and block size is 2, then output size is \[mb, 8/\(2\_2\), 2\_2, 2\*2\]
 
 = \[mb, 2, 4, 4\]
 

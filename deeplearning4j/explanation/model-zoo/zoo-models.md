@@ -22,7 +22,7 @@ Bias initialization in the paper is 1 in certain layers but 0.1 in the imagenetE
 
 Darknet19  
 Reference: [https://arxiv.org/pdf/1612.08242.pdf](https://arxiv.org/pdf/1612.08242.pdf)  
-ImageNet weights for this model are available and have been converted from [https://pjreddie.com/darknet/imagenet/](https://pjreddie.com/darknet/imagenet/) using https://github.com/allanzelener/YAD2K .
+ImageNet weights for this model are available and have been converted from [https://pjreddie.com/darknet/imagenet/](https://pjreddie.com/darknet/imagenet/) using [https://github.com/allanzelener/YAD2K](https://github.com/allanzelener/YAD2K) .
 
 There are 2 pretrained models, one for 224x224 images and one fine-tuned for 448x448 images. Call setInputShape\(\) with either {3, 224, 224} or {3, 448, 448} before initialization. The channels of the input images need to be in RGB order \(not BGR\), with values normalized within \[0, 1\]. The output labels are as per [https://github.com/pjreddie/darknet/blob/master/data/imagenet.shortnames.list](https://github.com/pjreddie/darknet/blob/master/data/imagenet.shortnames.list) .
 
@@ -45,8 +45,7 @@ Also based on the OpenFace implementation: [http://reports-archive.adm.cs.cmu.ed
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/LeNet.java)
 
-LeNet was an early promising achiever on the ImageNet dataset. References:  
-
+LeNet was an early promising achiever on the ImageNet dataset. References:
 
 * [http://yann.lecun.com/exdb/publis/pdf/lecun-98.pdf](http://yann.lecun.com/exdb/publis/pdf/lecun-98.pdf) 
 * [https://github.com/BVLC/caffe/blob/master/examples/mnist/lenet.prototxt](https://github.com/BVLC/caffe/blob/master/examples/mnist/lenet.prototxt) 
@@ -69,7 +68,7 @@ Paper: [https://arxiv.org/abs/1707.07012](https://arxiv.org/abs/1707.07012) Imag
 
 Residual networks for deep learning.
 
-Paper: [https://arxiv.org/abs/1512.03385](https://arxiv.org/abs/1512.03385) ImageNet weights for this model are available and have been converted from https://keras.io/applications/&lt;/a&gt;.
+Paper: [https://arxiv.org/abs/1512.03385](https://arxiv.org/abs/1512.03385) ImageNet weights for this model are available and have been converted from [https://keras.io/applications/&lt;/a&gt](https://keras.io/applications/</a&gt);.
 
 ### SimpleCNN
 
@@ -103,7 +102,7 @@ Walt Whitman weights are available for generating text from his works, adapted f
 
 Tiny YOLO Reference: [https://arxiv.org/pdf/1612.08242.pdf](https://arxiv.org/pdf/1612.08242.pdf)
 
-ImageNet+VOC weights for this model are available and have been converted from https://pjreddie.com/darknet/yolo using [https://github.com/allanzelener/YAD2K](https://github.com/allanzelener/YAD2K) and the following code.
+ImageNet+VOC weights for this model are available and have been converted from [https://pjreddie.com/darknet/yolo](https://pjreddie.com/darknet/yolo) using [https://github.com/allanzelener/YAD2K](https://github.com/allanzelener/YAD2K) and the following code.
 
 String filename = “tiny-yolo-voc.h5”; ComputationGraph graph = KerasModelImport.importKerasModelAndWeights\(filename, false\); INDArray priors = Nd4j.create\(priorBoxes\);
 
@@ -131,8 +130,8 @@ Paper: [https://arxiv.org/abs/1505.04597](https://arxiv.org/abs/1505.04597) Weig
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/VGG16.java)
 
-VGG-16, from Very Deep Convolutional Networks for Large-Scale Image Recognition [https://arxiv.org/abs/1409.1556](https://arxiv.org/abs/1409.1556)  
-  
+VGG-16, from Very Deep Convolutional Networks for Large-Scale Image Recognition [https://arxiv.org/abs/1409.1556](https://arxiv.org/abs/1409.1556)
+
 Deep Face Recognition  
 [http://www.robots.ox.ac.uk/~vgg/publications/2015/Parkhi15/parkhi15.pdf](http://www.robots.ox.ac.uk/~vgg/publications/2015/Parkhi15/parkhi15.pdf)
 
@@ -160,9 +159,9 @@ Paper: [https://arxiv.org/abs/1610.02357](https://arxiv.org/abs/1610.02357) Imag
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/YOLO2.java)
 
-YOLOv2 Reference: https://arxiv.org/pdf/1612.08242.pdf
+YOLOv2 Reference: [https://arxiv.org/pdf/1612.08242.pdf](https://arxiv.org/pdf/1612.08242.pdf)
 
-ImageNet+COCO weights for this model are available and have been converted from https://pjreddie.com/darknet/yolo using https://github.com/allanzelener/YAD2K and the following code.
+ImageNet+COCO weights for this model are available and have been converted from [https://pjreddie.com/darknet/yolo](https://pjreddie.com/darknet/yolo) using [https://github.com/allanzelener/YAD2K](https://github.com/allanzelener/YAD2K) and the following code.
 
 ```java
 String filename = “yolo.h5”; 
@@ -196,7 +195,7 @@ The channels of the 608x608 input images need to be in RGB order \(not BGR\), wi
 **pretrainedUrl**
 
 ```text
-public String pretrainedUrl(PretrainedType pretrainedType) 
+public String pretrainedUrl(PretrainedType pretrainedType)
 ```
 
 Default prior boxes for the model

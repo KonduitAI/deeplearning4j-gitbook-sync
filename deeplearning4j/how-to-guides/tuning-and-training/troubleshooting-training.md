@@ -6,7 +6,7 @@ category: Tuning & Training
 weight: 0
 ---
 
-# Trouble Shooting
+# Troubleshooting Training
 
 ## Troubleshooting Neural Net Training
 
@@ -114,8 +114,6 @@ When training a neural network, it can sometimes be helpful to apply gradient no
 ## [Recurrent Neural Networks: Truncated Backpropagation through Time](troubleshooting-training.md)
 
 When training recurrent networks with long time series, it is generally advisable to use truncated backpropagation through time. With 'standard' backpropagation through time \(the default in DL4J\) the cost per parameter update can become prohibative. For more details, see [this page](../models/recurrent.md#truncated-back-propagation-through-time).
-
-
 
 ## [NaN, Not a Number Errors](troubleshooting-training.md)
 

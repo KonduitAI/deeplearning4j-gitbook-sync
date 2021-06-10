@@ -76,7 +76,7 @@ This operation performs dot product attention on the given timeseries input with
 
 out = sum\(similarity\(k\_i, q\) \* v\_i\)
 
-similarity\(k, q\) = softmax\(k  _q\) where x_  q is the dot product of x and q
+similarity\(k, q\) = softmax\(k _q\) where x_ q is the dot product of x and q
 
 Optionally with normalization step:
 
@@ -96,19 +96,19 @@ Note: Queries, keys and values must either be all rank 3 or all rank 4 arrays. M
 
 output rank will depend on the input rank.
 
-* **queries**  \(NUMERIC\) - input 3D array "queries" of shape \[batchSize, featureKeys, queryCount\]
+* **queries** \(NUMERIC\) - input 3D array "queries" of shape \[batchSize, featureKeys, queryCount\]
 
   or 4D array of shape \[batchSize, numHeads, featureKeys, queryCount\]
 
-* **keys**  \(NUMERIC\) - input 3D array "keys" of shape \[batchSize, featureKeys, timesteps\]
+* **keys** \(NUMERIC\) - input 3D array "keys" of shape \[batchSize, featureKeys, timesteps\]
 
   or 4D array of shape \[batchSize, numHeads, featureKeys, timesteps\]
 
-* **values**  \(NUMERIC\) - input 3D array "values" of shape \[batchSize, featureValues, timesteps\]
+* **values** \(NUMERIC\) - input 3D array "values" of shape \[batchSize, featureValues, timesteps\]
 
   or 4D array of shape \[batchSize, numHeads, featureValues, timesteps\]
 
-* **mask**  \(NUMERIC\) - OPTIONAL; array that defines which values should be skipped of shape \[batchSize, timesteps\]
+* **mask** \(NUMERIC\) - OPTIONAL; array that defines which values should be skipped of shape \[batchSize, timesteps\]
 * **scaled** - normalization, false -&gt; do not apply normalization, true -&gt; apply normalization
 
 ## dropout
@@ -340,7 +340,7 @@ This performs multi-headed dot product attention on the given timeseries input
 
 out = concat\(head\_1, head\_2, ..., head\_n\) \* Wo
 
-head\_i = dot\_product\_attention\(Wq\_i_q, Wk\_i_k, Wv\_i\*v\)
+head\_i = dot\_product\_attention\(Wq\_i\_q, Wk\_i\_k, Wv\_i\*v\)
 
 Optionally with normalization when calculating the attention for each head.
 
@@ -485,7 +485,7 @@ SDVariable selu(String name, SDVariable x)
 
 Element-wise SeLU function - Scaled exponential Lineal Unit: see [Self-Normalizing Neural Networks](https://arxiv.org/abs/1706.02515)
 
-out\[i\] = scale  _alpha_  \(exp\(in\[i\]\)-1\) if in\[i\]&gt;0, or 0 if in\[i\] &lt;= 0
+out\[i\] = scale _alpha_ \(exp\(in\[i\]\)-1\) if in\[i\]&gt;0, or 0 if in\[i\] &lt;= 0
 
 Uses default scale and alpha values.
 
@@ -598,7 +598,7 @@ SDVariable swish(SDVariable x)
 SDVariable swish(String name, SDVariable x)
 ```
 
-Element-wise "swish" function: out = x  _sigmoid\(b_x\) with b=1.0
+Element-wise "swish" function: out = x \_sigmoid\(b\_x\) with b=1.0
 
 See: [https://arxiv.org/abs/1710.05941](https://arxiv.org/abs/1710.05941)
 

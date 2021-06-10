@@ -6,7 +6,7 @@ category: Operations
 weight: 90
 ---
 
-# Linalg
+# LinAlg
 
 ## Cholesky
 

@@ -2,7 +2,7 @@
 
 There are several other basic matrix manipulations to highlight as you learn ND4J’s workings.
 
-#### Transpose <a id="transpose"></a>
+## Transpose <a id="transpose"></a>
 
 The transpose of a matrix is its mirror image. An element located in row 1, column 2, in matrix A will be located in row 2, column 1, in the transpose of matrix A, whose mathematical notation is A to the T, or A^T. Notice that the elements along the diagonal of a square matrix do not move – they are at the hinge of the reflection. In ND4J, transpose matrices like this:
 
@@ -37,7 +37,7 @@ Looks like this when it is transposed
 
 In fact, transpose is just an important subset of a more general operation: reshape.
 
-#### Reshape <a id="reshape"></a>
+## Reshape <a id="reshape"></a>
 
 Yes, matrices can be reshaped. You can change the number of rows and columns they have. The reshaped matrix has to fulfill one condition: the product of its rows and columns must equal the product of the row and columns of the original matrix. For example, proceeding columnwise, you can reshape a 3 by 4 matrix into a 2 by 6 matrix:
 
@@ -62,7 +62,7 @@ nd2.reshape(3,4);
 [3.0 ,6.0 ,9.0 ,12.0]
 ```
 
-#### Broadcast <a id="broadcast"></a>
+## Broadcast <a id="broadcast"></a>
 
 Broadcast is advanced. It usually happens in the background without having to be called. The simplest way to understand it is by working with one long row vector, like the one above.
 

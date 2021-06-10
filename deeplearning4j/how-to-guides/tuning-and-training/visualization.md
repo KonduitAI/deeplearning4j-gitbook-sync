@@ -65,8 +65,6 @@ The full set of UI examples are available [here](https://github.com/eclipse/deep
 
 ### [Deeplearning4j UI: The Overview Page](visualization.md)
 
-![](../../../.gitbook/assets/dl4j_ui_01.png)
-
 The overview page \(one of 3 available pages\) contains the following information:
 
 * Top left: score vs iteration chart - this is the value of the loss function on the current minibatch
@@ -81,8 +79,6 @@ The ratio of updates to parameters is specifically the ratio of mean magnitudes 
 See the later section of this page on how to use these values in practice.
 
 ### [Deeplearning4j UI: The Model Page](visualization.md)
-
-![](../../../.gitbook/assets/dl4j_ui_02%20%283%29.png)
 
 The model page contains a graph of the neural network layers, which operates as a selection mechanism. Click on a layer to display information for it.
 
@@ -207,7 +203,6 @@ The layer update histogram is displayed for the most recent iteration only.
 This chart simply shows the learning rates of the parameters of selected layer, over time.
 
 If you are not using learning rate schedules, the chart will be flat. If you _are_ using learning rate schedules, you can use this chart to track the current value of the learning rate \(for each parameter\), over time.
-
 
 The recommended solution \(for Maven\) is to use the Maven Shade plugin to produce an uber-jar, configured as follows:
 

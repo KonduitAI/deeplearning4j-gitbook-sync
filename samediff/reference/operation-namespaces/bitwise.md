@@ -88,7 +88,7 @@ SDVariable bitsHammingDistance(String name, SDVariable x, SDVariable y)
 ```
 
 Bitwise Hamming distance reduction over all elements of both input arrays.  
- For example, if x=01100000 and y=1010000 then the bitwise Hamming distance is 2 \(due to differences at positions 0 and 1\)
+For example, if x=01100000 and y=1010000 then the bitwise Hamming distance is 2 \(due to differences at positions 0 and 1\)
 
 * **x**  \(INT\) - First input array.
 * **y**  \(INT\) - Second input array.

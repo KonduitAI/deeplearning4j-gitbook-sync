@@ -24,8 +24,6 @@ The idea behind early stopping is relatively simple:
 
 This is shown graphically below:
 
-![](../../../.gitbook/assets/earlystopping%20%281%29.png)
-
 The best model is the one saved at the time of the vertical dotted line - i.e., the model with the best accuracy on the test set.
 
 Using DL4J's early stopping functionality requires you to provide a number of configuration options:

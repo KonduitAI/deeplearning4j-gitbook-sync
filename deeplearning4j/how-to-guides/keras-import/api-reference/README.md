@@ -2,7 +2,7 @@
 description: Keras model import API
 ---
 
-# API Reference
+# Keras Import API Overview
 
 ## KerasModelImport
 
@@ -30,7 +30,7 @@ Load Keras \(Functional API\) Model saved using model.save\_model\(…\).
 **importKerasModelAndWeights**
 
 ```text
-public static ComputationGraph importKerasModelAndWeights(InputStream modelHdf5Stream) throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException 
+public static ComputationGraph importKerasModelAndWeights(InputStream modelHdf5Stream) throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException
 ```
 
 Load Keras \(Functional API\) Model saved using model.save\_model\(…\).
@@ -44,7 +44,7 @@ Load Keras \(Functional API\) Model saved using model.save\_model\(…\).
 ```text
 public static MultiLayerNetwork importKerasSequentialModelAndWeights(InputStream modelHdf5Stream,
                                                                          boolean enforceTrainingConfig)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Load Keras Sequential model saved using model.save\_model\(…\).
@@ -58,7 +58,7 @@ Load Keras Sequential model saved using model.save\_model\(…\).
 
 ```text
 public static MultiLayerNetwork importKerasSequentialModelAndWeights(InputStream modelHdf5Stream)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Load Keras Sequential model saved using model.save\_model\(…\).
@@ -72,7 +72,7 @@ Load Keras Sequential model saved using model.save\_model\(…\).
 ```text
 public static ComputationGraph importKerasModelAndWeights(String modelHdf5Filename, int[] inputShape,
                                                               boolean enforceTrainingConfig)
-            throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException 
+            throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException
 ```
 
 Load Keras \(Functional API\) Model saved using model.save\_model\(…\).
@@ -90,7 +90,7 @@ Load Keras \(Functional API\) Model saved using model.save\_model\(…\).
 
 ```text
 public static ComputationGraph importKerasModelAndWeights(String modelHdf5Filename, boolean enforceTrainingConfig)
-            throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException 
+            throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException
 ```
 
 Load Keras \(Functional API\) Model saved using model.save\_model\(…\).
@@ -107,7 +107,7 @@ Load Keras \(Functional API\) Model saved using model.save\_model\(…\).
 
 ```text
 public static ComputationGraph importKerasModelAndWeights(String modelHdf5Filename)
-            throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException 
+            throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException
 ```
 
 Load Keras \(Functional API\) Model saved using model.save\_model\(…\).
@@ -125,7 +125,7 @@ Load Keras \(Functional API\) Model saved using model.save\_model\(…\).
 public static MultiLayerNetwork importKerasSequentialModelAndWeights(String modelHdf5Filename,
                                                                          int[] inputShape,
                                                                          boolean enforceTrainingConfig)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Load Keras Sequential model saved using model.save\_model\(…\).
@@ -142,7 +142,7 @@ Load Keras Sequential model saved using model.save\_model\(…\).
 ```text
 public static MultiLayerNetwork importKerasSequentialModelAndWeights(String modelHdf5Filename,
                                                                          boolean enforceTrainingConfig)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Load Keras Sequential model saved using model.save\_model\(…\).
@@ -157,7 +157,7 @@ Load Keras Sequential model saved using model.save\_model\(…\).
 
 ```text
 public static MultiLayerNetwork importKerasSequentialModelAndWeights(String modelHdf5Filename)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Load Keras Sequential model saved using model.save\_model\(…\).
@@ -172,7 +172,7 @@ Load Keras Sequential model saved using model.save\_model\(…\).
 ```text
 public static ComputationGraph importKerasModelAndWeights(String modelJsonFilename, String weightsHdf5Filename,
                                                               boolean enforceTrainingConfig)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Load Keras \(Functional API\) Model for which the configuration and weights were saved separately using calls to model.to\_json\(\) and model.save\_weights\(…\).
@@ -188,7 +188,7 @@ Load Keras \(Functional API\) Model for which the configuration and weights were
 
 ```text
 public static ComputationGraph importKerasModelAndWeights(String modelJsonFilename, String weightsHdf5Filename)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Load Keras \(Functional API\) Model for which the configuration and weights were saved separately using calls to model.to\_json\(\) and model.save\_weights\(…\).
@@ -205,7 +205,7 @@ Load Keras \(Functional API\) Model for which the configuration and weights were
 public static MultiLayerNetwork importKerasSequentialModelAndWeights(String modelJsonFilename,
                                                                          String weightsHdf5Filename,
                                                                          boolean enforceTrainingConfig)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Load Keras Sequential model for which the configuration and weights were saved separately using calls to model.to\_json\(\) and model.save\_weights\(…\).
@@ -222,7 +222,7 @@ Load Keras Sequential model for which the configuration and weights were saved s
 ```text
 public static MultiLayerNetwork importKerasSequentialModelAndWeights(String modelJsonFilename,
                                                                          String weightsHdf5Filename)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Load Keras Sequential model for which the configuration and weights were saved separately using calls to model.to\_json\(\) and model.save\_weights\(…\).
@@ -238,7 +238,7 @@ Load Keras Sequential model for which the configuration and weights were saved s
 ```text
 public static ComputationGraphConfiguration importKerasModelConfiguration(String modelJsonFilename,
                                                                               boolean enforceTrainingConfig)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Load Keras \(Functional API\) Model for which the configuration was saved separately using calls to model.to\_json\(\) and model.save\_weights\(…\).
@@ -253,7 +253,7 @@ Load Keras \(Functional API\) Model for which the configuration was saved separa
 
 ```text
 public static ComputationGraphConfiguration importKerasModelConfiguration(String modelJsonFilename)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Load Keras \(Functional API\) Model for which the configuration was saved separately using calls to model.to\_json\(\) and model.save\_weights\(…\).
@@ -268,7 +268,7 @@ Load Keras \(Functional API\) Model for which the configuration was saved separa
 ```text
 public static MultiLayerConfiguration importKerasSequentialConfiguration(String modelJsonFilename,
                                                                              boolean enforceTrainingConfig)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Load Keras Sequential model for which the configuration was saved separately using calls to model.to\_json\(\) and model.save\_weights\(…\).
@@ -283,7 +283,7 @@ Load Keras Sequential model for which the configuration was saved separately usi
 
 ```text
 public static MultiLayerConfiguration importKerasSequentialConfiguration(String modelJsonFilename)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Load Keras Sequential model for which the configuration was saved separately using calls to model.to\_json\(\) and model.save\_weights\(…\).

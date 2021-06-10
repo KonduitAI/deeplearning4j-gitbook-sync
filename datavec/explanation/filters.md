@@ -32,7 +32,7 @@ If condition is not satisfied \(returns false\): keep the example or sequence
 **removeExample**
 
 ```text
-public boolean removeExample(Object writables) 
+public boolean removeExample(Object writables)
 ```
 
 * param writables Example
@@ -41,7 +41,7 @@ public boolean removeExample(Object writables)
 **removeSequence**
 
 ```text
-public boolean removeSequence(Object sequence) 
+public boolean removeSequence(Object sequence)
 ```
 
 * param sequence sequence example
@@ -50,7 +50,7 @@ public boolean removeSequence(Object sequence)
 **transform**
 
 ```text
-public Schema transform(Schema inputSchema) 
+public Schema transform(Schema inputSchema)
 ```
 
 Get the output schema for this transformation, given an input schema
@@ -60,7 +60,7 @@ Get the output schema for this transformation, given an input schema
 **outputColumnName**
 
 ```text
-public String outputColumnName() 
+public String outputColumnName()
 ```
 
 The output column name after the operation has been applied
@@ -70,7 +70,7 @@ The output column name after the operation has been applied
 **columnName**
 
 ```text
-public String columnName() 
+public String columnName()
 ```
 
 The output column names This will often be the same as the input
@@ -92,7 +92,7 @@ FilterInvalidValues: a filter operation that removes any examples \(or sequences
 **transform**
 
 ```text
-public Schema transform(Schema inputSchema) 
+public Schema transform(Schema inputSchema)
 ```
 
 * param columnsToFilterIfInvalid Columns to check for invalid values
@@ -100,7 +100,7 @@ public Schema transform(Schema inputSchema)
 **removeExample**
 
 ```text
-public boolean removeExample(Object writables) 
+public boolean removeExample(Object writables)
 ```
 
 * param writables Example
@@ -109,7 +109,7 @@ public boolean removeExample(Object writables)
 **removeSequence**
 
 ```text
-public boolean removeSequence(Object sequence) 
+public boolean removeSequence(Object sequence)
 ```
 
 * param sequence sequence example
@@ -118,7 +118,7 @@ public boolean removeSequence(Object sequence)
 **outputColumnName**
 
 ```text
-public String outputColumnName() 
+public String outputColumnName()
 ```
 
 The output column name after the operation has been applied
@@ -128,7 +128,7 @@ The output column name after the operation has been applied
 **columnName**
 
 ```text
-public String columnName() 
+public String columnName()
 ```
 
 The output column names This will often be the same as the input
@@ -144,7 +144,7 @@ Remove invalid records of a certain size.
 **removeExample**
 
 ```text
-public boolean removeExample(Object writables) 
+public boolean removeExample(Object writables)
 ```
 
 * param writables Example
@@ -153,7 +153,7 @@ public boolean removeExample(Object writables)
 **removeSequence**
 
 ```text
-public boolean removeSequence(Object sequence) 
+public boolean removeSequence(Object sequence)
 ```
 
 * param sequence sequence example
@@ -162,7 +162,7 @@ public boolean removeSequence(Object sequence)
 **removeExample**
 
 ```text
-public boolean removeExample(List<Writable> writables) 
+public boolean removeExample(List<Writable> writables)
 ```
 
 * param writables Example
@@ -171,7 +171,7 @@ public boolean removeExample(List<Writable> writables)
 **removeSequence**
 
 ```text
-public boolean removeSequence(List<List<Writable>> sequence) 
+public boolean removeSequence(List<List<Writable>> sequence)
 ```
 
 * param sequence sequence example
@@ -180,7 +180,7 @@ public boolean removeSequence(List<List<Writable>> sequence)
 **transform**
 
 ```text
-public Schema transform(Schema inputSchema) 
+public Schema transform(Schema inputSchema)
 ```
 
 Get the output schema for this transformation, given an input schema
@@ -190,7 +190,7 @@ Get the output schema for this transformation, given an input schema
 **outputColumnName**
 
 ```text
-public String outputColumnName() 
+public String outputColumnName()
 ```
 
 The output column name after the operation has been applied
@@ -200,7 +200,7 @@ The output column name after the operation has been applied
 **columnName**
 
 ```text
-public String columnName() 
+public String columnName()
 ```
 
 The output column names This will often be the same as the input

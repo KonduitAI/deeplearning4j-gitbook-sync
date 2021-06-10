@@ -24,19 +24,19 @@ All variables in `SameDiff` belong to one of four _variable types_, constituting
 
   to be both stored for further usage - we say, that they are _persistent_ - as well as being updated during training.
 
-* `CONSTANT`: are those parameters which, like variables, are persistent for the network, but are not being 
+* `CONSTANT`: are those parameters which, like variables, are persistent for the network, but are not being
 
-  trained; they, however, may be changed externally by the user. 
+  trained; they, however, may be changed externally by the user.
 
-* `PLACEHOLDER`: store temporary values that are to be supplied from the outside, like inputs and labels. 
+* `PLACEHOLDER`: store temporary values that are to be supplied from the outside, like inputs and labels.
 
-  Accordingly, since new placeholders' values are provided at each iteration, they are not stored: in other words, 
+  Accordingly, since new placeholders' values are provided at each iteration, they are not stored: in other words,
 
   unlike `VARIABLE` and `CONSTANT`, `PLACEHOLDER` is _not_ persistent.
 
-* `ARRAY`: are temporary values as well, representing outputs of [operations](ops.md) within a `SameDiff`, for 
+* `ARRAY`: are temporary values as well, representing outputs of [operations](ops.md) within a `SameDiff`, for
 
-  instance sums of vectors, activations of a layer, and many more. They are being recalculated at each iteration, and 
+  instance sums of vectors, activations of a layer, and many more. They are being recalculated at each iteration, and
 
   therefor, like `PLACEHOLDER`, are not persistent.
 
@@ -70,11 +70,11 @@ will require its `SDVariable` arguments `input` and `weights` to be of one of th
 
 Before we go to the differences between variables, let us first look at the properties they all share
 
-* All variables are ultimately derived from an instance of `SameDiff`, serving as parts of its 
+* All variables are ultimately derived from an instance of `SameDiff`, serving as parts of its
 
   [graph](samediff/samediff/graphs). In fact, each variable has a `SameDiff` as one of its fields.
 
-* Results \(outputs\) of all operations are of `ARRAY` type. 
+* Results \(outputs\) of all operations are of `ARRAY` type.
 * All `SDVariable`'s involved in an operation are to belong to the _same_ `SameDiff`. 
 * All variables may or may not be given names - in the latter case, a name is actually created automatically. Either
 

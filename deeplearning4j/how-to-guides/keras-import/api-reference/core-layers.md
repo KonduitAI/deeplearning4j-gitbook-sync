@@ -10,7 +10,7 @@ Imports Permute layer from Keras
 
 ```text
 public KerasPermute(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -22,7 +22,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **isInputPreProcessor**
 
 ```text
-public boolean isInputPreProcessor() 
+public boolean isInputPreProcessor()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -36,7 +36,7 @@ Constructor from parsed Keras layer configuration dictionary.
 
 ```text
 public InputPreProcessor getInputPreprocessor(InputType... inputType) throws
-            InvalidKerasConfigurationException 
+            InvalidKerasConfigurationException
 ```
 
 Gets appropriate DL4J InputPreProcessor for given InputTypes.
@@ -49,7 +49,7 @@ Gets appropriate DL4J InputPreProcessor for given InputTypes.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -68,7 +68,7 @@ Imports a Keras Flatten layer as a DL4J {Cnn,Rnn}ToFeedForwardInputPreProcessor.
 
 ```text
 public KerasFlatten(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -80,7 +80,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **isInputPreProcessor**
 
 ```text
-public boolean isInputPreProcessor() 
+public boolean isInputPreProcessor()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -93,7 +93,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getInputPreprocessor**
 
 ```text
-public InputPreProcessor getInputPreprocessor(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputPreProcessor getInputPreprocessor(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Gets appropriate DL4J InputPreProcessor for given InputTypes.
@@ -106,7 +106,7 @@ Gets appropriate DL4J InputPreProcessor for given InputTypes.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -125,7 +125,7 @@ Imports Reshape layer from Keras
 
 ```text
 public KerasReshape(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -137,7 +137,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **isInputPreProcessor**
 
 ```text
-public boolean isInputPreProcessor() 
+public boolean isInputPreProcessor()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -150,7 +150,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getInputPreprocessor**
 
 ```text
-public InputPreProcessor getInputPreprocessor(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputPreProcessor getInputPreprocessor(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Gets appropriate DL4J InputPreProcessor for given InputTypes.
@@ -163,7 +163,7 @@ Gets appropriate DL4J InputPreProcessor for given InputTypes.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -183,7 +183,7 @@ TODO: handle axes arguments that alter merge behavior \(requires changes to DL4J
 **KerasMerge**
 
 ```text
-public KerasMerge(Integer kerasVersion) throws UnsupportedKerasConfigurationException 
+public KerasMerge(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
 Pass-through constructor from KerasLayer
@@ -194,7 +194,7 @@ Pass-through constructor from KerasLayer
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) 
+public InputType getOutputType(InputType... inputType)
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -213,7 +213,7 @@ Imports a Dropout layer from Keras.
 
 ```text
 public KerasDropout(Map<String, Object> layerConfig)
-                    throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+                    throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -225,7 +225,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -238,7 +238,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getDropoutLayer**
 
 ```text
-public DropoutLayer getDropoutLayer() 
+public DropoutLayer getDropoutLayer()
 ```
 
 Get DL4J DropoutLayer.
@@ -255,7 +255,7 @@ Imports Keras masking layers.
 
 ```text
 public KerasMasking(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -267,7 +267,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -280,7 +280,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getMaskingLayer**
 
 ```text
-public MaskZeroLayer getMaskingLayer() 
+public MaskZeroLayer getMaskingLayer()
 ```
 
 Get DL4J MaskZeroLayer.
@@ -296,7 +296,7 @@ Keras wrapper for DL4J dropout layer with SpatialDropout, works 1D-3D.
 **KerasSpatialDropout**
 
 ```text
-public KerasSpatialDropout(Integer kerasVersion) throws UnsupportedKerasConfigurationException 
+public KerasSpatialDropout(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
 Pass-through constructor from KerasLayer
@@ -307,7 +307,7 @@ Pass-through constructor from KerasLayer
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -319,7 +319,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getSpatialDropoutLayer**
 
 ```text
-public DropoutLayer getSpatialDropoutLayer() 
+public DropoutLayer getSpatialDropoutLayer()
 ```
 
 Get DL4J DropoutLayer with spatial dropout.
@@ -336,7 +336,7 @@ Wraps a DL4J SameDiffLambda into a KerasLayer
 
 ```text
 public KerasLambda(Map<String, Object> layerConfig, SameDiffLayer sameDiffLayer)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -348,7 +348,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -361,7 +361,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getSameDiffLayer**
 
 ```text
-public SameDiffLayer getSameDiffLayer() 
+public SameDiffLayer getSameDiffLayer()
 ```
 
 Get DL4J SameDiffLayer.
@@ -378,7 +378,7 @@ Imports an Activation layer from Keras.
 
 ```text
 public KerasActivation(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -390,7 +390,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -403,7 +403,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getActivationLayer**
 
 ```text
-public ActivationLayer getActivationLayer() 
+public ActivationLayer getActivationLayer()
 ```
 
 Get DL4J ActivationLayer.
@@ -419,7 +419,7 @@ Imports a Dense layer from Keras.
 **KerasDense**
 
 ```text
-public KerasDense(Integer kerasVersion) throws UnsupportedKerasConfigurationException 
+public KerasDense(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
 Pass-through constructor from KerasLayer
@@ -430,7 +430,7 @@ Pass-through constructor from KerasLayer
 **getDenseLayer**
 
 ```text
-public DenseLayer getDenseLayer() 
+public DenseLayer getDenseLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -442,7 +442,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -454,7 +454,7 @@ Get layer output type.
 **getNumParams**
 
 ```text
-public int getNumParams() 
+public int getNumParams()
 ```
 
 Returns number of trainable parameters in layer.
@@ -464,7 +464,7 @@ Returns number of trainable parameters in layer.
 **setWeights**
 
 ```text
-public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException 
+public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException
 ```
 
 Set weights for layer.
@@ -481,7 +481,7 @@ Imports a Keras RepeatVector layer
 
 ```text
 public KerasRepeatVector(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -493,7 +493,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -506,7 +506,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getRepeatVectorLayer**
 
 ```text
-public RepeatVector getRepeatVectorLayer() 
+public RepeatVector getRepeatVectorLayer()
 ```
 
 Get DL4J RepeatVector.

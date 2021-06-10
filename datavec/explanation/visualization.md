@@ -9,7 +9,7 @@
 **createHtmlAnalysisString**
 
 ```text
-public static String createHtmlAnalysisString(DataAnalysis analysis) throws Exception 
+public static String createHtmlAnalysisString(DataAnalysis analysis) throws Exception
 ```
 
 Render a data analysis object as a HTML file. This will produce a summary table, along charts for numerical columns. The contents of the HTML file are returned as a String, which should be written to a .html file.
@@ -20,7 +20,7 @@ Render a data analysis object as a HTML file. This will produce a summary table,
 **createHtmlAnalysisFile**
 
 ```text
-public static void createHtmlAnalysisFile(DataAnalysis dataAnalysis, File output) throws Exception 
+public static void createHtmlAnalysisFile(DataAnalysis dataAnalysis, File output) throws Exception
 ```
 
 Render a data analysis object as a HTML file. This will produce a summary table, along charts for numerical columns
@@ -38,7 +38,7 @@ A simple utility for plotting DataVec sequence data to HTML files. Each file con
 
 ```text
 public static String createHtmlSequencePlots(String title, Schema schema, List<List<Writable>> sequence)
-                    throws Exception 
+                    throws Exception
 ```
 
 Create a HTML file with plots for the given sequence.
@@ -52,7 +52,7 @@ Create a HTML file with plots for the given sequence.
 
 ```text
 public static void createHtmlSequencePlotFile(String title, Schema schema, List<List<Writable>> sequence,
-                    File output) throws Exception 
+                    File output) throws Exception
 ```
 
 Create a HTML file with plots for the given sequence and write it to a file.

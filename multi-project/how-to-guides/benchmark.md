@@ -6,7 +6,7 @@ category: Get Started
 weight: 10
 ---
 
-# Benchmark Guide
+# Benchmark
 
 ### General Benchmarking Guidelines
 
@@ -14,7 +14,7 @@ weight: 10
 
 A warm-up period is where you run a number of iterations \(for example, a few hundred\) of your benchmark without timing, before commencing timing for further iterations.
 
-Why is a warm-up required? The first few iterations of any ND4J/DL4J execution may be slower than those that come later, for a number of reasons: 
+Why is a warm-up required? The first few iterations of any ND4J/DL4J execution may be slower than those that come later, for a number of reasons:
 
 1. In the initial benchmark iterations, the JVM has not yet had time to perform just-in-time compilation of code. Once JIT has completed, code is likely to execute faster for all subsequent operations 
 2. ND4J and DL4J \(and, some other libraries\) have some degree of lazy initialization: the first operation may trigger some one-off execution code. 
@@ -38,20 +38,19 @@ You should carefully check whether you unintentionally including other things - 
 
 Ideally, these should be excluded from any timing/performance results you report. If they cannot be excluded, make sure you note this whenever making performance claims.
 
-1. What native libraries are you using?  
-  
+1. What native libraries are you using?
+
    For example: what BLAS implementation \(MKL, OpenBLAS, etc\)? If you are using CUDA, are you using CuDNN? ND4J and DL4J can use these libraries \(MKL, CuDNN\) when they are available - but are not always available by default. If they are not made available, performance can be lower - sometimes considerably.
 
-   This is especially important when comparing results between libraries: for example, if you compared two libraries \(one using OpenBLAS, another using MKL\) your results may simply reflect the performance differences it the BLAS library being used - and not the performance of the libraries being tested. Similarly, one library with CuDNN and another without CuDNN may simply reflect the performance benefit of using CuDNN.  
+   This is especially important when comparing results between libraries: for example, if you compared two libraries \(one using OpenBLAS, another using MKL\) your results may simply reflect the performance differences it the BLAS library being used - and not the performance of the libraries being tested. Similarly, one library with CuDNN and another without CuDNN may simply reflect the performance benefit of using CuDNN.
 
-2. How are things configured?  
-  
-   For better or worse, DL4J and ND4J allow a lot of configuration. The default values for a lot of this configuration is adequate for most users - but sometimes manual configuration is required for optimal performance. This can be especially true in some benchmarks! Some of these configuration options allow users to trade off higher memory use for better performance, for example. Some configuration options of note: \(a\) Memory configuration \(b\) Workspaces and garbage collection \(c\) CuDNN \(d\) DL4J Cache Mode \(enable using `.cacheMode(CacheMode.DEVICE)`\)  
+2. How are things configured?
 
+   For better or worse, DL4J and ND4J allow a lot of configuration. The default values for a lot of this configuration is adequate for most users - but sometimes manual configuration is required for optimal performance. This can be especially true in some benchmarks! Some of these configuration options allow users to trade off higher memory use for better performance, for example. Some configuration options of note: \(a\) Memory configuration \(b\) Workspaces and garbage collection \(c\) CuDNN \(d\) DL4J Cache Mode \(enable using `.cacheMode(CacheMode.DEVICE)`\)
 
-   If you aren't sure if you are only measuring what you intend to measure when running DL4J or ND4J code, you can use a profiler such as VisualVM or YourKit Profilers.  
+If you aren't sure if you are only measuring what you intend to measure when running DL4J or ND4J code, you can use a profiler such as VisualVM or YourKit Profilers.
 
-3. What versions are you using?  When benchmarking, you should use the latest version of whatever libraries you are benchmarking. There's no point identifying and reporting a bottleneck that was fixed 6 months ago. An exception to this would be when you are comparing performance over time between versions. Note also that snapshot versions of DL4J and ND4J are also available - these may contain performance improvements \(feel free to ask\)
+1. What versions are you using?  When benchmarking, you should use the latest version of whatever libraries you are benchmarking. There's no point identifying and reporting a bottleneck that was fixed 6 months ago. An exception to this would be when you are comparing performance over time between versions. Note also that snapshot versions of DL4J and ND4J are also available - these may contain performance improvements \(feel free to ask\)
 
 **Guideline 4: Focus on Real-World Use Cases - And Run a Range of Sizes**
 
@@ -136,7 +135,7 @@ Finally, when it comes to CUDA: array orders/striding can matter even more than 
 
 Most of what has been said for ND4J also applies to DL4J.
 
-In addition: 
+In addition:
 
 1. If you are using the nd4j-native \(CPU\) backend, ensure you are using Intel MKL. This is faster than the default of OpenBLAS in most cases. 
 2. If you are using CUDA, ensure you are using CuDNN \([link](../config/backends/config-cudnn.md)\)

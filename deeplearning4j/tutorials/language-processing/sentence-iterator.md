@@ -6,7 +6,7 @@ category: Language Processing
 weight: 10
 ---
 
-# Sentence Iteration
+# Sentence Iterator
 
 A sentence iterator is used in both [Word2vec](word2vec.md) and [Bag of Words](deeplearning4j-nlp/bagofwords-tf-idf.html).
 
@@ -44,7 +44,4 @@ SentenceIterator iter = new FileSentenceIterator(new File("your dir or file"));
 This will parse the files line by line and return individual sentences on each one.
 
 For anything complex, we recommend any pipeline that can implement more in depth support than space separated tokens.
-
-
-
 

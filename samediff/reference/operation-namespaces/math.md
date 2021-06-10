@@ -548,7 +548,7 @@ Cosine similarity pairwise reduction operation. The output contains the cosine s
 
 along the specified dimensions:
 
-out = \(sum\_i x\[i\]  _y\[i\]\) / \( sqrt\(sum\_i x\[i\]^2\)_  sqrt\(sum\_i y\[i\]^2\)
+out = \(sum\_i x\[i\] _y\[i\]\) / \( sqrt\(sum\_i x\[i\]^2\)_ sqrt\(sum\_i y\[i\]^2\)
 
 * **x**  \(NUMERIC\) - Input variable x
 * **y**  \(NUMERIC\) - Input variable y
@@ -821,8 +821,6 @@ Generate an identity matrix with the specified number of rows and columns
 Example:
 
 ```text
-
-
 `INDArray eye = eye(3,2)
 
 eye:
@@ -832,7 +830,6 @@ eye:
 [ 0, 1]
 
 [ 0, 0]`
-
 ```
 
 * **rows** - Number of rows

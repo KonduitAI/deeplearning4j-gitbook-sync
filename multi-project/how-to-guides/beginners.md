@@ -6,7 +6,7 @@ category: Get Started
 weight: 10
 ---
 
-# Deep Learning Beginners
+# Beginners
 
 ## How Do I Start Using Deep Learning?
 

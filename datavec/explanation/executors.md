@@ -51,7 +51,7 @@ Local transform executor
 **isTryCatch**
 
 ```text
-public static boolean isTryCatch() 
+public static boolean isTryCatch()
 ```
 
 Execute the specified TransformProcess with the given input data  
@@ -70,7 +70,7 @@ Execute a datavec transform process on spark rdds.
 **isTryCatch**
 
 ```text
-public static boolean isTryCatch() 
+public static boolean isTryCatch()
 ```
 
 * deprecated Use static methods instead of instance methods on SparkTransformExecutor

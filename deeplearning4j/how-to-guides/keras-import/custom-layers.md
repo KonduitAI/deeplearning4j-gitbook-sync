@@ -4,9 +4,9 @@ description: How to implement custom Keras layers for import in Deeplearning4J.
 
 # Custom Layers
 
-Many more advanced models will contain custom layers, i.e. layers that aren't included in Keras. 
+Many more advanced models will contain custom layers, i.e. layers that aren't included in Keras.
 
-You can import those models too, but you will have to provide an implementation of that layer yourself, as the exported model file only provides us with a name for it. 
+You can import those models too, but you will have to provide an implementation of that layer yourself, as the exported model file only provides us with a name for it.
 
 Usually, you will have found out about needing to implement a custom layer, when you saw an exception like the following:
 
@@ -40,7 +40,7 @@ public class TimesThreeLambda extends SameDiffLambdaLayer {
     public SDVariable defineLayer(SameDiff sd, SDVariable x) { 
         return x.mul(3); 
     }
-    
+
     @Override
     public InputType getOutputType(int layerIndex, InputType inputType) {
         return inputType; 
@@ -48,7 +48,7 @@ public class TimesThreeLambda extends SameDiffLambdaLayer {
 }
 ```
 
-This simple lambda layer just multiplies its input by 3. 
+This simple lambda layer just multiplies its input by 3.
 
 {% hint style="danger" %}
 `defineLayer` will only be called once to create the SameDiff graph that is used as the definition of this layer. Do not use information about the size of the inputs or other non-static sizes, like batch size, when defining the layer, or it may fail later on.
@@ -66,7 +66,7 @@ The correct name for your lambda layer will depend on the model you are importin
 
 Implementing a full layer with weights is more complex than defining a lambda layer. You will have to create a new class that extends `KerasLayer` and that reads the configuration of that layer and defines it appropriately.
 
-For examples on how this was done, take a look at [KerasLRN](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/custom/KerasLRN.java) and [KerasPoolHelper](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/custom/KerasPoolHelper.java) which are custom layers that were needed to be able to import GoogLeNet. 
+For examples on how this was done, take a look at [KerasLRN](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/custom/KerasLRN.java) and [KerasPoolHelper](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/custom/KerasPoolHelper.java) which are custom layers that were needed to be able to import GoogLeNet.
 
 After you've defined your layer, you will have to register it to make it available on import:
 

@@ -1,4 +1,4 @@
-# Importing TensorFlow models
+# Importing Tensorflow
 
 ## What models can be imported into SameDiff
 

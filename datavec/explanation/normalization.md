@@ -15,7 +15,7 @@ Pre processor for DataSets that normalizes feature values \(and optionally label
 **NormalizerMinMaxScaler**
 
 ```text
-public NormalizerMinMaxScaler(double minRange, double maxRange) 
+public NormalizerMinMaxScaler(double minRange, double maxRange)
 ```
 
 Preprocessor can take a range as minRange and maxRange
@@ -26,7 +26,7 @@ Preprocessor can take a range as minRange and maxRange
 **load**
 
 ```text
-public void load(File... statistics) throws IOException 
+public void load(File... statistics) throws IOException
 ```
 
 Load the given min and max
@@ -37,7 +37,7 @@ Load the given min and max
 **save**
 
 ```text
-public void save(File... files) throws IOException 
+public void save(File... files) throws IOException
 ```
 
 Save the current min and max
@@ -67,7 +67,7 @@ statistics of the upper and lower bounds of the population
 **MinMaxStrategy**
 
 ```text
-public MinMaxStrategy(double minRange, double maxRange) 
+public MinMaxStrategy(double minRange, double maxRange)
 ```
 
 * param minRange the target range lower bound
@@ -76,7 +76,7 @@ public MinMaxStrategy(double minRange, double maxRange)
 **preProcess**
 
 ```text
-public void preProcess(INDArray array, INDArray maskArray, MinMaxStats stats) 
+public void preProcess(INDArray array, INDArray maskArray, MinMaxStats stats)
 ```
 
 Normalize a data array
@@ -87,7 +87,7 @@ Normalize a data array
 **revert**
 
 ```text
-public void revert(INDArray array, INDArray maskArray, MinMaxStats stats) 
+public void revert(INDArray array, INDArray maskArray, MinMaxStats stats)
 ```
 
 Denormalize a data array
@@ -104,7 +104,7 @@ Created by susaneraly on 6/23/16. A preprocessor specifically for images that ap
 **ImagePreProcessingScaler**
 
 ```text
-public ImagePreProcessingScaler(double a, double b, int maxBits) 
+public ImagePreProcessingScaler(double a, double b, int maxBits)
 ```
 
 Preprocessor can take a range as minRange and maxRange
@@ -116,7 +116,7 @@ Preprocessor can take a range as minRange and maxRange
 **fit**
 
 ```text
-public void fit(DataSet dataSet) 
+public void fit(DataSet dataSet)
 ```
 
 Fit a dataset \(only compute based on the statistics from this dataset0
@@ -126,7 +126,7 @@ Fit a dataset \(only compute based on the statistics from this dataset0
 **fit**
 
 ```text
-public void fit(DataSetIterator iterator) 
+public void fit(DataSetIterator iterator)
 ```
 
 Iterates over a dataset accumulating statistics for normalization
@@ -136,7 +136,7 @@ Iterates over a dataset accumulating statistics for normalization
 **transform**
 
 ```text
-public void transform(DataSet toPreProcess) 
+public void transform(DataSet toPreProcess)
 ```
 
 Transform the data
@@ -166,7 +166,7 @@ Pre processor for MultiDataSet that normalizes feature values \(and optionally l
 **MultiNormalizerMinMaxScaler**
 
 ```text
-public MultiNormalizerMinMaxScaler(double minRange, double maxRange) 
+public MultiNormalizerMinMaxScaler(double minRange, double maxRange)
 ```
 
 Preprocessor can take a range as minRange and maxRange
@@ -190,7 +190,7 @@ Can take a range, so pixel values can be scaled from 0-&gt;255 to minRange-&gt;m
 **ImageMultiPreProcessingScaler**
 
 ```text
-public ImageMultiPreProcessingScaler(double a, double b, int maxBits, int[] featureIndices) 
+public ImageMultiPreProcessingScaler(double a, double b, int maxBits, int[] featureIndices)
 ```
 
 Preprocessor can take a range as minRange and maxRange
@@ -209,7 +209,7 @@ Created by susaneraly, Ede Meijer variance and mean Pre processor for DataSet th
 **load**
 
 ```text
-public void load(File... files) throws IOException 
+public void load(File... files) throws IOException
 ```
 
 Load the means and standard deviations from the file system
@@ -219,7 +219,7 @@ Load the means and standard deviations from the file system
 **save**
 
 ```text
-public void save(File... files) throws IOException 
+public void save(File... files) throws IOException
 ```
 
 * param files the files to save to. Needs 4 files if normalizing labels, otherwise 2.
@@ -236,7 +236,7 @@ of the means and standard deviations of the population
 **preProcess**
 
 ```text
-public void preProcess(INDArray array, INDArray maskArray, DistributionStats stats) 
+public void preProcess(INDArray array, INDArray maskArray, DistributionStats stats)
 ```
 
 Normalize a data array
@@ -247,7 +247,7 @@ Normalize a data array
 **revert**
 
 ```text
-public void revert(INDArray array, INDArray maskArray, DistributionStats stats) 
+public void revert(INDArray array, INDArray maskArray, DistributionStats stats)
 ```
 
 Denormalize a data array
@@ -272,7 +272,7 @@ By default, no normalization is applied. There are methods to configure the desi
 **MultiNormalizerHybrid**
 
 ```text
-public MultiNormalizerHybrid standardizeAllInputs() 
+public MultiNormalizerHybrid standardizeAllInputs()
 ```
 
 Apply standardization to all inputs, except the ones individually configured
@@ -282,7 +282,7 @@ Apply standardization to all inputs, except the ones individually configured
 **minMaxScaleAllInputs**
 
 ```text
-public MultiNormalizerHybrid minMaxScaleAllInputs() 
+public MultiNormalizerHybrid minMaxScaleAllInputs()
 ```
 
 Apply min-max scaling to all inputs, except the ones individually configured
@@ -292,7 +292,7 @@ Apply min-max scaling to all inputs, except the ones individually configured
 **minMaxScaleAllInputs**
 
 ```text
-public MultiNormalizerHybrid minMaxScaleAllInputs(double rangeFrom, double rangeTo) 
+public MultiNormalizerHybrid minMaxScaleAllInputs(double rangeFrom, double rangeTo)
 ```
 
 Apply min-max scaling to all inputs, except the ones individually configured
@@ -304,7 +304,7 @@ Apply min-max scaling to all inputs, except the ones individually configured
 **standardizeInput**
 
 ```text
-public MultiNormalizerHybrid standardizeInput(int input) 
+public MultiNormalizerHybrid standardizeInput(int input)
 ```
 
 Apply standardization to a specific input, overriding the global input strategy if any
@@ -315,7 +315,7 @@ Apply standardization to a specific input, overriding the global input strategy 
 **minMaxScaleInput**
 
 ```text
-public MultiNormalizerHybrid minMaxScaleInput(int input) 
+public MultiNormalizerHybrid minMaxScaleInput(int input)
 ```
 
 Apply min-max scaling to a specific input, overriding the global input strategy if any
@@ -326,7 +326,7 @@ Apply min-max scaling to a specific input, overriding the global input strategy 
 **minMaxScaleInput**
 
 ```text
-public MultiNormalizerHybrid minMaxScaleInput(int input, double rangeFrom, double rangeTo) 
+public MultiNormalizerHybrid minMaxScaleInput(int input, double rangeFrom, double rangeTo)
 ```
 
 Apply min-max scaling to a specific input, overriding the global input strategy if any
@@ -339,7 +339,7 @@ Apply min-max scaling to a specific input, overriding the global input strategy 
 **standardizeAllOutputs**
 
 ```text
-public MultiNormalizerHybrid standardizeAllOutputs() 
+public MultiNormalizerHybrid standardizeAllOutputs()
 ```
 
 Apply standardization to all outputs, except the ones individually configured
@@ -349,7 +349,7 @@ Apply standardization to all outputs, except the ones individually configured
 **minMaxScaleAllOutputs**
 
 ```text
-public MultiNormalizerHybrid minMaxScaleAllOutputs() 
+public MultiNormalizerHybrid minMaxScaleAllOutputs()
 ```
 
 Apply min-max scaling to all outputs, except the ones individually configured
@@ -359,7 +359,7 @@ Apply min-max scaling to all outputs, except the ones individually configured
 **minMaxScaleAllOutputs**
 
 ```text
-public MultiNormalizerHybrid minMaxScaleAllOutputs(double rangeFrom, double rangeTo) 
+public MultiNormalizerHybrid minMaxScaleAllOutputs(double rangeFrom, double rangeTo)
 ```
 
 Apply min-max scaling to all outputs, except the ones individually configured
@@ -371,7 +371,7 @@ Apply min-max scaling to all outputs, except the ones individually configured
 **standardizeOutput**
 
 ```text
-public MultiNormalizerHybrid standardizeOutput(int output) 
+public MultiNormalizerHybrid standardizeOutput(int output)
 ```
 
 Apply standardization to a specific output, overriding the global output strategy if any
@@ -382,7 +382,7 @@ Apply standardization to a specific output, overriding the global output strateg
 **minMaxScaleOutput**
 
 ```text
-public MultiNormalizerHybrid minMaxScaleOutput(int output) 
+public MultiNormalizerHybrid minMaxScaleOutput(int output)
 ```
 
 Apply min-max scaling to a specific output, overriding the global output strategy if any
@@ -393,7 +393,7 @@ Apply min-max scaling to a specific output, overriding the global output strateg
 **minMaxScaleOutput**
 
 ```text
-public MultiNormalizerHybrid minMaxScaleOutput(int output, double rangeFrom, double rangeTo) 
+public MultiNormalizerHybrid minMaxScaleOutput(int output, double rangeFrom, double rangeTo)
 ```
 
 Apply min-max scaling to a specific output, overriding the global output strategy if any
@@ -406,7 +406,7 @@ Apply min-max scaling to a specific output, overriding the global output strateg
 **getInputStats**
 
 ```text
-public NormalizerStats getInputStats(int input) 
+public NormalizerStats getInputStats(int input)
 ```
 
 Get normalization statistics for a given input.
@@ -417,7 +417,7 @@ Get normalization statistics for a given input.
 **getOutputStats**
 
 ```text
-public NormalizerStats getOutputStats(int output) 
+public NormalizerStats getOutputStats(int output)
 ```
 
 Get normalization statistics for a given output.
@@ -428,7 +428,7 @@ Get normalization statistics for a given output.
 **fit**
 
 ```text
-public void fit(@NonNull MultiDataSet dataSet) 
+public void fit(@NonNull MultiDataSet dataSet)
 ```
 
 Get the map of normalization statistics per input
@@ -438,7 +438,7 @@ Get the map of normalization statistics per input
 **fit**
 
 ```text
-public void fit(@NonNull MultiDataSetIterator iterator) 
+public void fit(@NonNull MultiDataSetIterator iterator)
 ```
 
 Iterates over a dataset accumulating statistics for normalization
@@ -448,7 +448,7 @@ Iterates over a dataset accumulating statistics for normalization
 **transform**
 
 ```text
-public void transform(@NonNull MultiDataSet data) 
+public void transform(@NonNull MultiDataSet data)
 ```
 
 Transform the dataset
@@ -458,7 +458,7 @@ Transform the dataset
 **revert**
 
 ```text
-public void revert(@NonNull MultiDataSet data) 
+public void revert(@NonNull MultiDataSet data)
 ```
 
 Undo \(revert\) the normalization applied by this DataNormalization instance \(arrays are modified in-place\)
@@ -468,7 +468,7 @@ Undo \(revert\) the normalization applied by this DataNormalization instance \(a
 **revertFeatures**
 
 ```text
-public void revertFeatures(@NonNull INDArray[] features) 
+public void revertFeatures(@NonNull INDArray[] features)
 ```
 
 Undo \(revert\) the normalization applied by this DataNormalization instance to the entire inputs array
@@ -478,7 +478,7 @@ Undo \(revert\) the normalization applied by this DataNormalization instance to 
 **revertFeatures**
 
 ```text
-public void revertFeatures(@NonNull INDArray[] features, INDArray[] maskArrays) 
+public void revertFeatures(@NonNull INDArray[] features, INDArray[] maskArrays)
 ```
 
 Undo \(revert\) the normalization applied by this DataNormalization instance to the entire inputs array
@@ -489,7 +489,7 @@ Undo \(revert\) the normalization applied by this DataNormalization instance to 
 **revertFeatures**
 
 ```text
-public void revertFeatures(@NonNull INDArray[] features, INDArray[] maskArrays, int input) 
+public void revertFeatures(@NonNull INDArray[] features, INDArray[] maskArrays, int input)
 ```
 
 Undo \(revert\) the normalization applied by this DataNormalization instance to the features of a particular input
@@ -501,7 +501,7 @@ Undo \(revert\) the normalization applied by this DataNormalization instance to 
 **revertLabels**
 
 ```text
-public void revertLabels(@NonNull INDArray[] labels) 
+public void revertLabels(@NonNull INDArray[] labels)
 ```
 
 Undo \(revert\) the normalization applied by this DataNormalization instance to the entire outputs array
@@ -511,7 +511,7 @@ Undo \(revert\) the normalization applied by this DataNormalization instance to 
 **revertLabels**
 
 ```text
-public void revertLabels(@NonNull INDArray[] labels, INDArray[] maskArrays) 
+public void revertLabels(@NonNull INDArray[] labels, INDArray[] maskArrays)
 ```
 
 Undo \(revert\) the normalization applied by this DataNormalization instance to the entire outputs array
@@ -522,7 +522,7 @@ Undo \(revert\) the normalization applied by this DataNormalization instance to 
 **revertLabels**
 
 ```text
-public void revertLabels(@NonNull INDArray[] labels, INDArray[] maskArrays, int output) 
+public void revertLabels(@NonNull INDArray[] labels, INDArray[] maskArrays, int output)
 ```
 
 Undo \(revert\) the normalization applied by this DataNormalization instance to the labels of a particular output
@@ -554,7 +554,7 @@ Pre processor for MultiDataSet that normalizes feature values \(and optionally l
 **load**
 
 ```text
-public void load(@NonNull List<File> featureFiles, @NonNull List<File> labelFiles) throws IOException 
+public void load(@NonNull List<File> featureFiles, @NonNull List<File> labelFiles) throws IOException
 ```
 
 Load means and standard deviations from the file system
@@ -565,7 +565,7 @@ Load means and standard deviations from the file system
 **save**
 
 ```text
-public void save(@NonNull List<File> featureFiles, @NonNull List<File> labelFiles) throws IOException 
+public void save(@NonNull List<File> featureFiles, @NonNull List<File> labelFiles) throws IOException
 ```
 
 * param featureFiles target files for features, requires 2 files per input, alternating mean and stddev files
@@ -578,12 +578,12 @@ Save the current means and standard deviations to the file system
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/dataset/api/preprocessor//VGG16ImagePreProcessor.java)
 
-This is a preprocessor specifically for VGG16. It subtracts the mean RGB value, computed on the training set, from each pixel as reported in: https://arxiv.org/pdf/1409.1556.pdf
+This is a preprocessor specifically for VGG16. It subtracts the mean RGB value, computed on the training set, from each pixel as reported in: [https://arxiv.org/pdf/1409.1556.pdf](https://arxiv.org/pdf/1409.1556.pdf)
 
 **fit**
 
 ```text
-public void fit(DataSet dataSet) 
+public void fit(DataSet dataSet)
 ```
 
 Fit a dataset \(only compute based on the statistics from this dataset0
@@ -593,7 +593,7 @@ Fit a dataset \(only compute based on the statistics from this dataset0
 **fit**
 
 ```text
-public void fit(DataSetIterator iterator) 
+public void fit(DataSetIterator iterator)
 ```
 
 Iterates over a dataset accumulating statistics for normalization
@@ -603,7 +603,7 @@ Iterates over a dataset accumulating statistics for normalization
 **transform**
 
 ```text
-public void transform(DataSet toPreProcess) 
+public void transform(DataSet toPreProcess)
 ```
 
 Transform the data

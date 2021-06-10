@@ -9,7 +9,7 @@ Imports a 2D Convolution layer from Keras.
 **KerasConvolution2D**
 
 ```text
-public KerasConvolution2D(Integer kerasVersion) throws UnsupportedKerasConfigurationException 
+public KerasConvolution2D(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
 Pass-through constructor from KerasLayer
@@ -20,7 +20,7 @@ Pass-through constructor from KerasLayer
 **getConvolution2DLayer**
 
 ```text
-public ConvolutionLayer getConvolution2DLayer() 
+public ConvolutionLayer getConvolution2DLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -32,7 +32,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -51,7 +51,7 @@ Imports a Keras Cropping 2D layer.
 
 ```text
 public KerasCropping2D(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -63,7 +63,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getCropping2DLayer**
 
 ```text
-public Cropping2D getCropping2DLayer() 
+public Cropping2D getCropping2DLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -76,7 +76,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -95,7 +95,7 @@ Keras Upsampling3D layer support
 
 ```text
 public KerasUpsampling3D(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -107,7 +107,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getUpsampling3DLayer**
 
 ```text
-public Upsampling3D getUpsampling3DLayer() 
+public Upsampling3D getUpsampling3DLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -120,7 +120,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -138,7 +138,7 @@ Imports a 1D Convolution layer from Keras.
 **KerasConvolution1D**
 
 ```text
-public KerasConvolution1D(Integer kerasVersion) throws UnsupportedKerasConfigurationException 
+public KerasConvolution1D(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
 Pass-through constructor from KerasLayer
@@ -149,7 +149,7 @@ Pass-through constructor from KerasLayer
 **getConvolution1DLayer**
 
 ```text
-public Convolution1DLayer getConvolution1DLayer() 
+public Convolution1DLayer getConvolution1DLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -161,7 +161,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -173,7 +173,7 @@ Get layer output type.
 **getInputPreprocessor**
 
 ```text
-public InputPreProcessor getInputPreprocessor(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputPreProcessor getInputPreprocessor(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Gets appropriate DL4J InputPreProcessor for given InputTypes.
@@ -186,7 +186,7 @@ Gets appropriate DL4J InputPreProcessor for given InputTypes.
 **setWeights**
 
 ```text
-public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException 
+public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException
 ```
 
 Set weights for layer.
@@ -203,7 +203,7 @@ Keras Upsampling1D layer support
 
 ```text
 public KerasUpsampling1D(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -215,7 +215,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getUpsampling1DLayer**
 
 ```text
-public Upsampling1D getUpsampling1DLayer() 
+public Upsampling1D getUpsampling1DLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -228,7 +228,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -248,7 +248,7 @@ author: Max Pumperla
 **KerasAtrousConvolution2D**
 
 ```text
-public KerasAtrousConvolution2D(Integer kerasVersion) throws UnsupportedKerasConfigurationException 
+public KerasAtrousConvolution2D(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
 Pass-through constructor from KerasLayer
@@ -259,7 +259,7 @@ Pass-through constructor from KerasLayer
 **getAtrousConvolution2D**
 
 ```text
-public ConvolutionLayer getAtrousConvolution2D() 
+public ConvolutionLayer getAtrousConvolution2D()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -271,7 +271,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -291,7 +291,7 @@ author: Max Pumperla
 **KerasAtrousConvolution1D**
 
 ```text
-public KerasAtrousConvolution1D(Integer kerasVersion) throws UnsupportedKerasConfigurationException 
+public KerasAtrousConvolution1D(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
 Pass-through constructor from KerasLayer
@@ -302,7 +302,7 @@ Pass-through constructor from KerasLayer
 **getAtrousConvolution1D**
 
 ```text
-public Convolution1DLayer getAtrousConvolution1D() 
+public Convolution1DLayer getAtrousConvolution1D()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -314,7 +314,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -333,7 +333,7 @@ Imports a Keras Cropping 3D layer.
 
 ```text
 public KerasCropping3D(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -345,7 +345,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getCropping3DLayer**
 
 ```text
-public Cropping3D getCropping3DLayer() 
+public Cropping3D getCropping3DLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -358,7 +358,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -377,7 +377,7 @@ Imports a Keras ZeroPadding 2D layer.
 
 ```text
 public KerasZeroPadding2D(Map<String, Object> layerConfig)
-                    throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+                    throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -389,7 +389,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getZeroPadding2DLayer**
 
 ```text
-public ZeroPaddingLayer getZeroPadding2DLayer() 
+public ZeroPaddingLayer getZeroPadding2DLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -402,7 +402,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -420,7 +420,7 @@ Imports a 3D Convolution layer from Keras.
 **KerasConvolution3D**
 
 ```text
-public KerasConvolution3D(Integer kerasVersion) throws UnsupportedKerasConfigurationException 
+public KerasConvolution3D(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
 Pass-through constructor from KerasLayer
@@ -431,7 +431,7 @@ Pass-through constructor from KerasLayer
 **getConvolution3DLayer**
 
 ```text
-public ConvolutionLayer getConvolution3DLayer() 
+public ConvolutionLayer getConvolution3DLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -443,7 +443,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -461,7 +461,7 @@ Imports a 2D Deconvolution layer from Keras.
 **KerasDeconvolution2D**
 
 ```text
-public KerasDeconvolution2D(Integer kerasVersion) throws UnsupportedKerasConfigurationException 
+public KerasDeconvolution2D(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
 Pass-through constructor from KerasLayer
@@ -472,7 +472,7 @@ Pass-through constructor from KerasLayer
 **getDeconvolution2DLayer**
 
 ```text
-public Deconvolution2D getDeconvolution2DLayer() 
+public Deconvolution2D getDeconvolution2DLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -484,7 +484,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -503,7 +503,7 @@ Imports a Keras ZeroPadding 3D layer.
 
 ```text
 public KerasZeroPadding3D(Map<String, Object> layerConfig)
-                    throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+                    throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -515,7 +515,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getZeroPadding3DLayer**
 
 ```text
-public ZeroPadding3DLayer getZeroPadding3DLayer() 
+public ZeroPadding3DLayer getZeroPadding3DLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -528,7 +528,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -548,7 +548,7 @@ Utility functionality for Keras convolution layers.
 ```text
 public static ConvolutionMode getConvolutionModeFromConfig(Map<String, Object> layerConfig,
                                                                KerasLayerConfiguration conf)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Get \(convolution\) stride from Keras layer configuration.
@@ -567,7 +567,7 @@ Imports a Keras ZeroPadding 1D layer.
 
 ```text
 public KerasZeroPadding1D(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -579,7 +579,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getZeroPadding1DLayer**
 
 ```text
-public ZeroPadding1DLayer getZeroPadding1DLayer() 
+public ZeroPadding1DLayer getZeroPadding1DLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -592,7 +592,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -611,7 +611,7 @@ Imports a Keras Cropping 1D layer.
 
 ```text
 public KerasCropping1D(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -623,7 +623,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getCropping1DLayer**
 
 ```text
-public Cropping1D getCropping1DLayer() 
+public Cropping1D getCropping1DLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -636,7 +636,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -655,7 +655,7 @@ Constructor from parsed Keras layer configuration dictionary.
 
 ```text
 public KerasSpaceToDepth(Map<String, Object> layerConfig, boolean enforceTrainingConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -668,7 +668,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getSpaceToDepthLayer**
 
 ```text
-public SpaceToDepthLayer getSpaceToDepthLayer() 
+public SpaceToDepthLayer getSpaceToDepthLayer()
 ```
 
 Get DL4J SpaceToDepth layer.
@@ -678,7 +678,7 @@ Get DL4J SpaceToDepth layer.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -697,7 +697,7 @@ Keras Upsampling2D layer support
 
 ```text
 public KerasUpsampling2D(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException 
+            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -709,7 +709,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getUpsampling2DLayer**
 
 ```text
-public Upsampling2D getUpsampling2DLayer() 
+public Upsampling2D getUpsampling2DLayer()
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -722,7 +722,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -740,7 +740,7 @@ Keras separable convolution 2D layer support
 **KerasSeparableConvolution2D**
 
 ```text
-public KerasSeparableConvolution2D(Integer kerasVersion) throws UnsupportedKerasConfigurationException 
+public KerasSeparableConvolution2D(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
 Pass-through constructor from KerasLayer
@@ -751,7 +751,7 @@ Pass-through constructor from KerasLayer
 **setWeights**
 
 ```text
-public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException 
+public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -763,7 +763,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getSeparableConvolution2DLayer**
 
 ```text
-public SeparableConvolution2D getSeparableConvolution2DLayer() 
+public SeparableConvolution2D getSeparableConvolution2DLayer()
 ```
 
 Get DL4J SeparableConvolution2D.
@@ -773,7 +773,7 @@ Get DL4J SeparableConvolution2D.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.
@@ -791,7 +791,7 @@ Keras depth-wise convolution 2D layer support
 **KerasDepthwiseConvolution2D**
 
 ```text
-public KerasDepthwiseConvolution2D(Integer kerasVersion) throws UnsupportedKerasConfigurationException 
+public KerasDepthwiseConvolution2D(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
 Pass-through constructor from KerasLayer
@@ -802,7 +802,7 @@ Pass-through constructor from KerasLayer
 **setWeights**
 
 ```text
-public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException 
+public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException
 ```
 
 Constructor from parsed Keras layer configuration dictionary.
@@ -814,7 +814,7 @@ Constructor from parsed Keras layer configuration dictionary.
 **getDepthwiseConvolution2DLayer**
 
 ```text
-public DepthwiseConvolution2D getDepthwiseConvolution2DLayer() 
+public DepthwiseConvolution2D getDepthwiseConvolution2DLayer()
 ```
 
 Get DL4J DepthwiseConvolution2D.
@@ -824,7 +824,7 @@ Get DL4J DepthwiseConvolution2D.
 **getOutputType**
 
 ```text
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException 
+public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
 Get layer output type.

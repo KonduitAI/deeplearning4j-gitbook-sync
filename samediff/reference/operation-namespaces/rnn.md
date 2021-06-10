@@ -175,14 +175,11 @@ The SRU layer. Does a single time step operation.
 
 * **RnnDataFormat** \(ENUM\) -  The data format of the input. Input shape depends on data format \(in config\):  
 
+TNS -&gt; \[timeSteps, batchSize, inSize\]
 
-  TNS -&gt; \[timeSteps, batchSize, inSize\]  
+NST -&gt; \[batchSize, inSize, timeSteps\]
 
-
-  NST -&gt; \[batchSize, inSize, timeSteps\]  
-
-
-  NTS -&gt; \[batchSize, timeSteps, inSize\]  
+NTS -&gt; \[batchSize, timeSteps, inSize\]
 
 * **peepHole** \(BOOL\) - Whether to provide peephole connections
 * **forgetBias** \(NUMERIC\) - The bias added to forget gates in order to reduce the scale of forgetting in the beginning of the training.
@@ -194,27 +191,24 @@ Used in these ops: [lstmCell](rnn.md#lstmcell) [lstmblock](rnn.md#lstmblock)
 
 * **LSTMDataFormat** \(ENUM\) - for unidirectional:  TNS: shape \[timeLength, numExamples, inOutSize\] - sometimes referred to as "time major"  
 
+NST: shape \[numExamples, inOutSize, timeLength\]
 
-  NST: shape \[numExamples, inOutSize, timeLength\]  
+NTS: shape \[numExamples, timeLength, inOutSize\] - TF "time\_major=false" layout  
+for bidirectional:
 
-
-  NTS: shape \[numExamples, timeLength, inOutSize\] - TF "time\_major=false" layout  
-   for bidirectional:
-
-   T2NS: 3 = \[timeLength, 2, numExamples, inOutSize\] \(for ONNX\)
+T2NS: 3 = \[timeLength, 2, numExamples, inOutSize\] \(for ONNX\)
 
 * **LSTMDirectionMode** \(ENUM\) - direction   
 
+FWD: 0 = fwd
 
-  FWD: 0 = fwd
+BWD: 1 = bwd
 
-  BWD: 1 = bwd
+BIDIR\_SUM: 2 = bidirectional sum
 
-  BIDIR\_SUM: 2 = bidirectional sum
+BIDIR\_CONCAT: 3 = bidirectional concat
 
-  BIDIR\_CONCAT: 3 = bidirectional concat
-
-  BIDIR\_EXTRA\_DIM: 4 = bidirectional extra output dim \(in conjunction with format dataFormat = 3\)
+BIDIR\_EXTRA\_DIM: 4 = bidirectional extra output dim \(in conjunction with format dataFormat = 3\)
 
 * **gateAct** \(ENUM\) - Activations
 * **cellAct** \(ENUM\) - Activations
@@ -268,21 +262,21 @@ Used in these ops: [lstmCell](rnn.md#lstmcell) [lstmblock](rnn.md#lstmblock)
 
 * **inputWeights**- input weights Wx:
 
-  1\) shapes `[nIn, 4*nOut]` for FWD,BWD  2\) shapes `[2, nIn, 4*nOut]` BIDIR\_SUM, BIDIR\_CONCAT and BIDIR\_EXTRA\_DIM \(NUMERIC type\)
+  1\) shapes `[nIn, 4*nOut]` for FWD,BWD 2\) shapes `[2, nIn, 4*nOut]` BIDIR\_SUM, BIDIR\_CONCAT and BIDIR\_EXTRA\_DIM \(NUMERIC type\)
 
 * **recurrentWeights**- recurrent weights Wr:
 
-  1\) shapes `[nIn, 4*nOut]` for FWD, BWD  2\) shapes `[2, nIn, 4*nOut]` BIDIR\_SUM, BIDIR\_CONCAT and BIDIR\_EXTRA\_DIM \(NUMERIC type\)
+  1\) shapes `[nIn, 4*nOut]` for FWD, BWD 2\) shapes `[2, nIn, 4*nOut]` BIDIR\_SUM, BIDIR\_CONCAT and BIDIR\_EXTRA\_DIM \(NUMERIC type\)
 
 * **biases**- biases
 
-  1\) shapes `[4*nOut]` for FWD, BWD  2\) shapes `[2, 4*nOut]` for BIDIR\_SUM, BIDIR\_CONCAT and BIDIR\_EXTRA\_DIM \(NUMERIC type\)
+  1\) shapes `[4*nOut]` for FWD, BWD 2\) shapes `[2, 4*nOut]` for BIDIR\_SUM, BIDIR\_CONCAT and BIDIR\_EXTRA\_DIM \(NUMERIC type\)
 
 * **peepholeWeights**- peephole weights Wp:
 
-  1\) `[3*nOut]`    when directionMode &lt;  2
+  1\) `[3*nOut]` when directionMode &lt; 2
 
-  2\) `[2, 3*nOut]`  when directionMode &gt;= 2 \(NUMERIC type\)
+  2\) `[2, 3*nOut]` when directionMode &gt;= 2 \(NUMERIC type\)
 
 Used in these ops: [lstmLayer](rnn.md#lstmlayer)
 

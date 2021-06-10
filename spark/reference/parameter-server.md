@@ -24,8 +24,6 @@ Here are a few more perks were added to original algorithm proposed by Nikko Str
 * Dense bitmap encoding: If the number of updates gets too high, another encoding scheme is used, which provides guarantees of "maximum number of bytes" being sent over the wire for any given update message.
 * Periodically, we send "shake up" messages, encoded with a significantly smaller threshold, to share delayed weights that can't get above current threshold.
 
-![](../../.gitbook/assets/distributed%20%281%29.png)
-
 Note that using Spark entails overhead. In order to determine whether Spark will help you or not, consider using the [Performance Listener](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/listeners/PerformanceListener.java) and look at the millisecond iteration time. If it's &lt;= 150ms, Spark may not be worth it.
 
 ## Setting up Your Cluster

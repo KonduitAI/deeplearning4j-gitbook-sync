@@ -10,7 +10,7 @@ weight: 10
 
 Deeplearning4J has a wealth of examples of how to use its many parts. You can find the examples in the [Examples Repository](https://github.com/eclipse/deeplearning4j-examples).
 
-### Prerequisites
+## Prerequisites
 
 The [example repository](https://github.com/eclipse/deeplearning4j-examples) consists of several separate Maven Java projects, each with their own pom files. Maven is a popular build automation tool for Java Projects. The contents of a "pom.xml" file dictate the configurations. Read more about how to configure Maven [here](../config/maven.md).
 
@@ -18,7 +18,7 @@ Users can also refer to the [simple sample project provided](https://github.com/
 
 Build tools are considered standard software engineering best practice. Besides this the complexities posed by the projects in the DL4J ecosystem make dependencies too difficult to manage manually. All the projects in the DL4J ecosystem can be used with other build tools like Gradle, SBT etc. More information on that can be found [here](../config/buildtools.md).
 
-### Example Content
+## Example Content
 
 Projects are based on what functionality the included examples demonstrate to the user and not necessarily which library in the DL4J stack the functionality lives in.
 
@@ -37,7 +37,7 @@ Each project README also lists all the examples it contains, with a recommended 
 * [rl4j-examples](https://github.com/eclipse/deeplearning4j-examples/blob/master/rl4j-examples/README.md) This project contains examples of using RL4J, the reinforcement learning library in DL4J.
 * [android-examples](https://github.com/eclipse/deeplearning4j-examples/blob/master/android-examples/README.md) This project contains an Android example project, that shows DL4J being used in an Android application.
 
-### Feedback & Contributions
+## Feedback & Contributions
 
 While these set of examples don't cover all the features available in DL4J the intent is to cover functionality required for most users - beginners and advanced. File an issue [here](https://github.com/eclipse/deeplearning4j-examples/issues) if you have feedback or feature requests that are not covered here. We are also available via our [community forum](https://community.konduit.ai/) for questions.  
 We welcome contributions from the community. More information can be found [here](https://github.com/eclipse/deeplearning4j/blob/master/CONTRIBUTING.md)  

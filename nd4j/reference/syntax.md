@@ -52,7 +52,7 @@ For other transforms, [please see this page](../operation-namespaces/overview.md
 Here are two examples of performing `z = tanh(x)`, in which the original array `x` is unmodified.
 
 ```text
-INDArray x = Nd4j.rand(3,2);	//input
+INDArray x = Nd4j.rand(3,2);    //input
 INDArray z = Nd4j.create(3,2); //output
 Nd4j.getExecutioner().exec(new Tanh(x,z));
 Nd4j.getExecutioner().exec(Nd4j.getOpFactory().createTransform("tanh",x,z));
@@ -68,7 +68,7 @@ z is output
 
 Frequently, `z = x` \(this is the default if you use a constructor with only one argument\). But there are exceptions for situations like `x = x + y`. Another possibility is `z = x + y`, etc.
 
-### Accumulations <a id="accumulations"></a>
+## Accumulations <a id="accumulations"></a>
 
 Most accumulations are accessable directly via the INDArray interface.
 
@@ -81,14 +81,14 @@ double sum = myArray.sumNumber().doubleValue();
 Accum along dimension example - i.e., sum values in each row:
 
 ```text
-INDArray tenBy3 = Nd4j.ones(10,3);	//10 rows, 3 columns
+INDArray tenBy3 = Nd4j.ones(10,3);    //10 rows, 3 columns
 INDArray sumRows = tenBy3.sum(0);
-System.out.println(sumRows);	//Output: [ 10.00, 10.00, 10.00]
+System.out.println(sumRows);    //Output: [ 10.00, 10.00, 10.00]
 ```
 
 Accumulations along dimensions generalize, so you can sum along two dimensions of any array with two or more dimensions.
 
-### Subset Operations on Arrays <a id="subset-operations-on-arrays"></a>
+## Subset Operations on Arrays <a id="subset-operations-on-arrays"></a>
 
 A simple example:
 

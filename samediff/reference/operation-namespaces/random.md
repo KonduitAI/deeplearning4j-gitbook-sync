@@ -56,7 +56,7 @@ SDVariable exponential(String name, double lambda, DataType datatype, long[] sha
 
 Generate a new random INDArray, where values are randomly sampled according to a exponential distribution:
 
-P\(x\) = lambda  _exp\(-lambda_  x\)
+P\(x\) = lambda _exp\(-lambda_ x\)
 
 * **lambda** - lambda parameter
 * **datatype** - Data type of the output variable
@@ -91,8 +91,7 @@ SDVariable normal(String name, double mean, double stddev, DataType datatype, lo
 
 Generate a new random INDArray, where values are randomly sampled according to a Gaussian \(normal\) distribution,
 
-N\(mean, stdev\)  
-
+N\(mean, stdev\)
 
 * **mean** - Mean value for the random array
 * **stddev** - Standard deviation for the random array

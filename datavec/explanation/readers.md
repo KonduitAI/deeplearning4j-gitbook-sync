@@ -38,7 +38,7 @@ RecordReader for each pipeline. Individual record is a concatenation of the two 
 **initialize**
 
 ```text
-public void initialize(InputSplit split) throws IOException, InterruptedException 
+public void initialize(InputSplit split) throws IOException, InterruptedException
 ```
 
 ### ConcatenatingRecordReader
@@ -56,7 +56,7 @@ File reader/writer
 **getCurrentLabel**
 
 ```text
-public int getCurrentLabel() 
+public int getCurrentLabel()
 ```
 
 Return the current label. The index of the current file’s parent directory in the label list
@@ -84,7 +84,7 @@ Collection record reader for sequences. Mainly used for testing.
 **initialize**
 
 ```text
-public void initialize(InputSplit split) throws IOException, InterruptedException 
+public void initialize(InputSplit split) throws IOException, InterruptedException
 ```
 
 * param records Collection of sequences. For example, List&lt;List&lt;List&gt;&gt; where the inner two lists are a sequence, and the outer list/collection is a list of sequences
@@ -98,7 +98,7 @@ Iterates through a list of strings return a record.
 **initialize**
 
 ```text
-public void initialize(InputSplit split) throws IOException, InterruptedException 
+public void initialize(InputSplit split) throws IOException, InterruptedException
 ```
 
 Called once at initialization.
@@ -110,7 +110,7 @@ Called once at initialization.
 **initialize**
 
 ```text
-public void initialize(Configuration conf, InputSplit split) throws IOException, InterruptedException 
+public void initialize(Configuration conf, InputSplit split) throws IOException, InterruptedException
 ```
 
 Called once at initialization.
@@ -123,7 +123,7 @@ Called once at initialization.
 **hasNext**
 
 ```text
-public boolean hasNext() 
+public boolean hasNext()
 ```
 
 Get the next record
@@ -133,7 +133,7 @@ Get the next record
 **reset**
 
 ```text
-public void reset() 
+public void reset()
 ```
 
 List of label strings
@@ -143,7 +143,7 @@ List of label strings
 **nextRecord**
 
 ```text
-public Record nextRecord() 
+public Record nextRecord()
 ```
 
 Load the record from the given DataInputStream Unlike {- link \#next\(\)} the internal state of the RecordReader is not modified Implementations of this method should not close the DataInputStream
@@ -155,7 +155,7 @@ Load the record from the given DataInputStream Unlike {- link \#next\(\)} the in
 **close**
 
 ```text
-public void close() throws IOException 
+public void close() throws IOException
 ```
 
 Closes this stream and releases any system resources associated with it. If the stream is already closed then invoking this method has no effect.
@@ -167,7 +167,7 @@ As noted in {- link AutoCloseable\#close\(\)}, cases where the close may fail re
 **setConf**
 
 ```text
-public void setConf(Configuration conf) 
+public void setConf(Configuration conf)
 ```
 
 Set the configuration to be used by this object.
@@ -177,7 +177,7 @@ Set the configuration to be used by this object.
 **getConf**
 
 ```text
-public Configuration getConf() 
+public Configuration getConf()
 ```
 
 Return the configuration used by this object.
@@ -191,7 +191,7 @@ Simple csv record reader.
 **initialize**
 
 ```text
-public void initialize(Configuration conf, InputSplit split) throws IOException, InterruptedException 
+public void initialize(Configuration conf, InputSplit split) throws IOException, InterruptedException
 ```
 
 Skip first n lines
@@ -221,7 +221,7 @@ In practice the sliding window size starts at 1, then linearly increase to maxLi
 **initialize**
 
 ```text
-public void initialize(Configuration conf, InputSplit split) throws IOException, InterruptedException 
+public void initialize(Configuration conf, InputSplit split) throws IOException, InterruptedException
 ```
 
 No-arg constructor with the default number of lines per sequence \(10\)
@@ -232,8 +232,7 @@ No-arg constructor with the default number of lines per sequence \(10\)
 
 Record reader for libsvm format, which is closely related to SVMLight format. Similar to scikit-learn we use a single reader for both formats, so this class is a subclass of SVMLightRecordReader.
 
-Further details on the format can be found at  
-
+Further details on the format can be found at
 
 * [http://svmlight.joachims.org/](http://svmlight.joachims.org/) 
 * [http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/multilabel.html](http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/multilabel.html) 
@@ -263,8 +262,7 @@ This can be used to represent either multitask problems or multilabel problems w
 
 Like scikit-learn, we support both zero-based and one-based indexing.
 
-Further details on the format can be found at  
-
+Further details on the format can be found at
 
 * [http://svmlight.joachims.org/](http://svmlight.joachims.org/) 
 * [http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/multilabel.html](http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/multilabel.html) 
@@ -273,7 +271,7 @@ Further details on the format can be found at
 **initialize**
 
 ```text
-public void initialize(Configuration conf, InputSplit split) throws IOException, InterruptedException 
+public void initialize(Configuration conf, InputSplit split) throws IOException, InterruptedException
 ```
 
 Must be called before attempting to read records.
@@ -286,7 +284,7 @@ Must be called before attempting to read records.
 **setConf**
 
 ```text
-public void setConf(Configuration conf) 
+public void setConf(Configuration conf)
 ```
 
 Set configuration.
@@ -298,7 +296,7 @@ Set configuration.
 **hasNext**
 
 ```text
-public boolean hasNext() 
+public boolean hasNext()
 ```
 
 Helper function to help detect lines that are commented out. May read ahead and cache a line.
@@ -308,7 +306,7 @@ Helper function to help detect lines that are commented out. May read ahead and 
 **nextRecord**
 
 ```text
-public Record nextRecord() 
+public Record nextRecord()
 ```
 
 Return next record as list of Writables.
@@ -322,7 +320,7 @@ Return next record as list of Writables.
 RegexLineRecordReader: Read a file, one line at a time, and split it into fields using a regex. To load an entire file using a
 
 Example: Data in format “2016-01-01 23:59:59.001 1 DEBUG First entry message!”  
-using regex String “\(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}\) \(\d+\) \(\[A-Z\]+\) \(.\)”  
+using regex String “\(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3}\) \(\d+\) \(\[A-Z\]+\) \(.\)”  
 would be split into 4 Text writables: \[“2016-01-01 23:59:59.001”, “1”, “DEBUG”, “First entry message!”\]
 
 ### RegexSequenceRecordReader
@@ -332,9 +330,8 @@ would be split into 4 Text writables: \[“2016-01-01 23:59:59.001”, “1”, 
 RegexSequenceRecordReader: Read an entire file \(as a sequence\), one line at a time and split each line into fields using a regex.
 
 Example: Data in format “2016-01-01 23:59:59.001 1 DEBUG First entry message!”  
-using regex String “\(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}\) \(\d+\) \(\[A-Z\]+\) \(.\)”  
-would be split into 4 Text writables: \[“2016-01-01 23:59:59.001”, “1”, “DEBUG”, “First entry message!”\]  
-
+using regex String “\(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3}\) \(\d+\) \(\[A-Z\]+\) \(.\)”  
+would be split into 4 Text writables: \[“2016-01-01 23:59:59.001”, “1”, “DEBUG”, “First entry message!”\]
 
 lines that don’t match the provided regex can result in an exception \(FailOnInvalid\), can be skipped silently \(SkipInvalid\), or skip invalid but log a warning \(SkipInvalidWithWarning\)
 
@@ -347,7 +344,7 @@ to have a transform process applied before being returned.
 **initialize**
 
 ```text
-public void initialize(InputSplit split) throws IOException, InterruptedException 
+public void initialize(InputSplit split) throws IOException, InterruptedException
 ```
 
 Called once at initialization.
@@ -359,7 +356,7 @@ Called once at initialization.
 **initialize**
 
 ```text
-public void initialize(Configuration conf, InputSplit split) throws IOException, InterruptedException 
+public void initialize(Configuration conf, InputSplit split) throws IOException, InterruptedException
 ```
 
 Called once at initialization.
@@ -372,7 +369,7 @@ Called once at initialization.
 **hasNext**
 
 ```text
-public boolean hasNext() 
+public boolean hasNext()
 ```
 
 Get the next record
@@ -382,7 +379,7 @@ Get the next record
 **reset**
 
 ```text
-public void reset() 
+public void reset()
 ```
 
 List of label strings
@@ -392,7 +389,7 @@ List of label strings
 **nextRecord**
 
 ```text
-public Record nextRecord() 
+public Record nextRecord()
 ```
 
 Load the record from the given DataInputStream Unlike {- link \#next\(\)} the internal state of the RecordReader is not modified Implementations of this method should not close the DataInputStream
@@ -404,7 +401,7 @@ Load the record from the given DataInputStream Unlike {- link \#next\(\)} the in
 **loadFromMetaData**
 
 ```text
-public Record loadFromMetaData(RecordMetaData recordMetaData) throws IOException 
+public Record loadFromMetaData(RecordMetaData recordMetaData) throws IOException
 ```
 
 Load a single record from the given {- link RecordMetaData} instance  
@@ -417,11 +414,10 @@ Note: that for data that isn’t splittable \(i.e., text data that needs to be s
 **setListeners**
 
 ```text
-public void setListeners(RecordListener... listeners) 
+public void setListeners(RecordListener... listeners)
 ```
 
-Load multiple records from the given a list of {- link RecordMetaData} instances  
-
+Load multiple records from the given a list of {- link RecordMetaData} instances
 
 * param recordMetaDatas Metadata for the records that we want to load from
 * return Multiple records for the given RecordMetaData instances
@@ -430,7 +426,7 @@ Load multiple records from the given a list of {- link RecordMetaData} instances
 **setListeners**
 
 ```text
-public void setListeners(Collection<RecordListener> listeners) 
+public void setListeners(Collection<RecordListener> listeners)
 ```
 
 Set the record listeners for this record reader.
@@ -440,7 +436,7 @@ Set the record listeners for this record reader.
 **close**
 
 ```text
-public void close() throws IOException 
+public void close() throws IOException
 ```
 
 Closes this stream and releases any system resources associated with it. If the stream is already closed then invoking this method has no effect.
@@ -452,7 +448,7 @@ As noted in {- link AutoCloseable\#close\(\)}, cases where the close may fail re
 **setConf**
 
 ```text
-public void setConf(Configuration conf) 
+public void setConf(Configuration conf)
 ```
 
 Set the configuration to be used by this object.
@@ -462,7 +458,7 @@ Set the configuration to be used by this object.
 **getConf**
 
 ```text
-public Configuration getConf() 
+public Configuration getConf()
 ```
 
 Return the configuration used by this object.
@@ -476,7 +472,7 @@ to be transformed before being returned.
 **setConf**
 
 ```text
-public void setConf(Configuration conf) 
+public void setConf(Configuration conf)
 ```
 
 Set the configuration to be used by this object.
@@ -486,7 +482,7 @@ Set the configuration to be used by this object.
 **getConf**
 
 ```text
-public Configuration getConf() 
+public Configuration getConf()
 ```
 
 Return the configuration used by this object.
@@ -494,7 +490,7 @@ Return the configuration used by this object.
 **batchesSupported**
 
 ```text
-public boolean batchesSupported() 
+public boolean batchesSupported()
 ```
 
 Returns a sequence record.
@@ -504,7 +500,7 @@ Returns a sequence record.
 **nextSequence**
 
 ```text
-public SequenceRecord nextSequence() 
+public SequenceRecord nextSequence()
 ```
 
 Load a sequence record from the given DataInputStream Unlike {- link \#next\(\)} the internal state of the RecordReader is not modified Implementations of this method should not close the DataInputStream
@@ -516,7 +512,7 @@ Load a sequence record from the given DataInputStream Unlike {- link \#next\(\)}
 **loadSequenceFromMetaData**
 
 ```text
-public SequenceRecord loadSequenceFromMetaData(RecordMetaData recordMetaData) throws IOException 
+public SequenceRecord loadSequenceFromMetaData(RecordMetaData recordMetaData) throws IOException
 ```
 
 Load a single sequence record from the given {- link RecordMetaData} instance  
@@ -529,11 +525,10 @@ Note: that for data that isn’t splittable \(i.e., text data that needs to be s
 **initialize**
 
 ```text
-public void initialize(InputSplit split) throws IOException, InterruptedException 
+public void initialize(InputSplit split) throws IOException, InterruptedException
 ```
 
-Load multiple sequence records from the given a list of {- link RecordMetaData} instances  
-
+Load multiple sequence records from the given a list of {- link RecordMetaData} instances
 
 * param recordMetaDatas Metadata for the records that we want to load from
 * return Multiple sequence record for the given RecordMetaData instances
@@ -542,7 +537,7 @@ Load multiple sequence records from the given a list of {- link RecordMetaData} 
 **initialize**
 
 ```text
-public void initialize(Configuration conf, InputSplit split) throws IOException, InterruptedException 
+public void initialize(Configuration conf, InputSplit split) throws IOException, InterruptedException
 ```
 
 Called once at initialization.
@@ -555,7 +550,7 @@ Called once at initialization.
 **hasNext**
 
 ```text
-public boolean hasNext() 
+public boolean hasNext()
 ```
 
 Get the next record
@@ -565,7 +560,7 @@ Get the next record
 **reset**
 
 ```text
-public void reset() 
+public void reset()
 ```
 
 List of label strings
@@ -575,7 +570,7 @@ List of label strings
 **nextRecord**
 
 ```text
-public Record nextRecord() 
+public Record nextRecord()
 ```
 
 Load the record from the given DataInputStream Unlike {- link \#next\(\)} the internal state of the RecordReader is not modified Implementations of this method should not close the DataInputStream
@@ -587,7 +582,7 @@ Load the record from the given DataInputStream Unlike {- link \#next\(\)} the in
 **loadFromMetaData**
 
 ```text
-public Record loadFromMetaData(RecordMetaData recordMetaData) throws IOException 
+public Record loadFromMetaData(RecordMetaData recordMetaData) throws IOException
 ```
 
 Load a single record from the given {- link RecordMetaData} instance  
@@ -600,11 +595,10 @@ Note: that for data that isn’t splittable \(i.e., text data that needs to be s
 **setListeners**
 
 ```text
-public void setListeners(RecordListener... listeners) 
+public void setListeners(RecordListener... listeners)
 ```
 
-Load multiple records from the given a list of {- link RecordMetaData} instances  
-
+Load multiple records from the given a list of {- link RecordMetaData} instances
 
 * param recordMetaDatas Metadata for the records that we want to load from
 * return Multiple records for the given RecordMetaData instances
@@ -613,7 +607,7 @@ Load multiple records from the given a list of {- link RecordMetaData} instances
 **setListeners**
 
 ```text
-public void setListeners(Collection<RecordListener> listeners) 
+public void setListeners(Collection<RecordListener> listeners)
 ```
 
 Set the record listeners for this record reader.
@@ -623,7 +617,7 @@ Set the record listeners for this record reader.
 **close**
 
 ```text
-public void close() throws IOException 
+public void close() throws IOException
 ```
 
 Closes this stream and releases any system resources associated with it. If the stream is already closed then invoking this method has no effect.
@@ -656,6 +650,5 @@ Also appends the label if specified \(one of k encoding based on the directory s
 
 [\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-data/datavec-data-nlp/src/main/java/org/datavec/nlp/reader/TfidfRecordReader.java)
 
-TFIDF record reader \(wraps a tfidf vectorizer for delivering labels and conforming to the record reader interface\)  
-
+TFIDF record reader \(wraps a tfidf vectorizer for delivering labels and conforming to the record reader interface\)
 
