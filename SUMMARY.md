@@ -4,7 +4,8 @@
 
 ## Getting Started
 
-* [Quickstart](getting-started/quickstart.md)
+* [Quickstart](getting-started/quickstart/README.md)
+  * [Untitled](getting-started/quickstart/untitled.md)
 * [Tutorials](getting-started/tutorials/README.md)
   * [Quickstart with MNIST](getting-started/tutorials/quickstart-with-mnist.md)
   * [MultiLayerNetwork And ComputationGraph](getting-started/tutorials/multilayernetwork-and-computationgraph.md)

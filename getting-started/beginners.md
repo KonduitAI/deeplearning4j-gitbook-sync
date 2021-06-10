@@ -93,7 +93,7 @@ Once you have programming basics down, tackle Java, the world's most widely used
 
 With that under your belt, we recommend you approach Deeplearning4j through its [examples](https://github.com/eclipse/deeplearning4j-examples).
 
-* [Quickstart](quickstart.md)
+* [Quickstart](quickstart/)
 
 ## Other Resources
 

@@ -4,7 +4,7 @@ Deeplearning4j - also known as “DL4J” - is a high performance domain-specifi
 
 ### Before you get started
 
-If you are having difficulty, we recommend you join our [community forums](https://community.konduit.ai/). There you can request help and give feedback, but please do use this guide before asking questions we’ve answered below. If you are new to deep learning, we’ve included a [road map for beginners](../beginners.md) with links to courses, readings and other resources. For a longer and more detailed version of this guide, please visiting the Deeplearning4j [Getting Started](../quickstart.md) guide.
+If you are having difficulty, we recommend you join our [community forums](https://community.konduit.ai/). There you can request help and give feedback, but please do use this guide before asking questions we’ve answered below. If you are new to deep learning, we’ve included a [road map for beginners](../beginners.md) with links to courses, readings and other resources. For a longer and more detailed version of this guide, please visiting the Deeplearning4j [Getting Started](../quickstart/) guide.
 
 ## Handwriting classification
 
