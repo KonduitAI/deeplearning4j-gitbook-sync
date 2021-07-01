@@ -2,6 +2,7 @@
 
 * [Deeplearning4j Suite Overview](README.md)
 * [Release Notes](release-notes/README.md)
+  * [1.0.0-M1.1](release-notes/1.0.0-m1.1.md)
   * [1.0.0-M1](release-notes/1.0.0-m1.md)
   * [1.0.0-beta7](release-notes/1.0.0-beta7.md)
   * [1.0.0-beta6](release-notes/1.0.0-beta6.md)
