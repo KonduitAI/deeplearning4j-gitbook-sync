@@ -21,6 +21,8 @@ Deeplearning4j has several steps to a release. Below is a brief outline with fol
 
 7. Double check any user related bugs to see if they should block a release 
 8. Hit release button 
+9. Perform follow up release of -platform projects under same version
+10. Tag release
 
 ## Compile libnd4j on different cpu architectures
 
