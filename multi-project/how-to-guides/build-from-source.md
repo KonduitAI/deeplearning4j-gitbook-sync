@@ -61,8 +61,17 @@ This will ensure that all library versions are set to the appropriate version. E
 {% hint style="info" %}
 Jetson nano users: please see [this thread](https://community.konduit.ai/t/cuda-on-jetson-nano/1364) for successfully compiling deeplearning4j on Jetson nano.
 
-In short: It relies on CUDA 10.0. The [JavaCPP presets](https://github.com/bytedeco/javacpp-presets) for CUDA are also only compiled for arm64 for CUDA 10.0. You can find the supported CUDA versions for CUDA 10.0 [here](https://repo1.maven.org/maven2/org/bytedeco/cuda/10.0-7.4-1.5/) If you would like something more up to date, please feel free to contact us over at [our forums](https://community.ko)
+In short: It relies on CUDA 10.0. The [JavaCPP presets](https://github.com/bytedeco/javacpp-presets) for CUDA are also only compiled for arm64 for CUDA 10.0. You can find the supported CUDA versions for CUDA 10.0 [here](https://repo1.maven.org/maven2/org/bytedeco/cuda/10.0-7.4-1.5/) If you would like something more up to date, please feel free to contact us over at [our forums](https://community.ko)  
+As of 1.0.0-M1.1 you can also use updated dependencies:
 {% endhint %}
+
+```text
+<dependency>
+  <groupId>org.nd4j</groupId>
+  <artifactId>nd4j-cuda-10.2</artifactId>
+  <version>1.0.0-M1.1</version>
+</dependency>
+```
 
 ## Note for windows users
 
