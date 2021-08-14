@@ -25,6 +25,7 @@
 ## Multi-Project
 
 * [Tutorials](multi-project/tutorials/README.md)
+  * [Beginners](multi-project/tutorials/beginners.md)
   * [Quickstart](multi-project/tutorials/quickstart.md)
 * [How To Guides](multi-project/how-to-guides/README.md)
   * [Contribute](multi-project/how-to-guides/contribute/README.md)
