@@ -12,9 +12,9 @@ weight: 1
 
 Writing a python script in python4j involves first understanding what variables you want to pass in and what variables you want to retrieve, very similar to writing any function in a programming language. In order to learn more about this, please see our [execution overview](../reference/execution)
 
-When writing a python script, a user should try to write the script to be as minimal as possible. Focus on the minimal set of inputs, outputs, and code you want to run within a python script. As this is an embedded interpreter, too many complexities arise when trying to run a full blown application. Some complexities include [garbage collection understanding](../reference/garbage-collection) and [debugging script execution](../reference/execution)
+When writing a python script, a user should try to write the script to be as minimal as possible. Focus on the minimal set of inputs, outputs, and code you want to run within a python script. As this is an embedded interpreter, too many complexities arise when trying to run a full blown application. Some complexities include [garbage collection understanding](../reference/garbage-collection.md) and [debugging script execution](../reference/execution)
 
-If you are using external libraries, then you need to understand how our [custom python path support](../reference/python-path) works.
+If you are using external libraries, then you need to understand how our [custom python path support](../reference/python-path.md) works.
 
 ## Before you write your first script
 
@@ -110,5 +110,5 @@ Afterwards, you can read the value from out post execution using:
 String value = out.getValue();
 ```
 
-Note that out is a parameterized type. When retrieving the value, the java runtime will automatically try to cast whatever the output result is from python to the specified type. For more information on types, please see our [types reference](../reference/python-types)
+Note that out is a parameterized type. When retrieving the value, the java runtime will automatically try to cast whatever the output result is from python to the specified type. For more information on types, please see our [types reference](../reference/python-types.md)
 

@@ -20,7 +20,7 @@ Javacpp uses reference counters and phantom references for all of its pointer ob
 
 End users should be aware of potential race conditions between javacpp's memory management and deleting pointers with python's GC. When accessing in memory python variables from java, depending on what code is written in python and how variables are managed, variables maybe garbage collected before referencing causing a crash.
 
-In order to avoid issues, try to use python scripts transactionally. This means within a try/with block that locks the gil as described in [the overview](../overview)
+In order to avoid issues, try to use python scripts transactionally. This means within a try/with block that locks the gil as described in [the overview](python-script-execution.md)
 
 If python variables need to be kept in memory, ensure proper context management of the in memory python variables. Context Management in this case means using a separate python context \(essentially a separate interpreter\) if a user wants full isolation. Full isolation is not required in most cases, but maybe desirable for certain use cases. For now, if you would like more information on this topic, please ask on [our forums](https://community.konduit.ai/) and see our [unit test](https://github.com/eclipse/deeplearning4j/blob/master/python4j/python4j-core/src/test/java/PythonContextManagerTest.java#L48) for usage.
 

@@ -12,7 +12,7 @@ weight: 1
 
 This is everything you need to run DL4J examples and begin your own projects.
 
-We recommend that you join our [community forum](https://community.konduit.ai/). There you can request help and give feedback, but please do use this guide before asking questions we've answered below. If you are new to deep learning, we've included [a road map for beginners](beginners.md) with links to courses, readings and other resources.
+We recommend that you join our [community forum](https://community.konduit.ai/). There you can request help and give feedback, but please do use this guide before asking questions we've answered below. If you are new to deep learning, we've included [a road map for beginners](../../multi-project/tutorials/beginners.md) with links to courses, readings and other resources.
 
 {% hint style="info" %}
 We are currently reworking the Getting Started Guide.

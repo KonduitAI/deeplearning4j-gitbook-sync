@@ -72,11 +72,11 @@ For onnx:
  <dependency>
     <groupId>org.nd4j</groupId>
     <artifactId>samediff-import-onnx</artifactId>
-    <version>1.0.0-M1</version>
+    <version>1.0.0-M1.1</version>
  </dependency>
 ```
 
-In order to use this, you must also include an [nd4j backend](../nd4j/basics.md). The reason for this is because when nd4j tries to create an ndarray, it needs to know what chip its operating on to allocate memory.
+In order to use this, you must also include an [nd4j backend](../../multi-project/explanation/configuration/backends/). The reason for this is because when nd4j tries to create an ndarray, it needs to know what chip its operating on to allocate memory.
 
 Once the graph is loaded in memory, you can use it as any normal samediff graph.
 

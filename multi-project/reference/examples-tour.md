@@ -12,11 +12,11 @@ Deeplearning4J has a wealth of examples of how to use its many parts. You can fi
 
 ## Prerequisites
 
-The [example repository](https://github.com/eclipse/deeplearning4j-examples) consists of several separate Maven Java projects, each with their own pom files. Maven is a popular build automation tool for Java Projects. The contents of a "pom.xml" file dictate the configurations. Read more about how to configure Maven [here](../config/maven.md).
+The [example repository](https://github.com/eclipse/deeplearning4j-examples) consists of several separate Maven Java projects, each with their own pom files. Maven is a popular build automation tool for Java Projects. The contents of a "pom.xml" file dictate the configurations. Read more about how to configure Maven [here](../explanation/maven.md).
 
 Users can also refer to the [simple sample project provided](https://github.com/eclipse/deeplearning4j-examples/tree/master/mvn-project-template) to get started with a clean project from scratch.
 
-Build tools are considered standard software engineering best practice. Besides this the complexities posed by the projects in the DL4J ecosystem make dependencies too difficult to manage manually. All the projects in the DL4J ecosystem can be used with other build tools like Gradle, SBT etc. More information on that can be found [here](../config/buildtools.md).
+Build tools are considered standard software engineering best practice. Besides this the complexities posed by the projects in the DL4J ecosystem make dependencies too difficult to manage manually. All the projects in the DL4J ecosystem can be used with other build tools like Gradle, SBT etc. More information on that can be found [here](../explanation/build-tools.md).
 
 ## Example Content
 

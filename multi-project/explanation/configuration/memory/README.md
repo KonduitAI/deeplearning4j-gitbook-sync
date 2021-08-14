@@ -17,7 +17,7 @@ ND4J uses off-heap memory to store NDArrays, to provide better performance while
 To manage memory allocations, we use two approaches:
 
 * JVM Garbage Collector \(GC\) and WeakReference tracking
-* MemoryWorkspaces - see [Workspaces guide](config-workspaces.md) for details
+* MemoryWorkspaces - see [Workspaces guide](workspaces.md) for details
 
 Despite the differences between these two approaches, the idea is the same: once an NDArray is no longer required on the Java side, the off-heap associated with it should be released so that it can be reused later. The difference between the GC and `MemoryWorkspaces` approaches is in when and how the memory is released.
 

@@ -16,7 +16,7 @@ If you want to use the new model zoo, you will need to add it as a dependency. A
 <dependency>
     <groupId>org.deeplearning4j</groupId>
     <artifactId>deeplearning4j-zoo</artifactId>
-    <version>1.0.0-beta6</version>
+    <version>1.0.0-M1.1</version>
 </dependency>
 ```
 
@@ -128,5 +128,5 @@ Pretrained models are perfect for transfer learning! You can read more about tra
 
 ### Workspaces
 
-Initialization methods often have an additional parameter named `workspaceMode`. For the majority of users you will not need to use this; however, if you have a large machine that has "beefy" specifications, you can pass `WorkspaceMode.SINGLE` for models such as VGG-19 that have many millions of parameters. To learn more about workspaces, please see [this section](../config/config-memory/config-workspaces.md#what-are-workspaces).
+Initialization methods often have an additional parameter named `workspaceMode`. For the majority of users you will not need to use this; however, if you have a large machine that has "beefy" specifications, you can pass `WorkspaceMode.SINGLE` for models such as VGG-19 that have many millions of parameters. To learn more about workspaces, please see [this section](../../../multi-project/explanation/configuration/memory/workspaces.md).
 

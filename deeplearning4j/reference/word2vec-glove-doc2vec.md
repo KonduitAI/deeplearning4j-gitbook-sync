@@ -12,23 +12,23 @@ weight: 2
 
 Contents
 
-* [Introduction](word2vec.md#introduction-to-word-2-vec)
-* [Neural Word Embeddings](word2vec.md#neural-word-embeddings)
+* [Introduction](word2vec-glove-doc2vec.md#introduction-to-word-2-vec)
+* [Neural Word Embeddings](word2vec-glove-doc2vec.md#neural-word-embeddings)
 * [Amusing Word2vec Results](word2vec.md#amusing-word-2-vec-results)
 * [**Just Give Me the Code**](word2vec.md#just-give-me-the-code)
-* [Anatomy of Word2Vec](word2vec.md#anatomy-of-word-2-vec-in-dl-4-j)
-* [Setup, Load and Train](word2vec.md#loading-data)
-* [A Code Example](word2vec.md#a-working-example)
+* [Anatomy of Word2Vec](word2vec-glove-doc2vec.md#just-give-me-the-code)
+* [Setup, Load and Train](word2vec-glove-doc2vec.md#loading-data)
+* [A Code Example](word2vec-glove-doc2vec.md#a-working-example)
 * [Troubleshooting & Tuning Word2Vec](word2vec.md#troubleshooting-and-tuning-word-2-vec)
-* [Word2vec Use Cases](word2vec.md#googles-word-2-vec-patent)
+* [Word2vec Use Cases](word2vec-glove-doc2vec.md#use-cases)
 * [Foreign Languages](word2vec.md#foreign-languages)
-* [GloVe \(Global Vectors\) & Doc2Vec](word2vec.md#glove-global-vectors)
+* [GloVe \(Global Vectors\) & Doc2Vec](word2vec-glove-doc2vec.md#glove-global-vectors)
 
 ### [Introduction to Word2Vec](word2vec.md)
 
-Word2vec is a two-layer neural net that processes text. Its input is a text corpus and its output is a set of vectors: feature vectors for words in that corpus. While Word2vec is not a [deep neural network](https://skymind.ai/wiki/neural-network), it turns text into a numerical form that deep nets can understand. [Deeplearning4j](../getting-started/quickstart.md).
+Word2vec is a two-layer neural net that processes text. Its input is a text corpus and its output is a set of vectors: feature vectors for words in that corpus. While Word2vec is not a [deep neural network](https://skymind.ai/wiki/neural-network), it turns text into a numerical form that deep nets can understand. [Deeplearning4j](../../multi-project/tutorials/quickstart.md).
 
-Word2vec's applications extend beyond parsing sentences in the wild. It can be applied just as well to [genes, code, likes, playlists, social media graphs and other verbal or symbolic series](word2vec.md#sequence) in which patterns may be discerned.
+Word2vec's applications extend beyond parsing sentences in the wild. It can be applied just as well to [genes, code, likes, playlists, social media graphs and other verbal or symbolic series](word2vec-glove-doc2vec.md#sequence-vectors) in which patterns may be discerned.
 
 Why? Because words are simply discrete states like the other data mentioned above, and we are simply looking for the transitional probabilities between those states: the likelihood that they will co-occur. So gene2vec, like2vec and follower2vec are all possible. With that in mind, the tutorial below will help you understand how to create neural embeddings for any group of discrete and co-occurring states.
 
@@ -44,7 +44,7 @@ Here's a list of words associated with "Sweden" using Word2vec, in order of prox
 
 The nations of Scandinavia and several wealthy, northern European, Germanic countries are among the top nine.
 
-### [Neural Word Embeddings](word2vec.md)
+### [Neural Word Embeddings](word2vec-glove-doc2vec.md) <a id="neural-word-embeddings"></a>
 
 The vectors we use to represent words are called _neural word embeddings_, and representations are strange. One thing describes another, even though those two things are radically different. As Elvis Costello said: "Writing about music is like dancing about architecture." Word2vec "vectorizes" about words, and by doing so it makes natural language computer-readable -- we can start to perform powerful mathematical operations on words to detect their similarities.
 
@@ -66,7 +66,7 @@ Similar things and ideas are shown to be "close". Their relative meanings have b
 
 These vectors are the basis of a more comprehensive geometry of words. As shown in the graph, capital cities such as Rome, Paris, Berlin and Beijing cluster near each other, and they will each have similar distances in vectorspace to their countries; i.e. Rome - Italy = Beijing - China. If you only knew that Rome was the capital of Italy, and were wondering about the capital of China, then the equation Rome -Italy + China would return Beijing. No kidding.
 
-### [Amusing Word2Vec Results](word2vec.md)
+### [Amusing Word2Vec Results](word2vec-glove-doc2vec.md)
 
 Let's look at some other associations Word2vec can produce.
 
@@ -284,7 +284,7 @@ If the word isn't in the vocabulary, Word2vec returns zeros.
 
 The [Google News Corpus model](https://dl4jdata.blob.core.windows.net/resources/wordvectors/GoogleNews-vectors-negative300.bin.gz) we use to test the accuracy of our trained nets is hosted on S3. Users whose current hardware takes a long time to train on large corpora can simply download it to explore a Word2vec model without the prelude.
 
-If you trained with the [C vectors](https://docs.google.com/file/d/0B7XkCwpI5KDYaDBDQm1tZGNDRHc/edit) or Gensimm, this line will import the model.
+If you trained with the [C vectors](https://docs.google.com/file/d/0B7XkCwpI5KDYaDBDQm1tZGNDRHc/edit) or Gensim, this line will import the model.
 
 ```java
 File gModel = new File("/Developer/Vector Models/GoogleNews-vectors-negative300.bin.gz");
@@ -293,7 +293,7 @@ Word2Vec vec = WordVectorSerializer.readWord2VecModel(gModel);
 
 Remember to add `import java.io.File;` to your imported packages.
 
-With large models, you may run into trouble with your heap space. The Google model may take as much as 10G of RAM, and the JVM only launches with 256 MB of RAM, so you have to adjust your heap space. You can do that either with a `bash_profile` file \(see our [Troubleshooting section](../tuning-and-training/troubleshooting-training.md)\), or through IntelliJ itself:
+With large models, you may run into trouble with your heap space. The Google model may take as much as 10G of RAM, and the JVM only launches with 256 MB of RAM, so you have to adjust your heap space. You can do that either with a `bash_profile` file \(see our [Troubleshooting section](../how-to-guides/tuning-and-training/troubleshooting-training.md)\), or through IntelliJ itself:
 
 ```java
 //Click:
@@ -312,7 +312,7 @@ The skip-gram representation popularized by Mikolov and used in the DL4J impleme
 
 This n-gram is then fed into a neural network to learn the significance of a given word vector; i.e. significance is defined as its usefulness as an indicator of certain larger meanings, or labels.
 
-#### [A Working Example](word2vec.md)
+#### [A Working Example](word2vec-glove-doc2vec.md)
 
 **Please note** : The code below may be outdated. For updated examples, please see our [dl4j-examples repository on Github](https://github.com/eclipse/deeplearning4j-examples/tree/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/nlp).
 
@@ -390,15 +390,15 @@ Word2Vec is especially useful in preparing text-based data for information retri
 
 Marketers might seek to establish relationships among products to build a recommendation engine. Investigators might analyze a social graph to surface members of a single group, or other relations they might have to location or financial sponsorship.
 
-#### [Google's Word2vec Patent](word2vec.md)
+#### [Google's Word2vec Patent](word2vec-glove-doc2vec.md)
 
 Word2vec is [a method of computing vector representations of words](https://arxiv.org/pdf/1301.3781.pdf) introduced by a team of researchers at Google led by Tomas Mikolov. Google [hosts an open-source version of Word2vec](https://code.google.com/p/word2vec/) released under an Apache 2.0 license. In 2014, Mikolov left Google for Facebook, and in May 2015, [Google was granted a patent for the method](http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO2&Sect2=HITOFF&p=1&u=%2Fnetahtml%2FPTO%2Fsearch-bool.html&r=1&f=G&l=50&co1=AND&d=PTXT&s1=9037464&OS=9037464&RS=9037464), which does not abrogate the Apache license under which it has been released.
 
-#### [Foreign Languages](word2vec.md)
+#### [Foreign Languages](word2vec-glove-doc2vec.md)
 
 While words in all languages may be converted into vectors with Word2vec, and those vectors learned with Deeplearning4j, NLP preprocessing can be very language specific, and requires tools beyond our libraries. The [Stanford Natural Language Processing Group](http://nlp.stanford.edu/software/) has a number of Java-based tools for tokenization, part-of-speech tagging and named-entity recognition for languages such as [Mandarin Chinese](http://nlp.stanford.edu/projects/chinese-nlp.shtml), Arabic, French, German and Spanish. For Japanese, NLP tools like [Kuromoji](http://www.atilika.org/) are useful. Other foreign-language resources, including [text corpora, are available here](http://www-nlp.stanford.edu/links/statnlp.html).
 
-#### [GloVe: Global Vectors](word2vec.md)
+#### [GloVe: Global Vectors](word2vec-glove-doc2vec.md)
 
 Loading and saving GloVe models to word2vec can be done like so:
 
@@ -406,11 +406,11 @@ Loading and saving GloVe models to word2vec can be done like so:
 WordVectors wordVectors = WordVectorSerializer.loadTxtVectors(new File("glove.6B.50d.txt"));
 ```
 
-#### [Sequence Vectors](word2vec.md)
+#### [Sequence Vectors](word2vec-glove-doc2vec.md)
 
 Deeplearning4j has a class called [SequenceVectors](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-nlp-parent/deeplearning4j-nlp/src/main/java/org/deeplearning4j/models/sequencevectors/SequenceVectors.java), which is one level of abstraction above word vectors, and which allows you to extract features from any sequence, including social media profiles, transactions, proteins, etc. If data can be described as sequence, it can be learned via skip-gram and hierarchic softmax with the AbstractVectors class. This is compatible with the [DeepWalk algorithm](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-graph/src/main/java/org/deeplearning4j/graph/models/deepwalk/DeepWalk.java), also implemented in Deeplearning4j.
 
-#### [Word2Vec Features on Deeplearning4j](word2vec.md)
+#### [Word2Vec Features on Deeplearning4j](word2vec-glove-doc2vec.md)
 
 * Weights update after model serialization/deserialization was added. That is, you can update model state with, say, 200GB of new text by calling `loadFullModel`, adding `TokenizerFactory` and `SentenceIterator` to it, and calling `fit()` on the restored model.
 * Option for multiple datasources for vocab construction was added.
@@ -432,7 +432,7 @@ Deeplearning4j has a class called [SequenceVectors](https://github.com/eclipse/d
 * [word2vec Explained: Deriving Mikolov et al.’s Negative-Sampling Word-Embedding Method](https://arxiv.org/pdf/1402.3722v1.pdf); Yoav Goldberg and Omer Levy
 * [Advances in Pre-Training Distributed Word Representations - by Mikolov et al](https://arxiv.org/abs/1712.09405)
 
-#### [Word2Vec in Literature](word2vec.md)
+#### [Word2Vec in Literature](word2vec-glove-doc2vec.md)
 
 ```text
 It's like numbers are language, like all the letters in the language are turned into numbers, and so it's something that everyone understands the same way. You lose the sounds of the letters and whether they click or pop or touch the palate, or go ooh or aah, and anything that can be misread or con you with its music or the pictures it puts in your mind, all of that is gone, along with the accent, and you have a new understanding entirely, a language of numbers, and everything becomes as clear to everyone as the writing on the wall. So as I say there comes a certain time for the reading of the numbers.

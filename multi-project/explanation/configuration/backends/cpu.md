@@ -116,5 +116,5 @@ As of 1.0.0-M1, the following combinations are also possible with [onednn](https
 
 Note that you need _both_ nd4j-native dependencies - with and without the classifier.
 
-In the examples above, it is assumed that a Maven property `nd4j.version` is set to an appropriate ND4J version such as `1.0.0-beta6`
+In the examples above, it is assumed that a Maven property `nd4j.version` is set to an appropriate ND4J version such as `1.0.0-M1.1`
 

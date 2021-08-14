@@ -90,6 +90,25 @@ or for cuda 11.0:
 </dependency>
 ```
 
+For jetson nano cuda 10.2:
+
+```text
+<dependency>
+  <groupId>org.nd4j</groupId>
+  <artifactId>nd4j-cuda-10.2</artifactId>
+  <version>1.0.0-M1.1</version>
+</dependency>
+
+<dependency>
+  <groupId>org.nd4j</groupId>
+  <artifactId>nd4j-cuda-10.2</artifactId>
+  <version>1.0.0-M1.1</version>
+  <version>linux-arm64</version>
+</dependency>
+```
+
+
+
 Note that we are only adding an additional dependency. The reason we use an additional classifier is to pull in an optional dependency on cudnn based routines. The default does not use cudnn, but instead built in standalone routines for various operations implemented in cudnn such as conv2d and lstm.
 
 For users of the -platform dependencies such as nd4j-cuda-11.2-platform, this classifier is still required. The -platform dependencies try to set sane defaults for each platform, but give users the option to include whatever they want. If you need optimizations, please become familiar with this.
@@ -104,7 +123,7 @@ The only thing we need to do to have DL4J load cuDNN is to add a dependency on `
 <dependency>
     <groupId>org.deeplearning4j</groupId>
     <artifactId>deeplearning4j-cuda-11.0</artifactId>
-    <version>1.0.0-M1</version>
+    <version>1.0.0-M1.1</version>
 </dependency>
 ```
 
@@ -114,7 +133,7 @@ or
 <dependency>
     <groupId>org.deeplearning4j</groupId>
     <artifactId>deeplearning4j-cuda-11.2</artifactId>
-    <version>1.0.0-M1</version>
+    <version>1.0.0-M1.1</version>
 </dependency>
 ```
 
@@ -124,7 +143,7 @@ or
 <dependency>
     <groupId>org.deeplearning4j</groupId>
     <artifactId>deeplearning4j-cuda-11.2</artifactId>
-    <version>1.0.0-M1</version>
+    <version>1.0.0-M1.1</version>
 </dependency>
 ```
 

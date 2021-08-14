@@ -14,7 +14,7 @@ DataVec solves one of the most important obstacles to effective machine or deep 
 
 If your data is in CSV \(Comma Seperated Values\) format stored in flat files that must be converted to numeric and ingested, or your data is a directory structure of labelled images then DataVec is the tool to help you organize that data for use in DeepLearning4J.
 
-Please **read this entire page**, particularly the section [Reading Records](overview.md#record) below, before working with DataVec.
+Please **read this entire page**, particularly the section [Reading Records](../reference/readers.md#usage) below, before working with DataVec.
 
 ## Key Aspects
 
@@ -23,7 +23,7 @@ Please **read this entire page**, particularly the section [Reading Records](ove
 * Uses an output format system to specify an implementation-neutral type of vector format \(SVMLight, etc.\)
 * Can be extended for specialized input formats \(such as exotic image formats\); i.e. You can write your own custom input format and let the rest of the codebase handle the transformation pipeline
 * Makes vectorization a first-class citizen - Built in Transformation tools to convert and normalize data 
-* Please see the [DataVec Javadoc](https://javadoc.io/doc/org.datavec/datavec-api/1.0.0-M1/index.html) here There's a [brief tutorial below](overview.md#tutorial). 
+* Please see the [DataVec Javadoc](https://javadoc.io/doc/org.datavec/datavec-api/1.0.0-M1/index.html) here There's a [brief tutorial below](overview.md#a-few-examples). 
 
 ## A Few Examples
 
