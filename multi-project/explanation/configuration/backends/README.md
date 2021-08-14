@@ -19,14 +19,14 @@ If you have CUDA v9.2+ installed and NVIDIA-compatible hardware, then your depen
 ```markup
 <dependency>
  <groupId>org.nd4j</groupId>
- <artifactId>nd4j-cuda-10.2</artifactId>
- <version>1.0.0-M1</version>
+ <artifactId>nd4j-cuda-11.2</artifactId>
+ <version>1.0.0-M1.1</version>
 </dependency>
 ```
 
-As of now, the `artifactId` for the CUDA versions can be one of `nd4j-cuda-9.2`, `nd4j-cuda-10.0`, `nd4j-cuda-10.1` or `nd4j-cuda-10.2`.
+As of now, the `artifactId` for the CUDA versions can be one of nd4j-cuda-11.0,nd4j-cuda-11.2. Generally, the last 2 cuda versions are supported for a given release.
 
-You can also find the available CUDA versions via [Maven Central search](https://search.maven.org/search?q=nd4j-cuda) or in the [Release Notes](../../getting-started/release-notes.md).
+You can also find the available CUDA versions via [Maven Central search](https://search.maven.org/search?q=nd4j-cuda) or in the [Release Notes](../../../../release-notes/).
 
 Otherwise you will need to use the native implementation of ND4J as a CPU backend:
 
@@ -34,7 +34,7 @@ Otherwise you will need to use the native implementation of ND4J as a CPU backen
 <dependency>
  <groupId>org.nd4j</groupId>
  <artifactId>nd4j-native</artifactId>
- <version>1.0.0-M1</version>
+ <version>1.0.0-M1.1</version>
 </dependency>
 ```
 
@@ -94,7 +94,7 @@ Read this page and add a ND4J Backend to your dependencies:
 
 This happens when you use a non `-platform` type backend dependency definition. In this case, only the Backend for the system that the jar file was built on will be included.
 
-To solve this issue, use `nd4j-native-platform` instead of `nd4j-native`, if you are running on CPU and `nd4j-cuda-10.2-platform` instead of `nd4j-cuda-10.2` when using the GPU backend.
+To solve this issue, use `nd4j-native-platform` instead of `nd4j-native`, if you are running on CPU and `nd4j-cuda-11.2-platform` instead of `nd4j-cuda-11.2` when using the GPU backend.
 
 If the jar file only contains the GPU backend, but your system has no CUDA capable \(CC &gt;= 3.5\) GPU or CUDA isn't installed on the system, the CPU Backend should be used instead.
 
