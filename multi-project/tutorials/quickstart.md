@@ -12,7 +12,9 @@ weight: 1
 
 This is everything you need to run DL4J examples and begin your own projects.
 
-We recommend that you join our [community forum](https://community.konduit.ai/). There you can request help and give feedback, but please do use this guide before asking questions we've answered below. If you are new to deep learning, we've included [a road map for beginners](beginners.md) with links to courses, readings and other resources.
+We recommend that you join our [community forum](https://community.konduit.ai/). There you can request help and give feedback, but please do use this guide before asking questions we've answered below. If you are new to deep learning, we've included [a road map for beginners](beginners.md) with links to courses, readings and other resources. 
+
+If you just want to get started, please consider reading our [core workflow guide](../explanation/the-core-workflow.md).
 
 {% hint style="info" %}
 We are currently reworking the Getting Started Guide.
@@ -20,36 +22,29 @@ We are currently reworking the Getting Started Guide.
 If you find that you have trouble following along here, take a look at the Konduit blog, as it features [some getting started guides from the community](https://blog.konduit.ai/tag/getting-started/).
 {% endhint %}
 
-### A Taste of Code
+### A quick overview
 
-Deeplearning4j is a domain-specific language to configure deep neural networks, which are made of multiple layers. Everything starts with a `MultiLayerConfiguration`, which organizes those layers and their hyperparameters.
+Deeplearning4j started as a domain-specific language to configure deep neural networks, and evolved in to a suite of tools developers use to do everything from train models in java to deploy models to production.
 
-Hyperparameters are variables that determine how a neural network learns. They include how many times to update the weights of the model, how to initialize those weights, which activation function to attach to the nodes, which optimization algorithm to use, and how fast the model should learn. This is what one configuration would look like:
+Use cases include:  
+1. Numerical computation. See: [https://github.com/eclipse/deeplearning4j-examples/tree/master/nd4j-ndarray-examples](https://github.com/eclipse/deeplearning4j-examples/tree/master/nd4j-ndarray-examples)
 
-```java
-    MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-        .weightInit(WeightInit.XAVIER)
-        .activation(Activation.RELU)
-        .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-        .updater(new Sgd(0.05))
-        // ... other hyperparameters
-        .list()
-        .backprop(true)
-        .build();
-```
+2. Define and train models using a tensorflow/pytorch like interface. See: [https://github.com/eclipse/deeplearning4j-examples/tree/master/samediff-examples](https://github.com/eclipse/deeplearning4j-examples/tree/master/samediff-examples)
 
-With Deeplearning4j, you add a layer by calling `layer` on the `NeuralNetConfiguration.Builder()`, specifying its place in the order of layers \(the zero-indexed layer below is the input layer\), the number of input and output nodes, `nIn` and `nOut`, as well as the type: `DenseLayer`.
+3. Model import and deployment. See: [https://github.com/eclipse/deeplearning4j-examples/tree/master/tensorflow-keras-import-examples](https://github.com/eclipse/deeplearning4j-examples/tree/master/tensorflow-keras-import-examples)
 
-```java
-        .layer(0, new DenseLayer.Builder().nIn(784).nOut(250)
-                .build())
-```
+4. Running models on spark. See: [https://github.com/eclipse/deeplearning4j-examples/tree/master/dl4j-distributed-training-examples](https://github.com/eclipse/deeplearning4j-examples/tree/master/dl4j-distributed-training-examples)
 
-Once you've configured your net, you train the model with `model.fit`.
+5. A small self contained library for running math code. See: [https://github.com/eclipse/deeplearning4j/tree/master/libnd4j](https://github.com/eclipse/deeplearning4j/tree/master/libnd4j)  
+
+
+Other use cases are available as well, please feel free to check more of our [examples](https://github.com/eclipse/deeplearning4j-examples)
+
+
 
 ## Prerequisites
 
-* [Java \(developer version\)](README.md#java) 1.7 or later \(**Only 64-Bit versions supported**\)
+* [Java \(developer version\)](README.md#java) 1.8 or later \(**Only 64-Bit versions supported**\)
 * [Apache Maven](README.md#apache-maven) \(automated build and dependency manager\)
 * [IntelliJ IDEA](README.md#intellij-idea) or Eclipse
 * [Git](README.md#git)
@@ -60,7 +55,7 @@ If you are new to Java or unfamiliar with these tools, read the details below fo
 
 #### [Java](README.md)
 
-If you don't have Java 1.7 or later, download the current [Java Development Kit \(JDK\) here](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html). To check if you have a compatible version of Java installed, use the following command:
+If you don't have Java 1.8 or later, download the current [Java Development Kit \(JDK\) here](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html). To check if you have a compatible version of Java installed, use the following command:
 
 ```text
 java -version

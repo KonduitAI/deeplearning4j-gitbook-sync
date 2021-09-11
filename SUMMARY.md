@@ -28,6 +28,7 @@
   * [Beginners](multi-project/tutorials/beginners.md)
   * [Quickstart](multi-project/tutorials/quickstart.md)
 * [How To Guides](multi-project/how-to-guides/README.md)
+  * [Import in to your favorite IDE](multi-project/how-to-guides/import-in-to-your-favorite-ide.md)
   * [Contribute](multi-project/how-to-guides/contribute/README.md)
     * [Eclipse Contributors](multi-project/how-to-guides/contribute/eclipse-contributors.md)
   * [Developer Docs](multi-project/how-to-guides/developer-docs/README.md)
@@ -41,6 +42,7 @@
 * [Reference](multi-project/reference/README.md)
   * [Examples Tour](multi-project/reference/examples-tour.md)
 * [Explanation](multi-project/explanation/README.md)
+  * [The core workflow](multi-project/explanation/the-core-workflow.md)
   * [Configuration](multi-project/explanation/configuration/README.md)
     * [Backends](multi-project/explanation/configuration/backends/README.md)
       * [Performance Issues](multi-project/explanation/configuration/backends/performance-issues.md)
@@ -173,9 +175,15 @@
 
 ## Libnd4j
 
-* [Tutorials](libnd4j/tutorials.md)
-* [How To Guides](libnd4j/how-to-guides.md)
-* [Reference](libnd4j/reference.md)
+* [How To Guides](libnd4j/how-to-guides/README.md)
+  * [Building on Windows](libnd4j/how-to-guides/building-on-windows.md)
+  * [Building for raspberry pi or Jetson Nano](libnd4j/how-to-guides/building-for-raspberry-pi-or-jetson-nano.md)
+  * [Building on ios](libnd4j/how-to-guides/building-on-ios.md)
+  * [How to Add Operations](libnd4j/how-to-guides/how-to-add-operations.md)
+* [Reference](libnd4j/reference/README.md)
+  * [Understanding graph execution](libnd4j/reference/understanding-graph-execution.md)
+  * [Overview of working with libnd4j](libnd4j/reference/tutorials.md)
+  * [Helpers Overview \(CUDNN, OneDNN,Armcompute\)](libnd4j/reference/helpers-overview-cudnn-onednn-armcompute.md)
 * [Explanation](libnd4j/explanation.md)
 
 ## Python4j
