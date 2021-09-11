@@ -93,8 +93,16 @@ When deploying a machine learning model, the first consideration is to figure ou
 
 These 3 aspects of a deployment should all be treated as software assets just like code and be versioned. Optionally, a user may want to consider how to implement versioned deployments. There are a number of tools that can handle this.
 
-After a model has been built and deployed, usually the next thing users will want to do are setup the environment in which the model will r[Deeplearning4j Suite Overview](https://app.gitbook.com/@skymind/s/deeplearning4j/~/drafts/-MjH2NY03rI-xhGNn2Y9/)un. One immediate suggestion is to optimize your dependencies.  
-Since the whole deeplearning4j suite heavily relies on javacpp for its underlying dependencies, [this guide](../how-to-guides/developer-docs/javacpp.md#dl-4-j-and-javacpp-overview) is recommended reading as next steps for optimizing your binaries. For building deployment pipelines, it is recommended to use [konduit-serving](https://github.com/KonduitAI/konduit-serving) which is built on the same technology and is usually co released alongside deeplearning4j. 
+After a model has been built and deployed, usually the next thing users will want to do are setup the environment in which the model will run. One immediate suggestion is to optimize your dependencies.  
+Since the whole deeplearning4j suite heavily relies on javacpp for its underlying dependencies, [this guide](../how-to-guides/developer-docs/javacpp.md#dl-4-j-and-javacpp-overview) is recommended reading as next steps for optimizing your binaries. 
+
+Another consideration is performance. Depending on the nd4j backend you pick and the cpus you are deploying on, you may be able to add specialized performance increases such as:
+
+1. Helpers: Accelerated libraries for faster platform specific math routines including [onednn, armcompute, and cudnn.](../../libnd4j/reference/helpers-overview-cudnn-onednn-armcompute.md)
+2. Avx: We pre compile our binaries for specific intel cpus including avx2 and avx512. Various classifiers are available for developers which can be found [here](https://repo1.maven.org/maven2/org/nd4j/nd4j-native/1.0.0-M1.1/).
+3. Compatibility: if you need to run on a very old linux, we also provide a centos 6 compatible compat classifier.
+
+For building deployment pipelines, it is recommended to use [konduit-serving](https://github.com/KonduitAI/konduit-serving) which is built on the same technology and is usually co released alongside deeplearning4j. 
 
 If you are going to just be deploying a model embedded in your application, then please remember the above artifacts for a model deployment when including resources for your micro service.
 
