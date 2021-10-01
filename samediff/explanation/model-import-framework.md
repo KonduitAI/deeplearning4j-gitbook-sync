@@ -32,7 +32,15 @@ Onnx is the same api:
 
 A user underneath the covers may also provide placeholders to be used when running import, otherwise just provide an empty map for your variables. When a framework importer is created, it will scan the classpath for definitions of tensorflow ops, custom rules for importing nodes for specific ops or specific node names, and nd4j op descriptors. These elements of the model import framework are all customizable, but included by default for a fairly easy out of the box experience.
 
-For implementing your own custom overrides please see [here](custom-override)
+For implementing your own custom overrides please see [here](https://github.com/eclipse/deeplearning4j/blob/master/nd4j/samediff-import/samediff-import-onnx/src/main/kotlin/org/nd4j/samediff/frameworkimport/onnx/definitions/implementations/GlobalAveragePooling.kt) for an example.
+
+A brief explanation is below:
+
+1. Annotate the class with a PrehookRule as in the above example. This will enable the runtime to discover your custom import.
+2. When scanning, the framework will look through the annotations for calls to intercept and use your framework call. It will intercept nodes with certain names \(nodeNames\), op names \(ops with a name, ensure this is the op name in the framework you are trying to import\)
+3. When annotating also specify the framework name \(usually onnx and tensorflow, but you can also create custom frameworks as well \)
+4. Afterwards, write the samediff calls to be the equivalent calls in what you might find in the framework. Usually samediff will have the op calls needed to implement any missing op you should need. If you need help, please ask on the forums: https://community.konduit.ai/
+5. Lastly, when return a hook result, as in what's at the bottom of the sample always know whether you return true or false for continuing the normal import process. That matters for ensuring that if you are implementing a whole op in the hook then it should return false, otherwise the hook can also be used as an addon.
 
 When needed, controlling this underlying experience allows users to configure the model import to work for their use case rather than having to rely on a software upgrade for missing operations. Many cutting edge models or operators can be supported by directly composing the ops within the samediff framework.
 
