@@ -42,6 +42,14 @@ A brief explanation is below:
 4. Afterwards, write the samediff calls to be the equivalent calls in what you might find in the framework. Usually samediff will have the op calls needed to implement any missing op you should need. If you need help, please ask on the forums: https://community.konduit.ai/
 5. Lastly, when return a hook result, as in what's at the bottom of the sample always know whether you return true or false for continuing the normal import process. That matters for ensuring that if you are implementing a whole op in the hook then it should return false, otherwise the hook can also be used as an addon.
 
+#### Implementing custom samediff ops
+
+When implementing custom import calls, there are generally a few things of note:
+
+1. The samediff instance that gets passed in is the one to be used for final output. Please consider how this may affect other parts of the graph when directly manipulating the graph itself.
+2. The op passed in will contain all information for input variables that were resolved from the node currently being imported. In order to access ndarrays specified on the op, you can use sd.getVariable\(..\)
+3. You may need to remove variables and ops if the original import is going to be replaced. This is currently a manual process and will be automated at a later date where possible. If you need help on whether you should add or remove  certain op calls or variables, please feel free to ping us on the forums: https://community.konduit.ai/
+
 When needed, controlling this underlying experience allows users to configure the model import to work for their use case rather than having to rely on a software upgrade for missing operations. Many cutting edge models or operators can be supported by directly composing the ops within the samediff framework.
 
 When converting a model, a user should do this outside of production and save it as a samediff flatbuffers model. This is so end users can control the load times \(especially for larger models\)
