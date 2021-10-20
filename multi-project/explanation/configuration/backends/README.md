@@ -1,14 +1,10 @@
 ---
-title: Deeplearning4j Hardware and CPU/GPU Setup
-short_title: GPU/CPU Setup
-description: 'Hardware setup for Eclipse Deeplearning4j, including GPUs and CUDA.'
-category: Configuration
-weight: 1
+description: Hardware setup for Eclipse Deeplearning4j, including GPUs and CUDA.
 ---
 
 # Backends
 
-ND4J works atop so-called backends, or linear-algebra libraries, such as Native nd4j-native and nd4j-cuda-10.2 \(GPUs\), which you can select by pasting the right dependency into your project’s POM.xml file.
+ND4J works atop so-called backends, or linear-algebra libraries, such as Native nd4j-native and nd4j-cuda-10.2 (GPUs), which you can select by pasting the right dependency into your project’s POM.xml file.
 
 ## ND4J backends for GPUs and CPUs
 
@@ -54,7 +50,7 @@ If you are developing your project on multiple operating systems/system architec
 
 For enabling different backends at runtime, you set the priority with your environment via the environment variable
 
-```text
+```
 BACKEND_PRIORITY_CPU=SOME_NUM
 BACKEND_PRIORITY_GPU=SOME_NUM
 ```
@@ -63,7 +59,7 @@ Relative to the priority, it will allow you to dynamically set the backend type.
 
 ## CuDNN
 
-See our page on [CuDNN](config-cudnn.md).
+See our page on [CuDNN](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/multi-project/explanation/configuration/config-cudnn.md).
 
 ## CUDA Installation
 
@@ -82,7 +78,7 @@ Check the NVIDIA guides for instructions on setting up CUDA on the NVIDIA [websi
 
 There are multiple reasons why you might run into this error message.
 
-1. You haven't configured an ND4J backend at all. 
+1. You haven't configured an ND4J backend at all.&#x20;
 2. You have a jar file that doesn't contain a backend for your platform.
 3. You have a jar file that doesn't contain service loader files.
 
@@ -96,7 +92,7 @@ This happens when you use a non `-platform` type backend dependency definition. 
 
 To solve this issue, use `nd4j-native-platform` instead of `nd4j-native`, if you are running on CPU and `nd4j-cuda-11.2-platform` instead of `nd4j-cuda-11.2` when using the GPU backend.
 
-If the jar file only contains the GPU backend, but your system has no CUDA capable \(CC &gt;= 3.5\) GPU or CUDA isn't installed on the system, the CPU Backend should be used instead.
+If the jar file only contains the GPU backend, but your system has no CUDA capable (CC >= 3.5) GPU or CUDA isn't installed on the system, the CPU Backend should be used instead.
 
 #### You have a jar file that doesn't contain service loader files.
 
@@ -105,4 +101,3 @@ ND4J uses the Java [ServiceLoader](https://docs.oracle.com/en/java/javase/14/doc
 To double check that the required files are included, open your uberjar and make sure it contains `/META-INF/services/org.nd4j.linalg.factory.Nd4jBackend`. Then open the file, and make sure there are entries for all of your configured backends.
 
 If your uberjar does not contain that file, or if not all of the configured backends are listed there, you will have to reconfigure your shade plugin. See [ServicesResourceTransformer ](https://maven.apache.org/plugins/maven-shade-plugin/examples/resource-transformers.html#ServicesResourceTransformer)documentation for how to do that.
-

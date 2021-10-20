@@ -1,11 +1,7 @@
 ---
-title: Types of variables in SameDiff
-short_title: Variables
 description: >-
   What types of variables are used in SameDiff, their properties and how to
   switch these types.
-category: SameDiff
-weight: 3
 ---
 
 # Variables
@@ -20,25 +16,22 @@ Observe that by variables we normally mean not just single values - as it is don
 
 All variables in `SameDiff` belong to one of four _variable types_, constituting an enumeration `VariableType`. Here they are:
 
-* `VARIABLE`: are trainable parameters of your network, e.g. weights and bias of a layer. Naturally, we want them
+*   `VARIABLE`: are trainable parameters of your network, e.g. weights and bias of a layer. Naturally, we want them
 
-  to be both stored for further usage - we say, that they are _persistent_ - as well as being updated during training.
+    to be both stored for further usage - we say, that they are _persistent_ - as well as being updated during training.
+*   `CONSTANT`: are those parameters which, like variables, are persistent for the network, but are not being
 
-* `CONSTANT`: are those parameters which, like variables, are persistent for the network, but are not being
+    trained; they, however, may be changed externally by the user.
+*   `PLACEHOLDER`: store temporary values that are to be supplied from the outside, like inputs and labels.
 
-  trained; they, however, may be changed externally by the user.
+    Accordingly, since new placeholders' values are provided at each iteration, they are not stored: in other words,
 
-* `PLACEHOLDER`: store temporary values that are to be supplied from the outside, like inputs and labels.
+    unlike `VARIABLE` and `CONSTANT`, `PLACEHOLDER` is _not_ persistent.
+*   `ARRAY`: are temporary values as well, representing outputs of [operations](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/samediff/reference/ops.md) within a `SameDiff`, for
 
-  Accordingly, since new placeholders' values are provided at each iteration, they are not stored: in other words,
+    instance sums of vectors, activations of a layer, and many more. They are being recalculated at each iteration, and
 
-  unlike `VARIABLE` and `CONSTANT`, `PLACEHOLDER` is _not_ persistent.
-
-* `ARRAY`: are temporary values as well, representing outputs of [operations](ops.md) within a `SameDiff`, for
-
-  instance sums of vectors, activations of a layer, and many more. They are being recalculated at each iteration, and
-
-  therefor, like `PLACEHOLDER`, are not persistent.
+    therefor, like `PLACEHOLDER`, are not persistent.
 
 To infer the type of a particular variable, you may use the method `getVariableType`, like so:
 
@@ -50,7 +43,7 @@ The current value of a variable in a form of `INDArray` may be obtained using `g
 
 ## Data types
 
-The data within each variable also has its _data type_, contained in `DataType` enum. Currently in `DataType` there are three _floating point_ types: `FLOAT`, `DOUBLE` and `HALF`; four _integer_ types: `LONG`, `INT`, `SHORT` and `UBYTE`; one _boolean_ type `BOOL` - all of them will be referred as _numeric_ types. In addition, there is a _string_ type dubbed `UTF8`; and two helper data types `COMPRESSED` and `UNKNOWN`. The 16-bit floating point format `BFLOAT16` and unsigned integer types \(`UINT16`, `UINT32` and `UINT64`\) will be available in `1.0.0-beta5`.
+The data within each variable also has its _data type_, contained in `DataType` enum. Currently in `DataType` there are three _floating point_ types: `FLOAT`, `DOUBLE` and `HALF`; four _integer_ types: `LONG`, `INT`, `SHORT` and `UBYTE`; one _boolean_ type `BOOL` - all of them will be referred as _numeric_ types. In addition, there is a _string_ type dubbed `UTF8`; and two helper data types `COMPRESSED` and `UNKNOWN`. The 16-bit floating point format `BFLOAT16` and unsigned integer types (`UINT16`, `UINT32` and `UINT64`) will be available in `1.0.0-beta5`.
 
 To infer the data type of your variable, use
 
@@ -70,15 +63,14 @@ will require its `SDVariable` arguments `input` and `weights` to be of one of th
 
 Before we go to the differences between variables, let us first look at the properties they all share
 
-* All variables are ultimately derived from an instance of `SameDiff`, serving as parts of its
+*   All variables are ultimately derived from an instance of `SameDiff`, serving as parts of its
 
-  [graph](samediff/samediff/graphs). In fact, each variable has a `SameDiff` as one of its fields.
+    [graph](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/samediff/reference/samediff/samediff/graphs). In fact, each variable has a `SameDiff` as one of its fields.
+* Results (outputs) of all operations are of `ARRAY` type.
+* All `SDVariable`'s involved in an operation are to belong to the _same_ `SameDiff`.&#x20;
+*   All variables may or may not be given names - in the latter case, a name is actually created automatically. Either
 
-* Results \(outputs\) of all operations are of `ARRAY` type.
-* All `SDVariable`'s involved in an operation are to belong to the _same_ `SameDiff`. 
-* All variables may or may not be given names - in the latter case, a name is actually created automatically. Either
-
-  way, the names need to be/are created unique. We shall come back to naming below.
+    way, the names need to be/are created unique. We shall come back to naming below.
 
 ## Differences between variable types
 
@@ -86,7 +78,7 @@ Let us now have a closer look at each type of variables, and what distinguish th
 
 ### Variables
 
-Variables are the trainable parameters of your network. This predetermines their nature in `SameDiff`. As we briefly mentioned above, variables' values need to be both preserved for application, and updated during training. Training means, that we iteratively update the values by small fractions of their gradients, and this only makes sense if variables are of _floating point_ types \(see data types above\).
+Variables are the trainable parameters of your network. This predetermines their nature in `SameDiff`. As we briefly mentioned above, variables' values need to be both preserved for application, and updated during training. Training means, that we iteratively update the values by small fractions of their gradients, and this only makes sense if variables are of _floating point_ types (see data types above).
 
 Variables may be added to your `SameDiff` using different versions of `var` function from your `SameDiff` instance. For example, the code
 
@@ -114,7 +106,7 @@ fill variables: you may look them up in the 'known subclasses' section [of our j
 
 ### Constants
 
-Constants hold values that are stored, but - unlike variables - remain unchanged during training. These, for instance, may be some hyperparamters you wish to have in your network and be able to access from the outside. Or they may be pretrained weights of a neural network that you wish to keep unchanged \(see more on that in [Changing Variable Type](variables.md#changing-variable-types) below\). Constants may be of any data type
+Constants hold values that are stored, but - unlike variables - remain unchanged during training. These, for instance, may be some hyperparamters you wish to have in your network and be able to access from the outside. Or they may be pretrained weights of a neural network that you wish to keep unchanged (see more on that in [Changing Variable Type](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/samediff/reference/variables.md#changing-variable-types) below). Constants may be of any data type
 
 * so e.g. `int` and `boolean` are allowed alongside with `float` and `double`.
 
@@ -138,24 +130,24 @@ The most common placeholders you'll normally have in a `SameDiff` are inputs and
 SDVariable in = samediff.placeHolder("input", DataType.FLOAT, -1, 784);
 ```
 
-as in MNIST example. Here we specify name, data type and then shape of your placeholder - here, we have 28x28 grayscale pictures rendered as 1d vectors \(therefore 784\) coming in batches of length we don't know beforehand \(therefore -1\).
+as in MNIST example. Here we specify name, data type and then shape of your placeholder - here, we have 28x28 grayscale pictures rendered as 1d vectors (therefore 784) coming in batches of length we don't know beforehand (therefore -1).
 
 ### Arrays
 
-Variables of `ARRAY` type appear as outputs of [operations](samediff/samediff/ops) within `SameDiff`. Accordingly, the data type of an array-type variable depends on the kind of operation it is produced by and variable type\(s\) ot its argument\(s\). Arrays are not persistent - they are one-time values that will be recalculated from scratch at the next step. However, unlike placeholders, gradients are computed for them, as those are needed to update the values of `VARIABLE`'s.
+Variables of `ARRAY` type appear as outputs of [operations](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/samediff/reference/samediff/samediff/ops) within `SameDiff`. Accordingly, the data type of an array-type variable depends on the kind of operation it is produced by and variable type(s) ot its argument(s). Arrays are not persistent - they are one-time values that will be recalculated from scratch at the next step. However, unlike placeholders, gradients are computed for them, as those are needed to update the values of `VARIABLE`'s.
 
-There are as many ways array-type variables are created as there are operations, so you're better up focusing on our [operations section](samediff/samediff/ops), our [javadoc](https://javadoc.io/doc/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/autodiff/samediff/SameDiff.html) and [examples](samediff/samediff/exampes).
+There are as many ways array-type variables are created as there are operations, so you're better up focusing on our [operations section](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/samediff/reference/samediff/samediff/ops), our [javadoc](https://javadoc.io/doc/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/autodiff/samediff/SameDiff.html) and [examples](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/samediff/reference/samediff/samediff/exampes).
 
 ## Recap table
 
 Let us summarize the main properties of variable types in one table:
 
-|  | Trainable | Gradients | Persistent | Workspaces | Datatypes | Instantiated from |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `VARIABLE` | Yes | Yes | Yes | Yes | Float only | Instance |
-| `CONSTANT` | No | No | Yes | No | Any | Instance |
-| `PLACEHOLDER` | No | No | No | No | Any | Instance |
-| `ARRAY` | No | Yes | No | Yes | Any | Operations |
+|               | Trainable | Gradients | Persistent | Workspaces | Datatypes  | Instantiated from |
+| ------------- | --------- | --------- | ---------- | ---------- | ---------- | ----------------- |
+| `VARIABLE`    | Yes       | Yes       | Yes        | Yes        | Float only | Instance          |
+| `CONSTANT`    | No        | No        | Yes        | No         | Any        | Instance          |
+| `PLACEHOLDER` | No        | No        | No         | No         | Any        | Instance          |
+| `ARRAY`       | No        | Yes       | No         | Yes        | Any        | Operations        |
 
 We haven't discussed what 'Workspaces' mean - if you do not know, do not worry, this is an internal technical term that basically describes how memory is managed internally.
 
@@ -204,7 +196,7 @@ Consider the following line:
 SDVariable regressionCost = weights.mmul(input).sub("regression_prediction", bias).squaredDifference(labels);
 ```
 
-Here, in the function `sub` we actually have implicitly introduced a variable \(of type `ARRAY`\) that holds the result of the subtraction. By adding a name into the operations's argument, we've secured ourselves the possibility to retrieve the variable from elsewhere: say, if later you need to infer the difference between the labels and the prediction as a vector, you may just write:
+Here, in the function `sub` we actually have implicitly introduced a variable (of type `ARRAY`) that holds the result of the subtraction. By adding a name into the operations's argument, we've secured ourselves the possibility to retrieve the variable from elsewhere: say, if later you need to infer the difference between the labels and the prediction as a vector, you may just write:
 
 ```java
 SDVariable errorVector = samediff.getVariable("regressionPrediction").sub(labels);
@@ -217,4 +209,3 @@ You can get and set the name of an `SDVariable` the methods `getVarName` and `se
 ### Getting variable's value
 
 You may retrieve any variable's current value as an `INDArray` using the method `eval()`. Note that for non-persistent variables, the value should first be set. For variables with gradients, the gradient's value may also be inferred using the method `getGradient`.
-

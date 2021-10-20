@@ -1,9 +1,5 @@
 ---
-title: Keras Import Supported Features
-short_title: Supported Features
 description: Supported Keras features.
-category: Keras Import
-weight: 2
 ---
 
 # Supported Features Overview
@@ -14,16 +10,16 @@ While not every concept in DL4J has an equivalent in Keras and vice versa, many 
 
 Note that we also support importing tf.keras models as well. The format only changed a little bit from keras to tf.keras. We handle this transition from beta7 and above.
 
-* [Layers](/#layers)
-* [Losses](/#losses)
-* [Activations](/#activations)
-* [Initializers](/#initializers)
-* [Regularizers](/#regularizers)
-* [Constraints](/#constraints)
-* [Metrics](/#metrics)
-* [Optimizers](/#optimizers)
+* [Layers](https://app.gitbook.com/#layers)
+* [Losses](https://app.gitbook.com/#losses)
+* [Activations](https://app.gitbook.com/#activations)
+* [Initializers](https://app.gitbook.com/#initializers)
+* [Regularizers](https://app.gitbook.com/#regularizers)
+* [Constraints](https://app.gitbook.com/#constraints)
+* [Metrics](https://app.gitbook.com/#metrics)
+* [Optimizers](https://app.gitbook.com/#optimizers)
 
-## [Layers](/)
+## [Layers](https://app.gitbook.com)
 
 Mapping keras to DL4J layers is done in the [layers](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers) sub-module of model import. The structure of this project loosely reflects the structure of Keras.
 
@@ -128,7 +124,7 @@ Mapping keras to DL4J layers is done in the [layers](https://github.com/eclipse/
 * ❌ TimeDistributed
 * ✅ [Bidirectional](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/wrappers/KerasBidirectional.java)
 
-## [Losses](/)
+## [Losses](https://app.gitbook.com)
 
 * ✅ mean\_squared\_error
 * ✅ mean\_absolute\_error
@@ -145,7 +141,7 @@ Mapping keras to DL4J layers is done in the [layers](https://github.com/eclipse/
 * ✅ poisson
 * ✅ cosine\_proximity
 
-## [Activations](/)
+## [Activations](https://app.gitbook.com)
 
 * ✅ softmax
 * ✅ elu
@@ -158,7 +154,7 @@ Mapping keras to DL4J layers is done in the [layers](https://github.com/eclipse/
 * ✅ hard\_sigmoid
 * ✅ linear
 
-## [Initializers](/)
+## [Initializers](https://app.gitbook.com)
 
 * ✅ Zeros
 * ✅ Ones
@@ -176,20 +172,20 @@ Mapping keras to DL4J layers is done in the [layers](https://github.com/eclipse/
 * ✅ he\_normal
 * ✅ he\_uniform
 
-## [Regularizers](/)
+## [Regularizers](https://app.gitbook.com)
 
 * ✅ l1
 * ✅ l2
 * ✅ l1\_l2
 
-## [Constraints](/)
+## [Constraints](https://app.gitbook.com)
 
 * ✅ max\_norm
 * ✅ non\_neg
 * ✅ unit\_norm
 * ✅ min\_max\_norm
 
-## [Optimizers](/)
+## [Optimizers](https://app.gitbook.com)
 
 * ✅ SGD
 * ✅ RMSprop
@@ -199,4 +195,3 @@ Mapping keras to DL4J layers is done in the [layers](https://github.com/eclipse/
 * ✅ Adamax
 * ✅ Nadam
 * ❌ TFOptimizer
-

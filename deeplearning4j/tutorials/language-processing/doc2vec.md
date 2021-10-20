@@ -1,9 +1,5 @@
 ---
-title: 'Doc2Vec, or Paragraph Vectors, in Deeplearning4j'
-short_title: Doc2Vec
 description: Doc2Vec and arbitrary documents for language processing in DL4J.
-category: Language Processing
-weight: 10
 ---
 
 # Doc2Vec
@@ -43,6 +39,5 @@ public void testDifferentLabels() throws Exception {
 
 ## Further Reading
 
-* [Distributed Representations of Sentences and Documents](https://cs.stanford.edu/~quocle/paragraph_vector.pdf)
-* [Word2vec: A Tutorial](word2vec.md)
-
+* [Distributed Representations of Sentences and Documents](https://cs.stanford.edu/\~quocle/paragraph\_vector.pdf)
+* [Word2vec: A Tutorial](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/tutorials/language-processing/word2vec.md)

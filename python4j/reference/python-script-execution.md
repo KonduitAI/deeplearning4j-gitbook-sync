@@ -1,9 +1,5 @@
 ---
-title: Python4j Python Script Execution
-short_title: Python4j Python Script Execution
 description: Python4j Python Script Execution
-category: Python4j
-weight: 1
 ---
 
 # Python Script Execution
@@ -43,7 +39,7 @@ For retrieving variables, we can do either of the following:
 
 Exec and return all variables allows us to retrieve any variable tha twas created during the python execution by name. The returned PythonVariables will be named as they were in the python script.
 
-Optionally, a user may also specify a list of variables to be returned. This can be achieved by passing in an output variable list to PythonExecutioner.exec\(..\) as follows:
+Optionally, a user may also specify a list of variables to be returned. This can be achieved by passing in an output variable list to PythonExecutioner.exec(..) as follows:
 
 ```java
  try(PythonGIL pythonGIL = PythonGIL.lock()) {
@@ -59,7 +55,6 @@ Optionally, a user may also specify a list of variables to be returned. This can
 
 ## Execution in a multi threaded environment
 
-Python4j is capable of multi threaded execution of python scripts. The user can manage multiple threads by ensuring that all python calls are wrapped in the double try/with block mentioned in [the overview](../overview) By locking the GIL and watching the garbage collection in any python call, the GIL management is automatically handled for the user.
+Python4j is capable of multi threaded execution of python scripts. The user can manage multiple threads by ensuring that all python calls are wrapped in the double try/with block mentioned in [the overview](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/python4j/overview) By locking the GIL and watching the garbage collection in any python call, the GIL management is automatically handled for the user.
 
 Optionally, a user may also use the [PythonContextManager](https://github.com/eclipse/deeplearning4j/blob/master/python4j/python4j-core/src/main/java/org/nd4j/python4j/PythonContextManager.java) - creating one context per thread. A "context" is essentially a separate python interpreter with its own variables, memory etc.
-

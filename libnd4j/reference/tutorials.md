@@ -6,7 +6,7 @@ Native operations for nd4j. Build using cmake
 
 * GCC 4.9+
 * CUDA Toolkit Versions 10 or 11
-* CMake 3.8 \(as of Nov 2017, in near future will require 3.9\)
+* CMake 3.8 (as of Nov 2017, in near future will require 3.9)
 
 ### Additional build arguments
 
@@ -20,21 +20,21 @@ There's few additional arguments for `buildnativeoperations.sh` script you could
  --check-vectorization  auto-vectorization report for developers. (Currently, only GCC is supported)
 ```
 
-[More about AutoVectorization report](auto_vectorization/AutoVectorization.md)
+[More about AutoVectorization report](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/libnd4j/reference/auto\_vectorization/AutoVectorization.md)
 
-You can provide the compute capability for your card [on the NVIDIA website here](https://developer.nvidia.com/cuda-gpus) or use auto.  
-Please also check your Cuda Toolkit Release notes for supported and dropped features.  
-Here is [the latest CUDA Toolkit Release note](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html#deprecated-features).  
+You can provide the compute capability for your card [on the NVIDIA website here](https://developer.nvidia.com/cuda-gpus) or use auto.\
+Please also check your Cuda Toolkit Release notes for supported and dropped features.\
+Here is [the latest CUDA Toolkit Release note](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html#deprecated-features).\
 You can find the same information for the older Toolkit versions [in the CUDA archives](https://docs.nvidia.com/cuda/archive/).
 
-| -cc and --compute option examples | description |
-| :--- | :--- |
-| -cc all | builds for common GPUs |
-| -cc auto | tries to detect automatically |
-| -cc Maxwell | GPU microarchitecture codename |
-| -cc 75 | compute capability 7.5 without a dot |
-| -cc 7.5 | compute capability 7.5 with a dot |
-| -cc "Maxwell 6.0 7.5" | space-separated multiple arguments within quotes \(note: numbers only with a dot\) |
+| -cc and --compute option examples | description                                                                      |
+| --------------------------------- | -------------------------------------------------------------------------------- |
+| -cc all                           | builds for common GPUs                                                           |
+| -cc auto                          | tries to detect automatically                                                    |
+| -cc Maxwell                       | GPU microarchitecture codename                                                   |
+| -cc 75                            | compute capability 7.5 without a dot                                             |
+| -cc 7.5                           | compute capability 7.5 with a dot                                                |
+| -cc "Maxwell 6.0 7.5"             | space-separated multiple arguments within quotes (note: numbers only with a dot) |
 
 ## OS Specific Requirements
 
@@ -53,9 +53,9 @@ mvn clean install -Djavacpp.platform=android-xxx -DskipTests -pl '!:nd4j-cuda-9.
 
 ### OSX
 
-Run ./setuposx.sh \(Please ensure you have brew installed\)
+Run ./setuposx.sh (Please ensure you have brew installed)
 
-See [macOSx10 CPU only.md](macOSx10%20%28CPU%20only%29.md)
+See [macOSx10 CPU only.md](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/libnd4j/reference/macOSx10%20\(CPU%20only\).md)
 
 ### Linux
 
@@ -107,33 +107,31 @@ scl enable devtoolset-3 maven30 bash
 
 ### Windows
 
-See [Windows.md](windows.md)
+See [Windows.md](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/libnd4j/reference/windows.md)
 
 ## Setup for All OS
 
 1. Set a LIBND4J\_HOME as an environment variable to the libnd4j folder you've obtained from GIT
    * Note: this is required for building nd4j as well.
 2. Setup cpu followed by gpu, run the following on the command line:
-   * For standard builds:
+   *   For standard builds:
 
-     ```bash
-      ./buildnativeoperations.sh
-      ./buildnativeoperations.sh -c cuda -сс YOUR_DEVICE_ARCH
-     ```
+       ```bash
+        ./buildnativeoperations.sh
+        ./buildnativeoperations.sh -c cuda -сс YOUR_DEVICE_ARCH
+       ```
+   *   For Debug builds:
 
-   * For Debug builds:
+       ```bash
+        ./buildnativeoperations.sh blas -b debug
+        ./buildnativeoperations.sh blas -c cuda -сс YOUR_DEVICE_ARCH -b debug
+       ```
+   *   For release builds (default):
 
-     ```bash
-      ./buildnativeoperations.sh blas -b debug
-      ./buildnativeoperations.sh blas -c cuda -сс YOUR_DEVICE_ARCH -b debug
-     ```
-
-   * For release builds \(default\):
-
-     ```bash
-      ./buildnativeoperations.sh
-      ./buildnativeoperations.sh -c cuda -сс YOUR_DEVICE_ARCH
-     ```
+       ```bash
+        ./buildnativeoperations.sh
+        ./buildnativeoperations.sh -c cuda -сс YOUR_DEVICE_ARCH
+       ```
 
 ## OpenMP support
 
@@ -141,7 +139,7 @@ OpenMP 4.0+ should be used to compile libnd4j. However, this shouldn't be any tr
 
 ## Linking with MKL
 
-We can link with MKL either at build time, or at runtime with binaries initially linked with another BLAS implementation such as OpenBLAS. In either case, simply add the path containing `libmkl_rt.so` \(or `mkl_rt.dll` on Windows\), say `/path/to/intel64/lib/`, to the `LD_LIBRARY_PATH` environment variable on Linux \(or `PATH` on Windows\), and build or run your Java application as usual. If you get an error message like `undefined symbol: omp_get_num_procs`, it probably means that `libiomp5.so`, `libiomp5.dylib`, or `libiomp5md.dll` is not present on your system. In that case though, it is still possible to use the GNU version of OpenMP by setting these environment variables on Linux, for example:
+We can link with MKL either at build time, or at runtime with binaries initially linked with another BLAS implementation such as OpenBLAS. In either case, simply add the path containing `libmkl_rt.so` (or `mkl_rt.dll` on Windows), say `/path/to/intel64/lib/`, to the `LD_LIBRARY_PATH` environment variable on Linux (or `PATH` on Windows), and build or run your Java application as usual. If you get an error message like `undefined symbol: omp_get_num_procs`, it probably means that `libiomp5.so`, `libiomp5.dylib`, or `libiomp5md.dll` is not present on your system. In that case though, it is still possible to use the GNU version of OpenMP by setting these environment variables on Linux, for example:
 
 ```bash
 export MKL_THREADING_LAYER=GNU
@@ -160,7 +158,7 @@ This ensures that mkl will be found first and liked to.
 
 ## Packaging
 
-If on Ubuntu \(14.04 or above\) or CentOS \(6 or above\), this repository is also set to create packages for your distribution. Let's assume you have built:
+If on Ubuntu (14.04 or above) or CentOS (6 or above), this repository is also set to create packages for your distribution. Let's assume you have built:
 
 * for the cpu, your command-line was `./buildnativeoperations.sh ...`:
 
@@ -203,8 +201,8 @@ For running the tests, we currently use cmake or CLion to run the tests.
 
 To run tests using CUDA backend it's pretty much similar process:
 
-1. ./buildnativeoperations.h -c cuda -cc  -b debug -t -j 
-2. ./blasbuild/cuda/tests\_cpu/layers\_tests/runtests \(.exe on Windows\)
+1. ./buildnativeoperations.h -c cuda -cc  -b debug -t -j&#x20;
+2. ./blasbuild/cuda/tests\_cpu/layers\_tests/runtests (.exe on Windows)
 
 ## Development
 
@@ -217,4 +215,3 @@ At a minimum, you will want to enable tests. An example default set of flags for
 ```
 
 The way the main build script works, it dynamically generates a set of flags suitable for use for building the projects. Understanding the build script will go a long way in to configuring cmake for your particular IDE.
-

@@ -12,23 +12,23 @@ Scalars just take two arguments: the input and the scalar to be applied to that 
 
 Finally, we have accumulations, which are also known as reductions in GPU-land. Accumulations add arrays and vectors to one another and can _reduce_ the dimensions of those arrays in the result by adding their elements in a rowwise op. For example, we might run an accumulation on the array
 
-```text
+```
 [1 2
 3 4]
 ```
 
 Which would give us the vector
 
-```text
+```
 [3
 7]
 ```
 
-Reducing the columns \(i.e. dimensions\) from two to one.
+Reducing the columns (i.e. dimensions) from two to one.
 
 Accumulations can be either pairwise or scalar. In a pairwise reduction, we might be dealing with two arrays, x and y, which have the same shape. In that case, we could calculate the cosine similarity of x and y by taking their elements two by two.
 
-```text
+```
     cosineSim(x[i], y[i])
 ```
 
@@ -38,20 +38,20 @@ Many ND4J ops are overloaded, meaning methods sharing a common name have differe
 
 As you can see, there are three possible argument types with ND4J ops: inputs, optional arguments and outputs. The outputs are specified in the ops’ constructor. The inputs are specified in the parentheses following the method name, always in the first position, and the optional arguments are used to transform the inputs; e.g. the scalar to add; the coefficient to multiply by, always in the second position.
 
-| Method | What it does |
-| :--- | :--- |
-| **Transforms** |  |
-| ACos\(INDArray x\) | Trigonometric inverse cosine, elementwise. The inverse of cos such that, if `y = cos(x)`, then `x = ACos(y)`. |
-| ASin\(INDArray x\) | Also known as arcsin. Inverse sine, elementwise. |
-| ATan\(INDArray x\) | Trigonometric inverse tangent, elementwise. The inverse of tan, such that, if `y = tan(x)` then `x = ATan(y)`. |
-| Transforms.tanh\(myArray\) | Hyperbolic tangent: a sigmoidal function. This applies elementwise tanh inplace. |
-| Nd4j.getExecutioner\(\).exec\(Nd4j.getOpFactory\(\) .createTransform\(“tanh”, myArray\)\) | equivalent to the above |
+| Method                                                                            | What it does                                                                                                   |
+| --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **Transforms**                                                                    |                                                                                                                |
+| ACos(INDArray x)                                                                  | Trigonometric inverse cosine, elementwise. The inverse of cos such that, if `y = cos(x)`, then `x = ACos(y)`.  |
+| ASin(INDArray x)                                                                  | Also known as arcsin. Inverse sine, elementwise.                                                               |
+| ATan(INDArray x)                                                                  | Trigonometric inverse tangent, elementwise. The inverse of tan, such that, if `y = tan(x)` then `x = ATan(y)`. |
+| Transforms.tanh(myArray)                                                          | Hyperbolic tangent: a sigmoidal function. This applies elementwise tanh inplace.                               |
+| Nd4j.getExecutioner().exec(Nd4j.getOpFactory() .createTransform(“tanh”, myArray)) | equivalent to the above                                                                                        |
 
-For other transforms, [please see this page](../operation-namespaces/overview.md).
+For other transforms, [please see this page](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/nd4j/operation-namespaces/overview.md).
 
 Here are two examples of performing `z = tanh(x)`, in which the original array `x` is unmodified.
 
-```text
+```
 INDArray x = Nd4j.rand(3,2);    //input
 INDArray z = Nd4j.create(3,2); //output
 Nd4j.getExecutioner().exec(new Tanh(x,z));
@@ -60,27 +60,27 @@ Nd4j.getExecutioner().exec(Nd4j.getOpFactory().createTransform("tanh",x,z));
 
 The latter two examples above use ND4J’s basic convention for all ops, in which we have 3 NDArrays, x, y and z.
 
-```text
+```
 x is input, always required
 y is (optional) input, only used in some ops (like CosineSimilarity, AddOp etc)
 z is output
 ```
 
-Frequently, `z = x` \(this is the default if you use a constructor with only one argument\). But there are exceptions for situations like `x = x + y`. Another possibility is `z = x + y`, etc.
+Frequently, `z = x` (this is the default if you use a constructor with only one argument). But there are exceptions for situations like `x = x + y`. Another possibility is `z = x + y`, etc.
 
-## Accumulations <a id="accumulations"></a>
+## Accumulations <a href="accumulations" id="accumulations"></a>
 
 Most accumulations are accessable directly via the INDArray interface.
 
 For example, to add up all elements of an NDArray:
 
-```text
+```
 double sum = myArray.sumNumber().doubleValue();
 ```
 
 Accum along dimension example - i.e., sum values in each row:
 
-```text
+```
 INDArray tenBy3 = Nd4j.ones(10,3);    //10 rows, 3 columns
 INDArray sumRows = tenBy3.sum(0);
 System.out.println(sumRows);    //Output: [ 10.00, 10.00, 10.00]
@@ -88,11 +88,11 @@ System.out.println(sumRows);    //Output: [ 10.00, 10.00, 10.00]
 
 Accumulations along dimensions generalize, so you can sum along two dimensions of any array with two or more dimensions.
 
-## Subset Operations on Arrays <a id="subset-operations-on-arrays"></a>
+## Subset Operations on Arrays <a href="subset-operations-on-arrays" id="subset-operations-on-arrays"></a>
 
 A simple example:
 
-```text
+```
 INDArray random = Nd4j.rand(3, 3);
 System.out.println(random);
 [[0.93,0.32,0.18]
@@ -102,9 +102,9 @@ System.out.println(random);
 INDArray lastTwoRows = random.get(NDArrayIndex.interval(1,3),NDArrayIndex.all());
 ```
 
-Interval is fromInclusive, toExclusive; note that can equivalently use inclusive version: NDArrayIndex.interval\(1,2,true\);
+Interval is fromInclusive, toExclusive; note that can equivalently use inclusive version: NDArrayIndex.interval(1,2,true);
 
-```text
+```
 System.out.println(lastTwoRows);
 [[0.20,0.57,0.60]
 [0.96,0.65,0.75]]
@@ -114,9 +114,9 @@ System.out.println(twoValues);
 [ 0.20, 0.57]
 ```
 
-These are views of the underlying array, **not** copy operations \(which provides greater flexibility and doesn’t have cost of copying\).
+These are views of the underlying array, **not** copy operations (which provides greater flexibility and doesn’t have cost of copying).
 
-```text
+```
 twoValues.addi(5.0);
 System.out.println(twoValues);
 [ 5.20, 5.57]
@@ -127,20 +127,19 @@ System.out.println(random);
 [0.96,0.65,0.75]]
 ```
 
-To avoid in-place behaviour, random.get\(…\).dup\(\) to make a copy.
+To avoid in-place behaviour, random.get(…).dup() to make a copy.
 
-| **Scalar** |  |
-| :--- | :--- |
-| INDArray.add\(number\) | Returns the result of adding `number` to each entry of `INDArray x`; e.g. myArray.add\(2.0\) |
-| INDArray.addi\(number\) | Returns the result of adding `number` to each entry of `INDArray x`. |
-| ScalarAdd\(INDArray x, Number num\) | Returns the result of adding `num` to each entry of `INDArray x`. |
-| ScalarDivision\(INDArray x, Number num\) | Returns the result of dividing each entry of `INDArray x` by `num`. |
-| ScalarMax\(INDArray x, Number num\) | Compares each entry of `INDArray x` to `num` and returns the higher quantity. |
-| ScalarMultiplication\(INDArray x, Number num\) | Returns the result of multiplying each entry of `INDArray x` by `num`. |
-| ScalarReverseDivision\(INDArray x, Number num\) | Returns the result of dividing `num` by each element of `INDArray x`. |
-| ScalarReverseSubtraction\(INDArray x, Number num\) | Returns the result of subtracting each entry of `INDArray x` from `num`. |
-| ScalarSet\(INDArray x, Number num\) | This sets the value of each entry of `INDArray x` to `num`. |
-| ScalarSubtraction\(INDArray x, Number num\) | Returns the result of subtracting `num` from each entry of `INDArray x`. |
+| **Scalar**                                       |                                                                                            |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| INDArray.add(number)                             | Returns the result of adding `number` to each entry of `INDArray x`; e.g. myArray.add(2.0) |
+| INDArray.addi(number)                            | Returns the result of adding `number` to each entry of `INDArray x`.                       |
+| ScalarAdd(INDArray x, Number num)                | Returns the result of adding `num` to each entry of `INDArray x`.                          |
+| ScalarDivision(INDArray x, Number num)           | Returns the result of dividing each entry of `INDArray x` by `num`.                        |
+| ScalarMax(INDArray x, Number num)                | Compares each entry of `INDArray x` to `num` and returns the higher quantity.              |
+| ScalarMultiplication(INDArray x, Number num)     | Returns the result of multiplying each entry of `INDArray x` by `num`.                     |
+| ScalarReverseDivision(INDArray x, Number num)    | Returns the result of dividing `num` by each element of `INDArray x`.                      |
+| ScalarReverseSubtraction(INDArray x, Number num) | Returns the result of subtracting each entry of `INDArray x` from `num`.                   |
+| ScalarSet(INDArray x, Number num)                | This sets the value of each entry of `INDArray x` to `num`.                                |
+| ScalarSubtraction(INDArray x, Number num)        | Returns the result of subtracting `num` from each entry of `INDArray x`.                   |
 
-If you do not understand the explanation of ND4J’s syntax, cannot find a definition for a method, or would like to request that a function be added, please let us know on the [community forums](https://community.konduit.ai/).
-
+If you do not understand the explanation of ND4J’s syntax, cannot find a definition for a method, or would like to request that a function be added, please let us know on the [community forums](https://community.konduit.ai).

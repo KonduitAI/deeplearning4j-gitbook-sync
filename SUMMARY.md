@@ -156,7 +156,8 @@
   * [Quickstart](samediff/tutorials/quickstart.md)
 * [How To Guides](samediff/how-to-guides/README.md)
   * [Importing Tensorflow](samediff/how-to-guides/importing-tensorflow.md)
-  * [Adding Operations](samediff/how-to-guides/adding-operations.md)
+  * [Adding Operations](samediff/how-to-guides/adding-operations/README.md)
+    * [codegen](samediff/how-to-guides/adding-operations/codegen.md)
 * [Reference](samediff/reference/README.md)
   * [Operation Namespaces](samediff/reference/operation-namespaces/README.md)
     * [Base Operations](samediff/reference/operation-namespaces/base-operations.md)
@@ -180,10 +181,11 @@
   * [Building for raspberry pi or Jetson Nano](libnd4j/how-to-guides/building-for-raspberry-pi-or-jetson-nano.md)
   * [Building on ios](libnd4j/how-to-guides/building-on-ios.md)
   * [How to Add Operations](libnd4j/how-to-guides/how-to-add-operations.md)
+  * [How to Setup CLion](libnd4j/how-to-guides/how-to-setup-clion.md)
 * [Reference](libnd4j/reference/README.md)
   * [Understanding graph execution](libnd4j/reference/understanding-graph-execution.md)
   * [Overview of working with libnd4j](libnd4j/reference/tutorials.md)
-  * [Helpers Overview \(CUDNN, OneDNN,Armcompute\)](libnd4j/reference/helpers-overview-cudnn-onednn-armcompute.md)
+  * [Helpers Overview (CUDNN, OneDNN,Armcompute)](libnd4j/reference/helpers-overview-cudnn-onednn-armcompute.md)
 * [Explanation](libnd4j/explanation.md)
 
 ## Python4j
@@ -219,3 +221,6 @@
 * [Explanation](spark/explanation/README.md)
   * [Spark API Reference](spark/explanation/spark-api-reference.md)
 
+***
+
+* [codegen](codegen.md)

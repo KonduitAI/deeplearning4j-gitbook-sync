@@ -1,9 +1,5 @@
 ---
-title: DL4J and Javacpp
-short_title: DL4J and Javacpp
 description: DL4J and Javacpp
-category: Developer
-weight: 3
 ---
 
 # Javacpp
@@ -14,7 +10,7 @@ DL4J heavily depends on [javacpp](https://github.com/bytedeco/javacpp) for its i
 
 The following modules rely on javacpp as part of their build process: 1. nd4j-native 2. nd4j-native-presets 3. nd4j-cuda 4. nd4j-cuda-presets
 
-Each of these libraries are what comprise our nd4j backends. Leveraging \[libnd4j\], javacpp handles linking each nd4j-backend against the libnd4j c++ codebase. This linking is done using a libnd4j home. This will contain all of the include files and necessary binary files for specific platforms. By default, nd4j backends and the libnd4j code base are compiled within the same build step. This is the recommended default, but for specific circumstances. A libnd4j release is also uploaded to maven central as a zip file and can be used in place of libnd4j compilation. See our [Github actions overview libnd4jUrl parameter](github-actions-overview.md) for more information on this.
+Each of these libraries are what comprise our nd4j backends. Leveraging \[libnd4j], javacpp handles linking each nd4j-backend against the libnd4j c++ codebase. This linking is done using a libnd4j home. This will contain all of the include files and necessary binary files for specific platforms. By default, nd4j backends and the libnd4j code base are compiled within the same build step. This is the recommended default, but for specific circumstances. A libnd4j release is also uploaded to maven central as a zip file and can be used in place of libnd4j compilation. See our [Github actions overview libnd4jUrl parameter](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/multi-project/how-to-guides/developer-docs/github-actions-overview.md) for more information on this.
 
 Each backend consists of 2 modules
 
@@ -25,7 +21,7 @@ Each backend consists of 2 modules
 
 After a libnd4j build is executed for a specific platform, we need to leverage javacpp to actually link against libnd4j to create a complete libnd4j backend. When invoking a maven build, the [javacpp maven plugin](http://bytedeco.org/javacpp/apidocs/org/bytedeco/javacpp/tools/BuildMojo.html) is used to actually invoke a build. The presets will be compiled first. Generally the presets are just 1 or 2 classes containing a description of how to map the actual nd4j code base to the libnd4j codebase.
 
-Next, the actual backend is compiled with a dependency on the above presets code base. The javacpp plugin will leverage the description from the presets we specify as a dependency and facilitate linking against a LIBND4J\_HOME \(a folder which contains the platform specific libnd4j binaries and include sources\) specified by the user. In the actual plugin declaration on the backend pom.xml we include the target presets class to use for our particular backend.
+Next, the actual backend is compiled with a dependency on the above presets code base. The javacpp plugin will leverage the description from the presets we specify as a dependency and facilitate linking against a LIBND4J\_HOME (a folder which contains the platform specific libnd4j binaries and include sources) specified by the user. In the actual plugin declaration on the backend pom.xml we include the target presets class to use for our particular backend.
 
 Note: This still requires the native platform specific tools to be installed since binaries are generated for each platform. Please see our github actions for instructions on specific platforms.
 
@@ -49,7 +45,7 @@ Throughout the dl4j pom.xml files, platform specific profiles that setup depende
 
 ## Running javacpp on termux + android/lineagos
 
-A testing setup the team uses for testing android involves lineageos, termux, and some arm32 based open jdk debian files that can be found [here](https://ia802807.us.archive.org/19/items/openjdk-9-jre-headless_9.2017.8.20-1_x86_64)
+A testing setup the team uses for testing android involves lineageos, termux, and some arm32 based open jdk debian files that can be found [here](https://ia802807.us.archive.org/19/items/openjdk-9-jre-headless\_9.2017.8.20-1\_x86\_64)
 
 In order to bootstrap this environment, a from scratch install of the latest lineageos flashed on an sd card using the raspberry pi is suggested.
 
@@ -78,5 +74,4 @@ This will setup the jdk + maven to ignore ssl errors due to issues with cacerts 
 
 Redist artifacts are easy ways of distributing dependencies without installation.
 
-Note that for the presets that are part of nd4j \(nd4j-cuda-presets and nd4j-native-presets\) only the latest versions support redist artifacts. The presets preload versions only support pre loading \(eg: linking against libraries from the javacpp cache\) against the latest version. This is because during pre loading, certain version numbers are checked for.
-
+Note that for the presets that are part of nd4j (nd4j-cuda-presets and nd4j-native-presets) only the latest versions support redist artifacts. The presets preload versions only support pre loading (eg: linking against libraries from the javacpp cache) against the latest version. This is because during pre loading, certain version numbers are checked for.

@@ -1,9 +1,5 @@
 ---
-title: Deeplearning4j Model Persistence
-short_title: Model Persistence
 description: Saving and loading of neural networks.
-category: Models
-weight: 10
 ---
 
 # Saving and Loading Models
@@ -28,13 +24,13 @@ net.save(new File("..."));
 ComputationGraph net2 = ComputationGraph.load(new File("..."), true);
 ```
 
-Internally, these methods use the `ModelSerializer` class, which handles loading and saving models. There are two methods for saving models shown in the examples through the link. The first example saves a normal multi layer network, the second one saves a [computation graph](computationgraph.md).
+Internally, these methods use the `ModelSerializer` class, which handles loading and saving models. There are two methods for saving models shown in the examples through the link. The first example saves a normal multi layer network, the second one saves a [computation graph](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/reference/computationgraph.md).
 
 Here is a [basic example](https://github.com/eclipse/deeplearning4j-examples/tree/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/misc/modelsaving) with code to save a computation graph using the `ModelSerializer` class, as well as an example of using ModelSerializer to save a neural net built using MultiLayer configuration.
 
 ## RNG Seed
 
-If your model uses probabilities \(i.e. DropOut/DropConnect\), it may make sense to save it separately, and apply it after model is restored; i.e:
+If your model uses probabilities (i.e. DropOut/DropConnect), it may make sense to save it separately, and apply it after model is restored; i.e:
 
 ```java
  Nd4j.getRandom().setSeed(12345);
@@ -51,7 +47,7 @@ Utility class suited to save/restore neural net models
 
 **writeModel**
 
-```text
+```
 public static void writeModel(@NonNull Model model, @NonNull File file, boolean saveUpdater) throws IOException
 ```
 
@@ -64,7 +60,7 @@ Write a model to a file
 
 **writeModel**
 
-```text
+```
 public static void writeModel(@NonNull Model model, @NonNull File file, boolean saveUpdater,DataNormalization dataNormalization) throws IOException
 ```
 
@@ -73,12 +69,12 @@ Write a model to a file
 * param model the model to write
 * param file the file to write to
 * param saveUpdater whether to save the updater or not
-* param dataNormalization the normalizer to save \(optional\)
+* param dataNormalization the normalizer to save (optional)
 * throws IOException
 
 **writeModel**
 
-```text
+```
 public static void writeModel(@NonNull Model model, @NonNull String path, boolean saveUpdater) throws IOException
 ```
 
@@ -91,7 +87,7 @@ Write a model to a file path
 
 **writeModel**
 
-```text
+```
 public static void writeModel(@NonNull Model model, @NonNull OutputStream stream, boolean saveUpdater)
             throws IOException
 ```
@@ -105,7 +101,7 @@ Write a model to an output stream
 
 **writeModel**
 
-```text
+```
 public static void writeModel(@NonNull Model model, @NonNull OutputStream stream, boolean saveUpdater,DataNormalization dataNormalization)
             throws IOException
 ```
@@ -115,12 +111,12 @@ Write a model to an output stream
 * param model the model to save
 * param stream the output stream to write to
 * param saveUpdater whether to save the updater for the model or not
-* param dataNormalization the normalizer ot save \(may be null\)
+* param dataNormalization the normalizer ot save (may be null)
 * throws IOException
 
 **restoreMultiLayerNetwork**
 
-```text
+```
 public static MultiLayerNetwork restoreMultiLayerNetwork(@NonNull File file) throws IOException
 ```
 
@@ -132,7 +128,7 @@ Load a multi layer network from a file
 
 **restoreMultiLayerNetwork**
 
-```text
+```
 public static MultiLayerNetwork restoreMultiLayerNetwork(@NonNull File file, boolean loadUpdater)
             throws IOException
 ```
@@ -145,36 +141,36 @@ Load a multi layer network from a file
 
 **restoreMultiLayerNetwork**
 
-```text
+```
 public static MultiLayerNetwork restoreMultiLayerNetwork(@NonNull InputStream is, boolean loadUpdater)
             throws IOException
 ```
 
-Load a MultiLayerNetwork from InputStream from an input stream  
+Load a MultiLayerNetwork from InputStream from an input stream\
 Note: the input stream is read fully and closed by this method. Consequently, the input stream cannot be re-used.
 
 * param is the inputstream to load from
 * return the loaded multi layer network
 * throws IOException
-* see \#restoreMultiLayerNetworkAndNormalizer\(InputStream, boolean\)
+* see #restoreMultiLayerNetworkAndNormalizer(InputStream, boolean)
 
 **restoreMultiLayerNetwork**
 
-```text
+```
 public static MultiLayerNetwork restoreMultiLayerNetwork(@NonNull InputStream is) throws IOException
 ```
 
-Restore a multi layer network from an input stream  
+Restore a multi layer network from an input stream\
 Note: the input stream is read fully and closed by this method. Consequently, the input stream cannot be re-used.
 
 * param is the input stream to restore from
 * return the loaded multi layer network
 * throws IOException
-* see \#restoreMultiLayerNetworkAndNormalizer\(InputStream, boolean\)
+* see #restoreMultiLayerNetworkAndNormalizer(InputStream, boolean)
 
 **restoreMultiLayerNetwork**
 
-```text
+```
 public static MultiLayerNetwork restoreMultiLayerNetwork(@NonNull String path) throws IOException
 ```
 
@@ -186,7 +182,7 @@ Load a MultilayerNetwork model from a file
 
 **restoreMultiLayerNetwork**
 
-```text
+```
 public static MultiLayerNetwork restoreMultiLayerNetwork(@NonNull String path, boolean loadUpdater)
             throws IOException
 ```
@@ -199,11 +195,11 @@ Load a MultilayerNetwork model from a file
 
 **restoreComputationGraph**
 
-```text
+```
 public static ComputationGraph restoreComputationGraph(@NonNull String path) throws IOException
 ```
 
-Restore a MultiLayerNetwork and Normalizer \(if present - null if not\) from the InputStream. Note: the input stream is read fully and closed by this method. Consequently, the input stream cannot be re-used.
+Restore a MultiLayerNetwork and Normalizer (if present - null if not) from the InputStream. Note: the input stream is read fully and closed by this method. Consequently, the input stream cannot be re-used.
 
 * param is Input stream to read from
 * param loadUpdater Whether to load the updater from the model or not
@@ -212,7 +208,7 @@ Restore a MultiLayerNetwork and Normalizer \(if present - null if not\) from the
 
 **restoreComputationGraph**
 
-```text
+```
 public static ComputationGraph restoreComputationGraph(@NonNull String path, boolean loadUpdater)
             throws IOException
 ```
@@ -225,7 +221,7 @@ Load a computation graph from a file
 
 **restoreComputationGraph**
 
-```text
+```
 public static ComputationGraph restoreComputationGraph(@NonNull InputStream is, boolean loadUpdater)
             throws IOException
 ```
@@ -238,7 +234,7 @@ Load a computation graph from a InputStream
 
 **restoreComputationGraph**
 
-```text
+```
 public static ComputationGraph restoreComputationGraph(@NonNull InputStream is) throws IOException
 ```
 
@@ -250,7 +246,7 @@ Load a computation graph from a InputStream
 
 **restoreComputationGraph**
 
-```text
+```
 public static ComputationGraph restoreComputationGraph(@NonNull File file) throws IOException
 ```
 
@@ -262,11 +258,11 @@ Load a computation graph from a file
 
 **restoreComputationGraph**
 
-```text
+```
 public static ComputationGraph restoreComputationGraph(@NonNull File file, boolean loadUpdater) throws IOException
 ```
 
-Restore a ComputationGraph and Normalizer \(if present - null if not\) from the InputStream. Note: the input stream is read fully and closed by this method. Consequently, the input stream cannot be re-used.
+Restore a ComputationGraph and Normalizer (if present - null if not) from the InputStream. Note: the input stream is read fully and closed by this method. Consequently, the input stream cannot be re-used.
 
 * param is Input stream to read from
 * param loadUpdater Whether to load the updater from the model or not
@@ -275,7 +271,7 @@ Restore a ComputationGraph and Normalizer \(if present - null if not\) from the 
 
 **taskByModel**
 
-```text
+```
 public static Task taskByModel(Model model)
 ```
 
@@ -284,7 +280,7 @@ public static Task taskByModel(Model model)
 
 **addNormalizerToModel**
 
-```text
+```
 public static void addNormalizerToModel(File f, Normalizer<?> normalizer)
 ```
 
@@ -297,13 +293,12 @@ PLEASE NOTE: File should be model file saved earlier with ModelSerializer
 
 **addObjectToFile**
 
-```text
+```
 public static void addObjectToFile(@NonNull File f, @NonNull String key, @NonNull Object o)
 ```
 
-Add an object to the \(already existing\) model file using Java Object Serialization. Objects can be restored using {- link \#getObjectFromFile\(File, String\)}
+Add an object to the (already existing) model file using Java Object Serialization. Objects can be restored using {- link #getObjectFromFile(File, String)}
 
 * param f File to add the object to
 * param key Key to store the object under
 * param o Object to store using Java object serialization
-

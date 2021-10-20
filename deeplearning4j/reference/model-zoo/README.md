@@ -1,9 +1,5 @@
 ---
-title: Deeplearning4j Model Zoo
-short_title: Zoo Usage
 description: Prebuilt model architectures and weights for out-of-the-box application.
-category: Models
-weight: 10
 ---
 
 # Model Zoo
@@ -89,16 +85,16 @@ You can find a complete list of models using this [deeplearning4j-zoo Github lin
 
 This includes ImageNet models such as VGG-16, ResNet-50, AlexNet, Inception-ResNet-v1, LeNet, and more.
 
-* [AlexNet](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/AlexNet.java)    
-* [Darknet19](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/Darknet19.java)    
-* [FaceNetNN4Small2](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/FaceNetNN4Small2.java)    
-* [InceptionResNetV1](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/InceptionResNetV1.java)    
+* [AlexNet](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/AlexNet.java)   &#x20;
+* [Darknet19](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/Darknet19.java)   &#x20;
+* [FaceNetNN4Small2](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/FaceNetNN4Small2.java)   &#x20;
+* [InceptionResNetV1](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/InceptionResNetV1.java)   &#x20;
 * [LeNet](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/LeNet.java)
 * [ResNet50](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/ResNet50.java)
 * [SimpleCNN](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/SimpleCNN.java)
 * [TextGenerationLSTM](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/TextGenerationLSTM.java)
 * [TinyYOLO](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/TinyYOLO.java)
-* [VGG16](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/VGG16.java)    
+* [VGG16](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/VGG16.java)   &#x20;
 * [VGG19](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/VGG19.java)
 
 ## Advanced usage
@@ -124,9 +120,8 @@ zooModel.setInputShape(new int[][]{{3, 28, 28}});
 
 ### Transfer Learning
 
-Pretrained models are perfect for transfer learning! You can read more about transfer learning using DL4J [here](../tuning-and-training/transfer-learning.md).
+Pretrained models are perfect for transfer learning! You can read more about transfer learning using DL4J [here](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/tuning-and-training/transfer-learning.md).
 
 ### Workspaces
 
 Initialization methods often have an additional parameter named `workspaceMode`. For the majority of users you will not need to use this; however, if you have a large machine that has "beefy" specifications, you can pass `WorkspaceMode.SINGLE` for models such as VGG-19 that have many millions of parameters. To learn more about workspaces, please see [this section](../../../multi-project/explanation/configuration/memory/workspaces.md).
-

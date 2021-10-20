@@ -1,44 +1,40 @@
 ---
-title: Distributed Training with Parameter Server
-short_title: Parameter Server
 description: >-
   Deeplearning4j supports fast distributed training with Spark and a parameter
   server.
-category: Distributed Deep Learning
-weight: 12
 ---
 
 # Parameter Server
 
 DeepLearning4j supports distributed training in the Apache Spark environment and [Aeron](https://github.com/real-logic/Aeron) for high performance inter-node communication outside of Spark. The idea is relatively simple: individual workers calculate gradients on their DataSets.
 
-Before gradients are applied to the network weights, they are accumulated in an intermediate storage mechanism \(one for each machine\). After aggregation, updated values above some configurable threshold are propagated across the network as a sparse binary array. Values below the threshold are stored and added to future updates, hence they are not lost, but merely delayed in their communication.
+Before gradients are applied to the network weights, they are accumulated in an intermediate storage mechanism (one for each machine). After aggregation, updated values above some configurable threshold are propagated across the network as a sparse binary array. Values below the threshold are stored and added to future updates, hence they are not lost, but merely delayed in their communication.
 
 This thresholding approach reduces the network communication requirements by many orders of magnitude compared to a naive approach of sending the entire dense update, or parameter vector, while maintaining high accuracy.
 
-For more details on the thresholding approach, see [Strom, 2015 - Scalable Distributed DNN Training using Commodity GPU Cloud Computing](http://nikkostrom.com/publications/interspeech2015/strom_interspeech2015.pdf).
+For more details on the thresholding approach, see [Strom, 2015 - Scalable Distributed DNN Training using Commodity GPU Cloud Computing](http://nikkostrom.com/publications/interspeech2015/strom\_interspeech2015.pdf).
 
 Here are a few more perks were added to original algorithm proposed by Nikko Strom:
 
-* Variable threshold: If the number of updates per iteration gets too low, the threshold is automatically decreased by a configurable step value. 
+* Variable threshold: If the number of updates per iteration gets too low, the threshold is automatically decreased by a configurable step value.&#x20;
 * Dense bitmap encoding: If the number of updates gets too high, another encoding scheme is used, which provides guarantees of "maximum number of bytes" being sent over the wire for any given update message.
 * Periodically, we send "shake up" messages, encoded with a significantly smaller threshold, to share delayed weights that can't get above current threshold.
 
-Note that using Spark entails overhead. In order to determine whether Spark will help you or not, consider using the [Performance Listener](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/listeners/PerformanceListener.java) and look at the millisecond iteration time. If it's &lt;= 150ms, Spark may not be worth it.
+Note that using Spark entails overhead. In order to determine whether Spark will help you or not, consider using the [Performance Listener](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/listeners/PerformanceListener.java) and look at the millisecond iteration time. If it's <= 150ms, Spark may not be worth it.
 
 ## Setting up Your Cluster
 
-All you need to run training is a Spark 1.x/2.x cluster and at least one open UDP port \(both inbound/outbound\).
+All you need to run training is a Spark 1.x/2.x cluster and at least one open UDP port (both inbound/outbound).
 
 ### Cluster Setup
 
-As mentioned above, DeepLearning4j supports both Spark 1.x and Spark 2.x clusters. However, this particular implementation also requires Java 8+ to run. If your cluster is running Java 7, you'll either have to upgrade or use our [Parameters Averaging training mode](deeplearning4j-scaleout/deeplearning4j-spark-training).
+As mentioned above, DeepLearning4j supports both Spark 1.x and Spark 2.x clusters. However, this particular implementation also requires Java 8+ to run. If your cluster is running Java 7, you'll either have to upgrade or use our [Parameters Averaging training mode](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/spark/reference/deeplearning4j-scaleout/deeplearning4j-spark-training).
 
 ### Network Environment
 
 Gradient sharing relies heavily on the UDP protocol for communication between the Master and the slave nodes during training. If you're running your cluster in a cloud environment such as AWS or Azure, you need to allow one UDP port for Inbound/Outbound connections, and you have to specify that port in the `VoidConfiguration.unicastPort(int)` bean that is passed to `SharedTrainingMaster` constructor.
 
-Another option to keep in mind: if you use YARN \(or any other resource manager that handles Spark networking\), you'll have to specify the network mask of the network that'll be used for UDP communications. That could be done with something like this: `VoidConfiguration.setNetworkMask("10.1.1.0/24")`.
+Another option to keep in mind: if you use YARN (or any other resource manager that handles Spark networking), you'll have to specify the network mask of the network that'll be used for UDP communications. That could be done with something like this: `VoidConfiguration.setNetworkMask("10.1.1.0/24")`.
 
 An option of last resort for IP address selection is the `DL4J_VOID_IP` environment variable. Set that variable on each node you're running, with a local IP address to be used for comms.
 
@@ -123,12 +119,12 @@ The longer the original iteration time, the less relative impact will come from 
 Here's a simple form that'll help you with scalability expectations:
 
 | Iteration Time | Encode Time | Decode Time | Update Time | Service overhead |
-| :--- | :--- | :--- | :--- | :--- |
-| 550 | 50 | 5 | 50 | 20 |
+| -------------- | ----------- | ----------- | ----------- | ---------------- |
+| 550            | 50          | 5           | 50          | 20               |
 
 | Number of nodes | Workers per node |
-| :--- | :--- |
-| 8 | 4 |
+| --------------- | ---------------- |
+| 8               | 4                |
 
 **Scalability ratio: 70.51%**
 
@@ -146,7 +142,7 @@ If your nodes are GPU-powered, it's usually a very good idea to set `workersPerN
 
 ### Encoding Threshold
 
-A higher threshold value gives you more sparse updates which will boost network IO performance, but it might \(and probably will\) affect the learning performance of your neural network.
+A higher threshold value gives you more sparse updates which will boost network IO performance, but it might (and probably will) affect the learning performance of your neural network.
 
 A lower threshold value will give you more dense updates so each individual updates message will become larger. This will degrade network IO performance. Individual "best threshold value" is impossible to predict since it may vary for different architectures, but a default value of `1e-3` is a good value to start with.
 
@@ -154,17 +150,16 @@ A lower threshold value will give you more dense updates so each individual upda
 
 The rule of thumb is simple here: the faster your network, the better your performance. A 1GBe network should be considered the absolute minimum, but a 10GBe will perform better due to lower latency.
 
-Of course, performance depends on the network size and the amount of computation. Larger networks require greater bandwidth but also require more time per iteration \(hence possibly leaving more time for asynchronous communication\).
+Of course, performance depends on the network size and the amount of computation. Larger networks require greater bandwidth but also require more time per iteration (hence possibly leaving more time for asynchronous communication).
 
 ### UDP Unicast vs UDP Broadcast
 
-To ensure maximum compatibility \(for example, with cloud computing environments such as AWS and Azure, which do not support multicast\), only UDP unicast is currently utilized in DL4J.
+To ensure maximum compatibility (for example, with cloud computing environments such as AWS and Azure, which do not support multicast), only UDP unicast is currently utilized in DL4J.
 
-UDP Broadcast transfers should be faster, but for training performance, the difference should not be noticeable \(except perhaps for very small workloads\).
+UDP Broadcast transfers should be faster, but for training performance, the difference should not be noticeable (except perhaps for very small workloads).
 
-By design, each worker sends 1 updates message per iteration and this won’t change regardless of UDP transport type. Since message retransmission in UDP Unicast transport is handled by the Master node \(which typically has low utilization\) and since message passing is asynchronous, we simply require that update communication time is less than network iteration time for performance - which is usually the case.
+By design, each worker sends 1 updates message per iteration and this won’t change regardless of UDP transport type. Since message retransmission in UDP Unicast transport is handled by the Master node (which typically has low utilization) and since message passing is asynchronous, we simply require that update communication time is less than network iteration time for performance - which is usually the case.
 
 ### Multi-GPU Environments
 
-The best results are to be expected on boxes where PCIe/NVLink P2P connectivity between devices is available. However, everything will still work fine even without P2P. Just "a bit" slower. :\)
-
+The best results are to be expected on boxes where PCIe/NVLink P2P connectivity between devices is available. However, everything will still work fine even without P2P. Just "a bit" slower. :)

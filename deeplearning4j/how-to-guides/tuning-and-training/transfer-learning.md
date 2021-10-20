@@ -1,11 +1,3 @@
----
-title: Neural Network Transfer Learning
-short_title: Transfer Learning
-description: null
-category: Tuning & Training
-weight: 5
----
-
 # Transfer Learning
 
 ## DL4J’s Transfer Learning API
@@ -14,7 +6,7 @@ The DL4J transfer learning API enables users to:
 
 * Modify the architecture of an existing model
 * Fine tune learning configurations of an existing model.
-* Hold parameters of a specified layer constant during training, also referred to as “frozen" 
+* Hold parameters of a specified layer constant during training, also referred to as “frozen"&#x20;
 
 Holding certain layers frozen on a network and training is effectively the same as training on a transformed version of the input, the transformed version being the intermediate outputs at the boundary of the frozen layers. This is the process of “feature extraction” from the input data and will be referred to as “featurizing” in this document.
 
@@ -23,18 +15,18 @@ Holding certain layers frozen on a network and training is effectively the same 
 The forward pass to “featurize” the input data on large, pertained networks can be time consuming. DL4J also provides a TransferLearningHelper class with the following capabilities.
 
 * Featurize an input dataset to save for future use
-* Fit the model with frozen layers with a featurized dataset 
+* Fit the model with frozen layers with a featurized dataset&#x20;
 * Output from the model with frozen layers given a featurized input.
 
 When running multiple epochs users will save on computation time since the expensive forward pass on the frozen layers/vertices will only have to be conducted once.
 
 ## Show me the code
 
-This example will use VGG16 to classify images belonging to five categories of flowers. The dataset will automatically download from [http://download.tensorflow.org/example\_images/flower\_photos.tgz](http://download.tensorflow.org/example_images/flower_photos.tgz)
+This example will use VGG16 to classify images belonging to five categories of flowers. The dataset will automatically download from [http://download.tensorflow.org/example\_images/flower\_photos.tgz](http://download.tensorflow.org/example\_images/flower\_photos.tgz)
 
 ### I.  Import a zoo model
 
-Deeplearning4j has a new native model zoo. Read about the [deeplearning4j-zoo](/model-zoo) module for more information on using pretrained models. Here, we load a pretrained VGG-16 model initialized with weights trained on ImageNet:
+Deeplearning4j has a new native model zoo. Read about the [deeplearning4j-zoo](https://app.gitbook.com/model-zoo) module for more information on using pretrained models. Here, we load a pretrained VGG-16 model initialized with weights trained on ImageNet:
 
 ```java
 ZooModel zooModel = VGG16.builder().build();
@@ -70,9 +62,9 @@ ComputationGraph vgg16Transfer = new TransferLearning.GraphBuilder(pretrainedNet
               .build();
 ```
 
-After a mere thirty iterations, which in this case is exposure to 450 images, the model attains an accuracy &gt; 75% on the test dataset. This is rather remarkable considering the complexity of training an image classifier from scratch.
+After a mere thirty iterations, which in this case is exposure to 450 images, the model attains an accuracy > 75% on the test dataset. This is rather remarkable considering the complexity of training an image classifier from scratch.
 
-#### B. Attach new layers to the bottleneck \(block5\_pool\)
+#### B. Attach new layers to the bottleneck (block5\_pool)
 
 Here we hold all but the last three dense layers frozen and attach new dense layers onto it. Note that the primary intent here is to demonstrate the use of the API, secondary to what might give better results.
 
@@ -95,7 +87,7 @@ ComputationGraph vgg16Transfer = new TransferLearning.GraphBuilder(pretrainedNet
 
 #### C. Fine tune layers from a previously saved model
 
-Say we have saved off our model from \(B\) and now want to allow “block\_5” layers to train.
+Say we have saved off our model from (B) and now want to allow “block\_5” layers to train.
 
 ```java
 ComputationGraph vgg16FineTune = new TransferLearning.GraphBuilder(vgg16Transfer)
@@ -120,7 +112,7 @@ while(trainIter.hasNext()) {
 }
 ```
 
-Here is how you can fit with a featured dataset. vgg16Transfer is a model setup in \(A\) of section III.
+Here is how you can fit with a featured dataset. vgg16Transfer is a model setup in (A) of section III.
 
 ```java
 TransferLearningHelper transferLearningHelper = 
@@ -132,27 +124,26 @@ while (trainIter.hasNext()) {
 
 ## Notes
 
-* The TransferLearning builder returns a new instance of a dl4j model. 
+* The TransferLearning builder returns a new instance of a dl4j model.&#x20;
 
 Keep in mind this is a second model that leaves the original one untouched. For large pertained network take into consideration memory requirements and adjust your JVM heap space accordingly.
 
-* The trained model helper imports models from Keras without enforcing a training configuration. 
+* The trained model helper imports models from Keras without enforcing a training configuration.&#x20;
 
-Therefore the last layer \(as seen when printing the summary\) is a dense layer and not an output layer with a loss function. Therefore to modify nOut of an output layer we delete the layer vertex, keeping it’s connections and add back in a new output layer with the same name, a different nOut, the suitable loss function etc etc.
+Therefore the last layer (as seen when printing the summary) is a dense layer and not an output layer with a loss function. Therefore to modify nOut of an output layer we delete the layer vertex, keeping it’s connections and add back in a new output layer with the same name, a different nOut, the suitable loss function etc etc.
 
-* Changing nOuts at a layer/vertex will modify nIn of the layers/vertices it fans into. 
+* Changing nOuts at a layer/vertex will modify nIn of the layers/vertices it fans into.&#x20;
 
 When changing nOut users can specify a weight initialization scheme or a distribution for the layer as well as a separate weight initialization scheme or distribution for the layers it fans out to.
 
-* Frozen layer configurations are not saved when writing the model to disk. 
+* Frozen layer configurations are not saved when writing the model to disk.&#x20;
 
 In other words, a model with frozen layers when serialized and read back in will not have any frozen layers. To continue training holding specific layers constant the user is expected to go through the transfer learning helper or the transfer learning API. There are two ways to “freeze” layers in a dl4j model.
 
 * On a copy: With the transfer learning API which will return a new model with the relevant frozen layers
 * In place: With the transfer learning helper API which will apply the frozen layers to the given model.
-* FineTune configurations will selectively update learning parameters. 
+* FineTune configurations will selectively update learning parameters.&#x20;
 
 For eg, if a learning rate is specified this learning rate will apply to all unfrozen/trainable layers in the model. However, newly added layers can override this learning rate by specifying their own learning rates in the layer builder.
 
 ## Utilities
-

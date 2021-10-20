@@ -1,9 +1,5 @@
 ---
-title: Using Deeplearning4j with cuDNN
-short_title: cuDNN
 description: Using the NVIDIA cuDNN library with DL4J.
-category: Configuration
-weight: 3
 ---
 
 # Cudnn
@@ -22,7 +18,7 @@ The actual library for cuDNN is not bundled, so be sure to download and install 
 
 Note there are multiple combinations of cuDNN and CUDA supported. Deeplearning4j's cuda support is based on [javacpp's cuda bindings](https://search.maven.org/artifact/org.bytedeco/cuda). The way to read the versioning is: cuda version - cudnn version - javacpp version. For example, if the cuda version is set to 11.2, you can expect us to support cudnn 8.1.
 
-To install, simply extract the library to a directory found in the system path used by native libraries. The easiest way is to place it alongside other libraries from CUDA in the default directory \(`/usr/local/cuda/lib64/` on Linux, `/usr/local/cuda/lib/` on Mac OS X, and `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\bin\`, `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\bin\`, or `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin\` on Windows\).
+To install, simply extract the library to a directory found in the system path used by native libraries. The easiest way is to place it alongside other libraries from CUDA in the default directory (`/usr/local/cuda/lib64/` on Linux, `/usr/local/cuda/lib/` on Mac OS X, and `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\bin\`, `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\bin\`, or `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin\` on Windows).
 
 Alternatively, in the case of the most recent supported cuda version, cuDNN comes bundled with the "redist" package of the [JavaCPP Presets for CUDA](https://github.com/bytedeco/javacpp-presets/tree/master/cuda). [After agreeing to the license](https://github.com/bytedeco/javacpp-presets/tree/master/cuda#license-agreements), we can add the following dependencies instead of installing CUDA and cuDNN:
 
@@ -92,7 +88,7 @@ or for cuda 11.0:
 
 For jetson nano cuda 10.2:
 
-```text
+```
 <dependency>
   <groupId>org.nd4j</groupId>
   <artifactId>nd4j-cuda-10.2</artifactId>
@@ -115,7 +111,7 @@ For users of the -platform dependencies such as nd4j-cuda-11.2-platform, this cl
 
 ## Using cudnn via deeplearning4j
 
-Deeplearning4j supports CUDA but can be further accelerated with cuDNN. Most 2D CNN layers \(such as ConvolutionLayer, SubsamplingLayer, etc\), and also LSTM and BatchNormalization layers support CuDNN.
+Deeplearning4j supports CUDA but can be further accelerated with cuDNN. Most 2D CNN layers (such as ConvolutionLayer, SubsamplingLayer, etc), and also LSTM and BatchNormalization layers support CuDNN.
 
 The only thing we need to do to have DL4J load cuDNN is to add a dependency on `deeplearning4j-cuda-11.0`, or `deeplearning4j-cuda-11.2`, for example:
 
@@ -147,7 +143,7 @@ or
 </dependency>
 ```
 
-Also note that, by default, Deeplearning4j will use the fastest algorithms available according to cuDNN, but memory usage may be excessive, causing strange launch errors. When this happens, try to reduce memory usage by using the [`NO_WORKSPACE` mode settable via the network configuration](/api/%7B%7Bpage.version%7D%7D/org/deeplearning4j/nn/conf/layers/ConvolutionLayer.Builder.html#cudnnAlgoMode-org.deeplearning4j.nn.conf.layers.ConvolutionLayer.AlgoMode-), instead of the default of `ConvolutionLayer.AlgoMode.PREFER_FASTEST`, for example:
+Also note that, by default, Deeplearning4j will use the fastest algorithms available according to cuDNN, but memory usage may be excessive, causing strange launch errors. When this happens, try to reduce memory usage by using the [`NO_WORKSPACE` mode settable via the network configuration](https://app.gitbook.com/api/%7B%7Bpage.version%7D%7D/org/deeplearning4j/nn/conf/layers/ConvolutionLayer.Builder.html#cudnnAlgoMode-org.deeplearning4j.nn.conf.layers.ConvolutionLayer.AlgoMode-), instead of the default of `ConvolutionLayer.AlgoMode.PREFER_FASTEST`, for example:
 
 ```java
     // for the whole network
@@ -159,4 +155,3 @@ Also note that, by default, Deeplearning4j will use the fastest algorithms avail
             .cudnnAlgoMode(ConvolutionLayer.AlgoMode.NO_WORKSPACE)
             // ...
 ```
-
