@@ -47,7 +47,7 @@ Other use cases are available as well, please feel free to check more of our [ex
 
 You should have these installed to use this QuickStart guide. DL4J targets professional Java developers who are familiar with production deployments, IDEs and automated build tools. Working with DL4J will be easiest if you already have experience with these.
 
-If you are new to Java or unfamiliar with these tools, read the details below for help with installation and setup. Otherwise, **skip to** [**DL4J Examples**](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/multi-project/tutorials/README.md#examples).
+If you are new to Java or unfamiliar with these tools, read the details below for help with installation and setup. Otherwise, **skip to** [**DL4J Examples**](quickstart.md#dl4j-examples-in-a-few-easy-steps).
 
 #### [Java](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/multi-project/tutorials/README.md)
 
@@ -108,13 +108,15 @@ xcode-select --install
 
     ```
     git clone https://github.com/eclipse/deeplearning4j-examples.git
-    cd dl4j-examples/
-    mvn clean install
     ```
-2. Open IntelliJ and choose Import Project. Then select the main 'dl4j-examples' directory. (Note: the example in the illustration below refers to an outdated repository named dl4j-0.4-examples. However, the repository that you will download and install will be called dl4j-examples).
+2. Open IntelliJ and choose Import Project. Then select the `dl4j-examples` directory.&#x20;
 3. Choose 'Import project from external model' and ensure that Maven is selected.
 4. Continue through the wizard's options. Select the SDK that begins with `jdk`. (You may need to click on a plus sign to see your options...) Then click Finish. Wait a moment for IntelliJ to download all the dependencies. You'll see the horizontal bar working on the lower right.
 5. Pick an example from the file tree on the left. Right-click the file to run.
+
+{% hint style="info" %}
+The example repository contains multiple example projects that are grouped by different levels of functionality. The `dl4j-examples` project you just opened has the simplest examples, but feel free to explore the other projects too!
+{% endhint %}
 
 ## Using DL4J In Your Own Projects: Configuring the POM.xml File
 
