@@ -52,7 +52,7 @@ Once you've configured your net, you train the model with `model.fit`.
 
 You should have these installed to use this QuickStart guide. DL4J targets professional Java developers who are familiar with production deployments, IDEs and automated build tools. Working with DL4J will be easiest if you already have experience with these.
 
-If you are new to Java or unfamiliar with these tools, read the details below for help with installation and setup. Otherwise, **skip to** [**DL4J Examples**](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/tutorials/quickstart.md#examples).
+If you are new to Java or unfamiliar with these tools, read the details below for help with installation and setup. Otherwise, [**skip to** **DL4J Examples**](quick-start.md#dl4j-examples-in-a-few-easy-steps).
 
 #### [Java](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/tutorials/quickstart.md)
 
