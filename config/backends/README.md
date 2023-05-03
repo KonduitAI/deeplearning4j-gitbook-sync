@@ -74,7 +74,7 @@ Check the NVIDIA guides for instructions on setting up CUDA on the NVIDIA [websi
 ### Nd4jBackend$NoAvailableBackendException
 
 ```markup
- org.nd4j.linalg.factory.Nd4jBackend$NoAvailableBackendException: Please ensure that you have an nd4j backend on your classpath. Please see: https://deeplearning4j.konduit.ai/nd4j/backend
+ org.nd4j.linalg.factory.Nd4jBackend$NoAvailableBackendException: Please ensure that you have an nd4j backend on your classpath. Please see: https://deeplearning4j.konduit.ai/multi-project/explanation/configuration/backends#nd4jbackendusdnoavailablebackendexception
 	at org.nd4j.linalg.factory.Nd4jBackend.load(Nd4jBackend.java:221)
 	at org.nd4j.linalg.factory.Nd4j.initContext(Nd4j.java:5091)
 	... 2 more

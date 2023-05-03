@@ -222,7 +222,7 @@ To use the template:
 
 Deeplearning4j is a framework that lets you pick and choose with everything available from the beginning. We're not Tensorflow \(a low-level numerical computing library with automatic differentiation\) or Pytorch. Deeplearning4j has several subprojects that make it easy-ish to build end-to-end applications.
 
-If you'd like to deploy models to production, you might like our [model import from Keras](https://deeplearning4j.konduit.ai/keras-import/overview).
+If you'd like to deploy models to production, you might like our [model import from Keras](https://deeplearning4j.konduit.ai/deeplearning4j/how-to-guides/keras-import).
 
 Deeplearning4j has several submodules. These range from a visualization UI to distributed training on Spark. For an overview of these modules, please look at the [**Deeplearning4j examples on Github**](https://github.com/eclipse/deeplearning4j-examples).
 
