@@ -60,6 +60,34 @@ Available classifiers for `nd4j-cuda-11.6`:
 
 macOS is not supported by the CUDA backend (NVIDIA does not ship CUDA for macOS).
 
+### `-compile` classifier (1.0.0-rewrite)
+
+The 1.0.0-rewrite release adds a `-compile` variant for the CUDA backend that bundles the Triton MLIR GPU JIT compiler, NVRTC runtime compiler, and PTX string-template backend. This enables DSP kernel fusion — where consecutive element-wise ops are compiled into a single GPU kernel at runtime — on top of CUDA graph capture/replay.
+
+| Classifier | Description |
+|---|---|
+| `linux-x86_64-cuda-12.9-compile` | CUDA 12.9 with Triton + NVRTC + PTX JIT |
+
+**Trade-off:** The base CUDA classifier already supports CUDA graph capture/replay (which eliminates per-kernel launch overhead). The `-compile` variant adds JIT kernel fusion on top, reducing global memory traffic between ops. This is most impactful for transformer/LLM inference at low batch sizes. The cost is a larger binary that includes the Triton/LLVM compiler stack.
+
+```xml
+<!-- CUDA with full Triton JIT -->
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-cuda-12.9</artifactId>
+    <version>${dl4j.version}</version>
+    <classifier>linux-x86_64-cuda-12.9-compile</classifier>
+</dependency>
+```
+
+When using `-platform`, select the `-compile` variant at runtime:
+
+```
+-Djavacpp.platform.extension=-compile
+```
+
+See [Hardware Backends — Classifier Variants](../backends/hardware-backends#2-classifier-variants-base-vs-compile) for the complete trade-off analysis.
+
 ### Using the DL4J BOM
 
 ```xml

@@ -97,6 +97,30 @@ Available native classifiers for `nd4j-native` in M2.1:
 | `macosx-x86_64` | macOS | x86-64 | Intel Mac |
 | `macosx-arm64` | macOS | AArch64 | Apple Silicon (M1/M2/M3) |
 
+### `-compile` classifiers (1.0.0-rewrite)
+
+The 1.0.0-rewrite release adds `-compile` variants for each platform. These bundle the DSP JIT compilation stack (Triton, MLIR) into the native binary, enabling kernel fusion and JIT-compiled execution. The base classifiers above run standard ops and CUDA graph capture/replay but do not include JIT fusion.
+
+| Classifier | OS | Architecture | Includes |
+|---|---|---|---|
+| `linux-x86_64-compile` | Linux | x86-64 | Triton + MLIR + oneDNN |
+| `linux-arm64-compile` | Linux | AArch64 | MLIR |
+| `macosx-arm64-compile` | macOS | AArch64 | MLIR + MLX |
+| `android-arm64-compile` | Android | AArch64 | MLIR |
+| `android-arm64-compile-nnapi` | Android | AArch64 | MLIR + NNAPI |
+
+**Trade-off:** `-compile` classifiers produce a larger binary with more native dependencies (LLVM/Triton), but enable the full DSP JIT pipeline for maximum performance. The base classifiers are smaller and simpler to deploy. See [Hardware Backends — Classifier Variants](./hardware-backends#2-classifier-variants-base-vs-compile) for the complete trade-off guide.
+
+```xml
+<!-- CPU with full DSP JIT on Linux x86-64 -->
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-native</artifactId>
+    <version>${dl4j.version}</version>
+    <classifier>linux-x86_64-compile</classifier>
+</dependency>
+```
+
 When using `-platform`, Maven pulls all of these classifiers. When specifying one manually, pick the classifier that matches your deployment target.
 
 

@@ -51,7 +51,129 @@ DeviceType.VULKAN
 ```
 
 
-## 2. CUDA Backend (with cuDNN Expansion)
+## 2. Classifier Variants: Base vs. `-compile`
+
+Every ND4J backend ships in two classifier variants that control how much of the DSP (Dynamic Shape Plan) compilation stack is bundled into the native binary:
+
+| Variant | Example Classifier | What It Includes |
+|---|---|---|
+| **Base** | `linux-x86_64` | Standard ND4J ops, OpenBLAS/MKL, CUDA kernels (for `nd4j-cuda`), cuBLAS. Graph execution runs slot-by-slot or with CUDA graph capture/replay, but **no JIT kernel fusion**. |
+| **`-compile`** | `linux-x86_64-compile` | Everything in base **plus** the Triton MLIR GPU JIT compiler, NVRTC runtime compiler, PTX string-template backend, and the MLIR CPU JIT backend. Enables full DSP kernel fusion and graph-level JIT compilation. |
+
+### When to Use Each Variant
+
+**Use the base classifier when:**
+- You want the **smallest possible binary size**. The base native library excludes the Triton/LLVM compiler stack, which adds substantial weight to the binary.
+- Your workload does **not** benefit from JIT kernel fusion — for example, classical ML pipelines, small models, or workloads dominated by a few large BLAS operations where cuBLAS/OpenBLAS already achieves peak throughput.
+- You need **simpler deployment** with fewer native dependencies. The base classifier has no dependency on LLVM, Triton, or MLIR libraries.
+- You are deploying to **resource-constrained environments** (edge devices, containers with tight image size budgets).
+
+**Use the `-compile` classifier when:**
+- You are running **transformer models or LLMs** where the DSP graph optimizer and Triton kernel fusion deliver significant speedups (often 2–5x for inference at low batch sizes due to eliminated kernel launch overhead and fused element-wise chains).
+- You want the **full DSP execution mode hierarchy**: `TRITON → NVRTC → PTX → CUDA_GRAPHS → SLOT_BY_SLOT` on CUDA, or `oneDNN Graph → MLIR CPU → SLOT_BY_SLOT` on Intel CPUs.
+- You are using the **DSP Runtime SDK** (`sdx` bindings) and want all backend targets available.
+- **Maximum performance** is more important than binary size.
+
+### Trade-Off Summary
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                        Base Classifier                           │
+│  ✓ Smaller binary        ✓ Simpler deployment                   │
+│  ✓ Fewer dependencies    ✓ Faster startup (no JIT warmup)       │
+│  ✗ No Triton fusion      ✗ No MLIR CPU JIT                     │
+│  ✗ No NVRTC/PTX JIT      ✗ Slot-by-slot or CUDA graphs only    │
+├──────────────────────────────────────────────────────────────────┤
+│                      -compile Classifier                         │
+│  ✓ Triton kernel fusion  ✓ NVRTC + PTX JIT fallbacks           │
+│  ✓ MLIR CPU JIT          ✓ Full DSP optimization (26 passes)   │
+│  ✓ Maximum throughput    ✓ All GraphExecutionMode values        │
+│  ✗ Larger binary         ✗ More native dependencies (LLVM)     │
+│  ✗ Longer first-call     ✗ Higher memory footprint              │
+│    (JIT compilation)                                             │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### Maven Configuration
+
+To use the base classifier (default — no extra configuration needed):
+
+```xml
+<!-- CPU base: standard ops, no JIT -->
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-native</artifactId>
+    <version>${dl4j.version}</version>
+    <classifier>linux-x86_64</classifier>
+</dependency>
+```
+
+To use the `-compile` classifier:
+
+```xml
+<!-- CPU with Triton/MLIR JIT -->
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-native</artifactId>
+    <version>${dl4j.version}</version>
+    <classifier>linux-x86_64-compile</classifier>
+</dependency>
+```
+
+```xml
+<!-- CUDA with Triton JIT -->
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-cuda-12.9</artifactId>
+    <version>${dl4j.version}</version>
+    <classifier>linux-x86_64-cuda-12.9-compile</classifier>
+</dependency>
+```
+
+When using the `-platform` artifact, steer JavaCPP to the `-compile` variant via a system property:
+
+```
+-Djavacpp.platform.extension=-compile
+```
+
+### Available `-compile` Classifiers
+
+| Artifact | Classifier | Platform |
+|---|---|---|
+| `nd4j-native` | `linux-x86_64-compile` | Linux x86-64 with Triton + MLIR + oneDNN |
+| `nd4j-native` | `linux-arm64-compile` | Linux ARM64 with MLIR |
+| `nd4j-native` | `macosx-arm64-compile` | macOS Apple Silicon with MLIR + MLX |
+| `nd4j-native` | `android-arm64-compile` | Android ARM64 with MLIR |
+| `nd4j-native` | `android-arm64-compile-nnapi` | Android ARM64 with MLIR + NNAPI |
+| `nd4j-cuda-12.9` | `linux-x86_64-cuda-12.9-compile` | Linux x86-64 CUDA with Triton + NVRTC + PTX |
+
+### What Happens Without `-compile`
+
+Without the `-compile` classifier, DSP still operates — it compiles the graph into a `DynamicShapePlan`, runs the 26-pass optimizer, freezes shapes, and captures CUDA graphs for replay. The difference is that JIT kernel fusion (Triton, NVRTC, PTX, MLIR) is unavailable:
+
+- `GraphExecutionMode.TRITON` falls back to `CUDA_GRAPHS`
+- `GraphExecutionMode.NVRTC` falls back to `CUDA_GRAPHS`
+- `GraphExecutionMode.PTX` falls back to `CUDA_GRAPHS`
+- `GraphExecutionMode.MLIR_CPU` falls back to `SLOT_BY_SLOT`
+- `GraphExecutionMode.AUTO` selects the best *available* mode — on CUDA this means `CUDA_GRAPHS`, on CPU this means `SLOT_BY_SLOT` (or `oneDNN Graph` if helpers are present)
+
+CUDA graph capture/replay alone still provides substantial speedups over pure slot-by-slot execution by eliminating per-kernel launch overhead. The additional JIT fusion from `-compile` provides further gains by fusing element-wise op chains into single kernels — reducing global memory traffic between ops.
+
+### Choosing the Right Variant: Decision Guide
+
+| Scenario | Recommended Variant |
+|---|---|
+| Training or inference with CNNs / classical models | Base — cuBLAS and cuDNN dominate; JIT adds little |
+| LLM inference at batch size 1–8 | `-compile` — Triton fusion dramatically reduces latency |
+| LLM inference at large batch sizes (32+) | Either — compute-bound; CUDA graphs alone may suffice |
+| Edge deployment (ARM, Android) | Base — minimize binary size |
+| Edge deployment needing NNAPI | `-compile` (with `-nnapi` on Android) |
+| Server-side model serving | `-compile` — maximize throughput per dollar |
+| CI/CD test pipelines | Base — faster dependency resolution, smaller images |
+| Development / prototyping | Base — faster builds, simpler debugging |
+
+
+## 3. CUDA Backend (with cuDNN Expansion)
 
 The existing `nd4j-cuda` backend is unchanged in its public API. The rewrite adds 20 new and updated cuDNN helper files under `deeplearning4j-cuda`, along with structural changes for stream-capture safety.
 
@@ -112,7 +234,7 @@ The rewrite introduces centralized cuDNN handle caching keyed by CUDA stream. Ea
 See [CUDA Backend (nd4j-cuda)](./cuda) for full CUDA setup, multi-GPU configuration, and memory management.
 
 
-## 3. TPU Backend (nd4j-tpu)
+## 4. TPU Backend (nd4j-tpu)
 
 `nd4j-tpu` is a new backend targeting Google Cloud TPU v4 and v5 hardware. It uses Google's **PJRT** (Portable JIT Runtime) API through JNI, so the Java layer never calls XLA or HLO directly.
 
@@ -194,7 +316,7 @@ INDArray z = x.mmul(y);  // dispatched through PJRT as HLO dot_general
 ```
 
 
-## 4. Hexagon DSP Backend (nd4j-hexagon)
+## 5. Hexagon DSP Backend (nd4j-hexagon)
 
 `nd4j-hexagon` targets Qualcomm Hexagon DSPs available on Snapdragon SoCs. It dispatches through the **Qualcomm Neural Network (QNN)** runtime, which in turn can use SNPE (Snapdragon Neural Processing Engine) or the newer QNN SDK.
 
@@ -244,7 +366,7 @@ System.out.println(Nd4j.getBackend().getClass().getName());
 Hexagon DSPs deliver peak performance on INT8 and INT16 fixed-point operations. The QNN backend supports PTQ (post-training quantization) directly in the `HexagonIRBuilder` layer. Inputs are quantized per-tensor; the quantization parameters (scale and zero-point) are derived from calibration data passed before compilation.
 
 
-## 5. ZLUDA (AMD and Intel GPU Support)
+## 6. ZLUDA (AMD and Intel GPU Support)
 
 ZLUDA is a drop-in CUDA compatibility layer that translates CUDA API calls at runtime to AMD HIP/ROCm (for AMD GPUs) or Intel Level Zero (for Intel GPUs). The rewrite integrates ZLUDA support into the `nd4j-cuda` backend so that AMD and Intel GPUs become supported targets without requiring a separate backend JAR.
 
@@ -284,7 +406,7 @@ From the Java side there is no configuration change; just add the CUDA backend d
 ZLUDA translation is not zero-overhead. Workloads that are heavily bottlenecked on cuBLAS or cuDNN will see near-native performance because ROCm and oneDNN are mature. Workloads that use custom CUDA kernels (some advanced sampler or attention kernels) may fall back to a slower translated path.
 
 
-## 6. Snapdragon X (SDX) Cross-Device Dispatch
+## 7. Snapdragon X (SDX) Cross-Device Dispatch
 
 The Snapdragon X backend (`nd4j-sdx`) is a cross-device dispatch backend for Snapdragon X Elite and Snapdragon X Plus platforms. Rather than implementing a new execution engine, SDX routes ops to the most appropriate available device on the SoC: the ARM CPU, the Hexagon DSP, or the Adreno GPU, based on op type and tensor size heuristics.
 
@@ -299,7 +421,7 @@ Build support is provided by `BuildSDX.cmake`. No separate Java configuration is
 ```
 
 
-## 7. ARM Compute Library (ACL) Backend
+## 8. ARM Compute Library (ACL) Backend
 
 ARM Compute Library is a highly optimized collection of functions for ARM CPUs (Cortex-A) and Mali GPUs. The rewrite adds approximately 124 new op implementations under the ACL platform backend. These are registered through the `DECLARE_PLATFORM` / `PLATFORM_IMPL` / `PLATFORM_CHECK` macro system and dispatch on `ENGINE_CPU` when running on ARM hardware.
 
@@ -385,7 +507,7 @@ ACL support is included in the ARM64 variant of `nd4j-native`. On AArch64 Linux 
 ```
 
 
-## 8. Apple Accelerate Backend
+## 9. Apple Accelerate Backend
 
 The Apple Accelerate framework provides hardware-optimized math routines on macOS and iOS. The rewrite adds 28 new op implementations using Accelerate APIs. These are active on the `macosx-arm64` and `macosx-x86_64` classifiers of `nd4j-native`.
 
@@ -441,7 +563,7 @@ Pooling operations (max pool, avg pool), comparison ops, cumulative sum (`cumsum
 Accelerate support is included in the macOS classifier variants automatically. No additional dependency is required beyond `nd4j-native-platform` or the `macosx-arm64` / `macosx-x86_64` classifier.
 
 
-## 9. llama.cpp / GGML Backend
+## 10. llama.cpp / GGML Backend
 
 The rewrite introduces a 60-file native backend for executing GGML (the tensor library underlying llama.cpp) models directly from ND4J. This backend enables loading and running quantized LLM weights (GGUF format) on CPU, Metal, and CUDA without converting them to ND4J's native format first.
 
@@ -456,7 +578,7 @@ The GGML backend sits alongside the standard `nd4j-native` execution path. When 
 ```
 
 
-## 10. MLIR JIT, Apple MPS, MIOpen, and oneDNN
+## 11. MLIR JIT, Apple MPS, MIOpen, and oneDNN
 
 ### MLIR JIT
 
@@ -491,7 +613,7 @@ oneDNN provides optimized operator implementations for Intel CPUs and Intel GPUs
 OpenVINO integration allows `nd4j-native` on Intel hardware to dispatch inference graphs through the OpenVINO runtime. This is activated when `libopenvino.so` is detected on `LD_LIBRARY_PATH` and the model has been exported in a compatible format.
 
 
-## 11. Multi-Backend Infrastructure
+## 12. Multi-Backend Infrastructure
 
 PR #10447 introduces a shared infrastructure layer used by all backends. These classes are in `nd4j-api` and are implemented by each backend.
 
@@ -632,7 +754,7 @@ INDArray x = Nd4j.create(DataType.FLOAT, 1024, 1024);
 ```
 
 
-## 12. Device Auto-Detection
+## 13. Device Auto-Detection
 
 When the backend is not forced via `backend.type`, ND4J probes available hardware in order of priority:
 
@@ -653,7 +775,7 @@ System.out.println(desc.getDeviceIndex());  // e.g. 0
 ```
 
 
-## 13. GraphExecutionMode Reference
+## 14. GraphExecutionMode Reference
 
 SameDiff graph execution supports 17 execution modes. Modes are set per-graph and control the tradeoff between compilation overhead, runtime speed, device placement, and fallback behavior. This is documented in full in the [SameDiff Execution Modes](../../samediff/execution-modes) page; a condensed reference follows.
 
@@ -686,7 +808,7 @@ sd.setExecutionMode(GraphExecutionMode.FALLBACK_CHAIN);
 ```
 
 
-## 14. Configuration Reference
+## 15. Configuration Reference
 
 ### System Properties
 

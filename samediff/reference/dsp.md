@@ -7,6 +7,8 @@ description: Complete guide to the Dynamic Shape Plan execution engine — compi
 
 The Dynamic Shape Plan (DSP) engine is the compiled graph execution runtime introduced in DL4J 1.0.0-rewrite. It replaces the previous interpreter-style graph execution with a compile-once, replay-many architecture that delivers substantially lower inference latency — especially on NVIDIA GPUs, where it eliminates kernel launch overhead entirely via CUDA graph capture and replay.
 
+> **Classifier requirement:** DSP's core features — graph compilation, shape freezing, CUDA graph capture/replay, and the 26-pass optimizer — work with the **base** backend classifier. However, the JIT compilation features described on this page (Triton kernel fusion, NVRTC, PTX, and MLIR CPU JIT) require the **`-compile` classifier variant** (e.g., `linux-x86_64-compile` for CPU, `linux-x86_64-cuda-12.9-compile` for CUDA). Without `-compile`, `GraphExecutionMode.TRITON`, `NVRTC`, `PTX`, and `MLIR_CPU` automatically fall back to `CUDA_GRAPHS` or `SLOT_BY_SLOT`. See [Hardware Backends — Classifier Variants](../backends/hardware-backends#2-classifier-variants-base-vs-compile) for the full trade-off analysis.
+
 ## Overview
 
 Before DSP, executing a SameDiff graph meant traversing the graph node by node on every call, dispatching each operation through the op registry, and paying full kernel launch overhead for every operation. For large transformer models with hundreds of operations per forward pass, this launch tax dominates latency at batch size 1.
@@ -194,6 +196,8 @@ The remaining passes include:
 ## GPU JIT Compilation
 
 When the execution mode includes JIT (Triton, NVRTC, or PTX), DSP groups consecutive element-compatible ops into fused kernel segments and compiles them into a single GPU kernel. Fusion eliminates redundant reads and writes of intermediate tensors.
+
+> **Note:** All JIT features in this section require the `-compile` classifier. With the base classifier, DSP still runs the graph optimizer and captures CUDA graphs, but JIT kernel fusion is unavailable. Use `-Djavacpp.platform.extension=-compile` with `-platform` artifacts or add the `-compile` classifier explicitly.
 
 ### Kernel Segment Types
 

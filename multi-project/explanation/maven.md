@@ -253,6 +253,44 @@ When using classifiers for CUDA backends, you also need the CUDA-specific classi
 
 **Note:** Snapshot builds can have transient issues with `-platform` artifacts when cross-platform builds are not yet synchronized. In that case, using single-platform classifiers is more reliable. See the [Snapshots](./snapshots) page for more details.
 
+## DSP JIT Classifier (`-compile`)
+
+The 1.0.0-rewrite release introduces a `-compile` classifier variant for each platform. This variant bundles the DSP (Dynamic Shape Plan) JIT compilation stack — Triton, NVRTC, PTX, and MLIR — into the native binary. The base classifier (without `-compile`) includes standard ops and CUDA graph capture/replay but does not include JIT kernel fusion.
+
+**When to use `-compile`:** Use it when running transformer models or LLMs where kernel fusion and JIT compilation deliver significant latency improvements. The trade-off is a larger binary with more native dependencies.
+
+**When to use the base classifier:** Use it for simpler workloads, resource-constrained deployments, or when binary size matters more than maximum JIT performance.
+
+### Maven Setup for `-compile`
+
+Explicit classifier:
+
+```xml
+<!-- CPU with DSP JIT (Triton + MLIR) -->
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-native</artifactId>
+    <version>${dl4j.version}</version>
+    <classifier>linux-x86_64-compile</classifier>
+</dependency>
+
+<!-- CUDA with DSP JIT (Triton + NVRTC + PTX) -->
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-cuda-12.9</artifactId>
+    <version>${dl4j.version}</version>
+    <classifier>linux-x86_64-cuda-12.9-compile</classifier>
+</dependency>
+```
+
+With `-platform` artifact (select at runtime):
+
+```
+-Djavacpp.platform.extension=-compile
+```
+
+See [Hardware Backends — Classifier Variants](../nd4j/backends/hardware-backends#2-classifier-variants-base-vs-compile) for available classifiers and a decision guide.
+
 ## Additional Modules
 
 Beyond the core, DL4J has several optional modules:
