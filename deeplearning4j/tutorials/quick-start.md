@@ -1,211 +1,516 @@
 ---
-description: Quickstart for Java using Maven
+title: "Deeplearning4j Quickstart"
+description: "End-to-end quickstart guide — from Maven setup to training an MNIST classifier in Deeplearning4j"
 ---
 
-# Quick Start
+# Deeplearning4j Quickstart
 
-## Get started
+This guide takes you from zero to a trained MNIST digit classifier in a single self-contained Java project. By the end you will have:
 
-This is everything you need to run DL4J examples and begin your own projects.
+- A working Maven project with the correct M2.1 dependencies
+- A complete `MultiLayerNetwork` that classifies MNIST handwritten digits
+- A training loop with evaluation and score logging
+- A saved model you can reload later
 
-We recommend that you join our [community forum](https://community.konduit.ai/). There you can request help and give feedback, but please do use this guide before asking questions we've answered below. If you are new to deep learning, we've included [a road map for beginners](../../multi-project/tutorials/beginners.md) with links to courses, readings and other resources.
+No prior DL4J experience is assumed. You do need Java 11+ and Apache Maven installed.
 
-{% hint style="info" %}
-We are currently reworking the Getting Started Guide.
-
-If you find that you have trouble following along here, take a look at the Konduit blog, as it features [some getting started guides from the community](https://blog.konduit.ai/tag/getting-started/).
-{% endhint %}
-
-### A Taste of Code
-
-Deeplearning4j is a domain-specific language to configure deep neural networks, which are made of multiple layers. Everything starts with a `MultiLayerConfiguration`, which organizes those layers and their hyperparameters.
-
-Hyperparameters are variables that determine how a neural network learns. They include how many times to update the weights of the model, how to initialize those weights, which activation function to attach to the nodes, which optimization algorithm to use, and how fast the model should learn. This is what one configuration would look like:
-
-```java
-    MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-        .weightInit(WeightInit.XAVIER)
-        .activation(Activation.RELU)
-        .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-        .updater(new Sgd(0.05))
-        // ... other hyperparameters
-        .list()
-        .backprop(true)
-        .build();
-```
-
-With Deeplearning4j, you add a layer by calling `layer` on the `NeuralNetConfiguration.Builder()`, specifying its place in the order of layers (the zero-indexed layer below is the input layer), the number of input and output nodes, `nIn` and `nOut`, as well as the type: `DenseLayer`.
-
-```java
-        .layer(0, new DenseLayer.Builder().nIn(784).nOut(250)
-                .build())
-```
-
-Once you've configured your net, you train the model with `model.fit`.
+---
 
 ## Prerequisites
 
-* [Java (developer version)](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/tutorials/quickstart.md#java) 1.7 or later (**Only 64-Bit versions supported**)
-* [Apache Maven](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/tutorials/quickstart.md#apache-maven) (automated build and dependency manager)
-* [IntelliJ IDEA](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/tutorials/quickstart.md#intellij-idea) or Eclipse
-* [Git](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/tutorials/quickstart.md#git)
+**Java 11 or later (64-bit)**
 
-You should have these installed to use this QuickStart guide. DL4J targets professional Java developers who are familiar with production deployments, IDEs and automated build tools. Working with DL4J will be easiest if you already have experience with these.
-
-If you are new to Java or unfamiliar with these tools, read the details below for help with installation and setup. Otherwise, [**skip to** **DL4J Examples**](quick-start.md#dl4j-examples-in-a-few-easy-steps).
-
-#### [Java](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/tutorials/quickstart.md)
-
-If you don't have Java 1.7 or later, download the current [Java Development Kit (JDK) here](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html). To check if you have a compatible version of Java installed, use the following command:
-
-```
+```shell
 java -version
 ```
 
-Please make sure you have a 64-Bit version of java installed, as you will see an error telling you `no jnind4j in java.library.path` if you decide to try to use a 32-Bit version instead. Make sure the JAVA\_HOME environment variable is set.
+You need a 64-bit JVM. If you see `no jnind4j in java.library.path` at runtime you are almost certainly running a 32-bit JVM.
 
-#### [Apache Maven](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/tutorials/quickstart.md)
+**Apache Maven 3.6+**
 
-Maven is a dependency management and automated build tool for Java projects. It works well with IDEs such as IntelliJ and lets you install DL4J project libraries easily. [Install or update Maven](https://maven.apache.org/download.cgi) to the latest release following [their instructions](https://maven.apache.org/install.html) for your system. To check if you have the most recent version of Maven installed, enter the following:
-
-```
+```shell
 mvn --version
 ```
 
-If you are working on a Mac, you can simply enter the following into the command line:
+If you are on macOS with Homebrew:
 
-```
+```shell
 brew install maven
 ```
 
-Maven is widely used among Java developers and it's pretty much mandatory for working with DL4J. If you come from a different background, and Maven is new to you, check out [Apache's Maven overview](http://maven.apache.org/what-is-maven.html) and our [introduction to Maven for non-Java programmers](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/config/maven.md), which includes some additional troubleshooting tips. [Other build tools](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/tutorials/deeplearning4j/deeplearning4j-config-buildtools) such as Ivy and Gradle can also work, but we support Maven best.
+**An IDE (recommended)**
 
-* [Paul Dubs' guide to maven](http://www.dubs.tech/guides/maven-essentials/)
-* [Maven In Five Minutes](http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html)
+IntelliJ IDEA Community Edition works best because it has first-class Maven support. Eclipse and VS Code work too.
 
-#### [IntelliJ IDEA](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/tutorials/quickstart.md)
+---
 
-An Integrated Development Environment ([IDE](http://encyclopedia.thefreedictionary.com/integrated+development+environment)) allows you to work with our API and configure neural networks in a few steps. We strongly recommend using [IntelliJ](https://www.jetbrains.com/idea/download/), which communicates with Maven to handle dependencies. The [community edition of IntelliJ](https://www.jetbrains.com/idea/download/) is free.
+## Step 1 — Create a Maven Project
 
-There are other popular IDEs such as [Eclipse](http://books.sonatype.com/m2eclipse-book/reference/creating-sect-importing-projects.html) and [Netbeans](http://wiki.netbeans.org/MavenBestPractices). However, IntelliJ is preferred, and using it will make finding help on the [community forums](https://community.konduit.ai/) easier if you need it.
+Create a new Maven project, then replace the generated `pom.xml` with the one below (or add the relevant sections to your existing one).
 
-#### [Git](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/tutorials/quickstart.md)
+### pom.xml
 
-Install the [latest version of Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git). If you already have Git, you can update to the latest version using Git itself:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>dl4j-mnist-quickstart</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <java.version>11</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <dl4j.version>1.0.0-M2.1</dl4j.version>
+    </properties>
+
+    <dependencies>
+        <!-- Core DL4J library -->
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-core</artifactId>
+            <version>${dl4j.version}</version>
+        </dependency>
+
+        <!-- MNIST dataset loader (ships with DL4J) -->
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-datasets</artifactId>
+            <version>${dl4j.version}</version>
+        </dependency>
+
+        <!-- UI and training visualization (optional but useful) -->
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-ui</artifactId>
+            <version>${dl4j.version}</version>
+        </dependency>
+
+        <!-- CPU backend — works on any platform without a GPU -->
+        <dependency>
+            <groupId>org.nd4j</groupId>
+            <artifactId>nd4j-native-platform</artifactId>
+            <version>${dl4j.version}</version>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.11</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Shade plugin makes a fat JAR for easy execution -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.4.1</version>
+                <configuration>
+                    <shadedArtifactAttached>false</shadedArtifactAttached>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals><goal>shade</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
+
+### Dependency notes
+
+| Artifact | Purpose |
+|----------|---------|
+| `deeplearning4j-core` | `MultiLayerNetwork`, `ComputationGraph`, all layer types |
+| `deeplearning4j-datasets` | Built-in dataset downloaders including MNIST |
+| `deeplearning4j-ui` | Web-based training visualization UI (port 9000) |
+| `nd4j-native-platform` | CPU math backend with pre-built natives for Linux, macOS, Windows |
+| `logback-classic` | Logging backend required by DL4J's SLF4J calls |
+
+**GPU alternative:** Replace `nd4j-native-platform` with `nd4j-cuda-11.8-platform` (or your CUDA version) and add `deeplearning4j-cuda-11.8`. The rest of the code stays identical.
+
+Install dependencies:
+
+```shell
+mvn dependency:resolve
+```
+
+---
+
+## Step 2 — Write the MNIST Classifier
+
+Create the file `src/main/java/com/example/MnistClassifier.java` with the content below.
+
+```java
+package com.example;
+
+import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator;
+import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
+import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
+import org.deeplearning4j.nn.conf.layers.DenseLayer;
+import org.deeplearning4j.nn.conf.layers.OutputLayer;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.deeplearning4j.nn.weights.WeightInit;
+import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
+import org.deeplearning4j.util.ModelSerializer;
+import org.nd4j.evaluation.classification.Evaluation;
+import org.nd4j.linalg.activations.Activation;
+import org.nd4j.linalg.api.buffer.DataType;
+import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
+import org.nd4j.linalg.learning.config.Adam;
+import org.nd4j.linalg.lossfunctions.LossFunctions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+
+public class MnistClassifier {
+
+    private static final Logger log = LoggerFactory.getLogger(MnistClassifier.class);
+
+    // -------------------------------------------------------------------
+    // Hyperparameters
+    // -------------------------------------------------------------------
+    private static final int SEED          = 123;
+    private static final int BATCH_SIZE    = 64;
+    private static final int NUM_EPOCHS    = 5;
+    private static final int NUM_INPUTS    = 784;   // 28 x 28 pixels flattened
+    private static final int NUM_HIDDEN_1  = 512;
+    private static final int NUM_HIDDEN_2  = 256;
+    private static final int NUM_OUTPUTS   = 10;    // digits 0-9
+    private static final double LEARNING_RATE = 1e-3;
+    private static final double L2_LAMBDA     = 1e-4;
+
+    public static void main(String[] args) throws Exception {
+
+        // ---------------------------------------------------------------
+        // 1. Load MNIST
+        //    MnistDataSetIterator downloads the dataset on first run
+        //    (~12 MB) and caches it in ~/.deeplearning4j/
+        // ---------------------------------------------------------------
+        log.info("Loading MNIST dataset...");
+        DataSetIterator trainIter = new MnistDataSetIterator(BATCH_SIZE, true,  SEED);
+        DataSetIterator testIter  = new MnistDataSetIterator(BATCH_SIZE, false, SEED);
+
+        // ---------------------------------------------------------------
+        // 2. Configure the network
+        // ---------------------------------------------------------------
+        log.info("Building network configuration...");
+        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
+            .seed(SEED)
+            // M2.1: use DataType.FLOAT, not the old setDataType() approach
+            .dataType(DataType.FLOAT)
+            // M2.1: pass an IUpdater instance — new Adam(lr), not the
+            // deprecated .updater(Updater.ADAM).learningRate() chain
+            .updater(new Adam(LEARNING_RATE))
+            // L2 regularization applied globally to all layers
+            .l2(L2_LAMBDA)
+            // Global weight initializer (can be overridden per layer)
+            .weightInit(WeightInit.XAVIER)
+            .list()
+            // Hidden layer 1: 784 → 512
+            .layer(new DenseLayer.Builder()
+                .nIn(NUM_INPUTS)
+                .nOut(NUM_HIDDEN_1)
+                .activation(Activation.RELU)
+                .build())
+            // Hidden layer 2: 512 → 256
+            .layer(new DenseLayer.Builder()
+                .nIn(NUM_HIDDEN_1)
+                .nOut(NUM_HIDDEN_2)
+                .activation(Activation.RELU)
+                .build())
+            // Output layer: 256 → 10 with softmax + cross-entropy
+            // M2.1: no .pretrain(false).backprop(true) needed — these are
+            // no-ops / removed in M2.1
+            .layer(new OutputLayer.Builder(
+                        LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                .nIn(NUM_HIDDEN_2)
+                .nOut(NUM_OUTPUTS)
+                .activation(Activation.SOFTMAX)
+                .build())
+            .build();
+
+        // ---------------------------------------------------------------
+        // 3. Initialize the model
+        // ---------------------------------------------------------------
+        MultiLayerNetwork model = new MultiLayerNetwork(conf);
+        model.init();
+
+        // Print the number of trainable parameters
+        log.info("Number of parameters: {}", model.numParams());
+
+        // ScoreIterationListener prints the loss every N mini-batches
+        model.setListeners(new ScoreIterationListener(100));
+
+        // ---------------------------------------------------------------
+        // 4. Train
+        // ---------------------------------------------------------------
+        log.info("Starting training for {} epochs...", NUM_EPOCHS);
+        for (int epoch = 1; epoch <= NUM_EPOCHS; epoch++) {
+            model.fit(trainIter);
+            trainIter.reset();
+
+            // Evaluate on the test set at the end of each epoch
+            Evaluation eval = model.evaluate(testIter);
+            testIter.reset();
+
+            log.info("--- Epoch {} ---", epoch);
+            log.info("Accuracy:  {}", eval.accuracy());
+            log.info("Precision: {}", eval.precision());
+            log.info("Recall:    {}", eval.recall());
+            log.info("F1 Score:  {}", eval.f1());
+        }
+
+        // ---------------------------------------------------------------
+        // 5. Full evaluation on the test set
+        // ---------------------------------------------------------------
+        log.info("\nFinal evaluation on test set:");
+        Evaluation finalEval = model.evaluate(testIter);
+        log.info(finalEval.stats());
+
+        // ---------------------------------------------------------------
+        // 6. Save the model
+        // ---------------------------------------------------------------
+        File modelFile = new File("mnist-model.zip");
+        ModelSerializer.writeModel(model, modelFile, true);
+        log.info("Model saved to {}", modelFile.getAbsolutePath());
+    }
+}
+```
+
+---
+
+## Step 3 — Build and Run
+
+```shell
+mvn clean package -q
+java -cp target/dl4j-mnist-quickstart-1.0-SNAPSHOT.jar com.example.MnistClassifier
+```
+
+On first run, DL4J downloads the MNIST binary files (~12 MB) and caches them. Subsequent runs use the cache.
+
+Expected training output (times vary by machine):
 
 ```
-$ git clone git://git.kernel.org/pub/scm/git/git.git
+[main] INFO MnistClassifier - Loading MNIST dataset...
+[main] INFO MnistClassifier - Building network configuration...
+[main] INFO MnistClassifier - Number of parameters: 535,818
+[main] INFO ScoreIterationListener - Score at iteration 100 is 0.3241
+[main] INFO ScoreIterationListener - Score at iteration 200 is 0.1987
+...
+[main] INFO MnistClassifier - --- Epoch 1 ---
+[main] INFO MnistClassifier - Accuracy:  0.9712
+...
+[main] INFO MnistClassifier - --- Epoch 5 ---
+[main] INFO MnistClassifier - Accuracy:  0.9831
 ```
 
-The latest version of Mac's Mojave OS breaks git, producing the following error message:
+A well-configured MLP on MNIST reaches 97-98% accuracy within five epochs on the CPU. If you are seeing much lower accuracy, check the troubleshooting section below.
 
-`xcrun: error: invalid active developer path (/Library/Developer/CommandLineTools), missing xcrun at: /Library/Developer/CommandLineTools/usr/bin/xcrun`
+---
 
-This can be fixed by running:
+## Understanding the Configuration
+
+### M2.1 API Differences from Older Versions
+
+If you are migrating from DL4J 1.0.0-beta4 or earlier, the key API changes are:
+
+**Updaters:** The enum-based updater API is removed. Use updater class instances:
+
+```java
+// M2.1 (correct)
+.updater(new Adam(1e-3))
+.updater(new Sgd(0.01))
+.updater(new RmsProp(1e-3))
+.updater(new AdaGrad(0.1))
+.updater(new Nesterovs(0.01, 0.9))
+
+// Old API (do not use)
+// .updater(Updater.ADAM).learningRate(1e-3)
+// .updater(Updater.SGD).learningRate(0.01)
+```
+
+**DataType:** Set it explicitly on the builder:
+
+```java
+// M2.1 (correct)
+.dataType(DataType.FLOAT)
+
+// M2.1 also supports DOUBLE, HALF, BFLOAT16:
+.dataType(DataType.DOUBLE)
+```
+
+**pretrain / backprop flags:** These were removed. Standard supervised training always uses backpropagation. Remove any `.pretrain(false).backprop(true)` calls — they will cause a compilation error or warning.
+
+**Layer index:** In M2.1 you can omit the integer index when adding layers with `.layer(LayerBuilder)` and they are added in order. The old ``.layer(0, new DenseLayer...)`` style still compiles but the index is redundant for `MultiLayerNetwork`.
+
+### Network Architecture Explained
+
+The example uses a simple **multilayer perceptron (MLP)**:
 
 ```
-xcode-select --install
+Input (784)  →  Dense-ReLU (512)  →  Dense-ReLU (256)  →  Softmax Output (10)
 ```
 
-## [DL4J Examples in a Few Easy Steps](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/tutorials/quickstart.md)
+- **Input:** MNIST images are 28x28 = 784 pixels, flattened to a 1D vector
+- **Hidden layers:** `DenseLayer` with ReLU activation learns non-linear representations
+- **Output:** `OutputLayer` with softmax produces a probability distribution over 10 classes; negative log-likelihood (cross-entropy) is the loss function
+- **Xavier initialization:** Keeps activation variance stable at initialization, important for deep networks
+- **Adam optimizer:** Adaptive learning rate per parameter; usually converges faster than plain SGD
+- **L2 regularization:** Penalizes large weights to reduce overfitting
 
-1.  Use the command line to enter the following:
+---
 
-    ```
-    git clone https://github.com/eclipse/deeplearning4j-examples.git
-    cd dl4j-examples/
-    mvn clean install
-    ```
-2. Open IntelliJ and choose Import Project. Then select the main 'dl4j-examples' directory. (Note: the example in the illustration below refers to an outdated repository named dl4j-0.4-examples. However, the repository that you will download and install will be called dl4j-examples).!\[select directory]\(../../.gitbook/assets/install\_intj\_1%20(2).png)
-3.  Choose 'Import project from external model' and ensure that Maven is selected.
+## Step 4 — Load and Use the Saved Model
 
-    !\[select directory]\(../../.gitbook/assets/install\_intj\_2%20(2).png)
-4. Continue through the wizard's options. Select the SDK that begins with `jdk`. (You may need to click on a plus sign to see your options...) Then click Finish. Wait a moment for IntelliJ to download all the dependencies. You'll see the horizontal bar working on the lower right.
-5.  Pick an example from the file tree on the left. Right-click the file to run.
+```java
+import org.deeplearning4j.util.ModelSerializer;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
 
-    !\[run IntelliJ example]\(../../.gitbook/assets/install\_intj\_3%20(3).png)
+// Reload a previously saved model
+MultiLayerNetwork loaded = ModelSerializer.restoreMultiLayerNetwork(
+    new File("mnist-model.zip"));
 
-## Using DL4J In Your Own Projects: Configuring the POM.xml File
+// Create a fake 28x28 image (all zeros) as a row vector [1, 784]
+INDArray input = Nd4j.zeros(DataType.FLOAT, 1, 784);
 
-To run DL4J in your own projects, we highly recommend using Maven for Java users, or a tool such as SBT for Scala. The basic set of dependencies and their versions are shown below. This includes:
+// Run forward pass — output shape is [1, 10]
+INDArray output = loaded.output(input);
 
-* `deeplearning4j-core`, which contains the neural network implementations
-* `nd4j-native-platform`, the CPU version of the ND4J library that powers DL4J
-* `datavec-api` - Datavec is our library vectorizing and loading data
+// argmax gives the predicted class
+int predictedClass = output.argMax(1).getInt(0);
+System.out.println("Predicted digit: " + predictedClass);
+```
 
-Every Maven project has a POM file. Here is [how the POM file should appear](https://github.com/eclipse/deeplearning4j-examples/blob/master/mvn-project-template/pom.xml) when you run your examples.
+`ModelSerializer` stores both the network configuration and the trained weights in a single `.zip` file. The normalizer (if you used one) can also be saved alongside:
 
-Within IntelliJ, you will need to choose the first Deeplearning4j example you're going to run. We suggest `MLPClassifierLinear`, as you will almost immediately see the network classify two groups of data in our UI. The file on [Github can be found here](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/quickstart/modeling/feedforward/classification/LinearDataClassifier.java).
+```java
+// Save with normalizer
+ModelSerializer.writeModel(model, modelFile, true, normalizer);
 
-To run the example, right click on it and select the green button in the drop-down menu. You will see, in IntelliJ's bottom window, a series of scores. The rightmost number is the error score for the network's classifications. If your network is learning, then that number will decrease over time with each batch it processes. At the end, this window will tell you how accurate your neural-network model has become:
+// Restore with normalizer
+NormalizerStandardize restoredNorm = ModelSerializer.restoreNormalizerFromFile(modelFile);
+```
 
-!\[]\(../../.gitbook/assets/mlp\_classifier\_results%20(4).png)
+---
 
-In another window, a graph will appear, showing you how the multilayer perceptron (MLP) has classified the data in the example. It will look like this:
+## Adding a Convolutional Network (Optional)
 
-Congratulations! You just trained your first neural network with Deeplearning4j.
+For images, a convolutional network significantly outperforms an MLP. Here is the configuration change — everything else (training loop, saving) stays the same:
+
+```java
+import org.deeplearning4j.nn.conf.inputs.InputType;
+import org.deeplearning4j.nn.conf.layers.ConvolutionLayer;
+import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
+import org.deeplearning4j.nn.conf.layers.SubsamplingLayer.PoolingType;
+
+MultiLayerConfiguration cnnConf = new NeuralNetConfiguration.Builder()
+    .seed(SEED)
+    .dataType(DataType.FLOAT)
+    .updater(new Adam(LEARNING_RATE))
+    .l2(L2_LAMBDA)
+    .weightInit(WeightInit.XAVIER)
+    .list()
+    // Conv block 1
+    .layer(new ConvolutionLayer.Builder(5, 5)
+        .nIn(1)          // 1 channel (grayscale)
+        .nOut(32)
+        .stride(1, 1)
+        .activation(Activation.RELU)
+        .build())
+    .layer(new SubsamplingLayer.Builder(PoolingType.MAX)
+        .kernelSize(2, 2)
+        .stride(2, 2)
+        .build())
+    // Conv block 2
+    .layer(new ConvolutionLayer.Builder(5, 5)
+        .nOut(64)
+        .stride(1, 1)
+        .activation(Activation.RELU)
+        .build())
+    .layer(new SubsamplingLayer.Builder(PoolingType.MAX)
+        .kernelSize(2, 2)
+        .stride(2, 2)
+        .build())
+    // Dense + output
+    .layer(new DenseLayer.Builder()
+        .nOut(512)
+        .activation(Activation.RELU)
+        .build())
+    .layer(new OutputLayer.Builder(
+                LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+        .nOut(NUM_OUTPUTS)
+        .activation(Activation.SOFTMAX)
+        .build())
+    // Tell DL4J the input shape so it can auto-infer nIn for conv layers
+    .setInputType(InputType.convolutionalFlat(28, 28, 1))
+    .build();
+```
+
+This CNN typically reaches 99%+ accuracy on MNIST within five epochs.
+
+---
+
+## Troubleshooting
+
+**`NoAvailableBackendException` at startup**
+
+The ND4J backend JAR is missing from the classpath. Confirm `nd4j-native-platform` is in your `pom.xml` and that `mvn dependency:resolve` completed without errors. If you are running from an IDE, reimport the Maven project.
+
+**`no jnind4j in java.library.path`**
+
+You are running a 32-bit JVM. Install a 64-bit JDK. Check with `java -d64 -version`.
+
+**Very low accuracy (below 80% after epoch 1)**
+
+Common causes:
+- Data not normalized — MNIST loaded via `MnistDataSetIterator` is normalized to [0, 1] automatically, but if you load your own images you need a `DataNormalization` preprocessor
+- Learning rate too high or too low — try values between `1e-4` and `1e-2`
+- Batch size too small — try 32 to 256
+
+**`OutOfMemoryError` (heap)**
+
+Increase JVM heap: `java -Xmx4g -cp ...`
+
+DL4J allocates tensor data off-heap (in native memory). If you see off-heap OOM errors, set `Nd4j.getMemoryManager().setAutoGcWindow(5000)` to trigger GC more frequently, or tune the off-heap limit with `-Dorg.bytedeco.javacpp.maxbytes=2G`.
+
+**Windows: `UnsatisfiedLinkError`**
+
+Conflicting native DLLs on `PATH`. Add `-Djava.library.path=""` to VM options in your IDE run configuration.
+
+---
 
 ## Next Steps
 
-1. Join our community forums on [community.konduit.ai](https://community.konduit.ai/).
-2. Read the [introduction to deep neural networks](https://skymind.ai/wiki/neural-network).
-3. Check out the more detailed [Comprehensive Setup Guide](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/tutorials/deeplearning4j/deeplearning4j-quickstart).
-
-{% hint style="info" %}
-**Python folks**: If you plan to run benchmarks on Deeplearning4j comparing it to well-known Python framework \[x], please read [these instructions](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/tutorials/benchmark.md) on how to optimize heap space, garbage collection and ETL on the JVM. By following them, you will see at least a _10x speedup in training time_.
-{% endhint %}
-
-### Additional links
-
-* [Deeplearning4j artifacts on Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cdeeplearning4j)
-* [ND4J artifacts on Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cnd4j)
-* [Datavec artifacts on Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cdatavec)
-* [Scala code for UCI notebook](https://github.com/SkymindIO/SKIL\_Examples/blob/master/skil\_example\_notebooks/scala/uci\_quickstart\_notebook.scala)
-
-### Troubleshooting
-
-**Q:** I'm using a 64-Bit Java on Windows and still get the `no jnind4j in java.library.path` error
-
-**A:** You may have incompatible DLLs on your PATH. To tell DL4J to ignore those, you have to add the following as a VM parameter (Run -> Edit Configurations -> VM Options in IntelliJ):
-
-```
--Djava.library.path=""
-```
-
-**Q:** **SPARK ISSUES** I am running the examples and having issues with the Spark based examples such as distributed training or datavec transform options.
-
-**A:** You may be missing some dependencies that Spark requires. See this [Stack Overflow discussion](https://stackoverflow.com/a/38735202/3892515) for a discussion of potential dependency issues. Windows users may need the winutils.exe from Hadoop.
-
-Download winutils.exe from [https://github.com/steveloughran/winutils](https://github.com/steveloughran/winutils) and put it into the null/bin/winutils.exe (or create a hadoop folder and add that to HADOOP\_HOME)
-
-### Troubleshooting: Debugging UnsatisfiedLinkError on Windows
-
-Windows users might be seeing something like:
-
-```
-Exception in thread "main" java.lang.ExceptionInInitializerError
-at org.deeplearning4j.nn.conf.NeuralNetConfiguration$Builder.seed(NeuralNetConfiguration.java:624)
-at org.deeplearning4j.examples.feedforward.anomalydetection.MNISTAnomalyExample.main(MNISTAnomalyExample.java:46)
-Caused by: java.lang.RuntimeException: org.nd4j.linalg.factory.Nd4jBackend$NoAvailableBackendException: Please ensure that you have an nd4j backend on your classpath. Please see: http://nd4j.org/getstarted.html
-at org.nd4j.linalg.factory.Nd4j.initContext(Nd4j.java:5556)
-at org.nd4j.linalg.factory.Nd4j.(Nd4j.java:189)
-... 2 more
-Caused by: org.nd4j.linalg.factory.Nd4jBackend$NoAvailableBackendException: Please ensure that you have an nd4j backend on your classpath. Please see: http://nd4j.org/getstarted.html
-at org.nd4j.linalg.factory.Nd4jBackend.load(Nd4jBackend.java:259)
-at org.nd4j.linalg.factory.Nd4j.initContext(Nd4j.java:5553)
-... 3 more
-```
-
-If that is the issue, see [this page](https://github.com/bytedeco/javacpp-presets/wiki/Debugging-UnsatisfiedLinkError-on-Windows#using-dependency-walker). In this case replace with "Nd4jCpu".
-
-## Quickstart template
-
-Now that you've learned how to run the different examples, we've made a template available for you that has a basic MNIST trainer with simple evaluation code.
-
-The Quickstart template is available at [https://github.com/eclipse/deeplearning4j-examples/tree/master/mvn-project-template](https://github.com/eclipse/deeplearning4j-examples/tree/master/mvn-project-template).
-
-To use the template:
-
-1. Copy the `standalone-sample-project` from the examples and give it the name of your project.
-2. Import the folder into IntelliJ.
-3. Start coding!
+- **Core Concepts:** Read [Core Concepts](concepts.md) to understand `MultiLayerNetwork` vs `ComputationGraph`, the training pipeline, and the ND4J relationship
+- **More examples:** Clone the [DL4J examples repository](https://github.com/eclipse/deeplearning4j-examples) for CNNs, RNNs, transfer learning, and more
+- **Custom layers:** See the [custom layers guide](../nn/custom-layers.md)
+- **Training on Spark:** See the [distributed training guide](../scaleout/spark.md)
+- **Keras import:** Trained a model in Keras? Import it with the [Keras model import guide](../../model-import/keras.md)
+- **Hyperparameter tuning:** Use [Arbiter](../../arbiter/overview.md) for automated hyperparameter search
+- **API reference:** Browse the [Deeplearning4j Javadoc](/api/latest/)

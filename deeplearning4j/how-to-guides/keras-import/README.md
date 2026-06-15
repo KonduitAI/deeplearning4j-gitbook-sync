@@ -1,20 +1,23 @@
 ---
-description: Overview of model import.
+title: "Keras Import Overview"
+description: "Importing Keras models into Deeplearning4j — supported features, limitations, and getting started"
 ---
 
-# Keras Import
+## Keras Model Import
 
-## Deeplearning4j: Keras model import
+[Keras model import](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras)
+provides routines for importing neural network models originally configured and trained
+using [Keras](https://keras.io/), a popular Python deep learning library.
 
-[Keras model import](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras) provides routines for importing neural network models originally configured and trained using [Keras](https://keras.io/), a popular Python deep learning library.
+Once you have imported your model into DL4J, the full production stack is available. DL4J supports import of all Keras model types, most layers, and practically all utility functionality. See [Supported Features](./supported-features) for a complete list.
 
-Once you have imported your model into DL4J, our full production stack is at your disposal. We support import of all Keras model types, most layers and practically all utility functionality. Please check [here](supported-features/#keras-model-import-supported-features) for a complete list of supported Keras features.
+---
 
-Note to users: tf.keras models are also supported. Please check [here](supported-features/#keras-model-import-supported-features) for an overview of what to expect for tf.keras as well as other features. Our documentation needs to be updated to reflect the changes between keras and tf.keras. For now, users should aware of this as you read the below docs. Migrating from keras to tf.keras mainly involves changing the imports in your python script. The equivalent kind of changes needed to happen for the model import in deeplearning4j. Those changes happened in beta7.
+## Quick Start
 
-## Getting started: Import a Keras model in 60 seconds
+The following example creates a simple MLP in Keras, saves it to HDF5, and loads it as a DL4J `MultiLayerNetwork` in three lines of Java.
 
-To import a Keras model, you need to create and [serialize](https://keras.io/getting-started/faq/#how-can-i-save-a-keras-model) such a model first. Here's a simple example that you can use. The model is a simple MLP that takes mini-batches of vectors of length 100, has two Dense layers and predicts a total of 10 categories. After defining the model, we serialize it in HDF5 format.
+**Python (save the model)**
 
 ```python
 from keras.models import Sequential
@@ -23,83 +26,152 @@ from keras.layers import Dense
 model = Sequential()
 model.add(Dense(units=64, activation='relu', input_dim=100))
 model.add(Dense(units=10, activation='softmax'))
-model.compile(loss='categorical_crossentropy',optimizer='sgd', metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
 
 model.save('simple_mlp.h5')
 ```
 
-If you put this model file (`simple_mlp.h5`) into the base of your resource folder of your project, you can load the Keras model as DL4J `MultiLayerNetwork` as follows
-
-{% hint style="info" %}
-This shows only how to import a Keras Sequential model. For more details take a look at both [Functional Model](functional-models.md) import and [Sequential Model](sequential-models.md) import.
-{% endhint %}
+**Java (load and run the model)**
 
 ```java
 String simpleMlp = new ClassPathResource("simple_mlp.h5").getFile().getPath();
 MultiLayerNetwork model = KerasModelImport.importKerasSequentialModelAndWeights(simpleMlp);
-```
 
-That's it! The `KerasModelImport` is your main entry point to model import and class takes care of mapping Keras to DL4J concepts internally. As user you just have to provide your model file, see our [Getting started guide](./#deeplearning-4-j-keras-model-import) for more details and options to load Keras models into DL4J.
-
-You can now use your imported model for inference (here with dummy data for simplicity)
-
-```java
-INDArray input = Nd4j.create(DataType.FLOAT, 256, 100);
+INDArray input = Nd4j.create(256, 100);
 INDArray output = model.output(input);
 ```
 
-Here's how you do training in DL4J for your imported model:
+`KerasModelImport` is the main entry point. It handles all Keras-to-DL4J concept mapping internally; you provide the model file and get back a fully initialized DL4J network.
 
-```java
-model.fit(input, output);
-```
+---
 
-The full example just shown can be found in our [DL4J examples](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/modelimport/keras/basic/SimpleSequentialMlpImport.java).
+## Maven Dependency
 
-## Project setup
+Add the following to your `pom.xml`:
 
-To use Keras model import in your existing project, all you need to do is add the following dependency to your pom.xml.
-
-```markup
+```xml
 <dependency>
     <groupId>org.deeplearning4j</groupId>
     <artifactId>deeplearning4j-modelimport</artifactId>
-    <version>1.0.0-beta6</version> // This version should match that of your other DL4J project dependencies.
+    <version>${dl4j.version}</version>
 </dependency>
 ```
 
-If you need a project to get started in the first place, consider cloning [DL4J examples](https://github.com/eclipse/deeplearning4j-examples) and follow the instructions in the repository to build the project.
+Replace `${dl4j.version}` with the version matching the rest of your DL4J dependencies.
 
-## Backend
+---
 
-DL4J Keras model import is backend agnostic. No matter which backend you choose (TensorFlow, Theano, CNTK), your models can be imported into DL4J.
+## Model Types
 
-## Popular models and applications
+Keras has two model construction APIs, and DL4J maps each to an equivalent:
 
-We support import for a growing number of applications, check [here](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-modelimport/src/test/java/org/deeplearning4j/nn/modelimport/keras/e2e/KerasModelEndToEndTest.java) for a full list of currently covered models. These applications include
+| Keras model type | Keras class | DL4J equivalent |
+|---|---|---|
+| Sequential | `keras.models.Sequential` | `MultiLayerNetwork` |
+| Functional API | `keras.models.Model` | `ComputationGraph` |
 
-* Deep convolutional and Wasserstein GANs
-* UNET
-* ResNet50
-* SqueezeNet
-* MobileNet
-* Inception
-* Xception
+- **Sequential models** are linear stacks of layers with exactly one input and one output. They map cleanly to `MultiLayerNetwork`.
+- **Functional API models** can have arbitrary graph topologies: multiple inputs, multiple outputs, shared layers, and skip connections. They map to `ComputationGraph`.
 
-## Troubleshooting and support
+---
 
-An `IncompatibleKerasConfigurationException` message indicates that you are attempting to import a Keras model configuration that is not currently supported in Deeplearning4j (either because model import does not cover it, or DL4J does not implement the layer, or feature).
+## Saving Formats
 
-Once you have imported your model, we recommend our own `ModelSerializer` class for further saving and reloading of your model.
+Keras can serialize a model in several ways. Each is supported for import:
 
-You can inquire further by visiting the [community forums](https://community.konduit.ai/). You might consider filing a [feature request via Github](https://github.com/eclipse/deeplearning4j/issues) so that this missing functionality can be placed on the DL4J development roadmap or even sending us a pull request with the necessary changes!
+| What is saved | Python call | DL4J import method |
+|---|---|---|
+| Full model (config + weights + training config) | `model.save('model.h5')` | `importKerasSequentialModelAndWeights(path)` or `importKerasModelAndWeights(path)` |
+| Config only (JSON) | `model.to_json()` | `importKerasSequentialConfiguration(jsonPath)` or `importKerasModelConfiguration(jsonPath)` |
+| Weights only | `model.save_weights('weights.h5')` | Pass both JSON and weights paths to the two-argument import methods |
 
-## Why Keras model import?
+If you only save the configuration without a training configuration (i.e., the model was not compiled in Keras), set `enforceTrainingConfig=false` when calling the import method. Otherwise an exception is thrown when DL4J tries to read a training config that does not exist.
 
-Keras is a popular and user-friendly deep learning library written in Python. The intuitive API of Keras makes defining and running your deep learning models in Python easy. Keras allows you to choose which lower-level library it runs on, but provides a unified API for each such backend. Currently, Keras supports Tensorflow, CNTK and Theano backends.
+---
 
-There is often a gap between the production system of a company and the experimental setup of its data scientists. Keras model import allows data scientists to write their models in Python, but still seamlessly integrates with the production stack.
+## Popular Supported Models
 
-Keras model import is targeted at users mainly familiar with writing their models in Python with Keras. With model import you can bring your Python models to production by allowing users to import their models into the DL4J ecosystem for either further training or evaluation purposes.
+A growing set of well-known architectures has been validated end-to-end. These include:
 
-You should use this module when the experimentation phase of your project is completed and you need to ship your models to production. [Konduit ](https://konduit.ai/)commercial support for Keras implementations in enterprise.
+- ResNet50
+- SqueezeNet
+- MobileNet
+- Inception
+- Xception
+- UNET
+- Deep convolutional GANs
+- Wasserstein GANs
+
+The full end-to-end test list is maintained in [KerasModelEndToEndTest.java](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-modelimport/src/test/java/org/deeplearning4j/nn/modelimport/keras/e2e/KerasModelEndToEndTest.java).
+
+---
+
+## Supported Features Summary
+
+| Category | Coverage |
+|---|---|
+| Core layers | Dense, Dropout, Flatten, Reshape, Merge, Permute, RepeatVector, Lambda, Masking, SpatialDropout1D/2D/3D |
+| Convolutional layers | Conv1D, Conv2D, Conv3D, SeparableConv2D, Conv2DTranspose, Cropping1/2/3D, UpSampling1/2/3D, ZeroPadding1/2/3D, AtrousConv1D/2D |
+| Pooling layers | MaxPooling1/2/3D, AveragePooling1/2/3D, GlobalMaxPooling1/2/3D, GlobalAveragePooling1/2/3D |
+| Recurrent layers | SimpleRNN, LSTM (GRU and ConvLSTM2D not supported) |
+| Embedding layers | Embedding |
+| Normalization layers | BatchNormalization |
+| Advanced activations | LeakyReLU, PReLU, ELU, ThresholdedReLU |
+| Noise layers | GaussianNoise, GaussianDropout, AlphaDropout |
+| Wrappers | Bidirectional (TimeDistributed not supported) |
+| Losses | 13 of 14 standard Keras losses (logcosh excluded) |
+| Activations | softmax, elu, selu, softplus, softsign, relu, tanh, sigmoid, hard_sigmoid, linear |
+| Initializers | All 15 standard Keras initializers |
+| Regularizers | l1, l2, l1_l2 |
+| Constraints | max_norm, non_neg, unit_norm, min_max_norm |
+| Optimizers | SGD, RMSprop, Adagrad, Adadelta, Adam, Adamax, Nadam (TFOptimizer excluded) |
+
+---
+
+## After Import: Saving the DL4J Model
+
+Once your Keras model is imported, save it using DL4J's `ModelSerializer` for subsequent loads without the overhead of re-importing from Keras:
+
+```java
+File locationToSave = new File("my-model.zip");
+boolean saveUpdater = true;
+ModelSerializer.writeModel(model, locationToSave, saveUpdater);
+
+// Later:
+MultiLayerNetwork restored = ModelSerializer.restoreMultiLayerNetwork(locationToSave);
+```
+
+---
+
+## Troubleshooting
+
+**`IncompatibleKerasConfigurationException`**: the model uses a feature not supported by the importer. Check [Supported Features](./supported-features) to confirm the layer or configuration in question.
+
+**`UnsupportedKerasConfigurationException`**: a recognized feature has parameters that DL4J cannot map. Common causes include unknown regularizer types or unsupported layer parameter combinations.
+
+**Weights not loaded correctly**: verify that you are using a full model save (not weights-only) or that you are providing both the JSON config and weights paths to the split-file import method.
+
+For additional help, visit the [DL4J community forums](https://community.konduit.ai) or open an issue on [GitHub](https://github.com/eclipse/deeplearning4j/issues).
+
+---
+
+## Why Keras Model Import?
+
+Keras is a user-friendly deep learning library written in Python. Its intuitive API makes rapid prototyping easy. However, Python-trained models often need to be deployed in Java or JVM-based production environments.
+
+Keras model import bridges this gap. Data scientists write and train models in Python; the import module brings them into the DL4J production stack without requiring Python at runtime. The imported model can be:
+
+- Used for inference directly
+- Fine-tuned with additional DL4J training
+- Integrated with DL4J's distributed training (Spark)
+- Deployed via Konduit Serving
+
+---
+
+## Next Steps
+
+- [Getting Started](./getting-started) — step-by-step import walkthrough with full code examples
+- [Sequential Model](./sequential-model) — importing `Sequential` models as `MultiLayerNetwork`
+- [Functional Model](./functional-model) — importing Functional API models as `ComputationGraph`
+- [API Reference](./model-import-api) — complete `KerasModelImport` method signatures
+- [Supported Features](./supported-features) — full support matrix

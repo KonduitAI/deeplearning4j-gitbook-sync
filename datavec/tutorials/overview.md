@@ -1,91 +1,225 @@
 ---
-description: Overview of the vectorization and ETL library for DL4J.
+title: "DataVec Overview"
+description: "DataVec ETL framework — purpose, architecture, and the data pipeline from raw data to DataSet"
 ---
 
-# Overview
+# DataVec Overview
 
-## DataVec: A Vectorization and ETL Library
+DataVec is the data transformation and vectorization library for the Eclipse Deeplearning4j ecosystem. It solves one of the most common obstacles in applied machine learning: getting raw data into the format that neural networks expect. Neural networks consume vectors and tensors, but raw data comes as CSV files, images on disk, log lines, JSON documents, and dozens of other formats. DataVec provides the tooling to bridge that gap.
 
-DataVec solves one of the most important obstacles to effective machine or deep learning: getting data into a format that neural nets can understand. Nets understand vectors. Vectorization is the first problem many data scientists will have to solve to start training their algorithms on data. Datavec should be used for 99% of your data transformations, if you are not sure if this applies to you, please consult the [community forums](https://community.konduit.ai/c/datavec/). Datavec supports most data formats you could want out of the box, but you may also implement your own custom record reader as well.
+The name reflects its mission: DataVec = Data Vectorization.
 
-If your data is in CSV (Comma Seperated Values) format stored in flat files that must be converted to numeric and ingested, or your data is a directory structure of labelled images then DataVec is the tool to help you organize that data for use in DeepLearning4J.
+## What DataVec Does
 
-Please **read this entire page**, particularly the section [Reading Records](../reference/readers.md#usage) below, before working with DataVec.
+DataVec handles the Extract, Transform, Load (ETL) phase of a machine learning workflow:
 
-## Key Aspects
+- **Extract**: Read data from files, directories, in-memory collections, or distributed storage using `RecordReader` implementations.
+- **Transform**: Apply an ordered sequence of operations — type conversions, column manipulations, categorical encoding, filtering, normalization — via `TransformProcess`.
+- **Load**: Deliver the processed data as `DataSet` objects to DL4J model training via `DataSetIterator`.
 
-* [DataVec](https://github.com/eclipse/deeplearning4j/tree/master/datavec) uses an input/output format system (similar in some ways to how Hadoop MapReduce uses InputFormat to determine InputSplits and RecordReaders, DataVec also provides RecordReaders to Serialize Data)
-* Designed to support all major types of input data (text, CSV, audio, image and video) with these specific input formats
-* Uses an output format system to specify an implementation-neutral type of vector format (SVMLight, etc.)
-* Can be extended for specialized input formats (such as exotic image formats); i.e. You can write your own custom input format and let the rest of the codebase handle the transformation pipeline
-* Makes vectorization a first-class citizen - Built in Transformation tools to convert and normalize data&#x20;
-* Please see the [DataVec Javadoc](https://javadoc.io/doc/org.datavec/datavec-api/1.0.0-M1/index.html) here There's a [brief tutorial below](overview.md#a-few-examples).&#x20;
+DataVec also integrates with Apache Spark, so the same transform definitions can run locally on a developer laptop or distributed across a cluster without code changes.
 
-## A Few Examples
+## When to Use DataVec
 
-* Convert the CSV-based UCI Iris dataset into svmLight open vector text format
-* Convert the MNIST dataset from raw binary files to the svmLight text format.
-* Convert raw text into the Metronome vector format
-* Convert raw text into TF-IDF based vectors in a text vector format {svmLight, metronome}
-* Convert raw text into the word2vec in a text vector format {svmLight, metronome}&#x20;
+Use DataVec when:
 
-## Targeted Vectorization Engines
+- Your data is in CSV, TSV, JSON, XML, or other structured text formats
+- Your data is a labeled image directory and you need to feed images into a CNN
+- You need to convert categorical string columns to one-hot or integer representations
+- You need to filter out bad records, normalize numeric columns, or parse timestamps
+- You want a reusable, serializable transformation pipeline that can run both offline and in production inference
 
-* Any CSV to vectors with a scriptable transform language&#x20;
-* MNIST to vectors
-* Text to vectors
-  * TF-IDF
-  * Bag of Words
-  * word2vec&#x20;
+You may not need DataVec if:
 
-## CSV Transformation Engine
+- Your data is already in a numeric NDArray format that maps directly to your model inputs
+- You are only loading simple pre-formatted datasets (e.g., MNIST via the built-in fetcher)
 
-If data is numeric and appropriately formatted then CSVRecordReader may be satisfactory. If however your data has non-numeric fields such as strings representing boolean (T/F) or strings for labels then a Schema Transformation will be required. DataVec uses apache [Spark](http://spark.apache.org/) to perform transform operations. \*note you do not need to know the internals of Spark to be succesful with DataVec Transform
+## Core Pipeline
 
-## Schema Transformation Video
+The standard DataVec pipeline has four stages:
 
-A video tutorial of a simple DataVec transform along with code is available below.
-
-{% embed url="https://youtu.be/MLEMw2NxjxE" %}
-
-## Example Java Code
-
-Our [examples](https://github.com/eclipse/deeplearning4j-examples) include a collection of DataVec examples.
-
-## Reading Records, Iterating Over Data
-
-The following code shows how to work with one example, raw images, transforming them into a format that will work well with DL4J and ND4J:
-
-```java
-// Instantiating RecordReader. Specify height, width and channels of images.
-// Note that for grayscale output, channels = 1, whereas for RGB images, channels = 3
-RecordReader recordReader = new ImageRecordReader(28, 28, 3);
-
-// Point to data path. 
-recordReader.initialize(new FileSplit(new File(labeledPath)));
+```
+Raw Data on Disk
+      |
+  InputSplit          <-- defines which files or records to load
+      |
+  RecordReader        <-- parses raw bytes into List<Writable> records
+      |
+  TransformProcess    <-- applies ordered transforms to each record
+      |
+  DataSetIterator     <-- batches records into DataSet for DL4J training
 ```
 
-The RecordReader is a class in DataVec that helps convert the byte-oriented input into data that's oriented toward a record; i.e. a collection of elements that are fixed in number and indexed with a unique ID. Converting data to records is the process of vectorization. The record itself is a vector, each element of which is a feature.
+### Stage 1: InputSplit
 
-The [ImageRecordReader](https://github.com/eclipse/deeplearning4j/blob/master/datavec/datavec-data/datavec-data-image/src/main/java/org/datavec/image/recordreader/ImageRecordReader.java) is a subclass of the RecordReader and is built to automatically take in 28 x 28 pixel images. Thus, LFW images are scaled to 28 pixels x 28 pixels. You can change dimensions to match your custom images by changing the parameters fed to the ImageRecordReader, as long as you make sure to adjust the `nIn` hyperparameter, which will be equal to the product of image height x image width.
+An `InputSplit` tells the `RecordReader` where the data lives. Common splits:
 
-Other parameters shown above include `true`, which instructs the reader to append a label to the record, and `labels`, which is the array of supervised values (e.g. targets) used to validate neural net model results. Here are all the RecordReader extensions that come pre-built with DataVec (you can find them by right-clicking on `RecordReader` in IntelliJ, clicking `Go To` in the drop-down menu, and selection `Implementations`):
+- `FileSplit(File rootDir)` — all files under a directory, recursively
+- `FileSplit(File rootDir, String[] allowedExtensions, Random rng)` — filtered by extension
+- `NumberedFileInputSplit(String basePattern, int minIdx, int maxIdx)` — for numbered files like `record_0001.csv` through `record_9999.csv`
+- `CollectionInputSplit(List<URI> uris)` — from an arbitrary list of URIs
+- `InputStreamInputSplit(InputStream is)` — from any input stream
 
-The DataSetIterator is a Deeplearning4J class that traverses the elements of a list. Iterators pass through the data list, accesses each item sequentially, keeps track of how far it has progressed by pointing to its current element, and modifies itself to point to the next element with each new step in the traversal.
+### Stage 2: RecordReader
+
+A `RecordReader` iterates over the `InputSplit` and converts each unit of data (a line, a file, a JSON object) into a `List<Writable>`. Each `Writable` in the list corresponds to one column.
 
 ```java
-// DataVec to DL4J
-DataSetIterator iter = new RecordReaderDataSetIterator(recordReader, 784, labels.size());
+// Initialize reader on a directory of CSV files
+RecordReader reader = new CSVRecordReader(1, ','); // skip 1 header line
+reader.initialize(new FileSplit(new File("/data/train/")));
+
+// Iterate manually
+while (reader.hasNext()) {
+    List<Writable> record = reader.next();
+    // process record...
+}
 ```
 
-The DataSetIterator iterates through input datasets, fetching one or more new examples with each iteration, and loading those examples into a DataSet object that neural nets can work with. Note that ImageRecordReader produces image data with 4 dimensions that matches DL4J's expected activations layout. Thus, each 28x28 RGB image is represented as a 4d array, with dimensions \[minibatch, channels, height, width] = \[1, 3, 28, 28]. Note that the constructor line above also specifies the number of labels possible. Note also that ImageRecordReader does not normalize the image data, thus each pixel/channel value will be in the range 0 to 255 (and generally should be normalized separately - for example using ND4J's ImagePreProcessingScaler or another normalizer.
+DataVec ships with readers for CSV, JSON/XML/YAML, images, log lines, audio, LibSVM, and more. See [Record Readers](readers.md) for the full list.
 
-`RecordReaderDataSetIterator` can take as parameters the specific recordReader you want (for images, sound, etc.) and the batch size. For supervised learning, it will also take a label index and the number of possible labels that can be applied to the input (for LFW, the number of labels is 5,749).
+### Stage 3: TransformProcess
 
-## Execution
+A `TransformProcess` is an ordered list of operations applied to each record, defined against a `Schema` that describes the layout of the input data.
 
-Runs as both a local serial process and a MapReduce (MR engine on the roadmap) scale-out process with no code changes.
+```java
+Schema schema = new Schema.Builder()
+    .addColumnString("timestamp")
+    .addColumnDouble("temperature")
+    .addColumnCategorical("sensor", Arrays.asList("A", "B", "C"))
+    .build();
 
-## Built-In General Functionality
+TransformProcess tp = new TransformProcess.Builder(schema)
+    .stringToTimeTransform("timestamp", "YYYY-MM-DD HH:mm:ss", DateTimeZone.UTC)
+    .renameColumn("timestamp", "time")
+    .doubleMathOp("temperature", MathOp.Subtract, 273.15)   // K to C
+    .categoricalToOneHot("sensor")
+    .build();
+```
 
-* Understands how to take general text and convert it into vectors with stock techniques such as kernel hashing and TF-IDF
+The transform process validates each operation against the schema at build time, so errors (referencing a non-existent column, applying a numeric op to a String column, etc.) are caught before any data is processed.
+
+### Stage 4: DataSetIterator
+
+Once you have a reader and optionally a transform process, wrap them in a `RecordReaderDataSetIterator` to produce `DataSet` objects that DL4J can train on directly.
+
+```java
+// Apply transform inline via TransformProcessRecordReader
+RecordReader transformedReader = new TransformProcessRecordReader(reader, tp);
+
+// labelIndex = column index of the label, numClasses = number of label classes
+DataSetIterator iterator = new RecordReaderDataSetIterator(
+    transformedReader,
+    batchSize,
+    labelIndex,
+    numClasses
+);
+
+// Use with DL4J model
+model.fit(iterator);
+```
+
+## Supported Data Formats
+
+DataVec has built-in support for:
+
+| Format | RecordReader Class |
+|---|---|
+| CSV / TSV | `CSVRecordReader` |
+| CSV sequences (one file per sequence) | `CSVSequenceRecordReader` |
+| JSON, XML, YAML | `JacksonRecordReader` |
+| Log lines (regex parsing) | `RegexLineRecordReader` |
+| Raw text lines | `LineRecordReader` |
+| Labeled images (directory structure) | `ImageRecordReader` |
+| LibSVM sparse format | `LibSvmRecordReader` |
+| SVMLight format | `SVMLightRecordReader` |
+| MATLAB .mat files | `MatlabRecordReader` |
+| Apache Arrow columnar | `ArrowRecordReader` |
+| WAV audio | `WavFileRecordReader` |
+| TF-IDF vectors | `TfidfRecordReader` |
+| In-memory collections | `CollectionRecordReader` |
+
+## Architecture
+
+DataVec is organized into several Maven modules:
+
+- `datavec-api` — core interfaces: `RecordReader`, `Writable`, `Schema`, `TransformProcess`, `Filter`, `Condition`
+- `datavec-local` — local (non-Spark) executors: `LocalTransformExecutor`, `AnalyzeLocal`
+- `datavec-spark` — Spark executors: `SparkTransformExecutor`, `AnalyzeSpark`
+- `datavec-data-image` — image readers: `ImageRecordReader`, `NativeImageLoader`
+- `datavec-data-audio` — audio readers
+- `datavec-data-nlp` — NLP readers including TF-IDF
+- `datavec-arrow` — Apache Arrow integration
+
+## Data Types
+
+DataVec uses a typed column model. Every column in a `Schema` has a `ColumnType`:
+
+- `Integer` — 32-bit signed integer
+- `Long` — 64-bit signed integer
+- `Double` — 64-bit floating point
+- `Float` — 32-bit floating point
+- `String` — arbitrary text
+- `Categorical` — a fixed set of string labels (like an enum)
+- `Time` — stored as epoch milliseconds (Long), but carries timezone info
+- `Bytes` — raw byte array
+- `NDArray` — an embedded multidimensional array
+- `Boolean` — true/false
+
+At the record level, each column is stored as a `Writable` — a lightweight value holder. `IntWritable`, `DoubleWritable`, `Text`, `NDArrayWritable`, etc. implement this interface.
+
+## A Complete Example
+
+Here is a concise end-to-end example loading a CSV, applying transforms, and producing a `DataSet`:
+
+```java
+// 1. Define schema
+Schema schema = new Schema.Builder()
+    .addColumnsString("name", "city")
+    .addColumnInteger("age")
+    .addColumnDouble("income")
+    .addColumnCategorical("label", Arrays.asList("low", "medium", "high"))
+    .build();
+
+// 2. Define transform process
+TransformProcess tp = new TransformProcess.Builder(schema)
+    .removeColumns("name", "city")                   // drop irrelevant columns
+    .doubleMathOp("income", MathOp.Divide, 1000.0)  // scale income
+    .categoricalToInteger("label")                   // convert to integer 0/1/2
+    .build();
+
+// 3. Initialize reader
+RecordReader rr = new CSVRecordReader(1, ',');       // skip header
+rr.initialize(new FileSplit(new File("data.csv")));
+
+// 4. Apply transforms
+RecordReader transformedRr = new TransformProcessRecordReader(rr, tp);
+
+// 5. Create iterator: label is last column (index 2), 3 classes
+DataSetIterator iter = new RecordReaderDataSetIterator(transformedRr, 32, 2, 3);
+
+// 6. Normalize
+NormalizerStandardize normalizer = new NormalizerStandardize();
+normalizer.fit(iter);
+iter.reset();
+iter.setPreProcessor(normalizer);
+
+// 7. Train
+model.fit(iter);
+```
+
+## Relationship to Other DL4J Components
+
+- **ND4J**: DataVec's output is eventually consumed as ND4J `INDArray` objects. `NDArrayWritable` bridges the two.
+- **DL4J**: `RecordReaderDataSetIterator` (and related iterators) wrap DataVec readers to produce `DataSet` and `MultiDataSet` objects that DL4J `MultiLayerNetwork` and `ComputationGraph` consume.
+- **SameDiff**: SameDiff training also accepts `DataSetIterator`, so DataVec pipelines work unchanged.
+- **Spark**: `SparkTransformExecutor` lets you apply the same `TransformProcess` to a Spark `JavaRDD<List<Writable>>`.
+
+## Further Reading
+
+- [Schema](schema.md) — defining the structure of your data
+- [Record Readers](readers.md) — reading different file formats
+- [Transforms](transforms.md) — the full transform API
+- [Normalization](normalization.md) — scaling and standardizing features
+- [Executors](executors.md) — running transforms locally or on Spark
+- [Image Data](image.md) — image-specific pipeline

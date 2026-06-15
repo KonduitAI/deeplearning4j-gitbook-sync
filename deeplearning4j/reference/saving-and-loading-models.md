@@ -1,304 +1,212 @@
 ---
-description: Saving and loading of neural networks.
+title: "Model Persistence"
+description: "Saving and loading neural networks — ModelSerializer, saving normalizers, and model format details"
 ---
 
-# Saving and Loading Models
+# Model Persistence
 
-MultiLayerNetwork and ComputationGraph both have save and load methods.
+Eclipse Deeplearning4j uses `ModelSerializer` (`org.deeplearning4j.util.ModelSerializer`) as the primary utility for saving and restoring neural networks. Models are saved as `.zip` archives containing the network configuration, trained parameters, and optionally the optimizer state (updater) and data normalizers.
 
-You can save/load a MultiLayerNetwork using:
+---
 
-```java
-MultiLayerNetwork net = ...
-net.save(new File("...");
+## Saving Models
 
-MultiLayerNetwork net2 = MultiLayerNetwork.load(new File("..."), true);
-```
-
-Similarly, you can save/load a ComputationGraph using:
+### MultiLayerNetwork
 
 ```java
-ComputationGraph net = ...
-net.save(new File("..."));
+import org.deeplearning4j.util.ModelSerializer;
 
-ComputationGraph net2 = ComputationGraph.load(new File("..."), true);
+File modelFile = new File("/tmp/my-model.zip");
+
+// Save with updater state (recommended if you plan to continue training)
+ModelSerializer.writeModel(model, modelFile, true);
+
+// Save without updater state (smaller file, inference-only)
+ModelSerializer.writeModel(model, modelFile, false);
 ```
 
-Internally, these methods use the `ModelSerializer` class, which handles loading and saving models. There are two methods for saving models shown in the examples through the link. The first example saves a normal multi layer network, the second one saves a [computation graph](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/reference/computationgraph.md).
+### ComputationGraph
 
-Here is a [basic example](https://github.com/eclipse/deeplearning4j-examples/tree/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/misc/modelsaving) with code to save a computation graph using the `ModelSerializer` class, as well as an example of using ModelSerializer to save a neural net built using MultiLayer configuration.
-
-## RNG Seed
-
-If your model uses probabilities (i.e. DropOut/DropConnect), it may make sense to save it separately, and apply it after model is restored; i.e:
+The same `writeModel` overloads work for `ComputationGraph`:
 
 ```java
- Nd4j.getRandom().setSeed(12345);
- ModelSerializer.restoreMultiLayerNetwork(modelFile);
+ComputationGraph graph = /* trained graph */;
+ModelSerializer.writeModel(graph, new File("/tmp/my-graph.zip"), true);
 ```
 
-This will guarantee equal results between sessions/JVMs.
+### Saving to an OutputStream
 
-## ModelSerializer
+Useful when writing to cloud storage, HTTP responses, or non-file destinations:
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/util/ModelSerializer.java)
-
-Utility class suited to save/restore neural net models
-
-**writeModel**
-
-```
-public static void writeModel(@NonNull Model model, @NonNull File file, boolean saveUpdater) throws IOException
+```java
+try (OutputStream os = new FileOutputStream("/tmp/model.zip")) {
+    ModelSerializer.writeModel(model, os, true);
+}
 ```
 
-Write a model to a file
+### Saving with a Normalizer
 
-* param model the model to write
-* param file the file to write to
-* param saveUpdater whether to save the updater or not
-* throws IOException
+If you normalise your input data, save the normalizer alongside the model so it can be restored together:
 
-**writeModel**
+```java
+import org.nd4j.linalg.dataset.api.preprocessor.NormalizerStandardize;
 
-```
-public static void writeModel(@NonNull Model model, @NonNull File file, boolean saveUpdater,DataNormalization dataNormalization) throws IOException
-```
+NormalizerStandardize normalizer = new NormalizerStandardize();
+normalizer.fit(trainIter);
 
-Write a model to a file
-
-* param model the model to write
-* param file the file to write to
-* param saveUpdater whether to save the updater or not
-* param dataNormalization the normalizer to save (optional)
-* throws IOException
-
-**writeModel**
-
-```
-public static void writeModel(@NonNull Model model, @NonNull String path, boolean saveUpdater) throws IOException
+// Write model + normalizer in one file
+ModelSerializer.writeModel(model, modelFile, true, normalizer);
 ```
 
-Write a model to a file path
+The normalizer is stored as a serialised entry inside the same `.zip` file.
 
-* param model the model to write
-* param path the path to write to
-* param saveUpdater whether to save the updater or not
-* throws IOException
+---
 
-**writeModel**
+## Loading Models
 
-```
-public static void writeModel(@NonNull Model model, @NonNull OutputStream stream, boolean saveUpdater)
-            throws IOException
-```
+### MultiLayerNetwork
 
-Write a model to an output stream
+```java
+import org.deeplearning4j.util.ModelSerializer;
 
-* param model the model to save
-* param stream the output stream to write to
-* param saveUpdater whether to save the updater for the model or not
-* throws IOException
+// Load from file, with updater state
+MultiLayerNetwork model = ModelSerializer.restoreMultiLayerNetwork(modelFile);
 
-**writeModel**
+// Load without updater state (faster, less memory)
+MultiLayerNetwork model = ModelSerializer.restoreMultiLayerNetwork(modelFile, false);
 
-```
-public static void writeModel(@NonNull Model model, @NonNull OutputStream stream, boolean saveUpdater,DataNormalization dataNormalization)
-            throws IOException
+// Load from path string
+MultiLayerNetwork model = ModelSerializer.restoreMultiLayerNetwork("/tmp/my-model.zip");
+
+// Load from InputStream
+try (InputStream is = new FileInputStream(modelFile)) {
+    MultiLayerNetwork model = ModelSerializer.restoreMultiLayerNetwork(is, true);
+}
 ```
 
-Write a model to an output stream
+### ComputationGraph
 
-* param model the model to save
-* param stream the output stream to write to
-* param saveUpdater whether to save the updater for the model or not
-* param dataNormalization the normalizer ot save (may be null)
-* throws IOException
+```java
+ComputationGraph graph = ModelSerializer.restoreComputationGraph(modelFile);
+ComputationGraph graph = ModelSerializer.restoreComputationGraph(modelFile, false);
+ComputationGraph graph = ModelSerializer.restoreComputationGraph("/tmp/my-graph.zip");
 
-**restoreMultiLayerNetwork**
-
-```
-public static MultiLayerNetwork restoreMultiLayerNetwork(@NonNull File file) throws IOException
+try (InputStream is = new FileInputStream(modelFile)) {
+    ComputationGraph graph = ModelSerializer.restoreComputationGraph(is, true);
+}
 ```
 
-Load a multi layer network from a file
+### Restoring a Normalizer
 
-* param file the file to load from
-* return the loaded multi layer network
-* throws IOException
+```java
+import org.nd4j.linalg.dataset.api.preprocessor.NormalizerStandardize;
 
-**restoreMultiLayerNetwork**
+// Restore model and normalizer together
+Pair<MultiLayerNetwork, NormalizerStandardize> restored =
+    ModelSerializer.restoreMultiLayerNetworkAndNormalizer(modelFile, true);
 
-```
-public static MultiLayerNetwork restoreMultiLayerNetwork(@NonNull File file, boolean loadUpdater)
-            throws IOException
-```
+MultiLayerNetwork model      = restored.getFirst();
+NormalizerStandardize norm   = restored.getSecond();
 
-Load a multi layer network from a file
-
-* param file the file to load from
-* return the loaded multi layer network
-* throws IOException
-
-**restoreMultiLayerNetwork**
-
-```
-public static MultiLayerNetwork restoreMultiLayerNetwork(@NonNull InputStream is, boolean loadUpdater)
-            throws IOException
+// Apply normalizer to new inference data
+norm.transform(inputFeatures);
+INDArray output = model.output(inputFeatures);
 ```
 
-Load a MultiLayerNetwork from InputStream from an input stream\
-Note: the input stream is read fully and closed by this method. Consequently, the input stream cannot be re-used.
+For `ComputationGraph`:
 
-* param is the inputstream to load from
-* return the loaded multi layer network
-* throws IOException
-* see #restoreMultiLayerNetworkAndNormalizer(InputStream, boolean)
-
-**restoreMultiLayerNetwork**
-
-```
-public static MultiLayerNetwork restoreMultiLayerNetwork(@NonNull InputStream is) throws IOException
+```java
+Pair<ComputationGraph, NormalizerStandardize> restored =
+    ModelSerializer.restoreComputationGraphAndNormalizer(modelFile, true);
 ```
 
-Restore a multi layer network from an input stream\
-Note: the input stream is read fully and closed by this method. Consequently, the input stream cannot be re-used.
+---
 
-* param is the input stream to restore from
-* return the loaded multi layer network
-* throws IOException
-* see #restoreMultiLayerNetworkAndNormalizer(InputStream, boolean)
+## The .zip File Format
 
-**restoreMultiLayerNetwork**
+A model file saved by `ModelSerializer` is a standard `.zip` archive. You can inspect its contents with any unzip tool. The entries are:
 
-```
-public static MultiLayerNetwork restoreMultiLayerNetwork(@NonNull String path) throws IOException
-```
+| Entry name | Contents |
+|---|---|
+| `configuration.json` | JSON serialisation of the network configuration (`MultiLayerConfiguration` or `ComputationGraphConfiguration`). Includes layer types, hyperparameters, activation functions, etc. |
+| `coefficients.bin` | Flat binary array of all trainable parameters (weights and biases) in the order they appear in the network. Uses ND4J's binary format. |
+| `updaterState.bin` | Serialised optimizer state (momentum buffers, Adam m/v estimates, etc.). Only present when `saveUpdater=true`. |
+| `normalizer.bin` | Serialised `DataNormalization` object. Only present when a normalizer is saved. |
 
-Load a MultilayerNetwork model from a file
+Because the format is a zip file, you can add arbitrary objects to an existing model file using the object serialization API:
 
-* param path path to the model file, to get the computation graph from
-* return the loaded computation graph
-* throws IOException
+```java
+// Attach a custom metadata object to an existing model file
+ModelSerializer.addObjectToFile(modelFile, "myMetadata", mySerializableObject);
 
-**restoreMultiLayerNetwork**
-
-```
-public static MultiLayerNetwork restoreMultiLayerNetwork(@NonNull String path, boolean loadUpdater)
-            throws IOException
+// Retrieve it later
+MyMetadata meta = ModelSerializer.getObjectFromFile(modelFile, "myMetadata");
 ```
 
-Load a MultilayerNetwork model from a file
+---
 
-* param path path to the model file, to get the computation graph from
-* return the loaded computation graph
-* throws IOException
+## Saving for Inference Only
 
-**restoreComputationGraph**
+When deploying a model for inference you do not need the updater state. Excluding it reduces file size — sometimes substantially for large models with stateful updaters like Adam.
 
-```
-public static ComputationGraph restoreComputationGraph(@NonNull String path) throws IOException
-```
-
-Restore a MultiLayerNetwork and Normalizer (if present - null if not) from the InputStream. Note: the input stream is read fully and closed by this method. Consequently, the input stream cannot be re-used.
-
-* param is Input stream to read from
-* param loadUpdater Whether to load the updater from the model or not
-* return Model and normalizer, if present
-* throws IOException If an error occurs when reading from the stream
-
-**restoreComputationGraph**
-
-```
-public static ComputationGraph restoreComputationGraph(@NonNull String path, boolean loadUpdater)
-            throws IOException
+```java
+// false = don't save updater state
+ModelSerializer.writeModel(model, inferenceFile, false);
 ```
 
-Load a computation graph from a file
+When restoring for inference, also pass `false` to skip loading updater state:
 
-* param path path to the model file, to get the computation graph from
-* return the loaded computation graph
-* throws IOException
-
-**restoreComputationGraph**
-
-```
-public static ComputationGraph restoreComputationGraph(@NonNull InputStream is, boolean loadUpdater)
-            throws IOException
+```java
+MultiLayerNetwork model = ModelSerializer.restoreMultiLayerNetwork(inferenceFile, false);
 ```
 
-Load a computation graph from a InputStream
+---
 
-* param is the inputstream to get the computation graph from
-* return the loaded computation graph
-* throws IOException
+## RNG Seed After Restore
 
-**restoreComputationGraph**
+If your model uses stochastic regularisation (Dropout, DropConnect, etc.), the random number generator (RNG) state is not saved. To guarantee reproducible results across sessions, set the RNG seed immediately after restoring:
 
-```
-public static ComputationGraph restoreComputationGraph(@NonNull InputStream is) throws IOException
-```
+```java
+import org.nd4j.linalg.factory.Nd4j;
 
-Load a computation graph from a InputStream
-
-* param is the inputstream to get the computation graph from
-* return the loaded computation graph
-* throws IOException
-
-**restoreComputationGraph**
-
-```
-public static ComputationGraph restoreComputationGraph(@NonNull File file) throws IOException
+Nd4j.getRandom().setSeed(12345);
+MultiLayerNetwork model = ModelSerializer.restoreMultiLayerNetwork(modelFile);
 ```
 
-Load a computation graph from a file
+---
 
-* param file the file to get the computation graph from
-* return the loaded computation graph
-* throws IOException
+## Appending a Normalizer to an Existing File
 
-**restoreComputationGraph**
+If you saved a model without a normalizer and want to add one later:
 
-```
-public static ComputationGraph restoreComputationGraph(@NonNull File file, boolean loadUpdater) throws IOException
-```
+```java
+import org.deeplearning4j.util.ModelSerializer;
 
-Restore a ComputationGraph and Normalizer (if present - null if not) from the InputStream. Note: the input stream is read fully and closed by this method. Consequently, the input stream cannot be re-used.
-
-* param is Input stream to read from
-* param loadUpdater Whether to load the updater from the model or not
-* return Model and normalizer, if present
-* throws IOException If an error occurs when reading from the stream
-
-**taskByModel**
-
-```
-public static Task taskByModel(Model model)
+NormalizerStandardize normalizer = /* fitted normalizer */;
+ModelSerializer.addNormalizerToModel(modelFile, normalizer);
 ```
 
-* param model
-* return
+---
 
-**addNormalizerToModel**
+## API Reference
 
-```
-public static void addNormalizerToModel(File f, Normalizer<?> normalizer)
-```
-
-This method appends normalizer to a given persisted model.
-
-PLEASE NOTE: File should be model file saved earlier with ModelSerializer
-
-* param f
-* param normalizer
-
-**addObjectToFile**
-
-```
-public static void addObjectToFile(@NonNull File f, @NonNull String key, @NonNull Object o)
-```
-
-Add an object to the (already existing) model file using Java Object Serialization. Objects can be restored using {- link #getObjectFromFile(File, String)}
-
-* param f File to add the object to
-* param key Key to store the object under
-* param o Object to store using Java object serialization
+| Method | Description |
+|---|---|
+| `writeModel(Model, File, boolean)` | Save model to file. `boolean` = save updater state. |
+| `writeModel(Model, File, boolean, DataNormalization)` | Save model and normalizer to file. |
+| `writeModel(Model, String, boolean)` | Save model to path string. |
+| `writeModel(Model, OutputStream, boolean)` | Save model to output stream. |
+| `writeModel(Model, OutputStream, boolean, DataNormalization)` | Save model and normalizer to output stream. |
+| `restoreMultiLayerNetwork(File)` | Load `MultiLayerNetwork` from file (with updater). |
+| `restoreMultiLayerNetwork(File, boolean)` | Load `MultiLayerNetwork`; `boolean` = load updater. |
+| `restoreMultiLayerNetwork(String)` | Load from path string. |
+| `restoreMultiLayerNetwork(InputStream, boolean)` | Load from stream. |
+| `restoreMultiLayerNetworkAndNormalizer(File, boolean)` | Load model and normalizer as a `Pair`. |
+| `restoreComputationGraph(File)` | Load `ComputationGraph` from file. |
+| `restoreComputationGraph(File, boolean)` | Load with or without updater. |
+| `restoreComputationGraph(String)` | Load from path string. |
+| `restoreComputationGraph(InputStream, boolean)` | Load from stream. |
+| `restoreComputationGraphAndNormalizer(File, boolean)` | Load graph and normalizer as a `Pair`. |
+| `addNormalizerToModel(File, Normalizer)` | Append a normalizer to an already-saved model file. |
+| `addObjectToFile(File, String, Object)` | Attach a serializable object under a named key. |
+| `getObjectFromFile(File, String)` | Retrieve a named object from a model file. |

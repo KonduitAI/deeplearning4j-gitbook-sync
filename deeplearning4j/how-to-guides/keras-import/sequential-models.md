@@ -1,12 +1,15 @@
 ---
-description: Importing the functional model.
+title: "Sequential Model Import"
+description: "Importing Keras Sequential models as MultiLayerNetwork"
 ---
 
-# Sequential Models
+## Importing Keras Sequential Models
 
-## Getting started with importing Keras Sequential models
+Keras `Sequential` models are linear stacks of layers with a single input and a single output. They map directly to DL4J's `MultiLayerNetwork`.
 
-Let's say you start with defining a simple MLP using Keras:
+---
+
+## Define a Sequential Model in Keras
 
 ```python
 from keras.models import Sequential
@@ -15,50 +18,236 @@ from keras.layers import Dense
 model = Sequential()
 model.add(Dense(units=64, activation='relu', input_dim=100))
 model.add(Dense(units=10, activation='softmax'))
-model.compile(loss='categorical_crossentropy',optimizer='sgd', metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
 ```
 
-In Keras there are several ways to save a model. You can store the whole model (model definition, weights and training configuration) as HDF5 file, just the model configuration (as JSON or YAML file) or just the weights (as HDF5 file). Here's how you do each:
+---
+
+## Saving the Model
+
+Keras provides several serialization options, each corresponding to a different import method in DL4J:
 
 ```python
-model.save('full_model.h5')  # save everything in HDF5 format
+# Option 1: Save full model — architecture, weights, and training config
+model.save('full_model.h5')
 
-model_json = model.to_json()  # save just the config. replace with "to_yaml" for YAML serialization
+# Option 2: Save architecture as JSON
+model_json = model.to_json()
 with open("model_config.json", "w") as f:
     f.write(model_json)
 
-model.save_weights('model_weights.h5') # save just the weights.
+# Option 3: Save weights only
+model.save_weights('model_weights.h5')
 ```
 
-If you decide to save the full model, you will have access to the training configuration of the model, otherwise you don't. So if you want to further train your model in DL4J after import, keep that in mind and use `model.save(...)` to persist your model.
+If you intend to continue training the model in DL4J after import, use `model.save(...)` so that the training configuration (optimizer settings, loss function) is preserved. The other options omit training configuration.
 
-## Loading your Keras model
+---
 
-Let's start with the recommended way, loading the full model back into DL4J (we assume it's on your class path):
+## Loading the Model in Java
+
+### Load Full Model (Recommended)
 
 ```java
+import org.deeplearning4j.nn.modelimport.keras.KerasModelImport;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.nd4j.linalg.io.ClassPathResource;
+
 String fullModel = new ClassPathResource("full_model.h5").getFile().getPath();
 MultiLayerNetwork model = KerasModelImport.importKerasSequentialModelAndWeights(fullModel);
 ```
 
-In case you didn't compile your Keras model, it will not come with a training configuration. In that case you need to explicitly tell model import to ignore training configuration by setting the `enforceTrainingConfig` flag to false like this:
+If the Keras model was not compiled (no training configuration in the HDF5 file), pass `false` for `enforceTrainingConfig`:
 
 ```java
 MultiLayerNetwork model = KerasModelImport.importKerasSequentialModelAndWeights(fullModel, false);
 ```
 
-To load just the model configuration from JSON, you use `KerasModelImport` as follows:
+### Load from Separate Config and Weights Files
+
+```java
+String modelJson    = new ClassPathResource("model_config.json").getFile().getPath();
+String modelWeights = new ClassPathResource("model_weights.h5").getFile().getPath();
+
+MultiLayerNetwork model = KerasModelImport.importKerasSequentialModelAndWeights(modelJson, modelWeights);
+```
+
+### Load Configuration Only
 
 ```java
 String modelJson = new ClassPathResource("model_config.json").getFile().getPath();
-MultiLayerNetworkConfiguration modelConfig = KerasModelImport.importKerasSequentialConfiguration(modelJson)
+MultiLayerConfiguration config = KerasModelImport.importKerasSequentialConfiguration(modelJson);
+
+MultiLayerNetwork model = new MultiLayerNetwork(config);
+model.init();
 ```
 
-If additionally you also want to load the model weights with the configuration, here's what you do:
+---
+
+## Running Inference
+
+After import, inference follows standard DL4J conventions:
 
 ```java
-String modelWeights = new ClassPathResource("model_weights.h5").getFile().getPath();
-MultiLayerNetwork network = KerasModelImport.importKerasSequentialModelAndWeights(modelJson, modelWeights)
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
+
+// Batch of 256 samples, each with 100 features
+INDArray input = Nd4j.create(256, 100);
+INDArray output = model.output(input);
+
+// output shape: [256, 10]
 ```
 
-In the latter two cases no training configuration will be read.
+---
+
+## Training After Import
+
+If the model was imported with training configuration, you can continue training directly:
+
+```java
+// Create dummy training data
+INDArray features = Nd4j.rand(1000, 100);
+INDArray labels   = Nd4j.zeros(1000, 10);
+// ... populate labels ...
+
+org.nd4j.linalg.dataset.DataSet ds = new org.nd4j.linalg.dataset.DataSet(features, labels);
+model.fit(ds);
+```
+
+For larger datasets, use a `DataSetIterator`:
+
+```java
+org.nd4j.linalg.dataset.api.iterator.DataSetIterator iterator = /* your iterator */;
+model.fit(iterator);
+```
+
+---
+
+## KerasSequentialModel API Reference
+
+The `KerasSequentialModel` class underlies `KerasModelImport` for Sequential models.
+
+---
+
+### KerasSequentialModel
+
+[source](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/KerasSequentialModel.java)
+
+Builds a `MultiLayerNetwork` from a Keras Sequential model configuration.
+
+#### getMultiLayerConfiguration
+
+```java
+public MultiLayerConfiguration getMultiLayerConfiguration()
+        throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
+```
+
+Returns the `MultiLayerConfiguration` from the parsed Keras Sequential model configuration.
+
+---
+
+#### getMultiLayerNetwork
+
+```java
+public MultiLayerNetwork getMultiLayerNetwork()
+        throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
+```
+
+Builds and returns a `MultiLayerNetwork` from this Keras Sequential model configuration, with weights loaded.
+
+---
+
+#### getMultiLayerNetwork (with weight control)
+
+```java
+public MultiLayerNetwork getMultiLayerNetwork(boolean importWeights)
+        throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
+```
+
+Builds and returns a `MultiLayerNetwork`. Pass `importWeights=false` to get a randomly-initialized network with the correct architecture.
+
+**Parameters:**
+- `importWeights` — whether to import weights from the HDF5 source
+
+---
+
+## Example: CNN for Image Classification
+
+**Python**
+
+```python
+from keras.models import Sequential
+from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
+
+model = Sequential()
+model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)))
+model.add(MaxPooling2D((2, 2)))
+model.add(Conv2D(64, (3, 3), activation='relu'))
+model.add(MaxPooling2D((2, 2)))
+model.add(Flatten())
+model.add(Dense(128, activation='relu'))
+model.add(Dropout(0.5))
+model.add(Dense(10, activation='softmax'))
+
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+model.save('cnn_classifier.h5')
+```
+
+**Java**
+
+```java
+String modelPath = new ClassPathResource("cnn_classifier.h5").getFile().getPath();
+MultiLayerNetwork model = KerasModelImport.importKerasSequentialModelAndWeights(modelPath);
+
+System.out.println(model.summary());
+
+// Input: batch of 4 grayscale 28x28 images
+// DL4J uses NCHW format: [batch, channels, height, width]
+INDArray input = Nd4j.rand(4, 1, 28, 28);
+INDArray output = model.output(input);
+
+// output shape: [4, 10]
+System.out.println("Predictions shape: " + java.util.Arrays.toString(output.shape()));
+```
+
+---
+
+## Example: LSTM for Sequence Classification
+
+**Python**
+
+```python
+from keras.models import Sequential
+from keras.layers import LSTM, Dense
+
+model = Sequential()
+model.add(LSTM(64, input_shape=(50, 10)))  # 50 timesteps, 10 features
+model.add(Dense(5, activation='softmax'))
+
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+model.save('lstm_classifier.h5')
+```
+
+**Java**
+
+```java
+String modelPath = new ClassPathResource("lstm_classifier.h5").getFile().getPath();
+MultiLayerNetwork model = KerasModelImport.importKerasSequentialModelAndWeights(modelPath);
+
+// DL4J RNN input: [batch, features, timesteps]
+INDArray input = Nd4j.rand(8, 10, 50);
+INDArray output = model.output(input);
+
+// output shape: [8, 5]
+```
+
+---
+
+## Troubleshooting
+
+**Model loads as ComputationGraph by mistake**: ensure you call `importKerasSequentialModelAndWeights` (not `importKerasModelAndWeights`) for Sequential models.
+
+**Input shape mismatch**: DL4J uses NCHW for images (channels first) while Keras defaults to NHWC (channels last). The importer handles this transpose automatically for Conv2D and pooling layers. However, if you build `INDArray` inputs manually, verify the expected shape from `model.summary()`.
+
+**LSTM input ordering**: DL4J RNN layers expect `[batch, features, timesteps]`, which is the transpose of Keras's `[batch, timesteps, features]`. The importer adds the necessary `RnnToFeedForwardPreProcessor` and `FeedForwardToRnnPreProcessor` where needed, but verify the input array ordering when constructing inputs manually.

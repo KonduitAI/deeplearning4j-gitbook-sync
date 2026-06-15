@@ -1,93 +1,280 @@
 ---
-description: Setting available Memory/RAM for a DL4J application
+title: "Memory Configuration"
+description: "JVM memory flags, off-heap configuration, and memory management for ND4J and DL4J"
 ---
 
-# Memory
+## Overview
 
-### Memory Management for ND4J/DL4J: How does it work?
+DL4J and ND4J use two distinct memory regions:
 
-ND4J uses off-heap memory to store NDArrays, to provide better performance while working with NDArrays from native code such as BLAS and CUDA libraries.
+1. **JVM heap** — managed by the Java garbage collector. Holds Java objects, model configurations, and metadata.
+2. **Off-heap memory** — allocated outside the JVM, managed by JavaCPP. Holds all `INDArray` data (tensor contents). This memory is shared with native C++ code and, when using CUDA, with GPU memory.
 
-"Off-heap" means that the memory is allocated outside of the JVM (Java Virtual Machine) and hence isn't managed by the JVM's garbage collection (GC). On the Java/JVM side, we only hold pointers to the off-heap memory, which can be passed to the underlying C++ code via JNI for use in ND4J operations.
+Understanding both regions and setting appropriate limits is critical to avoiding out-of-memory (OOM) errors and achieving good performance.
 
-To manage memory allocations, we use two approaches:
+## JVM Heap Flags
 
-* JVM Garbage Collector (GC) and WeakReference tracking
-* MemoryWorkspaces - see [Workspaces guide](workspaces.md) for details
+| Flag | Purpose |
+|---|---|
+| `-Xms<size>` | Initial JVM heap size. JVM allocates this at startup. |
+| `-Xmx<size>` | Maximum JVM heap size. JVM will not exceed this limit. |
 
-Despite the differences between these two approaches, the idea is the same: once an NDArray is no longer required on the Java side, the off-heap associated with it should be released so that it can be reused later. The difference between the GC and `MemoryWorkspaces` approaches is in when and how the memory is released.
+Examples:
 
-* For JVM/GC memory: whenever an INDArray is collected by the garbage collector, its off-heap memory will be deallocated, assuming it is not used elsewhere.
-* For `MemoryWorkspaces`: whenever an INDArray leaves the workspace scope - for example, when a layer finished forward pass/predictions - its memory may be reused without deallocation and reallocation. This results in better performance for cyclical workloads like neural network training and inference.
-
-### Configuring Memory Limits
-
-With DL4J/ND4J, there are two types of memory limits to be aware of and configure: The on-heap JVM memory limit, and the off-heap memory limit, where NDArrays live. Both limits are controlled via Java command-line arguments:
-
-* `-Xms` - this defines how much memory JVM heap will use at application start.
-* `-Xmx` - this allows you to specify JVM heap memory limit (maximum, at any point). Only allocated up to this amount (at the discretion of the JVM) if required.
-* `-Dorg.bytedeco.javacpp.maxbytes`  - this allows you to specify the off-heap memory limit. This can also be a percentage, in which case it would apply to maxMemory.
-* `-Dorg.bytedeco.javacpp.maxphysicalbytes` - this specifies the maximum bytes for the entire process - usually set to `maxbytes` plus Xmx plus a bit extra, in case other libraries require some off-heap memory also. Unlike setting `maxbytes` setting `maxphysicalbytes` is optional. This can also be a percentage (>100%), in which case it would apply to maxMemory.
-
-Example: Configuring 1GB initial on-heap, 2GB max on-heap, 8GB off-heap, 10GB maximum for process:
-
-```
--Xms1G -Xmx2G -Dorg.bytedeco.javacpp.maxbytes=8G -Dorg.bytedeco.javacpp.maxphysicalbytes=10G
+```shell
+-Xms2G -Xmx8G   # Start with 2 GB, allow up to 8 GB
+-Xms512m -Xmx2G  # Lightweight process
 ```
 
-### Gotchas: A few things to watch out for
+**Recommendation:** Keep the JVM heap relatively small. DL4J's training data and model parameters live in off-heap memory, not on the JVM heap. A typical setting is `Xmx2G` to `Xmx8G`. Setting `Xmx` too high leaves less room for off-heap memory.
 
-* With GPU systems, the maxbytes and maxphysicalbytes settings currently also effectively defines the memory limit for the GPU, since the off-heap memory is mapped (via NDArrays) to the GPU - read more about this in the GPU-section below.
-* For many applications, you want less RAM to be used in JVM heap, and more RAM to be used in off-heap, since all NDArrays are stored there. If you allocate too much to the JVM heap, there will not be enough memory left for the off-heap memory.
-* If you get a "RuntimeException: Can't allocate \[HOST] memory: xxx; threadId: yyy", you have run out of off-heap memory. You should most often use a WorkspaceConfiguration to handle your NDArrays allocation, in particular in e.g. training or evaluation/inference loops - if you do not, the NDArrays and their off-heap (and GPU) resources are reclaimed using the JVM GC, which might introduce severe latency and possible out of memory situations.
-* If you don't specify JVM heap limit, it will use 1/4 of your total system RAM as the limit, by default.
-* If you don't specify off-heap memory limit, the JVM heap limit (Xmx) will be used by default. i.e. `-Xmx8G` will mean that 8GB can be used by JVM heap, and an additional 8GB can be used by ND4j in off-heap.
-* In limited memory environments, it's usually a bad idea to use high `-Xmx` value together with `-Xms` option. That is because doing so won't leave enough off-heap memory. Consider a 16GB system in which you set `-Xms14G`: 14GB of 16GB would be allocated to the JVM, leaving only 2GB for the off-heap memory, the OS and all other programs.
+## Off-Heap Memory Flags
 
-## Memory-mapped files
+| Flag | Purpose |
+|---|---|
+| `-Dorg.bytedeco.javacpp.maxbytes=<size>` | Maximum off-heap memory for JavaCPP (and ND4J). On GPU systems, this also controls how much GPU memory ND4J may allocate. |
+| `-Dorg.bytedeco.javacpp.maxphysicalbytes=<size>` | Maximum total process memory. Should be set to `maxbytes + Xmx + overhead`. Optional but useful to prevent runaway allocation. |
 
-ND4J supports the use of a memory-mapped file instead of RAM when using the `nd4j-native` backend. On one hand, it's slower then RAM, but on other hand, it allows you to allocate memory chunks in a manner impossible otherwise.
+Size suffixes: `K`, `M`, `G` (e.g., `8G` = 8 gigabytes).
 
-Here's sample code:
+Example — 1 GB JVM, 2 GB max JVM, 8 GB off-heap, 11 GB total process cap:
+
+```shell
+-Xms1G -Xmx2G -Dorg.bytedeco.javacpp.maxbytes=8G -Dorg.bytedeco.javacpp.maxphysicalbytes=11G
+```
+
+If `maxbytes` is not set, it defaults to the value of `-Xmx`. This means a process with `-Xmx8G` would allow 8 GB for JVM heap AND 8 GB for off-heap — totalling up to 16 GB of RAM usage.
+
+## Recommended Configurations
+
+### Development workstation (16 GB RAM, CPU only)
+
+```shell
+-Xms1G -Xmx4G -Dorg.bytedeco.javacpp.maxbytes=10G -Dorg.bytedeco.javacpp.maxphysicalbytes=14G
+```
+
+### Server training (64 GB RAM, CPU only)
+
+```shell
+-Xms2G -Xmx8G -Dorg.bytedeco.javacpp.maxbytes=48G -Dorg.bytedeco.javacpp.maxphysicalbytes=58G
+```
+
+### GPU training (24 GB VRAM, 64 GB system RAM)
+
+```shell
+-Xms2G -Xmx6G -Dorg.bytedeco.javacpp.maxbytes=22G -Dorg.bytedeco.javacpp.maxphysicalbytes=30G
+```
+
+Set `maxbytes` slightly below VRAM capacity to leave room for CUDA runtime overhead and cuDNN workspace allocations.
+
+### Inference server (low latency, 32 GB RAM, CPU)
+
+```shell
+-Xms512m -Xmx2G -Dorg.bytedeco.javacpp.maxbytes=16G -Dorg.bytedeco.javacpp.maxphysicalbytes=20G
+```
+
+## GPU Memory Management
+
+When using the CUDA backend (`nd4j-cuda-*`), off-heap memory is mapped to GPU memory. The `maxbytes` flag controls how much GPU RAM ND4J is permitted to allocate. The GPU and CPU off-heap pools share this limit.
+
+ND4J also allocates a CPU-side off-heap mirror buffer for each GPU array to allow efficient CPU-GPU communication. This is why CPU RAM usage will always be higher than GPU VRAM usage in a CUDA setup.
+
+### Rule of thumb for GPU memory
+
+Set `maxbytes` close to — but not exceeding — your GPU's available VRAM. Subtract approximately 1 GB to 2 GB for CUDA runtime and driver overhead:
+
+```
+GPU with 16 GB VRAM: -Dorg.bytedeco.javacpp.maxbytes=14G
+GPU with 40 GB VRAM: -Dorg.bytedeco.javacpp.maxbytes=36G
+```
+
+### Minimum GPU VRAM requirements
+
+Deep learning workloads generally require:
+- 4 GB VRAM minimum (small networks, small batches)
+- 8 GB VRAM recommended
+- 16 GB+ for large CNNs or transformers with moderate batch sizes
+
+GPUs with less than 2 GB VRAM are not suitable for DL4J training.
+
+### Using HOST_ONLY memory with CUDA
+
+In some cases you may need arrays that reside in CPU RAM even when using the CUDA backend. Use `MirroringPolicy.HOST_ONLY` in a workspace configuration:
 
 ```java
-WorkspaceConfiguration mmap = WorkspaceConfiguration.builder()
-                .initialSize(1000000000)
-                .policyLocation(LocationPolicy.MMAP)
-                .build();
+WorkspaceConfiguration hostOnlyConfig = WorkspaceConfiguration.builder()
+    .policyAllocation(AllocationPolicy.STRICT)
+    .policyLearning(LearningPolicy.FIRST_LOOP)
+    .policyMirroring(MirroringPolicy.HOST_ONLY)
+    .policySpill(SpillPolicy.EXTERNAL)
+    .build();
 
-try (MemoryWorkspace ws = Nd4j.getWorkspaceManager().getAndActivateWorkspace(mmap, "M2")) {
-    INDArray x = Nd4j.create(10000);
+try (MemoryWorkspace ws = Nd4j.getWorkspaceManager()
+        .getAndActivateWorkspace(hostOnlyConfig, "HOST_WS")) {
+    INDArray cpuArray = Nd4j.create(10000);
+    // cpuArray data stays in CPU RAM, not GPU VRAM
 }
 ```
 
-In this case, a 1GB temporary file will be created and mmap'ed, and NDArray `x` will be created in that space. Obviously, this option is mostly viable for cases when you need NDArrays that can't fit into your RAM.
+This is only recommended for in-memory cache scenarios where you use `INDArray.unsafeDuplication()`. Host-only arrays are slow to use in computation because they must be copied to GPU for each operation.
 
-### GPUs
+## Memory-Mapped Files
 
-When using GPUs, oftentimes your CPU RAM will be greater than GPU RAM. When GPU RAM is less than CPU RAM, you need to monitor how much RAM is being used off-heap. You can check this based on the JavaCPP options specified above.
-
-We allocate memory on the GPU equivalent to the amount of off-heap memory you specify. We don't use any more of your GPU than that. You are also allowed to specify heap space greater than your GPU (that's not encouraged, but it's possible). If you do so, your GPU will run out of RAM when trying to run jobs.
-
-We also allocate off-heap memory on the CPU RAM as well. This is for efficient communicaton of CPU to GPU, and CPU accessing data from an NDArray without having to fetch data from the GPU each time you call for it.
-
-If JavaCPP or your GPU throw an out-of-memory error (OOM), or even if your compute slows down due to GPU memory being limited, then you may want to either decrease batch size or increase the amount of off-heap memory that JavaCPP is allowed to allocate, if that's possible.
-
-Try to run with an off-heap memory equal to your GPU's RAM. Also, always remember to set up a small JVM heap space using the `Xmx` option.
-
-Note that if your GPU has < 2g of RAM, it's probably not usable for deep learning. You should consider using your CPU if this is the case. Typical deep-learning workloads should have 4GB of RAM _at minimum_. Even that is small. 8GB of RAM on a GPU is recommended for deep learning workloads.
-
-It is possible to use HOST-only memory with a CUDA backend. That can be done using workspaces.
-
-Example:
+The `nd4j-native` (CPU) backend supports memory-mapped files, allowing you to work with `INDArray` data that exceeds available RAM:
 
 ```java
-WorkspaceConfiguration basicConfig = WorkspaceConfiguration.builder()
-    .policyAllocation(AllocationPolicy.STRICT)
-    .policyLearning(LearningPolicy.FIRST_LOOP)
-    .policyMirroring(MirroringPolicy.HOST_ONLY) // <--- this option does this trick
-    .policySpill(SpillPolicy.EXTERNAL)
+WorkspaceConfiguration mmapConfig = WorkspaceConfiguration.builder()
+    .initialSize(1_000_000_000L)  // 1 GB mapped file
+    .policyLocation(LocationPolicy.MMAP)
     .build();
+
+try (MemoryWorkspace ws = Nd4j.getWorkspaceManager()
+        .getAndActivateWorkspace(mmapConfig, "MMAP_WS")) {
+    INDArray largeArray = Nd4j.create(250_000_000);  // 1 GB float array
+    // largeArray data is backed by a temporary mmap file
+}
 ```
 
-It's not recommended to use HOST-only arrays directly, since they will dramatically reduce performance. But they might be useful as in-memory cache pairs with the `INDArray.unsafeDuplication()` method.
+The file is created as a temp file and cleaned up when the workspace is closed. Performance is lower than RAM-backed arrays but allows processing datasets that do not fit in memory.
+
+## Garbage Collection Configuration
+
+The JVM garbage collector can cause "stop-the-world" pauses that disrupt training. Since ND4J manages array memory off-heap through workspaces, GC pauses primarily affect the JVM-side object lifecycle.
+
+### ND4J's periodic GC
+
+ND4J calls `System.gc()` periodically to trigger cleanup of `WeakReference` objects that track off-heap allocations. By default this occurs every 5 seconds. During training with workspaces enabled, this is usually unnecessary and can introduce latency.
+
+Reduce GC frequency:
+
+```java
+// Call System.gc() at most every 10 seconds (10000 ms)
+Nd4j.getMemoryManager().setAutoGcWindow(10000);
+```
+
+Disable periodic GC entirely (safe when workspaces are enabled for all operations):
+
+```java
+Nd4j.getMemoryManager().togglePeriodicGc(false);
+```
+
+Place these calls before `model.fit(...)`.
+
+### JVM GC tuning flags
+
+For training workloads, G1GC is a reasonable default on Java 11+:
+
+```shell
+-XX:+UseG1GC
+-XX:G1HeapRegionSize=32m
+-XX:MaxGCPauseMillis=200
+```
+
+If you have a large JVM heap (>16 GB), ZGC or Shenandoah can reduce pause times further:
+
+```shell
+# ZGC (Java 15+, low latency)
+-XX:+UseZGC
+
+# Shenandoah (OpenJDK, low latency)
+-XX:+UseShenandoahGC
+```
+
+## Diagnosing OOM Errors
+
+### `Can't allocate [HOST] memory`
+
+```
+RuntimeException: Can't allocate [HOST] memory: 1073741824; threadId: 1
+```
+
+This means the off-heap memory limit was exceeded. Solutions:
+
+1. Increase `maxbytes`: `-Dorg.bytedeco.javacpp.maxbytes=16G`
+2. Enable workspaces so memory is reused instead of newly allocated each iteration.
+3. Reduce batch size to lower peak memory usage per iteration.
+4. Check for memory leaks: arrays created in loops without a workspace scope will accumulate.
+
+### `CUDA out of memory`
+
+```
+org.nd4j.jita.handler.impl.CudaZeroHandler - Can't allocate [DEVICE] memory...
+```
+
+This means GPU VRAM was exhausted. Solutions:
+
+1. Reduce batch size.
+2. Switch to `NO_WORKSPACE` cuDNN algo mode if using cuDNN, as `PREFER_FASTEST` allocates large workspace buffers.
+3. Verify `maxbytes` is not set higher than available VRAM.
+4. Check that no leftover arrays from previous iterations are being retained in memory.
+
+### JVM heap OOM
+
+```
+java.lang.OutOfMemoryError: Java heap space
+```
+
+This is a JVM-side issue, not off-heap. Solutions:
+
+1. Increase `-Xmx`.
+2. Check for accumulation of Java objects (e.g., storing DataSet objects in a large list).
+3. Use a profiler to identify which objects dominate heap usage.
+
+### Diagnosing with heap dumps
+
+To capture a heap dump for analysis:
+
+```shell
+# Get PID
+jps -lv
+
+# Create heap dump
+jmap -dump:format=b,file=heap.hprof <PID>
+```
+
+Open the `.hprof` file in VisualVM or YourKit to see object counts by type.
+
+## Monitoring Memory Usage
+
+### At runtime
+
+```java
+// JVM heap
+long usedHeap = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+long maxHeap  = Runtime.getRuntime().maxMemory();
+System.out.printf("Heap: %d MB used / %d MB max%n",
+    usedHeap / 1_000_000, maxHeap / 1_000_000);
+
+// Off-heap via JavaCPP
+long offHeapUsed = Pointer.totalBytes();
+System.out.printf("Off-heap: %d MB used%n", offHeapUsed / 1_000_000);
+```
+
+### GPU memory
+
+```java
+// When using CUDA backend
+long[] gpuMem = CudaEnvironment.getInstance()
+    .getConfiguration()
+    .getAvailableDevices()
+    .get(0)
+    .getFreeAndTotalMemory();
+System.out.printf("GPU free: %d MB / total: %d MB%n",
+    gpuMem[0] / 1_000_000, gpuMem[1] / 1_000_000);
+```
+
+## Summary of Common Pitfalls
+
+| Pitfall | Effect | Fix |
+|---|---|---|
+| High `-Xms` + large `-Xmx` on a constrained system | No room for off-heap | Keep `-Xms` small; reduce `-Xmx` |
+| No `maxbytes` set | Off-heap defaults to `-Xmx` value, may be insufficient | Set `maxbytes` explicitly |
+| `maxbytes` > GPU VRAM | CUDA OOM | Set `maxbytes` to VRAM - 1–2 GB |
+| Arrays created outside workspaces in training loop | Slow GC pressure, OOM | Enable workspaces; see [Workspaces](./workspaces) |
+| Periodic GC enabled during workspace-based training | Latency spikes | `setAutoGcWindow(10000)` or disable |
+
+## Related Pages
+
+- [Workspace Configuration](./workspaces) — workspace-based memory management
+- [GPU and CPU Setup](./gpu-cpu) — backend selection
+- [Performance Debugging](./performance-debugging) — diagnosing slowdowns and OOM errors

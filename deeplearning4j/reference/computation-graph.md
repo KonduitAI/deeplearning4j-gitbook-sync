@@ -1,220 +1,436 @@
 ---
-description: How to build complex networks with DL4J computation graph.
+title: "ComputationGraph"
+description: "The ComputationGraph API — multi-input, multi-output, skip connections, and arbitrary DAG topologies"
 ---
 
-# Computation Graph
+## Overview
 
-## Building Complex Network Architectures with Computation Graph
+`ComputationGraph` is DL4J's general-purpose network class. Unlike `MultiLayerNetwork`, which connects layers in a fixed chain, `ComputationGraph` supports arbitrary directed acyclic graph (DAG) topologies:
 
-This page describes how to build more complicated networks, using DL4J's Computation Graph functionality.
+- Multiple network inputs
+- Multiple network outputs (mixed classification and regression)
+- Skip connections and residual connections
+- Branching and merging of activation streams
+- Siamese, multi-task, and encoder-decoder architectures
 
-## Overview of Computation Graph
+Everything `MultiLayerNetwork` can do, `ComputationGraph` can also do — though configuration is slightly more verbose.
 
-DL4J has two types of networks comprised of multiple layers:
+---
 
-* The [MultiLayerNetwork](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/nn/multilayer/MultiLayerNetwork.java), which is essentially a stack of neural network layers (with a single input layer and single output layer), and
-* The [ComputationGraph](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/nn/graph/ComputationGraph.java), which allows for greater freedom in network architectures
+## When to Use ComputationGraph vs. MultiLayerNetwork
 
-Specifically, the ComputationGraph allows for networks to be built with the following features:
+| Requirement | MultiLayerNetwork | ComputationGraph |
+|-------------|:-----------------:|:----------------:|
+| Single input, single output | Yes | Yes |
+| Multiple inputs | No | Yes |
+| Multiple outputs | No | Yes |
+| Skip / residual connections | No | Yes |
+| Complex loss combinations | No | Yes |
+| Siamese / shared-weight sub-networks | No | Yes |
+| Simpler configuration | Yes (preferred) | More verbose |
 
-* Multiple network input arrays
-* Multiple network outputs (including mixed classification/regression architectures)
-* Layers connected to other layers using a directed acyclic graph connection structure (instead of just a stack of layers)
+---
 
-As a general rule, when building networks with a single input layer, a single output layer, and an input->a->b->c->output type connection structure: MultiLayerNetwork is usually the preferred network. However, everything that MultiLayerNetwork can do, ComputationGraph can do as well - though the configuration may be a little more complicated.
+## Graph Building API
 
-## Computation Graph: Some Example Use Cases
-
-Examples of some architectures that can be built using ComputationGraph include:
-
-* Multi-task learning architectures
-* Recurrent neural networks with skip connections
-* [GoogLeNet](https://arxiv.org/abs/1409.4842), a complex type of convolutional netural network for image classification
-* [Image caption generation](https://arxiv.org/abs/1411.4555)
-* [Convolutional networks for sentence classification](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/convolution/sentenceclassification/CnnSentenceClassificationExample.java)
-* [Residual learning convolutional neural networks](https://arxiv.org/abs/1512.03385)
-
-## Configuring a Computation Graph
-
-### Types of Graph Vertices
-
-The basic idea is that in the ComputationGraph, the core building block is the [GraphVertex](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/nn/graph/vertex/GraphVertex.java), instead of layers. Layers (or, more accurately the [LayerVertex](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/nn/graph/vertex/impl/LayerVertex.java) objects), are but one type of vertex in the graph. Other types of vertices include:
-
-* Input Vertices
-* Element-wise operation vertices
-* Merge vertices
-* Subset vertices
-* Preprocessor vertices
-
-These types of graph vertices are described briefly below.
-
-**LayerVertex**: Layer vertices (graph vertices with neural network layers) are added using the `.addLayer(String,Layer,String...)` method. The first argument is the label for the layer, and the last arguments are the inputs to that layer. If you need to manually add an [InputPreProcessor](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/nn/conf/preprocessor) (usually this is unnecessary - see next section) you can use the `.addLayer(String,Layer,InputPreProcessor,String...)` method.
-
-**InputVertex**: Input vertices are specified by the `addInputs(String...)` method in your configuration. The strings used as inputs can be arbitrary - they are user-defined labels, and can be referenced later in the configuration. The number of strings provided define the number of inputs; the order of the input also defines the order of the corresponding INDArrays in the fit methods (or the DataSet/MultiDataSet objects).
-
-**ElementWiseVertex**: Element-wise operation vertices do for example an element-wise addition or subtraction of the activations out of one or more other vertices. Thus, the activations used as input for the ElementWiseVertex must all be the same size, and the output size of the elementwise vertex is the same as the inputs.
-
-**MergeVertex**: The MergeVertex concatenates/merges the input activations. For example, if a MergeVertex has 2 inputs of size 5 and 10 respectively, then output size will be 5+10=15 activations. For convolutional network activations, examples are merged along the depth: so suppose the activations from one layer have 4 features and the other has 5 features (both with (4 or 5) x width x height activations), then the output will have (4+5) x width x height activations.
-
-**SubsetVertex**: The subset vertex allows you to get only part of the activations out of another vertex. For example, to get the first 5 activations out of another vertex with label "layer1", you can use `.addVertex("subset1", new SubsetVertex(0,4), "layer1")`: this means that the 0th through 4th (inclusive) activations out of the "layer1" vertex will be used as output from the subset vertex.
-
-**PreProcessorVertex**: Occasionally, you might want to the functionality of an [InputPreProcessor](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/nn/conf/preprocessor) without that preprocessor being associated with a layer. The PreProcessorVertex allows you to do this.
-
-Finally, it is also possible to define custom graph vertices by implementing both a [configuration](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/nn/conf/graph/GraphVertex.java) and [implementation](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/nn/graph/vertex/GraphVertex.java) class for your custom GraphVertex.
-
-### Example 1: Recurrent Network with Skip Connections
-
-Suppose we wish to build the following recurrent neural network architecture:
-
-For the sake of this example, lets assume our input data is of size 5. Our configuration would be as follows:
+Configuration starts the same way as `MultiLayerNetwork` — with `NeuralNetConfiguration.Builder` — but instead of calling `.list()` you call `.graphBuilder()`.
 
 ```java
+import org.deeplearning4j.nn.conf.ComputationGraphConfiguration;
+import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
+import org.deeplearning4j.nn.graph.ComputationGraph;
+import org.nd4j.linalg.api.buffer.DataType;
+import org.nd4j.linalg.learning.config.Adam;
+
 ComputationGraphConfiguration conf = new NeuralNetConfiguration.Builder()
-    .updater(new Sgd(0.01))
+    .seed(42)
+    .dataType(DataType.FLOAT)
+    .updater(new Adam(1e-3))
+    .weightInit(WeightInit.XAVIER)
     .graphBuilder()
-    .addInputs("input") //can use any label for this
-    .addLayer("L1", new GravesLSTM.Builder().nIn(5).nOut(5).build(), "input")
-    .addLayer("L2",new RnnOutputLayer.Builder().nIn(5+5).nOut(5).build(), "input", "L1")
-    .setOutputs("L2")    //We need to specify the network outputs and their order
+    // --- define inputs, layers, vertices, outputs here ---
+    .addInputs("input")
+    .addLayer("dense1",
+        new DenseLayer.Builder().nIn(784).nOut(256).activation(Activation.RELU).build(),
+        "input")
+    .addLayer("out",
+        new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+            .nIn(256).nOut(10).activation(Activation.SOFTMAX).build(),
+        "dense1")
+    .setOutputs("out")
     .build();
 
-ComputationGraph net = new ComputationGraph(conf);
-net.init();
+ComputationGraph model = new ComputationGraph(conf);
+model.init();
 ```
 
-Note that in the .addLayer(...) methods, the first string ("L1", "L2") is the name of that layer, and the strings at the end (\["input"], \["input","L1"]) are the inputs to that layer.
+### addInputs(String...)
 
-### Example 2: Multiple Inputs and Merge Vertex
+Declares one or more named network inputs. The order determines which position in the `INDArray[]` passed to `fit()` and `output()` corresponds to which input.
 
-Consider the following architecture:
+```java
+.addInputs("imageInput", "metadataInput")
+```
 
-Here, the merge vertex takes the activations out of layers L1 and L2, and merges (concatenates) them: thus if layers L1 and L2 both have has 4 output activations (.nOut(4)) then the output size of the merge vertex is 4+4=8 activations.
+### addLayer(String, Layer, String...)
 
-To build the above network, we use the following configuration:
+Adds a layer vertex to the graph.
+
+- First argument: unique name for this layer.
+- Second argument: layer configuration.
+- Remaining arguments: names of this layer's inputs (other layers or declared inputs).
+
+```java
+.addLayer("conv1",
+    new ConvolutionLayer.Builder(3, 3).nIn(3).nOut(32).activation(Activation.RELU).build(),
+    "imageInput")
+```
+
+### addVertex(String, GraphVertex, String...)
+
+Adds a non-layer vertex (merge, element-wise op, subset, etc.):
+
+```java
+.addVertex("merge", new MergeVertex(), "branch1", "branch2")
+.addVertex("add",   new ElementWiseVertex(ElementWiseVertex.Op.Add), "L1", "shortcut")
+```
+
+### setOutputs(String...)
+
+Declares which vertices produce the network's outputs. The order determines the position of output arrays in `output()` return values and in `MultiDataSet` label arrays.
+
+```java
+.setOutputs("classOutput", "regressionOutput")
+```
+
+### setInputTypes(InputType...)
+
+Enables automatic `nIn` inference and automatic insertion of pre-processors between mismatched layer types (e.g., CNN -> Dense):
+
+```java
+.setInputTypes(InputType.convolutional(32, 32, 3), InputType.feedForward(16))
+```
+
+---
+
+## Types of Graph Vertices
+
+### LayerVertex
+
+Standard neural network layer. Added via `addLayer()`. Supports all layer types available in `MultiLayerNetwork`.
+
+### InputVertex
+
+Created automatically when you call `addInputs()`. One InputVertex per named input.
+
+### MergeVertex
+
+Concatenates activations from two or more inputs along the feature dimension. Use this to combine branches.
+
+```java
+// L1 outputs 64 features, L2 outputs 64 features -> merge outputs 128 features
+.addVertex("merged", new MergeVertex(), "L1", "L2")
+```
+
+For CNN activations, merging happens along the channel dimension. For RNN activations, along the feature dimension.
+
+### ElementWiseVertex
+
+Applies an element-wise operation to inputs of identical shape:
+
+```java
+// Residual / skip connection: add input directly to layer output
+.addVertex("residual", new ElementWiseVertex(ElementWiseVertex.Op.Add), "blockOut", "shortcut")
+```
+
+Supported ops: `Add`, `Subtract`, `Product`, `Average`, `Max`.
+
+### SubsetVertex
+
+Extracts a range of features from a vertex's output:
+
+```java
+// Take features 0..63 from a 128-feature layer
+.addVertex("first64", new SubsetVertex(0, 63), "sharedLayer")
+```
+
+### PreProcessorVertex
+
+Applies an `InputPreProcessor` as a standalone graph node (without attaching it to a layer):
+
+```java
+.addVertex("reshape", new PreprocessorVertex(new CnnToFeedForwardPreProcessor(7, 7, 512)), "convOut")
+```
+
+---
+
+## Example 1: Recurrent Network with Skip Connection
 
 ```java
 ComputationGraphConfiguration conf = new NeuralNetConfiguration.Builder()
-        .updater(new Sgd(0.01))
+    .seed(42)
+    .dataType(DataType.FLOAT)
+    .updater(new Adam(1e-3))
     .graphBuilder()
-    .addInputs("input1", "input2")
-    .addLayer("L1", new DenseLayer.Builder().nIn(3).nOut(4).build(), "input1")
-    .addLayer("L2", new DenseLayer.Builder().nIn(3).nOut(4).build(), "input2")
-    .addVertex("merge", new MergeVertex(), "L1", "L2")
-    .addLayer("out", new OutputLayer.Builder().nIn(4+4).nOut(3).build(), "merge")
+    .addInputs("input")
+    // LSTM layer reading from input
+    .addLayer("lstm1",
+        new LSTM.Builder().nIn(32).nOut(64).activation(Activation.TANH).build(),
+        "input")
+    // Output layer receives both the LSTM output AND the raw input (skip connection)
+    .addLayer("out",
+        new RnnOutputLayer.Builder(LossFunctions.LossFunction.MCXENT)
+            .nIn(64 + 32).nOut(10).activation(Activation.SOFTMAX).build(),
+        "lstm1", "input")   // <- two inputs: lstm output + raw input
+    .setOutputs("out")
+    .build();
+
+ComputationGraph model = new ComputationGraph(conf);
+model.init();
+```
+
+The `nIn` on the output layer is `64 + 32 = 96` because `MergeVertex`-style concatenation happens implicitly when a layer lists multiple inputs and no explicit vertex is added.
+
+---
+
+## Example 2: Multiple Inputs with a Merge Vertex
+
+Two separate input streams (e.g., image features and tabular features) are processed independently and then merged.
+
+```java
+ComputationGraphConfiguration conf = new NeuralNetConfiguration.Builder()
+    .seed(42)
+    .dataType(DataType.FLOAT)
+    .updater(new Adam(1e-3))
+    .graphBuilder()
+    .addInputs("imgFeatures", "tabFeatures")
+    // Process image branch
+    .addLayer("imgDense",
+        new DenseLayer.Builder().nIn(512).nOut(128).activation(Activation.RELU).build(),
+        "imgFeatures")
+    // Process tabular branch
+    .addLayer("tabDense",
+        new DenseLayer.Builder().nIn(30).nOut(32).activation(Activation.RELU).build(),
+        "tabFeatures")
+    // Merge both branches: 128 + 32 = 160 features
+    .addVertex("merge", new MergeVertex(), "imgDense", "tabDense")
+    // Final classification head
+    .addLayer("out",
+        new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+            .nIn(160).nOut(5).activation(Activation.SOFTMAX).build(),
+        "merge")
     .setOutputs("out")
     .build();
 ```
 
-### Example 3: Multi-Task Learning
+---
 
-In multi-task learning, a neural network is used to make multiple independent predictions. Consider for example a simple network used for both classification and regression simultaneously. In this case, we have two output layers, "out1" for classification, and "out2" for regression.
+## Example 3: Multi-Task Learning
 
-In this case, the network configuration is:
+One shared trunk feeds two independent output heads — one for classification and one for regression.
 
 ```java
 ComputationGraphConfiguration conf = new NeuralNetConfiguration.Builder()
-        .updater(new Sgd(0.01))
-        .graphBuilder()
-        .addInputs("input")
-        .addLayer("L1", new DenseLayer.Builder().nIn(3).nOut(4).build(), "input")
-        .addLayer("out1", new OutputLayer.Builder()
-                .lossFunction(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
-                .nIn(4).nOut(3).build(), "L1")
-        .addLayer("out2", new OutputLayer.Builder()
-                .lossFunction(LossFunctions.LossFunction.MSE)
-                .nIn(4).nOut(2).build(), "L1")
-        .setOutputs("out1","out2")
-        .build();
+    .seed(42)
+    .dataType(DataType.FLOAT)
+    .updater(new Adam(1e-3))
+    .graphBuilder()
+    .addInputs("input")
+    // Shared representation layers
+    .addLayer("shared1",
+        new DenseLayer.Builder().nIn(256).nOut(128).activation(Activation.RELU).build(),
+        "input")
+    .addLayer("shared2",
+        new DenseLayer.Builder().nIn(128).nOut(64).activation(Activation.RELU).build(),
+        "shared1")
+    // Classification head
+    .addLayer("classHead",
+        new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+            .nIn(64).nOut(10).activation(Activation.SOFTMAX).build(),
+        "shared2")
+    // Regression head
+    .addLayer("regHead",
+        new OutputLayer.Builder(LossFunctions.LossFunction.MSE)
+            .nIn(64).nOut(1).activation(Activation.IDENTITY).build(),
+        "shared2")
+    .setOutputs("classHead", "regHead")
+    .build();
+
+ComputationGraph model = new ComputationGraph(conf);
+model.init();
 ```
 
-### Automatically Adding PreProcessors and Calculating nIns
-
-One feature of the ComputationGraphConfiguration is that you can specify the types of input to the network, using the `.setInputTypes(InputType...)` method in the configuration.
-
-The setInputType method has two effects:
-
-1. It will automatically add any [InputPreProcessor](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/nn/conf/preprocessor)s as required. InputPreProcessors are necessary to handle the interaction between for example fully connected (dense) and convolutional layers, or recurrent and fully connected layers.
-2. It will automatically calculate the number of inputs (.nIn(x) config) to a layer. Thus, if you are using the `setInputTypes(InputType...)` functionality, it is not necessary to manually specify the .nIn(x) options in your configuration. This can simplify building some architectures (such as convolutional networks with fully connected layers). If the .nIn(x) is specified for a layer, the network will not override this when using the InputType functionality.
-
-For example, if your network has 2 inputs, one being a convolutional input and the other being a feed-forward input, you would use `.setInputTypes(InputType.convolutional(depth,width,height), InputType.feedForward(feedForwardInputSize))`
-
-## Training Data for ComputationGraph
-
-There are two types of data that can be used with the ComputationGraph.
-
-### DataSet and the DataSetIterator
-
-The DataSet class was originally designed for use with the MultiLayerNetwork, however can also be used with ComputationGraph - but only if that computation graph has a single input and output array. For computation graph architectures with more than one input array, or more than one output array, DataSet and DataSetIterator cannot be used (instead, use MultiDataSet/MultiDataSetIterator).
-
-A DataSet object is basically a pair of INDArrays that hold your training data. In the case of RNNs, it may also include masking arrays (see [this](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/reference/recurrent.md#masking-one-to-many-many-to-one-and-sequence-classification) for more details). A DataSetIterator is essentially an iterator over DataSet objects.
-
-### MultiDataSet and the MultiDataSetIterator
-
-MultiDataSet is multiple input and/or multiple output version of DataSet. It may also include multiple mask arrays (for each input/output array) in the case of recurrent neural networks. As a general rule, you should use DataSet/DataSetIterator, unless you are dealing with multiple inputs and/or multiple outputs.
-
-There are currently two ways to use a MultiDataSetIterator:
-
-* By implementing the [MultiDataSetIterator](https://github.com/eclipse/deeplearning4j/blob/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/dataset/api/iterator/MultiDataSetIterator.java) interface directly
-* By using the [RecordReaderMultiDataSetIterator](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-data/deeplearning4j-datavec-iterators/src/main/java/org/deeplearning4j/datasets/datavec/RecordReaderMultiDataSetIterator.java) in conjuction with DataVec record readers
-
-The RecordReaderMultiDataSetIterator provides a number of options for loading data. In particular, the RecordReaderMultiDataSetIterator provides the following functionality:
-
-* Multiple DataVec RecordReaders may be used simultaneously
-* The record readers need not be the same modality: for example, you can use an image record reader with a CSV record reader
-* It is possible to use a subset of the columns in a RecordReader for different purposes - for example, the first 10 columns in a CSV could be your input, and the last 5 could be your output
-* It is possible to convert single columns from a class index to a one-hot representation
-
-Some basic examples on how to use the RecordReaderMultiDataSetIterator follow. You might also find [these unit tests](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-core/src/test/java/org/deeplearning4j/datasets/datavec/RecordReaderMultiDataSetIteratorTest.java) to be useful.
-
-### Example 1: Regression Data (RecordReaderMultiDataSetIterator)
-
-Suppose we have a CSV file with 5 columns, and we want to use the first 3 as our input, and the last 2 columns as our output (for regression). We can build a MultiDataSetIterator to do this as follows:
+Training with `MultiDataSet` (required for multiple outputs):
 
 ```java
-int numLinesToSkip = 0;
-String fileDelimiter = ",";
-RecordReader rr = new CSVRecordReader(numLinesToSkip,fileDelimiter);
-String csvPath = "/path/to/my/file.csv";
-rr.initialize(new FileSplit(new File(csvPath)));
-
-int batchSize = 4;
-MultiDataSetIterator iterator = new RecordReaderMultiDataSetIterator.Builder(batchSize)
-        .addReader("myReader",rr)
-        .addInput("myReader",0,2)  //Input: columns 0 to 2 inclusive
-        .addOutput("myReader",3,4) //Output: columns 3 to 4 inclusive
-        .build();
+// MultiDataSet: inputs[] and labels[] arrays match .addInputs() / .setOutputs() order
+model.fit(multiDataSetIterator);
 ```
 
-### Example 2: Classification and Multi-Task Learning (RecordReaderMultiDataSetIterator)
+---
 
-Suppose we have two separate CSV files, one for our inputs, and one for our outputs. Further suppose we are building a multi-task learning architecture, whereby have two outputs - one for classification. For this example, let's assume the data is as follows:
+## Example 4: Residual Block
 
-* Input file: myInput.csv, and we want to use all columns as input (without modification)
-* Output file: myOutput.csv.
-  * Network output 1 - regression: columns 0 to 3
-  * Network output 2 - classification: column 4 is the class index for classification, with 3 classes. Thus column 4 contains integer values \[0,1,2] only, and we want to convert these indexes to a one-hot representation for classification.
-
-In this case, we can build our iterator as follows:
+A residual (skip) connection adds the layer input directly to the layer output via `ElementWiseVertex`:
 
 ```java
-int numLinesToSkip = 0;
-String fileDelimiter = ",";
-
-RecordReader featuresReader = new CSVRecordReader(numLinesToSkip,fileDelimiter);
-String featuresCsvPath = "/path/to/my/myInput.csv";
-featuresReader.initialize(new FileSplit(new File(featuresCsvPath)));
-
-RecordReader labelsReader = new CSVRecordReader(numLinesToSkip,fileDelimiter);
-String labelsCsvPath = "/path/to/my/myOutput.csv";
-labelsReader.initialize(new FileSplit(new File(labelsCsvPath)));
-
-int batchSize = 4;
-int numClasses = 3;
-MultiDataSetIterator iterator = new RecordReaderMultiDataSetIterator.Builder(batchSize)
-        .addReader("csvInput", featuresReader)
-        .addReader("csvLabels", labelsReader)
-        .addInput("csvInput") //Input: all columns from input reader
-        .addOutput("csvLabels", 0, 3) //Output 1: columns 0 to 3 inclusive
-        .addOutputOneHot("csvLabels", 4, numClasses)   //Output 2: column 4 -> convert to one-hot for classification
-        .build();
+ComputationGraphConfiguration conf = new NeuralNetConfiguration.Builder()
+    .seed(42)
+    .dataType(DataType.FLOAT)
+    .updater(new Adam(1e-3))
+    .graphBuilder()
+    .addInputs("input")
+    .addLayer("conv1",
+        new ConvolutionLayer.Builder(3, 3).nIn(64).nOut(64)
+            .padding(1, 1).activation(Activation.RELU).build(),
+        "input")
+    .addLayer("conv2",
+        new ConvolutionLayer.Builder(3, 3).nIn(64).nOut(64)
+            .padding(1, 1).activation(Activation.IDENTITY).build(),
+        "conv1")
+    // Add conv2 output + original input (residual connection)
+    .addVertex("residual",
+        new ElementWiseVertex(ElementWiseVertex.Op.Add),
+        "conv2", "input")
+    .addLayer("relu",
+        new ActivationLayer.Builder().activation(Activation.RELU).build(),
+        "residual")
+    .addLayer("out",
+        new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+            .nIn(64 * 7 * 7).nOut(10).activation(Activation.SOFTMAX).build(),
+        "relu")
+    .setOutputs("out")
+    .setInputTypes(InputType.convolutional(28, 28, 64))
+    .build();
 ```
+
+---
+
+## Example 5: Siamese Network
+
+A Siamese network uses two identical subnetworks (shared weights) to compare two inputs. In DL4J this is done with `ComputationGraph` by routing both inputs through the same named layer — but note that DL4J does not natively support weight sharing between separate named layers. The typical approach is to use two separate layer definitions with identical configurations, or to compute the representations separately in preprocessing and use a single-input graph for the comparison head.
+
+For a simplified Siamese distance-based network where two feature vectors are compared:
+
+```java
+ComputationGraphConfiguration conf = new NeuralNetConfiguration.Builder()
+    .seed(42)
+    .dataType(DataType.FLOAT)
+    .updater(new Adam(1e-3))
+    .graphBuilder()
+    .addInputs("inputA", "inputB")
+    // Two encoder branches (same architecture, separate params)
+    .addLayer("encA",
+        new DenseLayer.Builder().nIn(128).nOut(64).activation(Activation.RELU).build(),
+        "inputA")
+    .addLayer("encB",
+        new DenseLayer.Builder().nIn(128).nOut(64).activation(Activation.RELU).build(),
+        "inputB")
+    // Merge and compare
+    .addVertex("merged", new MergeVertex(), "encA", "encB")
+    .addLayer("out",
+        new OutputLayer.Builder(LossFunctions.LossFunction.XENT)
+            .nIn(128).nOut(1).activation(Activation.SIGMOID).build(),
+        "merged")
+    .setOutputs("out")
+    .build();
+```
+
+---
+
+## Training Data
+
+### DataSet / DataSetIterator
+
+Use when the graph has a single input and single output. Same as `MultiLayerNetwork`.
+
+```java
+model.fit(dataSetIterator);
+```
+
+### MultiDataSet / MultiDataSetIterator
+
+Required for multiple inputs or multiple outputs.
+
+```java
+// Manual MultiDataSet construction
+INDArray[] inputs = new INDArray[]{ inputA, inputB };
+INDArray[] labels = new INDArray[]{ classLabels, regLabels };
+MultiDataSet mds = new org.nd4j.linalg.dataset.MultiDataSet(inputs, labels);
+model.fit(mds);
+```
+
+### RecordReaderMultiDataSetIterator
+
+```java
+int batchSize = 32;
+MultiDataSetIterator iter = new RecordReaderMultiDataSetIterator.Builder(batchSize)
+    .addReader("features", featureReader)
+    .addReader("labels",   labelReader)
+    .addInput("features", 0, 9)          // columns 0–9 as input 0
+    .addOutput("labels", 0, 4)           // columns 0–4 as output 0
+    .addOutputOneHot("labels", 5, 10)    // column 5 -> one-hot, 10 classes
+    .build();
+```
+
+---
+
+## Inference
+
+```java
+// Single input, single output
+INDArray out = model.outputSingle(input);
+
+// Multiple inputs
+INDArray[] outputs = model.output(inputA, inputB);
+
+// Multiple inputs via array
+INDArray[] outs = model.output(false, inputs);  // false = test mode
+```
+
+---
+
+## Evaluation
+
+```java
+// Classification (single output)
+Evaluation eval = model.evaluate(testIter);
+System.out.println(eval.stats());
+
+// Multi-output: evaluate a specific output by index
+Evaluation eval0 = model.evaluate(testIter, Collections.singletonList("classHead"));
+```
+
+---
+
+## Saving and Loading
+
+```java
+import org.deeplearning4j.util.ModelSerializer;
+
+// Save
+ModelSerializer.writeModel(model, new File("cgModel.zip"), true);
+
+// Load
+ComputationGraph loaded = ModelSerializer.restoreComputationGraph(new File("cgModel.zip"));
+```
+
+---
+
+## Key API Reference
+
+| Method | Description |
+|--------|-------------|
+| `graphBuilder()` | Returns a `ComputationGraphConfiguration.GraphBuilder` |
+| `addInputs(String...)` | Declare network input names |
+| `addLayer(String, Layer, String...)` | Add a layer vertex with named inputs |
+| `addVertex(String, GraphVertex, String...)` | Add a non-layer vertex |
+| `setOutputs(String...)` | Declare which vertices are outputs |
+| `setInputTypes(InputType...)` | Enable automatic shape inference |
+| `init()` | Initialize parameters |
+| `fit(DataSetIterator)` | Train (single input/output) |
+| `fit(MultiDataSetIterator)` | Train (multiple inputs/outputs) |
+| `output(INDArray...)` | Run forward pass, return output arrays |
+| `outputSingle(INDArray)` | Convenience method: single input/output |
+| `evaluate(DataSetIterator)` | Returns `Evaluation` for single-output graph |
+| `summary()` | Print graph topology and parameter counts |

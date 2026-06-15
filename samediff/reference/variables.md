@@ -1,211 +1,302 @@
 ---
-description: >-
-  What types of variables are used in SameDiff, their properties and how to
-  switch these types.
+title: "SameDiff Variables"
+description: "SDVariable types — VARIABLE, CONSTANT, PLACEHOLDER, ARRAY — data types, naming, and type conversion"
 ---
 
-# Variables
+# Variables in SameDiff
 
-## What are variables
+## What Variables Are
 
-All values defining or passing through each `SameDiff` instance - be it weights, bias, inputs, activations or general parameters - all are handled by objects of class `SDVariable`.
+Every value that flows through a `SameDiff` graph — weights, biases, inputs, labels, intermediate activations — is represented by an object of class `SDVariable`. Unlike a plain `INDArray`, an `SDVariable` is a **node in the computation graph**: it knows its place in the graph, how it was produced, and (when it holds trainable parameters) how to receive gradient updates.
 
-Observe that by variables we normally mean not just single values - as it is done in various online examples describing autodifferentiation - but rather whole multidimensional arrays of them.
+Variables in SameDiff are typically multidimensional arrays, not scalars. When you define `SDVariable w = sd.var("w", DataType.FLOAT, 784, 256)`, you are declaring a 784×256 matrix of floats as a graph node — not a single number.
 
-## Variable types
+## Variable Types
 
-All variables in `SameDiff` belong to one of four _variable types_, constituting an enumeration `VariableType`. Here they are:
+All variables in a `SameDiff` instance belong to exactly one of four **variable types**, defined by the `VariableType` enum.
 
-*   `VARIABLE`: are trainable parameters of your network, e.g. weights and bias of a layer. Naturally, we want them
+### VARIABLE
 
-    to be both stored for further usage - we say, that they are _persistent_ - as well as being updated during training.
-*   `CONSTANT`: are those parameters which, like variables, are persistent for the network, but are not being
+`VARIABLE` variables are the **trainable parameters** of your model — things like layer weights and biases.
 
-    trained; they, however, may be changed externally by the user.
-*   `PLACEHOLDER`: store temporary values that are to be supplied from the outside, like inputs and labels.
+Properties:
+- **Persistent**: their values are stored inside the `SameDiff` instance between calls.
+- **Trainable**: they receive gradient updates during `fit()`.
+- **Floating-point only**: because gradient descent only makes sense for real-valued parameters.
+- **Gradient computation**: gradients with respect to these variables are computed during the backward pass.
 
-    Accordingly, since new placeholders' values are provided at each iteration, they are not stored: in other words,
-
-    unlike `VARIABLE` and `CONSTANT`, `PLACEHOLDER` is _not_ persistent.
-*   `ARRAY`: are temporary values as well, representing outputs of [operations](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/samediff/reference/ops.md) within a `SameDiff`, for
-
-    instance sums of vectors, activations of a layer, and many more. They are being recalculated at each iteration, and
-
-    therefor, like `PLACEHOLDER`, are not persistent.
-
-To infer the type of a particular variable, you may use the method `getVariableType`, like so:
+Create a `VARIABLE` with `sd.var(...)`:
 
 ```java
-VariableType varType = yourVariable.getVariableType();
+// Zero-initialised 784x256 weight matrix
+SDVariable weights = sd.var("weights", DataType.FLOAT, 784, 256);
 ```
 
-The current value of a variable in a form of `INDArray` may be obtained using `getArr` or `getArr(true)` - the latter one if you wish the program to throw an exception if the variable's value is not initialized.
-
-## Data types
-
-The data within each variable also has its _data type_, contained in `DataType` enum. Currently in `DataType` there are three _floating point_ types: `FLOAT`, `DOUBLE` and `HALF`; four _integer_ types: `LONG`, `INT`, `SHORT` and `UBYTE`; one _boolean_ type `BOOL` - all of them will be referred as _numeric_ types. In addition, there is a _string_ type dubbed `UTF8`; and two helper data types `COMPRESSED` and `UNKNOWN`. The 16-bit floating point format `BFLOAT16` and unsigned integer types (`UINT16`, `UINT32` and `UINT64`) will be available in `1.0.0-beta5`.
-
-To infer the data type of your variable, use
+You will almost always want non-zero initialisation. Pass an `INDArray` directly:
 
 ```java
-DataType dataType = yourVariable.dataType();
+SDVariable weights = sd.var("weights", Nd4j.randn(DataType.FLOAT, 784, 256).div(28.0));
 ```
 
-You may need to trace your variable's data type since at times it does matter, which types you use in an operation. For example, a convolution product, like this one
+Or use one of the built-in weight initialisation schemes:
 
 ```java
-SDVariable prod = samediff.cnn.conv1d(input, weights, config);
+// Xavier / Glorot initialisation
+SDVariable weights = sd.var("weights",
+    new XavierInitScheme('c', 784, 256),
+    DataType.FLOAT,
+    784, 256);
 ```
 
-will require its `SDVariable` arguments `input` and `weights` to be of one of the floating point data types, and will throw an exception otherwise. Also, as we shall discuss just below, all the `SDVariables` of type `VARIABLE` are supposed to be of floating point type.
+Other available schemes include `UniformInitScheme`, `NormalInitScheme`, `ConstantInitScheme`, `ZeroInitScheme`, and more — see the `WeightInitScheme` hierarchy in the [javadoc](https://deeplearning4j.org/api/latest/org/nd4j/weightinit/WeightInitScheme.html).
 
-## Common features of variables
+### CONSTANT
 
-Before we go to the differences between variables, let us first look at the properties they all share
+`CONSTANT` variables hold values that are **stored but not updated during training**. They are useful for:
 
-*   All variables are ultimately derived from an instance of `SameDiff`, serving as parts of its
+- Hyperparameters you want to bake into the graph (e.g. a dropout rate or a temperature scalar).
+- Pre-trained weights from another model that you want to keep frozen.
+- Lookup tables or fixed embeddings.
 
-    [graph](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/samediff/reference/samediff/samediff/graphs). In fact, each variable has a `SameDiff` as one of its fields.
-* Results (outputs) of all operations are of `ARRAY` type.
-* All `SDVariable`'s involved in an operation are to belong to the _same_ `SameDiff`.&#x20;
-*   All variables may or may not be given names - in the latter case, a name is actually created automatically. Either
+Properties:
+- **Persistent**: stored in the `SameDiff` instance.
+- **Not trainable**: never receive gradient updates.
+- **Any data type**: integers, booleans, and floats are all allowed.
+- **No gradient computation**: gradients are not computed for constants.
 
-    way, the names need to be/are created unique. We shall come back to naming below.
-
-## Differences between variable types
-
-Let us now have a closer look at each type of variables, and what distinguish them from each other.
-
-### Variables
-
-Variables are the trainable parameters of your network. This predetermines their nature in `SameDiff`. As we briefly mentioned above, variables' values need to be both preserved for application, and updated during training. Training means, that we iteratively update the values by small fractions of their gradients, and this only makes sense if variables are of _floating point_ types (see data types above).
-
-Variables may be added to your `SameDiff` using different versions of `var` function from your `SameDiff` instance. For example, the code
+Create a `CONSTANT` from an `INDArray`:
 
 ```java
-SDVariable weights = samediff.var("weights", DataType.FLOAT, 784, 10);
+SDVariable pi = sd.constant("pi", Nd4j.scalar(3.14159f));
+SDVariable fixedWeights = sd.constant("frozen_w", pretrainedArray);
 ```
 
-adds a variable constituting of a 784x10 array of `float` numbers - weights for a single layer MNIST perceptron in this case - to a pre-existing `SameDiff` instance `samediff`.
-
-However, this way the values within a variable will be set as zeros. You may also create a variable with values from a preset `INDArray`. Say
+For a constant holding a single scalar value, use the convenience `scalar` method:
 
 ```java
-SDVariable weights = samediff.var("weigths", Nd4j.nrand(784, 10).div(28));
+SDVariable temperature = sd.scalar("temperature", 0.07f);
 ```
 
-will create a variable filled with normally distributed randomly generated numbers with variance `1/28`. You may put any other array creation methods instead of `nrand`, or any preset array, of course. Also, you may use some popular initialization scheme, like so:
+Constants can hold any data type:
 
 ```java
-SDVariable weights = samediff.var("weights", new XavierInitScheme('c', 784, 10), DataType.FLOAT, 784, 10);
+SDVariable numClasses = sd.constant("num_classes", Nd4j.scalar(DataType.INT, 10));
 ```
 
-Now, the weights will be randomly initialized using the Xavier scheme. There are other ways to create and
+### PLACEHOLDER
 
-fill variables: you may look them up in the 'known subclasses' section [of our javadoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/weightinit/WeightInitScheme.html).
+`PLACEHOLDER` variables are **slots that receive external data at runtime**. They are the entry points for per-batch data: inputs, labels, masks, etc.
 
-### Constants
+Properties:
+- **Not persistent**: their values are not stored between calls. You must supply a value every time you execute the graph.
+- **Not trainable**: no gradient updates.
+- **Any data type**: depends on what your data looks like.
+- **No gradient computation**: by default gradients are not propagated through placeholders (though `ARRAY`-type results downstream do have gradients computed for use in weight updates).
 
-Constants hold values that are stored, but - unlike variables - remain unchanged during training. These, for instance, may be some hyperparamters you wish to have in your network and be able to access from the outside. Or they may be pretrained weights of a neural network that you wish to keep unchanged (see more on that in [Changing Variable Type](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/samediff/reference/variables.md#changing-variable-types) below). Constants may be of any data type
-
-* so e.g. `int` and `boolean` are allowed alongside with `float` and `double`.
-
-In general, constants are added to `SameDiff` by means of `constant` methods. A constant may be created form an `INDArray`, like that:
+Create a placeholder with `sd.placeHolder(...)`:
 
 ```java
-SDVariable constant = samediff.constant("constants", Nd4j.create(new float[] {3.1415f, 42f}));
+// Batch of MNIST images: batch size unknown at graph-definition time (-1), 784 features
+SDVariable input = sd.placeHolder("input", DataType.FLOAT, -1, 784);
+
+// Corresponding one-hot labels
+SDVariable labels = sd.placeHolder("labels", DataType.FLOAT, -1, 10);
 ```
 
-A constant consisting of a single scalar value may be created using one of the `scalar` methods:
+The `-1` convention for batch dimension tells SameDiff that the size is unknown at graph-definition time and will be inferred from the actual data at execution time.
+
+You can supply placeholder values explicitly for direct execution:
 
 ```java
-INDArray someScalar = samediff.scalar("scalar", 42);
+Map<String, INDArray> placeholderValues = new HashMap<>();
+placeholderValues.put("input", myInputArray);
+placeholderValues.put("labels", myLabelArray);
+
+Map<String, INDArray> out = sd.output(placeholderValues, "softmax");
 ```
 
-### Placeholders
+### ARRAY
 
-The most common placeholders you'll normally have in a `SameDiff` are inputs and, when applicable, labels. You may create placeholders of any data type, depending on the operations you use them in. To add a placeholder to a `SameDiff`, you may call one of `placeHolder` methods, e.g. like that:
+`ARRAY` variables are the **intermediate and output values produced by operations** within the graph. Every time you call an op — `.add()`, `.mmul()`, `sd.nn.relu()`, etc. — the result is an `ARRAY`-type variable.
+
+Properties:
+- **Not persistent**: recomputed from scratch on every forward pass.
+- **Not trainable**: not directly updated.
+- **Any data type**: determined by the operation and its inputs.
+- **Gradient computation**: gradients *are* computed through `ARRAY` nodes so the chain rule can propagate back to `VARIABLE` nodes.
+
+`ARRAY` variables are created implicitly by operations:
 
 ```java
-SDVariable in = samediff.placeHolder("input", DataType.FLOAT, -1, 784);
+SDVariable z = x.add(y);     // z is ARRAY type
+SDVariable h = sd.nn.relu("hidden", z);   // h is also ARRAY type
 ```
 
-as in MNIST example. Here we specify name, data type and then shape of your placeholder - here, we have 28x28 grayscale pictures rendered as 1d vectors (therefore 784) coming in batches of length we don't know beforehand (therefore -1).
+You do not create `ARRAY` variables directly — they are produced by ops.
 
-### Arrays
+## Inspecting Variable Type
 
-Variables of `ARRAY` type appear as outputs of [operations](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/samediff/reference/samediff/samediff/ops) within `SameDiff`. Accordingly, the data type of an array-type variable depends on the kind of operation it is produced by and variable type(s) ot its argument(s). Arrays are not persistent - they are one-time values that will be recalculated from scratch at the next step. However, unlike placeholders, gradients are computed for them, as those are needed to update the values of `VARIABLE`'s.
-
-There are as many ways array-type variables are created as there are operations, so you're better up focusing on our [operations section](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/samediff/reference/samediff/samediff/ops), our [javadoc](https://javadoc.io/doc/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/autodiff/samediff/SameDiff.html) and [examples](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/samediff/reference/samediff/samediff/exampes).
-
-## Recap table
-
-Let us summarize the main properties of variable types in one table:
-
-|               | Trainable | Gradients | Persistent | Workspaces | Datatypes  | Instantiated from |
-| ------------- | --------- | --------- | ---------- | ---------- | ---------- | ----------------- |
-| `VARIABLE`    | Yes       | Yes       | Yes        | Yes        | Float only | Instance          |
-| `CONSTANT`    | No        | No        | Yes        | No         | Any        | Instance          |
-| `PLACEHOLDER` | No        | No        | No         | No         | Any        | Instance          |
-| `ARRAY`       | No        | Yes       | No         | Yes        | Any        | Operations        |
-
-We haven't discussed what 'Workspaces' mean - if you do not know, do not worry, this is an internal technical term that basically describes how memory is managed internally.
-
-## Changing variable types
-
-You may change variable types as well. For now, there are three of such options:
-
-### Variable to constant
-
-At times - for instance if you perform transfer learning - you may wish to turn a variable into a constant. This is done like so:
+To find out the type of any variable at runtime:
 
 ```java
-samediff.convertToConstant(someVariable);
+VariableType vt = myVar.getVariableType();
+// Returns VariableType.VARIABLE, CONSTANT, PLACEHOLDER, or ARRAY
 ```
 
-where `someVariable` is an instance of `SDVariable` of `VARIABLE` type. The variable `someVariable` will not be trained any more.
+## Data Types
 
-### Constant to variable
+Each `SDVariable` also has a **data type** (`DataType` enum) that describes the element type of its underlying array.
 
-Conversely, constants - if they are of _floating point_ data type - may be converted to variables. So, for instance, if you wish your frozen weights to become trainable again
+| Category | Types |
+|---|---|
+| Floating point | `FLOAT`, `DOUBLE`, `HALF`, `BFLOAT16` |
+| Signed integer | `LONG`, `INT`, `SHORT`, `BYTE` |
+| Unsigned integer | `UINT64`, `UINT32`, `UINT16`, `UBYTE` |
+| Boolean | `BOOL` |
+| String | `UTF8` |
+| Internal | `COMPRESSED`, `UNKNOWN` |
+
+Retrieve the data type of a variable:
 
 ```java
-samediff.convertToVariable(frozenWeights); //not frozen any more
+DataType dt = myVar.dataType();
 ```
 
-### Placeholder to constant
+Data type matters for operations. For example, `sd.cnn.conv2d(input, weights, config)` requires both `input` and `weights` to be floating-point; passing integer arrays throws an exception. All `VARIABLE`-type variables must be floating-point because gradient descent requires real arithmetic.
 
-Placeholders may be converted to constants as well - for instance, if you need to freeze one of the inputs. There are no restrictions on the data type, yet, since placeholder values are not persistent, their value should be set before you turn them into constants. This can be done as follows
+When you need to change the data type of an array before passing it to an operation, use `sd.math.castTo(variable, DataType.FLOAT)`.
+
+## Recap Table
+
+The following table summarises all four variable types and their key properties:
+
+| | Trainable | Gradients | Persistent | Workspaces | Data types | Created by |
+|---|---|---|---|---|---|---|
+| `VARIABLE` | Yes | Yes | Yes | Yes | Float only | `sd.var()` |
+| `CONSTANT` | No | No | Yes | No | Any | `sd.constant()` / `sd.scalar()` |
+| `PLACEHOLDER` | No | No | No | No | Any | `sd.placeHolder()` |
+| `ARRAY` | No | Yes | No | Yes | Any | Operations |
+
+"Workspaces" is an internal memory-management term describing whether the variable's backing memory can be allocated in off-heap workspace regions. You do not need to manage this manually.
+
+## Changing Variable Types
+
+SameDiff supports converting variables between types in a limited set of combinations. This is most commonly used for transfer learning scenarios.
+
+### Variable to Constant (freezing weights)
+
+Turn a trainable `VARIABLE` into a frozen `CONSTANT`. After conversion, the variable will no longer receive gradient updates:
 
 ```java
-placeHolder.setArray(someArray);
-samediff.convertToConstant(placeHolder);
+sd.convertToConstant(trainableLayer);
 ```
 
-For now it is not possible to turn a constant back into a placeholder, we may consider adding this functionality if there is a need for that. For now, if you wish to effectively freeze your placeholder but be able to use it again, consider supplying it with constant values rather than turning it into a constant.
+Use this when you want to lock specific layers during fine-tuning.
 
-## Variables' names and values
+### Constant to Variable (unfreezing weights)
 
-### Getting variables from `SameDiff`
-
-Recall that every variable in an instance of `SameDiff` has its unique `String` name. Your `SameDiff` actually tracks your variables by their names, and allows you to retrieve them by using `getVariable(String name)` method.
-
-Consider the following line:
+Convert a `CONSTANT` back into a trainable `VARIABLE`. The constant must be of a floating-point data type (because `VARIABLE` requires floating point):
 
 ```java
-SDVariable regressionCost = weights.mmul(input).sub("regression_prediction", bias).squaredDifference(labels);
+sd.convertToVariable(frozenWeights);  // now trainable again
 ```
 
-Here, in the function `sub` we actually have implicitly introduced a variable (of type `ARRAY`) that holds the result of the subtraction. By adding a name into the operations's argument, we've secured ourselves the possibility to retrieve the variable from elsewhere: say, if later you need to infer the difference between the labels and the prediction as a vector, you may just write:
+### Placeholder to Constant (fixing an input)
+
+Convert a `PLACEHOLDER` to a `CONSTANT`. Since placeholders are not persistent, you must set the value before converting:
 
 ```java
-SDVariable errorVector = samediff.getVariable("regressionPrediction").sub(labels);
+inputPlaceholder.setArray(fixedArray);
+sd.convertToConstant(inputPlaceholder);
 ```
 
-This becomes especially handy if your whole `SameDiff` instance is initialized elsewhere, and you still need to get hold of some of its variables - say, multiple outputs.
+After this, the "input" is baked into the graph as a constant. This can be useful when you have a model that was originally designed to receive inputs dynamically but you now want to specialise it to a fixed input (e.g. a fixed prompt embedding in an NLP pipeline).
 
-You can get and set the name of an `SDVariable` the methods `getVarName` and `setVarName` respectively. When renaming, note that variable's name is to remain unique within its `SameDiff`.
+Note: there is currently no API to convert a `CONSTANT` back to a `PLACEHOLDER`. If you need to temporarily fix a placeholder but retain the ability to supply new data later, supply the constant value through the normal placeholder mechanism instead of converting the type.
 
-### Getting variable's value
+## Naming Variables
 
-You may retrieve any variable's current value as an `INDArray` using the method `eval()`. Note that for non-persistent variables, the value should first be set. For variables with gradients, the gradient's value may also be inferred using the method `getGradient`.
+Every `SDVariable` in a `SameDiff` instance has a **unique string name**. SameDiff uses names to track variables internally and lets you retrieve them by name later.
+
+### Explicit naming
+
+Pass the name as the first argument to `sd.var()`, `sd.constant()`, `sd.placeHolder()`, or to any op:
+
+```java
+SDVariable w = sd.var("encoder_w1", DataType.FLOAT, 512, 256);
+SDVariable h = sd.nn.relu("encoder_h1", linear);
+```
+
+### Automatic naming
+
+If you do not supply a name, SameDiff generates one automatically based on the operation. Auto-generated names are unique but less readable:
+
+```java
+SDVariable z = x.add(y);  // name assigned automatically, e.g. "add:0"
+```
+
+### Retrieving variables by name
+
+```java
+SDVariable encoderW = sd.getVariable("encoder_w1");
+```
+
+This is particularly useful when the `SameDiff` instance was built in a different method or class, or loaded from disk, and you need to get hold of a specific node without keeping a local Java reference.
+
+### Renaming variables
+
+```java
+myVar.setVarName("new_name");  // name must remain unique within the SameDiff
+```
+
+You can also read the current name:
+
+```java
+String name = myVar.name();   // or myVar.getVarName()
+```
+
+## Getting Variable Values
+
+### eval()
+
+For persistent variables (`VARIABLE` and `CONSTANT`), call `eval()` to retrieve the current value as an `INDArray`:
+
+```java
+INDArray currentWeights = w1.eval();
+```
+
+For non-persistent variables (`PLACEHOLDER` and `ARRAY`), you must ensure a value has been set (by executing the graph) before calling `eval()`.
+
+### getArr()
+
+An alternative to `eval()`:
+
+```java
+INDArray arr = myVar.getArr();          // returns null if not yet computed
+INDArray arr = myVar.getArr(true);      // throws exception if not initialised
+```
+
+### Gradients
+
+For variables that have gradients computed (types `VARIABLE` and `ARRAY`), retrieve the gradient array after a backward pass:
+
+```java
+INDArray grad = w1.getGradient().eval();
+```
+
+Note that gradient values are only available after a backward pass has been executed (e.g. after at least one step of `fit()`, or after an explicit call to `sd.execBackwards()`).
+
+## All Variables in the Graph
+
+To inspect all variables currently registered in a `SameDiff` instance:
+
+```java
+// All variable names
+List<String> names = sd.variableNames();
+
+// All SDVariable objects
+Collection<SDVariable> vars = sd.variables();
+
+// Just the trainable VARIABLE-type parameters
+List<SDVariable> trainable = sd.getTrainableVariables();
+```

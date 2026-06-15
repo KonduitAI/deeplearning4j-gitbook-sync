@@ -1,64 +1,242 @@
 ---
-description: How to contribute to the Eclipse Deeplearning4j source code.
+title: "Contributing"
+description: "How to contribute to Deeplearning4j — development setup, code style, pull requests, and community guidelines"
 ---
 
-# Contribute
+Contributions to Eclipse Deeplearning4j are welcome from everyone. This guide covers how to set up a development environment, follow project conventions, and submit changes.
 
-## Prerequisites
+## Repository Structure
 
-Before contributing, make sure you know the structure of all of the Eclipse Deeplearning4j libraries. As of early 2018, all libraries now live in the Deeplearning4j [monorepo](https://github.com/eclipse/deeplearning4j). These include:
+All DL4J libraries live in the monorepo at [github.com/eclipse/deeplearning4j](https://github.com/eclipse/deeplearning4j):
 
-* DeepLearning4J: Contains all of the code for learning neural networks, both on a single machine and distributed.
-* ND4J: “N-Dimensional Arrays for Java”. ND4J is the mathematical backend upon which DL4J is built. All of DL4J’s neural networks are built using the operations (matrix multiplications, vector operations, etc) in ND4J. ND4J is how DL4J supports both CPU and GPU training of networks, without any changes to the networks themselves. Without ND4J, there would be no DL4J.
-* DataVec: DataVec handles the data import and conversion side of the pipeline. If you want to import images, video, audio or simply CSV data into DL4J: you probably want to use DataVec to do this.
-* RL4J: Reinforcement Learning for Java. This set of libraries contains the ability to do reinforcement learning built on the deeplearning4j library.
-* Samediff: Built within the nd4j library, this library contains a tensorflow/pytorch like library for building data flow graphs.
+- **deeplearning4j/** — neural network layers, training loop, evaluation
+- **nd4j/** — N-dimensional array math backend (CPU and GPU)
+- **libnd4j/** — native C++ compute engine compiled by CMake
+- **datavec/** — data pipeline, ETL, and record readers
+- **arbiter/** — hyperparameter optimization
 
+A companion examples repository lives at [github.com/eclipse/deeplearning4j-examples](https://github.com/eclipse/deeplearning4j-examples).
 
+## Ways to Contribute
 
-We also have an extensive examples repository at [dl4j-examples](https://github.com/eclipse/deeplearning4j-examples).
+- **Bug fixes** — look for issues labeled `bug` on the [issue tracker](https://github.com/eclipse/deeplearning4j/issues)
+- **New features** — new layer types, training algorithms, optimizers, or backends
+- **Documentation** — improve Javadoc, fix typos in docs, add examples
+- **Performance** — profiling, benchmarking, identifying bottlenecks
+- **Tests** — additional unit tests, edge cases, numerical gradient checks
+- **Examples** — demonstrate a network architecture or application not yet covered
 
-## Ways to contribute
+## Getting Started
 
-There are numerous ways to contribute to DeepLearning4J (and related projects), depending on your interests and experince. Here’s some ideas:
+### Fork and Clone
 
-* Add new types of neural network layers (for example: different types of RNNs, locally connected networks, etc)
-* Add a new training feature
-* Bug fixes
-* DL4J examples: Is there an application or network architecture that we don’t have examples for?
-* Testing performance and identifying bottlenecks or areas to improve
-* Improve website documentation (or write tutorials, etc)
-* Improve the JavaDocs
+1. Fork the repository on GitHub (click **Fork** on the main repo page).
+2. Clone your fork locally:
 
-There are a number of different ways to find things to work on. These include:
+```bash
+git clone https://github.com/YOUR_USERNAME/deeplearning4j.git
+cd deeplearning4j
+```
 
-*   Looking at the issue trackers:
+3. Add the upstream remote so you can pull in future changes:
 
-    [https://github.com/eclipse/deeplearning4j/issues](https://github.com/eclipse/deeplearning4j/issues)
+```bash
+git remote add upstream https://github.com/eclipse/deeplearning4j.git
+```
 
-    [https://github.com/eclipse/deeplearning4j-examples/issues](https://github.com/eclipse/deeplearning4j-examples/issues)
-* Reviewing our Roadmap
-* Talking to the developers on the [community forums](https://community.konduit.ai/)
-* Reviewing recent papers and blog posts on training features, network architectures and applications
-* Reviewing the website and examples - what seems missing, incomplete, or would simply be useful (or cool) to have?
+### Build the Project
 
-## General guidelines
+Follow the [Build from Source](./build-from-source) guide for full prerequisites and build steps. The short version for a CPU build:
 
-Before you dive in, there’s a few things you need to know. In particular, the tools we use:
+```bash
+# Build the native C++ backend
+cd libnd4j
+./buildnativeoperations.sh
+export LIBND4J_HOME=$(pwd)
+cd ..
 
-* Maven: a dependency management and build tool, used for all of our projects. See this for details on Maven.
-* Git: the version control system we use
-* Project Lombok: Project Lombok is a code generation/annotation tool that is aimed to reduce the amount of ‘boilerplate’ code (i.e., standard repeated code) needed in Java. To work with source, you’ll need to install the Project Lombok plugin for your IDE
-* VisualVM: A profiling tool, most useful to identify performance issues and bottlenecks.
-* IntelliJ IDEA: This is our IDE of choice, though you may of course use alternatives such as Eclipse and NetBeans. You may find it easier to use the same IDE as the developers in case you run into any issues. But this is up to you.
+# Build all Java modules
+mvn clean install -DskipTests -Dmaven.javadoc.skip=true
+```
 
-Things to keep in mind:
+A first build takes 15–45 minutes. Subsequent incremental builds are much faster.
 
-* Code should be Java 7 compliant
-* If you are adding a new method or class: add JavaDocs
-* You are welcome to add an author tag for significant additions of functionality. This can also help future contributors, in case they need to ask questions of the original author. If multiple authors are present for a class: provide details on who did what (“original implementation”, “added feature x” etc)
-* Provide informative comments throughout your code. This helps to keep all code maintainable.
-* Any new functionality should include unit tests (using JUnit) to test your code. This should include edge cases.
-* If you add a new layer type, you must include numerical gradient checks, as per these unit tests. These are necessary to confirm that the calculated gradients are correct
-* If you are adding significant new functionality, consider also updating the relevant section(s) of the website, and providing an example. After all, functionality that nobody knows about (or nobody knows how to use) isn’t that helpful. Adding documentation is definitely encouraged when appropriate, but strictly not required.
-* If you are unsure about something - ask us on the [community forums](https://community.konduit.ai/)!
+### Required Tooling
+
+- **JDK 11+** (JDK 17 recommended)
+- **Maven 3.6.3+**
+- **CMake 3.9+** and **gcc/g++ 7+**
+- **Project Lombok plugin** for your IDE — without it the IDE shows false compilation errors everywhere
+- **IntelliJ IDEA** (recommended) or Eclipse/NetBeans
+
+## Development Workflow
+
+### Create a Feature Branch
+
+Never commit directly to `master`. Always branch from an up-to-date `master`:
+
+```bash
+git fetch upstream
+git checkout -b my-feature upstream/master
+```
+
+Use a descriptive branch name, for example `fix/lstm-gradient-clip` or `feature/add-swiglu-activation`.
+
+### Keep Your Branch Current
+
+Rebase onto `upstream/master` regularly to avoid large merge conflicts:
+
+```bash
+git fetch upstream
+git rebase upstream/master
+```
+
+### Commit Messages
+
+Write commit messages in the imperative mood with a short subject line (under 72 characters). Add a body paragraph if the change needs explanation:
+
+```
+Add SwiGLU activation function
+
+SwiGLU is used in large language model FFN blocks. This implements
+the variant from Noam Shazeer's 2020 paper. Includes numerical
+gradient check in ActivationsSmokeTest.
+```
+
+## Code Style
+
+### Java
+
+- Target Java 11 source compatibility (Java 17 features are not yet permitted in core modules).
+- Follow existing code formatting — the project uses a 4-space indent, no tabs.
+- Add **Javadoc** to all public methods and classes. Minimum: one-sentence description and `@param` / `@return` tags.
+- Use **Lombok** annotations (`@Data`, `@Builder`, `@Slf4j`, etc.) consistently with surrounding code — do not mix manual boilerplate with Lombok in the same class.
+- Avoid wildcard imports (`import org.nd4j.*`).
+- If you add a new method or class: add an `@since` tag with the version (e.g., `@since 2.1.0`).
+- Significant new functionality may include an `@author` tag, but this is optional.
+
+### C++ (libnd4j)
+
+- Follow the existing style in the surrounding file.
+- Prefer RAII and smart pointers over raw `new`/`delete`.
+- Document any non-obvious math or algorithm with an inline comment or link to a paper.
+
+### Naming Conventions
+
+| Element | Convention | Example |
+|---------|-----------|---------|
+| Classes | UpperCamelCase | `MultiLayerNetwork` |
+| Methods | lowerCamelCase | `computeGradientAndScore` |
+| Constants | UPPER_SNAKE_CASE | `DEFAULT_LEARNING_RATE` |
+| Packages | lowercase | `org.deeplearning4j.nn.layers` |
+
+## Writing Tests
+
+All non-trivial changes must include tests. DL4J uses JUnit 5.
+
+### Unit Tests
+
+Place tests in the same Maven module as the code under test, in `src/test/java/` mirroring the package structure:
+
+```java
+@Tag(TagNames.DL4J_OLD_API)
+class MyNewLayerTest {
+
+    @Test
+    void forwardPassProducesExpectedShape() {
+        // ...
+    }
+}
+```
+
+### Numerical Gradient Checks
+
+Any new layer or loss function must pass a numerical gradient check. Use `GradientCheckUtil`:
+
+```java
+boolean passed = GradientCheckUtil.checkGradients(new GradientCheckUtil.MLNConfig()
+    .net(net)
+    .input(input)
+    .labels(labels));
+assertTrue(passed, "Gradient check failed");
+```
+
+Gradient checks confirm that analytic (backprop) gradients match finite-difference numerical gradients. A failing gradient check indicates a bug in the backward pass.
+
+### Running Tests
+
+Tests require the `dl4j-test-resources` repository (see [Build from Source](./build-from-source)):
+
+```bash
+# All tests, native CPU backend
+mvn clean test -P testresources,test-nd4j-native
+
+# Tests for a single module
+mvn clean test -P testresources,test-nd4j-native \
+    -pl deeplearning4j/deeplearning4j-core
+```
+
+## Creating a Pull Request
+
+1. Push your branch to your fork:
+
+```bash
+git push origin my-feature
+```
+
+2. Open a pull request from your branch to `eclipse/deeplearning4j:master` on GitHub.
+
+3. Fill out the PR description with:
+   - **What** was changed and **why**
+   - How to test or reproduce the fix
+   - Any relevant issue numbers (`Fixes #1234`)
+
+4. Ensure CI passes. The test suite runs automatically on each push. Do not merge until all required checks are green.
+
+5. Address reviewer feedback by pushing additional commits to the same branch — do not force-push a branch that is under review.
+
+6. A maintainer will merge the PR once it is approved.
+
+### PR Checklist
+
+- [ ] Branch is based on current `upstream/master`
+- [ ] Code compiles with `mvn clean install -DskipTests`
+- [ ] New or changed behavior is covered by tests
+- [ ] New public API has Javadoc
+- [ ] Numerical gradient checks pass for any new layer or loss
+- [ ] Eclipse CLA is signed (first-time contributors only — see below)
+
+## Reporting Issues
+
+File bugs and feature requests at [github.com/eclipse/deeplearning4j/issues](https://github.com/eclipse/deeplearning4j/issues).
+
+A useful bug report includes:
+
+- DL4J version (or commit hash if built from source)
+- Java version and OS
+- A minimal reproducible example — the shorter the better
+- Full stack trace if an exception is thrown
+- Expected vs. actual behavior
+
+For examples bugs, use [github.com/eclipse/deeplearning4j-examples/issues](https://github.com/eclipse/deeplearning4j-examples/issues) instead.
+
+## Eclipse Foundation CLA
+
+Eclipse Deeplearning4j is an Eclipse Foundation project. Before your first pull request can be merged, you must sign the **Eclipse Contributor Agreement (ECA)**:
+
+1. Create an account at [accounts.eclipse.org](https://accounts.eclipse.org).
+2. Sign the ECA at [eclipse.org/legal/ECA.php](https://www.eclipse.org/legal/ECA.php).
+3. Ensure the email address on your GitHub account matches the email registered with the Eclipse Foundation.
+
+The CLA check is automated — the Eclipse bot will comment on your PR if the ECA is missing.
+
+## Community Channels
+
+| Channel | Purpose |
+|---------|---------|
+| [GitHub Issues](https://github.com/eclipse/deeplearning4j/issues) | Bug reports, feature requests |
+| [GitHub Discussions](https://github.com/eclipse/deeplearning4j/discussions) | Questions, design discussions |
+| [Gitter](https://gitter.im/deeplearning4j/deeplearning4j) | Real-time chat with maintainers and community |
+| [Early Adopters Gitter](https://gitter.im/deeplearning4j/deeplearning4j/earlyadopters) | Build issues, bleeding-edge questions |
+
+When asking for help, include your DL4J version, OS, and a minimal reproducible example. The more context you provide, the faster someone can assist you.

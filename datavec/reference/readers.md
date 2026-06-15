@@ -1,649 +1,383 @@
 ---
-description: Read individual records from different formats.
+title: "Record Readers"
+description: "RecordReader implementations — CSV, JSON, image, regex, line, and custom readers"
 ---
 
-# Readers
+# Record Readers
 
-## Why readers?
+A `RecordReader` is the entry point for data into DataVec. It reads raw bytes from an `InputSplit` and converts them into `List<Writable>` records — one list per data example, where each element corresponds to a column in your `Schema`.
 
-Readers iterate records from a dataset in storage and load the data into DataVec. The usefulness of readers beyond individual entries in a dataset includes: what if you wanted to train a text generator on a corpus? Or programmatically compose two entries together to form a new record? Reader implementations are useful for complex file types or distributed storage mechanisms.
+## The RecordReader Interface
 
-Readers return `Writable` classes that describe each column in a `Record`. These classes are used to convert each record to a tensor/ND-Array format.
+Every reader implements `RecordReader` and provides:
 
-## Usage
+| Method | Description |
+|---|---|
+| `initialize(InputSplit split)` | Set up the reader against a data source |
+| `initialize(Configuration conf, InputSplit split)` | Set up with additional configuration |
+| `hasNext()` | True if another record is available |
+| `next()` | Return the next record as `List<Writable>` |
+| `nextRecord()` | Return the next `Record` with optional `RecordMetaData` |
+| `reset()` | Restart iteration from the beginning |
+| `close()` | Release resources |
 
-Each reader implementation extends `BaseRecordReader` and provides a simple API for selecting the next record in a dataset, acting similarly to iterators.
+After calling `initialize`, use `hasNext` / `next` in a loop, or pass the reader directly to a `DataSetIterator`.
 
-Useful methods include:
+## InputSplit
 
-* `next`: Return a batch of `Writable`.
-* `nextRecord`: Return a single `Record`, optionally with `RecordMetaData`.
-* `reset`: Reset the underlying iterator.
-* `hasNext`: Iterator method to determine if another record is available.
+An `InputSplit` tells the reader where to find data. The main implementations:
 
-## Listeners
+### FileSplit
 
-You can hook a custom `RecordListener` to a record reader for debugging or visualization purposes. Pass your custom listener to the `addListener` base method immediately after initializing your class.
+Points to a directory or single file. By default, all files recursively under the directory are included.
 
-## Types of readers
+```java
+// All files under a directory
+InputSplit split = new FileSplit(new File("/data/train/"));
 
-### ComposableRecordReader
+// Only CSV files, shuffled
+InputSplit split = new FileSplit(
+    new File("/data/train/"),
+    new String[]{"csv"},
+    new Random(42)
+);
 
-RecordReader for each pipeline. Individual record is a concatenation of the two collections. Create a recordreader that takes recordreaders and iterates over them and concatenates them hasNext would be the & of all the recordreaders concatenation would be next & addAll on the collection return one record
-
-**initialize**
-
-```
-public void initialize(InputSplit split) throws IOException, InterruptedException
-```
-
-### ConcatenatingRecordReader
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/records/reader/impl/ConcatenatingRecordReader.java)
-
-Combine multiple readers into a single reader. Records are read sequentially - thus if the first reader has 100 records, and the second reader has 200 records, ConcatenatingRecordReader will have 300 records.
-
-### FileRecordReader
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/records/reader/impl/FileRecordReader.java)
-
-File reader/writer
-
-**getCurrentLabel**
-
-```
-public int getCurrentLabel()
+// A single file
+InputSplit split = new FileSplit(new File("/data/train.csv"));
 ```
 
-Return the current label. The index of the current file’s parent directory in the label list
+### NumberedFileInputSplit
 
-* return The index of the current file’s parent directory
+For files named with sequential numbers in a format string:
 
-### LineRecordReader
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/records/reader/impl/LineRecordReader.java)
-
-Reads files line by line
-
-### CollectionRecordReader
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/records/reader/impl/collection/CollectionRecordReader.java)
-
-Collection record reader. Mainly used for testing.
-
-### CollectionSequenceRecordReader
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/records/reader/impl/collection/CollectionSequenceRecordReader.java)
-
-Collection record reader for sequences. Mainly used for testing.
-
-**initialize**
-
-```
-public void initialize(InputSplit split) throws IOException, InterruptedException
+```java
+// matches seq_0000.csv through seq_9999.csv
+InputSplit split = new NumberedFileInputSplit("/data/seq_%04d.csv", 0, 9999);
 ```
 
-* param records Collection of sequences. For example, List\<List\<List>> where the inner two lists are a sequence, and the outer list/collection is a list of sequences
+### CollectionInputSplit
 
-### ListStringRecordReader
+For an explicit list of URIs:
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/records/reader/impl/collection/ListStringRecordReader.java)
-
-Iterates through a list of strings return a record.
-
-**initialize**
-
-```
-public void initialize(InputSplit split) throws IOException, InterruptedException
+```java
+List<URI> uris = Arrays.asList(
+    new URI("file:///data/a.csv"),
+    new URI("file:///data/b.csv")
+);
+InputSplit split = new CollectionInputSplit(uris);
 ```
 
-Called once at initialization.
+### InputStreamInputSplit
 
-* param split the split that defines the range of records to read
-* throws IOException
-* throws InterruptedException
+For streaming data from any `InputStream`:
 
-**initialize**
-
-```
-public void initialize(Configuration conf, InputSplit split) throws IOException, InterruptedException
+```java
+InputStream is = getClass().getResourceAsStream("/data.csv");
+InputSplit split = new InputStreamInputSplit(is);
 ```
 
-Called once at initialization.
-
-* param conf a configuration for initialization
-* param split the split that defines the range of records to read
-* throws IOException
-* throws InterruptedException
-
-**hasNext**
-
-```
-public boolean hasNext()
-```
-
-Get the next record
-
-* return The list of next record
-
-**reset**
-
-```
-public void reset()
-```
-
-List of label strings
-
-* return
-
-**nextRecord**
-
-```
-public Record nextRecord()
-```
-
-Load the record from the given DataInputStream Unlike {- link #next()} the internal state of the RecordReader is not modified Implementations of this method should not close the DataInputStream
-
-* param uri
-* param dataInputStream
-* throws IOException if error occurs during reading from the input stream
-
-**close**
-
-```
-public void close() throws IOException
-```
-
-Closes this stream and releases any system resources associated with it. If the stream is already closed then invoking this method has no effect.
-
-As noted in {- link AutoCloseable#close()}, cases where the close may fail require careful attention. It is strongly advised to relinquish the underlying resources and to internally _mark_ the {- code Closeable} as closed, prior to throwing the {- code IOException}.
-
-* throws IOException if an I/O error occurs
-
-**setConf**
-
-```
-public void setConf(Configuration conf)
-```
-
-Set the configuration to be used by this object.
-
-* param conf
-
-**getConf**
-
-```
-public Configuration getConf()
-```
-
-Return the configuration used by this object.
+## CSV Readers
 
 ### CSVRecordReader
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/records/reader/impl/csv/CSVRecordReader.java)
+The most commonly used reader. Reads a CSV (or TSV, or any delimiter-separated) file line by line, producing one `List<Writable>` per line.
 
-Simple csv record reader.
+```java
+// Default: comma delimiter, no header skip
+RecordReader rr = new CSVRecordReader();
+rr.initialize(new FileSplit(new File("data.csv")));
 
-**initialize**
+// Skip 1 header line, comma delimiter
+RecordReader rr = new CSVRecordReader(1, ',');
+rr.initialize(new FileSplit(new File("data.csv")));
 
+// Tab delimiter
+RecordReader rr = new CSVRecordReader(0, '\t');
 ```
-public void initialize(Configuration conf, InputSplit split) throws IOException, InterruptedException
+
+All values are returned as `Text` (string) `Writable` objects. Numeric conversion happens automatically in the `TransformProcess` or during `DataSetIterator` construction.
+
+When your CSV has mixed quoted fields:
+
+```java
+// Handle quoted fields with embedded commas
+RecordReader rr = new CSVRecordReader(1, ',', '"');
 ```
-
-Skip first n lines
-
-* param skipNumLines the number of lines to skip
-
-### CSVRegexRecordReader
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/records/reader/impl/csv/CSVRegexRecordReader.java)
-
-A CSVRecordReader that can split each column into additional columns using regexs.
 
 ### CSVSequenceRecordReader
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/records/reader/impl/csv/CSVSequenceRecordReader.java)
+Reads multiple files, treating each file as one sequence. Each line in a file is one time step; each value in a line is one feature at that time step.
 
-CSV Sequence Record Reader This reader is intended to read sequences of data in CSV format, where each sequence is defined in its own file (and there are multiple files) Each line in the file represents one time step
+This reader implements `SequenceRecordReader`, so use it with `SequenceRecordReaderDataSetIterator`.
+
+```java
+// One CSV file per sequence, one line per time step
+SequenceRecordReader features = new CSVSequenceRecordReader(1, ',');
+features.initialize(new NumberedFileInputSplit("/data/features_%d.csv", 0, 999));
+
+SequenceRecordReader labels = new CSVSequenceRecordReader(1, ',');
+labels.initialize(new NumberedFileInputSplit("/data/labels_%d.csv", 0, 999));
+
+DataSetIterator iter = new SequenceRecordReaderDataSetIterator(
+    features, labels, batchSize, numClasses,
+    false,   // not regression
+    SequenceRecordReaderDataSetIterator.AlignmentMode.ALIGN_END
+);
+```
+
+### CSVRegexRecordReader
+
+Splits columns using regex patterns rather than a simple delimiter. Useful for CSV files with inconsistent spacing or mixed delimiters.
+
+```java
+RecordReader rr = new CSVRegexRecordReader(0, ',');
+```
 
 ### CSVVariableSlidingWindowRecordReader
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/records/reader/impl/csv/CSVVariableSlidingWindowRecordReader.java)
+Reads an entire CSV and produces subsequences using a variable sliding window. The window starts at size 1, grows to `maxLinesPerSequence`, then shrinks back. Useful for training on all possible subsequences of a dataset.
 
-A sliding window of variable size across an entire CSV.
+## Text Readers
 
-In practice the sliding window size starts at 1, then linearly increase to maxLinesPer sequence, then linearly decrease back to 1.
+### LineRecordReader
 
-**initialize**
+Reads a file line by line. Each line becomes a single-element record containing a `Text` writable. No parsing is done — you receive the raw line. Useful when you want to apply your own parsing in a `TransformProcess` or custom transform.
 
+```java
+RecordReader rr = new LineRecordReader();
+rr.initialize(new FileSplit(new File("/data/corpus.txt")));
+
+while (rr.hasNext()) {
+    List<Writable> line = rr.next();  // single-element list
+    String text = line.get(0).toString();
+}
 ```
-public void initialize(Configuration conf, InputSplit split) throws IOException, InterruptedException
-```
-
-No-arg constructor with the default number of lines per sequence (10)
-
-### LibSvmRecordReader
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/records/reader/impl/misc/LibSvmRecordReader.java)
-
-Record reader for libsvm format, which is closely related to SVMLight format. Similar to scikit-learn we use a single reader for both formats, so this class is a subclass of SVMLightRecordReader.
-
-Further details on the format can be found at
-
-* [http://svmlight.joachims.org/](http://svmlight.joachims.org/)&#x20;
-* [http://www.csie.ntu.edu.tw/\~cjlin/libsvmtools/datasets/multilabel.html](http://www.csie.ntu.edu.tw/\~cjlin/libsvmtools/datasets/multilabel.html)&#x20;
-* [http://scikit-learn.org/stable/modules/generated/sklearn.datasets.load\_svmlight\_file.html](http://scikit-learn.org/stable/modules/generated/sklearn.datasets.load\_svmlight\_file.html)
-
-### MatlabRecordReader
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/records/reader/impl/misc/MatlabRecordReader.java)
-
-Matlab record reader
-
-### SVMLightRecordReader
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/records/reader/impl/misc/SVMLightRecordReader.java)
-
-Record reader for SVMLight format, which can generally be described as
-
-LABEL INDEX:VALUE INDEX:VALUE …
-
-SVMLight format is well-suited to sparse data (e.g., bag-of-words) because it omits all features with value zero.
-
-We support an “extended” version that allows for multiple targets (or labels) separated by a comma, as follows:
-
-LABEL1,LABEL2,… INDEX:VALUE INDEX:VALUE …
-
-This can be used to represent either multitask problems or multilabel problems with sparse binary labels (controlled via the “MULTILABEL” configuration option).
-
-Like scikit-learn, we support both zero-based and one-based indexing.
-
-Further details on the format can be found at
-
-* [http://svmlight.joachims.org/](http://svmlight.joachims.org/)&#x20;
-* [http://www.csie.ntu.edu.tw/\~cjlin/libsvmtools/datasets/multilabel.html](http://www.csie.ntu.edu.tw/\~cjlin/libsvmtools/datasets/multilabel.html)&#x20;
-* [http://scikit-learn.org/stable/modules/generated/sklearn.datasets.load\_svmlight\_file.html](http://scikit-learn.org/stable/modules/generated/sklearn.datasets.load\_svmlight\_file.html)
-
-**initialize**
-
-```
-public void initialize(Configuration conf, InputSplit split) throws IOException, InterruptedException
-```
-
-Must be called before attempting to read records.
-
-* param conf DataVec configuration
-* param split FileSplit
-* throws IOException
-* throws InterruptedException
-
-**setConf**
-
-```
-public void setConf(Configuration conf)
-```
-
-Set configuration.
-
-* param conf DataVec configuration
-* throws IOException
-* throws InterruptedException
-
-**hasNext**
-
-```
-public boolean hasNext()
-```
-
-Helper function to help detect lines that are commented out. May read ahead and cache a line.
-
-* return
-
-**nextRecord**
-
-```
-public Record nextRecord()
-```
-
-Return next record as list of Writables.
-
-* return
 
 ### RegexLineRecordReader
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/records/reader/impl/regex/RegexLineRecordReader.java)
+Reads a file line by line and splits each line into fields using a regex with capture groups. Each capture group becomes one `Text` writable in the record.
 
-RegexLineRecordReader: Read a file, one line at a time, and split it into fields using a regex. To load an entire file using a
+```java
+// Parse log lines: "2024-01-15 14:32:01.123 42 WARN Message text here"
+String regex = "(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3}) (\\d+) ([A-Z]+) (.+)";
+int skipLines = 0;
 
-Example: Data in format “2016-01-01 23:59:59.001 1 DEBUG First entry message!”\
-using regex String “(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3}) (\d+) (\[A-Z]+) (.)”\
-would be split into 4 Text writables: \[“2016-01-01 23:59:59.001”, “1”, “DEBUG”, “First entry message!”]
+RecordReader rr = new RegexLineRecordReader(regex, skipLines);
+rr.initialize(new FileSplit(new File("/var/log/app.log")));
+
+// Each record: ["2024-01-15 14:32:01.123", "42", "WARN", "Message text here"]
+```
+
+Lines that do not match the regex result in an exception by default.
 
 ### RegexSequenceRecordReader
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/records/reader/impl/regex/RegexSequenceRecordReader.java)
+Like `RegexLineRecordReader`, but reads an entire file as a sequence, with one time step per line. Supports three invalid-line handling modes:
 
-RegexSequenceRecordReader: Read an entire file (as a sequence), one line at a time and split each line into fields using a regex.
+- `FailOnInvalid` — throw an exception (default)
+- `SkipInvalid` — silently skip non-matching lines
+- `SkipInvalidWithWarning` — skip but log a warning
 
-Example: Data in format “2016-01-01 23:59:59.001 1 DEBUG First entry message!”\
-using regex String “(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3}) (\d+) (\[A-Z]+) (.)”\
-would be split into 4 Text writables: \[“2016-01-01 23:59:59.001”, “1”, “DEBUG”, “First entry message!”]
-
-lines that don’t match the provided regex can result in an exception (FailOnInvalid), can be skipped silently (SkipInvalid), or skip invalid but log a warning (SkipInvalidWithWarning)
-
-### TransformProcessRecordReader
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/records/reader/impl/transform/TransformProcessRecordReader.java)
-
-to have a transform process applied before being returned.
-
-**initialize**
-
-```
-public void initialize(InputSplit split) throws IOException, InterruptedException
+```java
+RecordReader rr = new RegexSequenceRecordReader(regex, skipLines,
+    RegexSequenceRecordReader.LineErrorHandling.SkipInvalidWithWarning);
 ```
 
-Called once at initialization.
+### ListStringRecordReader
 
-* param split the split that defines the range of records to read
-* throws IOException
-* throws InterruptedException
+Reads from an in-memory list of strings. Each string is parsed as a single-column record. Useful for testing or when you have already loaded text into memory.
 
-**initialize**
-
-```
-public void initialize(Configuration conf, InputSplit split) throws IOException, InterruptedException
-```
-
-Called once at initialization.
-
-* param conf a configuration for initialization
-* param split the split that defines the range of records to read
-* throws IOException
-* throws InterruptedException
-
-**hasNext**
-
-```
-public boolean hasNext()
+```java
+List<List<String>> data = Arrays.asList(
+    Arrays.asList("cat"),
+    Arrays.asList("dog"),
+    Arrays.asList("bird")
+);
+InputSplit split = new ListStringSplit(data);
+RecordReader rr = new ListStringRecordReader();
+rr.initialize(split);
 ```
 
-Get the next record
+## JSON / XML / YAML Readers
 
-* return
+### JacksonRecordReader
 
-**reset**
+Reads JSON, XML, or YAML files using Jackson. Each file (or each element in an array) becomes one record. You specify a `FieldSelection` to pull out the fields you need.
 
-```
-public void reset()
-```
+```java
+import org.datavec.api.records.reader.impl.jackson.JacksonRecordReader;
+import org.datavec.api.records.reader.impl.jackson.FieldSelection;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-List of label strings
+FieldSelection fields = new FieldSelection.Builder()
+    .addField("userId")
+    .addField("amount")
+    .addField("category")
+    .build();
 
-* return
-
-**nextRecord**
-
-```
-public Record nextRecord()
-```
-
-Load the record from the given DataInputStream Unlike {- link #next()} the internal state of the RecordReader is not modified Implementations of this method should not close the DataInputStream
-
-* param uri
-* param dataInputStream
-* throws IOException if error occurs during reading from the input stream
-
-**loadFromMetaData**
-
-```
-public Record loadFromMetaData(RecordMetaData recordMetaData) throws IOException
+RecordReader rr = new JacksonRecordReader(
+    fields,
+    new ObjectMapper(),      // ObjectMapper for JSON
+    false,                   // not append label
+    -1,                      // label index (not used here)
+    new FileSplit(new File("/data/events/"))
+);
 ```
 
-Load a single record from the given {- link RecordMetaData} instance\
-Note: that for data that isn’t splittable (i.e., text data that needs to be scanned/split), it is more efficient to load multiple records at once using {- link #loadFromMetaData(List)}
+For XML, replace `new ObjectMapper()` with `new XmlMapper()` from the Jackson XML module.
 
-* param recordMetaData Metadata for the record that we want to load from
-* return Single record for the given RecordMetaData instance
-* throws IOException If I/O error occurs during loading
-
-**setListeners**
-
-```
-public void setListeners(RecordListener... listeners)
-```
-
-Load multiple records from the given a list of {- link RecordMetaData} instances
-
-* param recordMetaDatas Metadata for the records that we want to load from
-* return Multiple records for the given RecordMetaData instances
-* throws IOException If I/O error occurs during loading
-
-**setListeners**
-
-```
-public void setListeners(Collection<RecordListener> listeners)
-```
-
-Set the record listeners for this record reader.
-
-* param listeners
-
-**close**
-
-```
-public void close() throws IOException
-```
-
-Closes this stream and releases any system resources associated with it. If the stream is already closed then invoking this method has no effect.
-
-As noted in {- link AutoCloseable#close()}, cases where the close may fail require careful attention. It is strongly advised to relinquish the underlying resources and to internally _mark_ the {- code Closeable} as closed, prior to throwing the {- code IOException}.
-
-* throws IOException if an I/O error occurs
-
-**setConf**
-
-```
-public void setConf(Configuration conf)
-```
-
-Set the configuration to be used by this object.
-
-* param conf
-
-**getConf**
-
-```
-public Configuration getConf()
-```
-
-Return the configuration used by this object.
-
-### TransformProcessSequenceRecordReader
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/records/reader/impl/transform/TransformProcessSequenceRecordReader.java)
-
-to be transformed before being returned.
-
-**setConf**
-
-```
-public void setConf(Configuration conf)
-```
-
-Set the configuration to be used by this object.
-
-* param conf
-
-**getConf**
-
-```
-public Configuration getConf()
-```
-
-Return the configuration used by this object.
-
-**batchesSupported**
-
-```
-public boolean batchesSupported()
-```
-
-Returns a sequence record.
-
-* return a sequence of records
-
-**nextSequence**
-
-```
-public SequenceRecord nextSequence()
-```
-
-Load a sequence record from the given DataInputStream Unlike {- link #next()} the internal state of the RecordReader is not modified Implementations of this method should not close the DataInputStream
-
-* param uri
-* param dataInputStream
-* throws IOException if error occurs during reading from the input stream
-
-**loadSequenceFromMetaData**
-
-```
-public SequenceRecord loadSequenceFromMetaData(RecordMetaData recordMetaData) throws IOException
-```
-
-Load a single sequence record from the given {- link RecordMetaData} instance\
-Note: that for data that isn’t splittable (i.e., text data that needs to be scanned/split), it is more efficient to load multiple records at once using {- link #loadSequenceFromMetaData(List)}
-
-* param recordMetaData Metadata for the sequence record that we want to load from
-* return Single sequence record for the given RecordMetaData instance
-* throws IOException If I/O error occurs during loading
-
-**initialize**
-
-```
-public void initialize(InputSplit split) throws IOException, InterruptedException
-```
-
-Load multiple sequence records from the given a list of {- link RecordMetaData} instances
-
-* param recordMetaDatas Metadata for the records that we want to load from
-* return Multiple sequence record for the given RecordMetaData instances
-* throws IOException If I/O error occurs during loading
-
-**initialize**
-
-```
-public void initialize(Configuration conf, InputSplit split) throws IOException, InterruptedException
-```
-
-Called once at initialization.
-
-* param conf a configuration for initialization
-* param split the split that defines the range of records to read
-* throws IOException
-* throws InterruptedException
-
-**hasNext**
-
-```
-public boolean hasNext()
-```
-
-Get the next record
-
-* return
-
-**reset**
-
-```
-public void reset()
-```
-
-List of label strings
-
-* return
-
-**nextRecord**
-
-```
-public Record nextRecord()
-```
-
-Load the record from the given DataInputStream Unlike {- link #next()} the internal state of the RecordReader is not modified Implementations of this method should not close the DataInputStream
-
-* param uri
-* param dataInputStream
-* throws IOException if error occurs during reading from the input stream
-
-**loadFromMetaData**
-
-```
-public Record loadFromMetaData(RecordMetaData recordMetaData) throws IOException
-```
-
-Load a single record from the given {- link RecordMetaData} instance\
-Note: that for data that isn’t splittable (i.e., text data that needs to be scanned/split), it is more efficient to load multiple records at once using {- link #loadFromMetaData(List)}
-
-* param recordMetaData Metadata for the record that we want to load from
-* return Single record for the given RecordMetaData instance
-* throws IOException If I/O error occurs during loading
-
-**setListeners**
-
-```
-public void setListeners(RecordListener... listeners)
-```
-
-Load multiple records from the given a list of {- link RecordMetaData} instances
-
-* param recordMetaDatas Metadata for the records that we want to load from
-* return Multiple records for the given RecordMetaData instances
-* throws IOException If I/O error occurs during loading
-
-**setListeners**
-
-```
-public void setListeners(Collection<RecordListener> listeners)
-```
-
-Set the record listeners for this record reader.
-
-* param listeners
-
-**close**
-
-```
-public void close() throws IOException
-```
-
-Closes this stream and releases any system resources associated with it. If the stream is already closed then invoking this method has no effect.
-
-As noted in {- link AutoCloseable#close()}, cases where the close may fail require careful attention. It is strongly advised to relinquish the underlying resources and to internally _mark_ the {- code Closeable} as closed, prior to throwing the {- code IOException}.
-
-* throws IOException if an I/O error occurs
-
-### NativeAudioRecordReader
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-data/datavec-data-audio/src/main/java/org/datavec/audio/recordreader/NativeAudioRecordReader.java)
-
-Native audio file loader using FFmpeg.
-
-### WavFileRecordReader
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-data/datavec-data-audio/src/main/java/org/datavec/audio/recordreader/WavFileRecordReader.java)
-
-Wav file loader
+## Image Reader
 
 ### ImageRecordReader
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-data/datavec-data-image/src/main/java/org/datavec/image/recordreader/ImageRecordReader.java)
+Reads a directory of images, where each subdirectory is treated as a class label (one-of-K labeling). All images are resized to the specified height, width, and channel count.
 
-Image record reader. Reads a local file system and parses images of a given height and width. All images are rescaled and converted to the given height, width, and number of channels.
+```java
+import org.datavec.image.recordreader.ImageRecordReader;
+import org.datavec.image.transform.ImageTransform;
 
-Also appends the label if specified (one of k encoding based on the directory structure where each subdir of the root is an indexed label)
+int height = 224;
+int width = 224;
+int channels = 3;  // RGB; use 1 for grayscale
 
-### TfidfRecordReader
+// Construct a label generator from directory names
+ParentPathLabelGenerator labelMaker = new ParentPathLabelGenerator();
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-data/datavec-data-nlp/src/main/java/org/datavec/nlp/reader/TfidfRecordReader.java)
+ImageRecordReader rr = new ImageRecordReader(height, width, channels, labelMaker);
+rr.initialize(new FileSplit(new File("/data/images/train/")));
+```
 
-TFIDF record reader (wraps a tfidf vectorizer for delivering labels and conforming to the record reader interface)
+Expected directory structure:
+```
+/data/images/train/
+    cat/
+        img001.jpg
+        img002.jpg
+    dog/
+        img003.jpg
+        img004.jpg
+```
+
+With this structure, images in `cat/` get label index 0 and images in `dog/` get label index 1 (alphabetical ordering).
+
+For image augmentation and transforms, see [Image Data](image.md).
+
+## File Reader
+
+### FileRecordReader
+
+Reads individual files, returning the file path as a `Text` writable and the label derived from the parent directory name. Most commonly used as a base class rather than directly.
+
+```java
+RecordReader rr = new FileRecordReader();
+rr.initialize(new FileSplit(new File("/data/files/")));
+
+int currentLabel = ((FileRecordReader) rr).getCurrentLabel();
+```
+
+## Sparse Format Readers
+
+### LibSvmRecordReader and SVMLightRecordReader
+
+These readers parse sparse feature formats widely used in linear model and kernel method communities. The format encodes each example as:
+
+```
+LABEL index1:value1 index2:value2 ...
+```
+
+Zero-valued features are omitted. `LibSvmRecordReader` is a subclass of `SVMLightRecordReader` with minor format differences.
+
+```java
+// Configure for specific number of features
+Configuration conf = new Configuration();
+conf.set(SVMLightRecordReader.NUM_FEATURES, "10000");
+conf.setBoolean(SVMLightRecordReader.ZERO_BASED_INDEXING, false);
+
+RecordReader rr = new LibSvmRecordReader();
+rr.initialize(conf, new FileSplit(new File("data.svm")));
+```
+
+## Collection Readers
+
+### CollectionRecordReader
+
+Wraps an in-memory `List<List<Writable>>` as a reader. Primarily used in unit tests.
+
+```java
+List<List<Writable>> data = new ArrayList<>();
+data.add(Arrays.asList(new IntWritable(1), new DoubleWritable(3.14)));
+data.add(Arrays.asList(new IntWritable(2), new DoubleWritable(2.72)));
+
+RecordReader rr = new CollectionRecordReader(data);
+```
+
+### CollectionSequenceRecordReader
+
+Like `CollectionRecordReader` but for sequence data: wraps `List<List<List<Writable>>>`.
+
+## Combining Readers
+
+### ConcatenatingRecordReader
+
+Chains multiple readers sequentially. When the first reader is exhausted, reading continues with the second, and so on. Useful for combining training files across multiple directories.
+
+```java
+RecordReader r1 = new CSVRecordReader(1, ',');
+r1.initialize(new FileSplit(new File("/data/train_2022/")));
+
+RecordReader r2 = new CSVRecordReader(1, ',');
+r2.initialize(new FileSplit(new File("/data/train_2023/")));
+
+RecordReader combined = new ConcatenatingRecordReader(r1, r2);
+```
+
+### TransformProcessRecordReader
+
+Wraps another reader and applies a `TransformProcess` to every record before returning it. Useful when you want to inline transformation without a separate executor step.
+
+```java
+RecordReader base = new CSVRecordReader(1, ',');
+base.initialize(new FileSplit(new File("data.csv")));
+
+TransformProcess tp = new TransformProcess.Builder(schema)
+    .removeColumns("id")
+    .categoricalToOneHot("color")
+    .build();
+
+RecordReader transformed = new TransformProcessRecordReader(base, tp);
+```
+
+For sequence readers, use `TransformProcessSequenceRecordReader` instead.
+
+## Adding Listeners
+
+You can attach a `RecordListener` to any reader for debugging or monitoring:
+
+```java
+rr.addListener(new LogRecordListener());  // logs every record to SLF4J
+```
+
+Custom listeners implement the `RecordListener` interface:
+
+```java
+rr.addListener(new RecordListener() {
+    @Override
+    public void recordRead(RecordReader reader, Object record) {
+        System.out.println("Read: " + record);
+    }
+});
+```
+
+## Choosing the Right Reader
+
+| Your data | Use |
+|---|---|
+| CSV or TSV files | `CSVRecordReader` |
+| One sequence per CSV file | `CSVSequenceRecordReader` |
+| JSON / XML / YAML files | `JacksonRecordReader` |
+| Log files with structured format | `RegexLineRecordReader` (single record per line) or `RegexSequenceRecordReader` (whole file as sequence) |
+| Labeled image directories | `ImageRecordReader` |
+| Sparse feature vectors | `LibSvmRecordReader` / `SVMLightRecordReader` |
+| In-memory data (testing) | `CollectionRecordReader` |
+| Multiple files to concatenate | `ConcatenatingRecordReader` |
+| Any reader + inline transforms | `TransformProcessRecordReader` |

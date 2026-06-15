@@ -1,294 +1,357 @@
 ---
-description: Keras model import API
+title: "Keras Import API Reference"
+description: "KerasModelImport API — all import methods and configuration options"
 ---
 
-# Keras Import API Overview
+## Keras Model Import API Reference
 
-## KerasModelImport
+`KerasModelImport` is the main entry point for importing Keras models into DL4J. It reads stored Keras configurations and weights from:
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/KerasModelImport.java)
+- A single HDF5 archive storing model architecture, training configuration, and weights (produced by `model.save()`)
+- A JSON file containing the model configuration combined with a separate HDF5 file containing weights (produced by `model.to_json()` and `model.save_weights()`)
 
-Reads stored Keras configurations and weights from one of two archives: either as
+[Source](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/KerasModelImport.java)
 
-* a single HDF5 file storing model and training JSON configurations and weights
-* separate text file storing model JSON configuration and HDF5 file storing weights.
+---
 
-**importKerasModelAndWeights**
+## Importing Functional API (ComputationGraph) Models
 
-```
-public static ComputationGraph importKerasModelAndWeights( InputStream modelHdf5Stream, boolean enforceTrainingConfig)
-            throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException
-```
+These methods import Keras Functional API models (`keras.models.Model`) as DL4J `ComputationGraph`.
 
-Load Keras (Functional API) Model saved using model.save\_model(…).
+---
 
-* param modelHdf5Stream InputStream containing HDF5 archive storing Keras Model
-* param enforceTrainingConfig whether to enforce training configuration options
-* return ComputationGraph
-* see ComputationGraph
+### importKerasModelAndWeights (InputStream)
 
-**importKerasModelAndWeights**
-
-```
-public static ComputationGraph importKerasModelAndWeights(InputStream modelHdf5Stream) throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException
+```java
+public static ComputationGraph importKerasModelAndWeights(
+        InputStream modelHdf5Stream,
+        boolean enforceTrainingConfig)
+        throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException
 ```
 
-Load Keras (Functional API) Model saved using model.save\_model(…).
+Load a Keras Functional API model saved using `model.save(...)` from an `InputStream`.
 
-* param modelHdf5Stream InputStream containing HDF5 archive storing Keras Model
-* return ComputationGraph
-* see ComputationGraph
+**Parameters:**
+- `modelHdf5Stream` — `InputStream` containing the HDF5 archive
+- `enforceTrainingConfig` — whether to enforce training configuration options; set to `false` if the model was not compiled
 
-**importKerasSequentialModelAndWeights**
+**Returns:** `ComputationGraph`
 
-```
-public static MultiLayerNetwork importKerasSequentialModelAndWeights(InputStream modelHdf5Stream,
-                                                                         boolean enforceTrainingConfig)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
-```
+---
 
-Load Keras Sequential model saved using model.save\_model(…).
-
-* param modelHdf5Stream InputStream containing HDF5 archive storing Keras Sequential model
-* param enforceTrainingConfig whether to enforce training configuration options
-* return ComputationGraph
-* see ComputationGraph
-
-**importKerasSequentialModelAndWeights**
-
-```
-public static MultiLayerNetwork importKerasSequentialModelAndWeights(InputStream modelHdf5Stream)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
+```java
+public static ComputationGraph importKerasModelAndWeights(InputStream modelHdf5Stream)
+        throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException
 ```
 
-Load Keras Sequential model saved using model.save\_model(…).
+Load a Keras Functional API model from an `InputStream` with training configuration enforced by default.
 
-* param modelHdf5Stream InputStream containing HDF5 archive storing Keras Sequential model
-* return ComputationGraph
-* see ComputationGraph
+**Parameters:**
+- `modelHdf5Stream` — `InputStream` containing the HDF5 archive
 
-**importKerasModelAndWeights**
+**Returns:** `ComputationGraph`
 
-```
-public static ComputationGraph importKerasModelAndWeights(String modelHdf5Filename, int[] inputShape,
-                                                              boolean enforceTrainingConfig)
-            throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException
-```
+---
 
-Load Keras (Functional API) Model saved using model.save\_model(…).
+### importKerasModelAndWeights (file path)
 
-* param modelHdf5Filename path to HDF5 archive storing Keras Model
-* param inputShape optional input shape for models that come without such (e.g. notop = false models)
-* param enforceTrainingConfig whether to enforce training configuration options
-* return ComputationGraph
-* throws IOException IO exception
-* throws InvalidKerasConfigurationException Invalid Keras config
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-* see ComputationGraph
-
-**importKerasModelAndWeights**
-
-```
-public static ComputationGraph importKerasModelAndWeights(String modelHdf5Filename, boolean enforceTrainingConfig)
-            throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException
+```java
+public static ComputationGraph importKerasModelAndWeights(
+        String modelHdf5Filename,
+        int[] inputShape,
+        boolean enforceTrainingConfig)
+        throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException
 ```
 
-Load Keras (Functional API) Model saved using model.save\_model(…).
+Load a Keras Functional API model saved using `model.save(...)` from a file path. Use this overload for models that do not include input shape information (e.g., `include_top=False` models).
 
-* param modelHdf5Filename path to HDF5 archive storing Keras Model
-* param enforceTrainingConfig whether to enforce training configuration options
-* return ComputationGraph
-* throws IOException IO exception
-* throws InvalidKerasConfigurationException Invalid Keras config
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-* see ComputationGraph
+**Parameters:**
+- `modelHdf5Filename` — path to the HDF5 archive
+- `inputShape` — optional input shape; pass `null` if the model already contains shape information
+- `enforceTrainingConfig` — whether to enforce training configuration options
 
-**importKerasModelAndWeights**
+**Returns:** `ComputationGraph`
 
+---
+
+```java
+public static ComputationGraph importKerasModelAndWeights(
+        String modelHdf5Filename,
+        boolean enforceTrainingConfig)
+        throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException
 ```
+
+**Parameters:**
+- `modelHdf5Filename` — path to the HDF5 archive
+- `enforceTrainingConfig` — whether to enforce training configuration options
+
+**Returns:** `ComputationGraph`
+
+---
+
+```java
 public static ComputationGraph importKerasModelAndWeights(String modelHdf5Filename)
-            throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException
+        throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException
 ```
 
-Load Keras (Functional API) Model saved using model.save\_model(…).
+Load a Keras Functional API model from a file path with training configuration enforced by default.
 
-* param modelHdf5Filename path to HDF5 archive storing Keras Model
-* return ComputationGraph
-* throws IOException IO exception
-* throws InvalidKerasConfigurationException Invalid Keras config
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-* see ComputationGraph
+**Parameters:**
+- `modelHdf5Filename` — path to the HDF5 archive
 
-**importKerasSequentialModelAndWeights**
+**Returns:** `ComputationGraph`
 
-```
-public static MultiLayerNetwork importKerasSequentialModelAndWeights(String modelHdf5Filename,
-                                                                         int[] inputShape,
-                                                                         boolean enforceTrainingConfig)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
-```
+---
 
-Load Keras Sequential model saved using model.save\_model(…).
+### importKerasModelAndWeights (JSON config + weights)
 
-* param modelHdf5Filename path to HDF5 archive storing Keras Sequential model
-* param inputShape optional input shape for models that come without such (e.g. notop = false models)
-* param enforceTrainingConfig whether to enforce training configuration options
-* return MultiLayerNetwork
-* throws IOException IO exception
-* see MultiLayerNetwork
-
-**importKerasSequentialModelAndWeights**
-
-```
-public static MultiLayerNetwork importKerasSequentialModelAndWeights(String modelHdf5Filename,
-                                                                         boolean enforceTrainingConfig)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
+```java
+public static ComputationGraph importKerasModelAndWeights(
+        String modelJsonFilename,
+        String weightsHdf5Filename,
+        boolean enforceTrainingConfig)
+        throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
-Load Keras Sequential model saved using model.save\_model(…).
+Load a Keras Functional API model for which the configuration and weights were saved separately using `model.to_json()` and `model.save_weights(...)`.
 
-* param modelHdf5Filename path to HDF5 archive storing Keras Sequential model
-* param enforceTrainingConfig whether to enforce training configuration options
-* return MultiLayerNetwork
-* throws IOException IO exception
-* see MultiLayerNetwork
+**Parameters:**
+- `modelJsonFilename` — path to the JSON file storing the model configuration
+- `weightsHdf5Filename` — path to the HDF5 archive storing model weights
+- `enforceTrainingConfig` — whether to enforce training configuration options
 
-**importKerasSequentialModelAndWeights**
+**Returns:** `ComputationGraph`
 
-```
-public static MultiLayerNetwork importKerasSequentialModelAndWeights(String modelHdf5Filename)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
-```
+---
 
-Load Keras Sequential model saved using model.save\_model(…).
-
-* param modelHdf5Filename path to HDF5 archive storing Keras Sequential model
-* return MultiLayerNetwork
-* throws IOException IO exception
-* see MultiLayerNetwork
-
-**importKerasModelAndWeights**
-
-```
-public static ComputationGraph importKerasModelAndWeights(String modelJsonFilename, String weightsHdf5Filename,
-                                                              boolean enforceTrainingConfig)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
+```java
+public static ComputationGraph importKerasModelAndWeights(
+        String modelJsonFilename,
+        String weightsHdf5Filename)
+        throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
-Load Keras (Functional API) Model for which the configuration and weights were saved separately using calls to model.to\_json() and model.save\_weights(…).
+**Parameters:**
+- `modelJsonFilename` — path to the JSON file
+- `weightsHdf5Filename` — path to the HDF5 weights file
 
-* param modelJsonFilename path to JSON file storing Keras Model configuration
-* param weightsHdf5Filename path to HDF5 archive storing Keras model weights
-* param enforceTrainingConfig whether to enforce training configuration options
-* return ComputationGraph
-* throws IOException IO exception
-* see ComputationGraph
+**Returns:** `ComputationGraph`
 
-**importKerasModelAndWeights**
+---
 
-```
-public static ComputationGraph importKerasModelAndWeights(String modelJsonFilename, String weightsHdf5Filename)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
-```
+### importKerasModelConfiguration
 
-Load Keras (Functional API) Model for which the configuration and weights were saved separately using calls to model.to\_json() and model.save\_weights(…).
-
-* param modelJsonFilename path to JSON file storing Keras Model configuration
-* param weightsHdf5Filename path to HDF5 archive storing Keras model weights
-* return ComputationGraph
-* throws IOException IO exception
-* see ComputationGraph
-
-**importKerasSequentialModelAndWeights**
-
-```
-public static MultiLayerNetwork importKerasSequentialModelAndWeights(String modelJsonFilename,
-                                                                         String weightsHdf5Filename,
-                                                                         boolean enforceTrainingConfig)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
+```java
+public static ComputationGraphConfiguration importKerasModelConfiguration(
+        String modelJsonFilename,
+        boolean enforceTrainingConfig)
+        throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
-Load Keras Sequential model for which the configuration and weights were saved separately using calls to model.to\_json() and model.save\_weights(…).
+Load only the model configuration (no weights) for a Keras Functional API model.
 
-* param modelJsonFilename path to JSON file storing Keras Sequential model configuration
-* param weightsHdf5Filename path to HDF5 archive storing Keras model weights
-* param enforceTrainingConfig whether to enforce training configuration options
-* return MultiLayerNetwork
-* throws IOException IO exception
-* see MultiLayerNetwork
+**Parameters:**
+- `modelJsonFilename` — path to the JSON file
+- `enforceTrainingConfig` — whether to enforce training configuration options
 
-**importKerasSequentialModelAndWeights**
+**Returns:** `ComputationGraphConfiguration`
 
-```
-public static MultiLayerNetwork importKerasSequentialModelAndWeights(String modelJsonFilename,
-                                                                         String weightsHdf5Filename)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
-```
+---
 
-Load Keras Sequential model for which the configuration and weights were saved separately using calls to model.to\_json() and model.save\_weights(…).
-
-* param modelJsonFilename path to JSON file storing Keras Sequential model configuration
-* param weightsHdf5Filename path to HDF5 archive storing Keras model weights
-* return MultiLayerNetwork
-* throws IOException IO exception
-* see MultiLayerNetwork
-
-**importKerasModelConfiguration**
-
-```
-public static ComputationGraphConfiguration importKerasModelConfiguration(String modelJsonFilename,
-                                                                              boolean enforceTrainingConfig)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
-```
-
-Load Keras (Functional API) Model for which the configuration was saved separately using calls to model.to\_json() and model.save\_weights(…).
-
-* param modelJsonFilename path to JSON file storing Keras Model configuration
-* param enforceTrainingConfig whether to enforce training configuration options
-* return ComputationGraph
-* throws IOException IO exception
-* see ComputationGraph
-
-**importKerasModelConfiguration**
-
-```
+```java
 public static ComputationGraphConfiguration importKerasModelConfiguration(String modelJsonFilename)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
+        throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
-Load Keras (Functional API) Model for which the configuration was saved separately using calls to model.to\_json() and model.save\_weights(…).
+**Parameters:**
+- `modelJsonFilename` — path to the JSON file
 
-* param modelJsonFilename path to JSON file storing Keras Model configuration
-* return ComputationGraph
-* throws IOException IO exception
-* see ComputationGraph
+**Returns:** `ComputationGraphConfiguration`
 
-**importKerasSequentialConfiguration**
+---
 
+## Importing Sequential (MultiLayerNetwork) Models
+
+These methods import Keras `Sequential` models as DL4J `MultiLayerNetwork`.
+
+---
+
+### importKerasSequentialModelAndWeights (InputStream)
+
+```java
+public static MultiLayerNetwork importKerasSequentialModelAndWeights(
+        InputStream modelHdf5Stream,
+        boolean enforceTrainingConfig)
+        throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
-public static MultiLayerConfiguration importKerasSequentialConfiguration(String modelJsonFilename,
-                                                                             boolean enforceTrainingConfig)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
+
+Load a Keras Sequential model saved using `model.save(...)` from an `InputStream`.
+
+**Parameters:**
+- `modelHdf5Stream` — `InputStream` containing the HDF5 archive
+- `enforceTrainingConfig` — whether to enforce training configuration options
+
+**Returns:** `MultiLayerNetwork`
+
+---
+
+```java
+public static MultiLayerNetwork importKerasSequentialModelAndWeights(InputStream modelHdf5Stream)
+        throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
-Load Keras Sequential model for which the configuration was saved separately using calls to model.to\_json() and model.save\_weights(…).
+**Parameters:**
+- `modelHdf5Stream` — `InputStream` containing the HDF5 archive
 
-* param modelJsonFilename path to JSON file storing Keras Sequential model configuration
-* param enforceTrainingConfig whether to enforce training configuration options
-* return MultiLayerNetwork
-* throws IOException IO exception
-* see MultiLayerNetwork
+**Returns:** `MultiLayerNetwork`
 
-**importKerasSequentialConfiguration**
+---
 
+### importKerasSequentialModelAndWeights (file path)
+
+```java
+public static MultiLayerNetwork importKerasSequentialModelAndWeights(
+        String modelHdf5Filename,
+        int[] inputShape,
+        boolean enforceTrainingConfig)
+        throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
+
+Load a Keras Sequential model from a file path. Supply `inputShape` for models that omit input shape in their configuration.
+
+**Parameters:**
+- `modelHdf5Filename` — path to the HDF5 archive
+- `inputShape` — optional input shape array; pass `null` if not needed
+- `enforceTrainingConfig` — whether to enforce training configuration options
+
+**Returns:** `MultiLayerNetwork`
+
+---
+
+```java
+public static MultiLayerNetwork importKerasSequentialModelAndWeights(
+        String modelHdf5Filename,
+        boolean enforceTrainingConfig)
+        throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
+```
+
+**Parameters:**
+- `modelHdf5Filename` — path to the HDF5 archive
+- `enforceTrainingConfig` — whether to enforce training configuration options
+
+**Returns:** `MultiLayerNetwork`
+
+---
+
+```java
+public static MultiLayerNetwork importKerasSequentialModelAndWeights(String modelHdf5Filename)
+        throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
+```
+
+**Parameters:**
+- `modelHdf5Filename` — path to the HDF5 archive
+
+**Returns:** `MultiLayerNetwork`
+
+---
+
+### importKerasSequentialModelAndWeights (JSON config + weights)
+
+```java
+public static MultiLayerNetwork importKerasSequentialModelAndWeights(
+        String modelJsonFilename,
+        String weightsHdf5Filename,
+        boolean enforceTrainingConfig)
+        throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
+```
+
+Load a Keras Sequential model for which the configuration and weights were saved separately.
+
+**Parameters:**
+- `modelJsonFilename` — path to the JSON configuration file
+- `weightsHdf5Filename` — path to the HDF5 weights file
+- `enforceTrainingConfig` — whether to enforce training configuration options
+
+**Returns:** `MultiLayerNetwork`
+
+---
+
+```java
+public static MultiLayerNetwork importKerasSequentialModelAndWeights(
+        String modelJsonFilename,
+        String weightsHdf5Filename)
+        throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
+```
+
+**Parameters:**
+- `modelJsonFilename` — path to the JSON configuration file
+- `weightsHdf5Filename` — path to the HDF5 weights file
+
+**Returns:** `MultiLayerNetwork`
+
+---
+
+### importKerasSequentialConfiguration
+
+```java
+public static MultiLayerConfiguration importKerasSequentialConfiguration(
+        String modelJsonFilename,
+        boolean enforceTrainingConfig)
+        throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
+```
+
+Load only the model configuration for a Keras Sequential model. No weights are loaded.
+
+**Parameters:**
+- `modelJsonFilename` — path to the JSON configuration file
+- `enforceTrainingConfig` — whether to enforce training configuration options
+
+**Returns:** `MultiLayerConfiguration`
+
+---
+
+```java
 public static MultiLayerConfiguration importKerasSequentialConfiguration(String modelJsonFilename)
-            throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
+        throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
-Load Keras Sequential model for which the configuration was saved separately using calls to model.to\_json() and model.save\_weights(…).
+**Parameters:**
+- `modelJsonFilename` — path to the JSON configuration file
 
-* param modelJsonFilename path to JSON file storing Keras Sequential model configuration
-* return MultiLayerNetwork
-* throws IOException IO exception
-* see MultiLayerNetwork
+**Returns:** `MultiLayerConfiguration`
+
+---
+
+## Exception Types
+
+| Exception | Meaning |
+|---|---|
+| `InvalidKerasConfigurationException` | The Keras configuration contains elements that are recognized but cannot be parsed or mapped |
+| `UnsupportedKerasConfigurationException` | The Keras configuration contains features that are not supported by the importer |
+| `IOException` | File not found or unreadable |
+
+---
+
+## enforceTrainingConfig Flag
+
+The `enforceTrainingConfig` parameter controls how training-related configuration in the HDF5 is handled:
+
+- `true` (default): an exception is thrown if any training configuration element cannot be parsed or mapped. Use this when you intend to continue training the model in DL4J.
+- `false`: training configuration parsing errors are logged as warnings but do not stop import. Use this for inference-only workflows or when the Keras model was not compiled before saving.
+
+---
+
+## Method Selection Guide
+
+| Situation | Method to use |
+|---|---|
+| Sequential model, single .h5 file | `importKerasSequentialModelAndWeights(String)` |
+| Sequential model, config + weights separate | `importKerasSequentialModelAndWeights(String, String)` |
+| Sequential model, config only | `importKerasSequentialConfiguration(String)` |
+| Sequential model, from InputStream | `importKerasSequentialModelAndWeights(InputStream)` |
+| Functional model, single .h5 file | `importKerasModelAndWeights(String)` |
+| Functional model, config + weights separate | `importKerasModelAndWeights(String, String)` |
+| Functional model, config only | `importKerasModelConfiguration(String)` |
+| Functional model, from InputStream | `importKerasModelAndWeights(InputStream)` |
+| Model missing input shape | Use the overload with `int[] inputShape` parameter |
+| Model not compiled in Keras | Pass `enforceTrainingConfig=false` |

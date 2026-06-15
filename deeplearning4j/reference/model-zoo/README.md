@@ -1,127 +1,229 @@
 ---
-description: Prebuilt model architectures and weights for out-of-the-box application.
+title: "Model Zoo"
+description: "Pretrained models in Deeplearning4j — available architectures, using pretrained weights, and transfer learning from zoo models"
 ---
 
-# Model Zoo
+## About the Deeplearning4j Model Zoo
 
-Deeplearning4j has native model zoo that can be accessed and instantiated directly from DL4J. The model zoo also includes pretrained weights for different datasets that are downloaded automatically and checked for integrity using a checksum mechanism.
+Deeplearning4j ships with a native model zoo that lets you instantiate well-known neural network architectures directly from Java, with no external downloads or manual configuration beyond adding a single Maven dependency. The zoo also provides pretrained weights for popular datasets — ImageNet, MNIST, CIFAR-10, and VGGFace — that are downloaded automatically and verified with a checksum on first use.
 
-If you want to use the new model zoo, you will need to add it as a dependency. A Maven POM would add the following:
+The model zoo covers the most widely used image classification and object detection architectures as well as a text-generation LSTM. Each model can be used in three modes:
 
-```markup
+1. Fresh initialization — a randomly initialized network with the original architecture, ready for training from scratch.
+2. Pretrained weights — weights transferred from a known training run on a reference dataset, ready for inference or fine-tuning.
+3. Custom input/output — a pretrained backbone with the classification head replaced to match your own number of classes.
+
+### Maven Dependency
+
+```xml
 <dependency>
     <groupId>org.deeplearning4j</groupId>
     <artifactId>deeplearning4j-zoo</artifactId>
-    <version>1.0.0-M1.1</version>
+    <version>${dl4j.version}</version>
 </dependency>
 ```
 
-## Getting started
+---
 
-Once you've successfully added the zoo dependency to your project, you can start to import and use models. Each model extends the `ZooModel` abstract class and uses the `InstantiableModel` interface. These classes provide methods that help you initialize either an empty, fresh network or a pretrained network.
+## The ZooModel Interface
 
-### Initializing fresh configurations
+Every model in the zoo extends the abstract class `ZooModel` and implements the `InstantiableModel` interface. The key methods are:
 
-You can instantly instantiate a model from the zoo using the `.init()` method. For example, if you want to instantiate a fresh, untrained network of AlexNet you can use the following code:
+| Method | Description |
+|---|---|
+| `init()` | Returns a fresh `Model` (MultiLayerNetwork or ComputationGraph) with random weights |
+| `initPretrained(PretrainedType)` | Downloads (if needed) and returns a model loaded with pretrained weights |
+| `pretrainedAvailable(PretrainedType)` | Returns `true` if weights are available for the given dataset |
+| `setInputShape(int[][])` | Override the default input shape before calling `init()` |
+| `conf()` | Returns the underlying `MultiLayerConfiguration` for inspection or modification |
+
+The `PretrainedType` enum specifies which dataset's weights to load:
+
+- `PretrainedType.IMAGENET` — ImageNet (1000 classes, ILSVRC)
+- `PretrainedType.MNIST` — MNIST handwritten digits
+- `PretrainedType.CIFAR10` — CIFAR-10 (10 classes)
+- `PretrainedType.VGGFACE` — VGGFace (face recognition)
+
+Input shapes follow the NCHW convention: `{channels, height, width}`. For example, `{3, 224, 224}` means 3 RGB channels at 224 × 224 pixels.
+
+---
+
+## Initializing a Fresh Network
+
+Use `.init()` to get a randomly initialized network for training from scratch. You must specify the number of output classes and a random seed via the builder:
 
 ```java
-import org.deeplearning4j.zoo.model.AlexNet
-import org.deeplearning4j.zoo.*;
+import org.deeplearning4j.zoo.model.AlexNet;
+import org.deeplearning4j.zoo.ZooModel;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 
-...
-
-int numberOfClassesInYourData = 1000;
-int randomSeed = 123;
+int numClasses = 1000;
+int seed = 123;
 
 ZooModel zooModel = AlexNet.builder()
-                .numClasses(numberOfClassesInYourData)
-                .seed(randomSeed)
-                .build();
+        .numClasses(numClasses)
+        .seed(seed)
+        .build();
+
+MultiLayerNetwork net = (MultiLayerNetwork) zooModel.init();
+net.init();
+System.out.println(net.summary());
+```
+
+To inspect or modify the configuration before building the network:
+
+```java
+ZooModel zooModel = AlexNet.builder()
+        .numClasses(numClasses)
+        .seed(seed)
+        .build();
+MultiLayerConfiguration conf = ((AlexNet) zooModel).conf();
+// modify conf here, then build a MultiLayerNetwork from it
+```
+
+### Changing the Input Shape
+
+By default each model has a fixed input shape. For models that support multiple resolutions (such as Darknet19, which supports 224 × 224 and 448 × 448), call `setInputShape()` before `init()`. This does not affect pretrained models.
+
+```java
+ZooModel zooModel = ResNet50.builder()
+        .numClasses(10)
+        .seed(42)
+        .build();
+zooModel.setInputShape(new int[][]{{3, 28, 28}});
 Model net = zooModel.init();
 ```
 
-If you want to tune parameters or change the optimization algorithm, you can obtain a reference to the underlying network configuration:
+---
 
-```java
-ZooModel zooModel = AlexNet.builder()
-                .numClasses(numberOfClassesInYourData)
-                .seed(randomSeed)
-                .build();
-MultiLayerConfiguration net = ((AlexNet) zooModel).conf();
-```
+## Loading Pretrained Weights
 
-### Initializing pretrained weights
-
-Some models have pretrained weights available, and a small number of models are pretrained across different datasets. `PretrainedType` is an enumerator that outlines different weight types, which includes `IMAGENET`, `MNIST`, `CIFAR10`, and `VGGFACE`.
-
-For example, you can initialize a VGG-16 model with ImageNet weights like so:
+Call `initPretrained(PretrainedType)` to get a model loaded with weights from a reference training run. The weights file is downloaded to the DL4J cache directory on first use and verified via SHA-256 checksum on subsequent uses.
 
 ```java
 import org.deeplearning4j.zoo.model.VGG16;
-import org.deeplearning4j.zoo.*;
+import org.deeplearning4j.zoo.PretrainedType;
+import org.deeplearning4j.nn.graph.ComputationGraph;
 
-...
-
-ZooModel zooModel = VGG16.builder().build();;
-Model net = zooModel.initPretrained(PretrainedType.IMAGENET);
+ZooModel zooModel = VGG16.builder().build();
+ComputationGraph net = (ComputationGraph) zooModel.initPretrained(PretrainedType.IMAGENET);
 ```
 
-And initialize another VGG16 model with weights trained on VGGFace:
+To check availability before loading:
 
 ```java
 ZooModel zooModel = VGG16.builder().build();
-Model net = zooModel.initPretrained(PretrainedType.VGGFACE);
+if (zooModel.pretrainedAvailable(PretrainedType.VGGFACE)) {
+    ComputationGraph faceModel = (ComputationGraph) zooModel.initPretrained(PretrainedType.VGGFACE);
+}
 ```
 
-If you're not sure whether a model contains pretrained weights, you can use the `.pretrainedAvailable()` method which returns a boolean. Simply pass a `PretrainedType` enum to this method, which returns true if weights are available.
+Some models offer more than one set of pretrained weights. VGG16, for example, has ImageNet, CIFAR-10, and VGGFace variants.
 
-Note that for convolutional models, input shape information follows the NCHW convention. So if a model's input shape default is `new int[]{3, 224, 224}`, this means the model has 3 channels and height/width of 224.
+---
 
-## What's in the zoo?
+## Transfer Learning
 
-The model zoo comes with well-known image recognition configurations in the deep learning community. The zoo also includes an LSTM for text generation, and a simple CNN for general image recognition.
+Pretrained zoo models are the natural starting point for transfer learning. The general workflow is:
 
-You can find a complete list of models using this [deeplearning4j-zoo Github link](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model).
+1. Load a pretrained model via `initPretrained`.
+2. Use `TransferLearning.Builder` (for `MultiLayerNetwork`) or `TransferLearning.GraphBuilder` (for `ComputationGraph`) to freeze earlier layers and replace the output layer.
+3. Train the modified network on your own dataset.
 
-This includes ImageNet models such as VGG-16, ResNet-50, AlexNet, Inception-ResNet-v1, LeNet, and more.
+### Feature Extraction (Frozen Backbone)
 
-* [AlexNet](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/AlexNet.java)   &#x20;
-* [Darknet19](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/Darknet19.java)   &#x20;
-* [FaceNetNN4Small2](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/FaceNetNN4Small2.java)   &#x20;
-* [InceptionResNetV1](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/InceptionResNetV1.java)   &#x20;
-* [LeNet](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/LeNet.java)
-* [ResNet50](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/ResNet50.java)
-* [SimpleCNN](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/SimpleCNN.java)
-* [TextGenerationLSTM](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/TextGenerationLSTM.java)
-* [TinyYOLO](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/TinyYOLO.java)
-* [VGG16](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/VGG16.java)   &#x20;
-* [VGG19](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model/VGG19.java)
-
-## Advanced usage
-
-The zoo comes with a couple additional features if you're looking to use the models for different use cases.
-
-### Changing Inputs
-
-Aside from passing certain configuration information to the constructor of a zoo model, you can also change its input shape using `.setInputShape()`.
-
-NOTE: this applies to fresh configurations only, and will not affect pretrained models:
+In feature extraction mode you freeze all layers in the pretrained model and replace only the final classification head. The frozen layers act as a fixed feature extractor.
 
 ```java
-int numberOfClassesInYourData = 10;
-int randomSeed = 123;
+import org.deeplearning4j.zoo.model.VGG16;
+import org.deeplearning4j.nn.transferlearning.FineTuneConfiguration;
+import org.deeplearning4j.nn.transferlearning.TransferLearning;
+import org.deeplearning4j.nn.graph.ComputationGraph;
+import org.nd4j.linalg.learning.config.Adam;
 
-ZooModel zooModel = ResNet50.builder()
-        .numClasses(numberOfClassesInYourData)
-        .seed(randomSeed)
+ComputationGraph vgg16 = (ComputationGraph)
+        VGG16.builder().build().initPretrained(PretrainedType.IMAGENET);
+
+FineTuneConfiguration fineTuneConf = new FineTuneConfiguration.Builder()
+        .updater(new Adam(1e-3))
+        .seed(123)
         .build();
-zooModel.setInputShape(new int[][]{{3, 28, 28}});
+
+ComputationGraph transferModel = new TransferLearning.GraphBuilder(vgg16)
+        .fineTuneConfiguration(fineTuneConf)
+        .setFeatureExtractor("fc2")          // freeze everything up to and including fc2
+        .removeVertexKeepConnections("predictions")
+        .addLayer("predictions",
+                new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                        .nIn(4096).nOut(numYourClasses)
+                        .activation(Activation.SOFTMAX).build(),
+                "fc2")
+        .build();
+
+transferModel.init();
 ```
 
-### Transfer Learning
+### Fine-Tuning (Partial Unfreezing)
 
-Pretrained models are perfect for transfer learning! You can read more about transfer learning using DL4J [here](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/tuning-and-training/transfer-learning.md).
+Fine-tuning unfreezes some of the later layers so they can adapt to the new dataset, while keeping early layers (which capture low-level features) frozen.
 
-### Workspaces
+```java
+ComputationGraph transferModel = new TransferLearning.GraphBuilder(vgg16)
+        .fineTuneConfiguration(fineTuneConf)
+        .setFeatureExtractor("block4_pool")  // freeze through block4_pool
+        .removeVertexKeepConnections("predictions")
+        .addLayer("predictions",
+                new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                        .nIn(4096).nOut(numYourClasses)
+                        .activation(Activation.SOFTMAX).build(),
+                "fc2")
+        .build();
+```
 
-Initialization methods often have an additional parameter named `workspaceMode`. For the majority of users you will not need to use this; however, if you have a large machine that has "beefy" specifications, you can pass `WorkspaceMode.SINGLE` for models such as VGG-19 that have many millions of parameters. To learn more about workspaces, please see [this section](../../../multi-project/explanation/configuration/memory/workspaces.md).
+For a complete transfer learning guide, see the [Transfer Learning](../nn/transfer-learning.md) documentation.
+
+---
+
+## Memory and Workspace Configuration
+
+Initialization methods accept an optional `workspaceMode` parameter. Most users will not need to change this. If you are running a model with a very large number of parameters (such as VGG19 with 143 million parameters) on a machine with ample RAM, passing `WorkspaceMode.SINGLE` can reduce memory overhead:
+
+```java
+ZooModel zooModel = VGG19.builder().build();
+ComputationGraph net = (ComputationGraph)
+        zooModel.initPretrained(PretrainedType.IMAGENET, WorkspaceMode.SINGLE);
+```
+
+For general workspace configuration guidance, see the [Workspaces](../config/workspaces.md) documentation.
+
+---
+
+## Available Models at a Glance
+
+| Model | Input Shape | Pretrained Datasets |
+|---|---|---|
+| AlexNet | 3 × 224 × 224 | — |
+| Darknet19 | 3 × 224 × 224, 3 × 448 × 448 | ImageNet |
+| FaceNetNN4Small2 | 3 × 96 × 96 | — |
+| InceptionResNetV1 | 3 × 160 × 160 | VGGFace |
+| LeNet | 1 × 28 × 28 | MNIST |
+| NASNet | 3 × 224 × 224 | ImageNet |
+| ResNet50 | 3 × 224 × 224 | ImageNet |
+| SimpleCNN | 3 × 224 × 224 | — |
+| SqueezeNet | 3 × 227 × 227 | ImageNet |
+| TextGenerationLSTM | — | Walt Whitman corpus |
+| TinyYOLO | 3 × 416 × 416 | ImageNet + VOC |
+| UNet | 1 × 512 × 512 | Synthetic segmentation |
+| VGG16 | 3 × 224 × 224 | ImageNet, CIFAR-10, VGGFace |
+| VGG19 | 3 × 224 × 224 | ImageNet |
+| Xception | 3 × 299 × 299 | ImageNet |
+| YOLO2 | 3 × 608 × 608 | ImageNet + COCO |
+
+For full per-model details including parameter counts, paper references, and code links, see the [Available Models](models.md) page.
+
+---
+
+## Source Code
+
+All zoo model implementations are in the `deeplearning4j-zoo` module:
+[github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-zoo/src/main/java/org/deeplearning4j/zoo/model)

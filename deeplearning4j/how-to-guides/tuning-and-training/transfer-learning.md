@@ -1,149 +1,368 @@
-# Transfer Learning
+---
+title: "Transfer Learning"
+description: "Transfer learning in Deeplearning4j — TransferLearning.Builder, FineTuneConfiguration, freezing layers, and modifying pretrained networks"
+---
 
-## DL4J’s Transfer Learning API
+## Overview
 
-The DL4J transfer learning API enables users to:
+Transfer learning reuses a pretrained model as a starting point for a new task, rather than training from scratch. DL4J's transfer learning API lets you:
 
-* Modify the architecture of an existing model
-* Fine tune learning configurations of an existing model.
-* Hold parameters of a specified layer constant during training, also referred to as “frozen"&#x20;
+- Freeze layers (hold parameters constant during training)
+- Modify the number of outputs of an existing layer (`nOutReplace`)
+- Remove layers from an existing model
+- Add new layers
+- Override the learning configuration (learning rate, updater, regularization) for unfrozen layers
 
-Holding certain layers frozen on a network and training is effectively the same as training on a transformed version of the input, the transformed version being the intermediate outputs at the boundary of the frozen layers. This is the process of “feature extraction” from the input data and will be referred to as “featurizing” in this document.
+The API supports both `MultiLayerNetwork` and `ComputationGraph` via `TransferLearning.Builder` and `TransferLearning.GraphBuilder` respectively.
 
-## The transfer learning helper
+---
 
-The forward pass to “featurize” the input data on large, pertained networks can be time consuming. DL4J also provides a TransferLearningHelper class with the following capabilities.
+## Core Classes
 
-* Featurize an input dataset to save for future use
-* Fit the model with frozen layers with a featurized dataset&#x20;
-* Output from the model with frozen layers given a featurized input.
+| Class | Description |
+|-------|-------------|
+| `TransferLearning.Builder` | Modifies a `MultiLayerNetwork` |
+| `TransferLearning.GraphBuilder` | Modifies a `ComputationGraph` |
+| `FineTuneConfiguration` | Learning hyperparameters applied to all unfrozen layers |
+| `TransferLearningHelper` | Pre-computes and caches activations at the freeze boundary to speed up training |
 
-When running multiple epochs users will save on computation time since the expensive forward pass on the frozen layers/vertices will only have to be conducted once.
+---
 
-## Show me the code
+## FineTuneConfiguration
 
-This example will use VGG16 to classify images belonging to five categories of flowers. The dataset will automatically download from [http://download.tensorflow.org/example\_images/flower\_photos.tgz](http://download.tensorflow.org/example\_images/flower\_photos.tgz)
-
-### I.  Import a zoo model
-
-Deeplearning4j has a new native model zoo. Read about the [deeplearning4j-zoo](https://app.gitbook.com/model-zoo) module for more information on using pretrained models. Here, we load a pretrained VGG-16 model initialized with weights trained on ImageNet:
-
-```java
-ZooModel zooModel = VGG16.builder().build();
-ComputationGraph pretrainedNet = (ComputationGraph) zooModel.initPretrained(PretrainedType.IMAGENET);
-```
-
-### II.  Set up a fine-tune configuration
+`FineTuneConfiguration` specifies the training hyperparameters that will be applied to all unfrozen (trainable) layers. Values set here override what was in the original model's configuration.
 
 ```java
+import org.deeplearning4j.nn.transferlearning.FineTuneConfiguration;
+import org.nd4j.linalg.learning.config.Adam;
+import org.nd4j.linalg.learning.config.Nesterovs;
+
 FineTuneConfiguration fineTuneConf = new FineTuneConfiguration.Builder()
-            .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-            .updater(new Nesterovs(5e-5))
-            .seed(seed)
-            .build();
+    .updater(new Adam(1e-4))      // use Adam with a small learning rate for fine-tuning
+    .seed(42)
+    .l2(1e-5)
+    .build();
 ```
 
-### III.  Build new models based on VGG16
+Key options:
 
-#### A.Modifying only the last layer, keeping other frozen
+| Method | Description |
+|--------|-------------|
+| `.updater(IUpdater)` | Optimizer for unfrozen layers (e.g., `new Adam(lr)`, `new Nesterovs(lr, momentum)`) |
+| `.seed(long)` | Random seed |
+| `.l1(double)` / `.l2(double)` | Regularization for unfrozen layers |
+| `.activation(Activation)` | Override activation for all unfrozen layers |
+| `.dropOut(double)` | Dropout retain probability |
 
-The final layer of VGG16 does a softmax regression on the 1000 classes in ImageNet. We modify the very last layer to give predictions for five classes keeping the other layers frozen.
+**Note:** Newly added layers can specify their own learning rate or updater in their layer builder, which takes priority over `FineTuneConfiguration`.
+
+---
+
+## TransferLearning.Builder (for MultiLayerNetwork)
+
+### Basic Usage
 
 ```java
-ComputationGraph vgg16Transfer = new TransferLearning.GraphBuilder(pretrainedNet)
+import org.deeplearning4j.nn.transferlearning.TransferLearning;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+
+// Load or build a pretrained MultiLayerNetwork
+MultiLayerNetwork pretrainedNet = ModelSerializer.restoreMultiLayerNetwork(new File("pretrained.zip"));
+
+// Build a new model with frozen layers and a replaced output layer
+MultiLayerNetwork transferModel = new TransferLearning.Builder(pretrainedNet)
     .fineTuneConfiguration(fineTuneConf)
-              .setFeatureExtractor("fc2")
-              .removeVertexKeepConnections("predictions") 
-              .addLayer("predictions", 
+    .setFeatureExtractor(3)          // freeze layers 0–3 (inclusive)
+    .removeOutputLayer()             // remove the last layer
+    .addLayer(new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+        .nIn(256).nOut(5)            // new task: 5 classes instead of 1000
+        .activation(Activation.SOFTMAX)
+        .weightInit(WeightInit.XAVIER)
+        .build())
+    .build();
+```
+
+`TransferLearning.Builder` returns a **new** `MultiLayerNetwork`. The original `pretrainedNet` is not modified.
+
+### Key Methods
+
+| Method | Description |
+|--------|-------------|
+| `fineTuneConfiguration(FineTuneConfiguration)` | Set learning hyperparameters for unfrozen layers |
+| `setFeatureExtractor(int layerNum)` | Freeze all layers from 0 up to and including `layerNum` |
+| `nOutReplace(int layerNum, int nOut, WeightInit scheme)` | Change nOut of a layer and reinitialize affected weights |
+| `nInReplace(int layerNum, int nIn, WeightInit scheme)` | Change nIn of a layer |
+| `removeOutputLayer()` | Remove the last layer (convenience for replacing the output head) |
+| `removeLayersFromOutput(int n)` | Remove the last `n` layers |
+| `addLayer(Layer layer)` | Append a layer (call multiple times to add a stack) |
+| `setInputPreProcessor(int layer, InputPreProcessor)` | Manually add a pre-processor |
+
+---
+
+## TransferLearning.GraphBuilder (for ComputationGraph)
+
+```java
+import org.deeplearning4j.nn.transferlearning.TransferLearning;
+import org.deeplearning4j.nn.graph.ComputationGraph;
+
+ComputationGraph pretrainedNet = ModelSerializer.restoreComputationGraph(new File("vgg16.zip"));
+
+ComputationGraph transferModel = new TransferLearning.GraphBuilder(pretrainedNet)
+    .fineTuneConfiguration(fineTuneConf)
+    .setFeatureExtractor("fc2")                  // freeze up to and including layer named "fc2"
+    .removeVertexKeepConnections("predictions")   // remove output vertex, keep its connections
+    .addLayer("predictions",
         new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
-                        .nIn(4096).nOut(numClasses)
-                        .weightInit(WeightInit.XAVIER)
-                        .activation(Activation.SOFTMAX).build(), "fc2")
-              .build();
+            .nIn(4096).nOut(5)
+            .activation(Activation.SOFTMAX)
+            .weightInit(WeightInit.XAVIER)
+            .build(),
+        "fc2")                                   // connect new layer to "fc2"
+    .build();
 ```
 
-After a mere thirty iterations, which in this case is exposure to 450 images, the model attains an accuracy > 75% on the test dataset. This is rather remarkable considering the complexity of training an image classifier from scratch.
+### Key Methods
 
-#### B. Attach new layers to the bottleneck (block5\_pool)
+| Method | Description |
+|--------|-------------|
+| `fineTuneConfiguration(FineTuneConfiguration)` | Learning config for unfrozen vertices |
+| `setFeatureExtractor(String vertexName)` | Freeze all vertices up to and including `vertexName` |
+| `nOutReplace(String vertexName, int nOut, WeightInit scheme)` | Change nOut of a named vertex |
+| `removeVertexKeepConnections(String vertexName)` | Remove vertex, preserve its connections in the graph |
+| `removeVertexAndConnections(String vertexName)` | Remove vertex and all its connections |
+| `addLayer(String name, Layer layer, String... inputs)` | Add a new layer vertex |
+| `addVertex(String name, GraphVertex vertex, String... inputs)` | Add a non-layer vertex |
+| `setOutputs(String...)` | Declare new output vertices |
 
-Here we hold all but the last three dense layers frozen and attach new dense layers onto it. Note that the primary intent here is to demonstrate the use of the API, secondary to what might give better results.
+---
+
+## Common Transfer Learning Patterns
+
+### Pattern 1: Replace the Classification Head Only
+
+The most common pattern: keep the feature extractor frozen, replace only the final output layer.
 
 ```java
-ComputationGraph vgg16Transfer = new TransferLearning.GraphBuilder(pretrainedNet)
-              .fineTuneConfiguration(fineTuneConf)
-              .setFeatureExtractor("block5_pool")
-              .nOutReplace("fc2",1024, WeightInit.XAVIER)
-              .removeVertexAndConnections("predictions") 
-              .addLayer("fc3",new DenseLayer.Builder()
-              .activation(Activation.RELU)
-              .nIn(1024).nOut(256).build(),"fc2") 
-              .addLayer("newpredictions",new OutputLayer
-              .Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
-                                .activation(Activation.SOFTMAX)
-                                .nIn(256).nOut(numClasses).build(),"fc3") 
-              .setOutputs("newpredictions") 
-              .build();
+// Assuming VGG-style network with layers: conv_block1 ... fc1, fc2, predictions
+ComputationGraph model = new TransferLearning.GraphBuilder(pretrainedNet)
+    .fineTuneConfiguration(new FineTuneConfiguration.Builder()
+        .updater(new Nesterovs(5e-5, 0.9))
+        .seed(42)
+        .build())
+    .setFeatureExtractor("fc2")                    // freeze everything up to fc2
+    .removeVertexKeepConnections("predictions")     // remove old 1000-class output
+    .addLayer("predictions",
+        new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+            .nIn(4096).nOut(numClasses)
+            .activation(Activation.SOFTMAX)
+            .weightInit(WeightInit.XAVIER)
+            .build(),
+        "fc2")
+    .build();
 ```
 
-#### C. Fine tune layers from a previously saved model
+After a small number of training iterations (e.g., 30-100), this pattern typically achieves high accuracy because the frozen feature extractor already captures rich visual representations.
 
-Say we have saved off our model from (B) and now want to allow “block\_5” layers to train.
+### Pattern 2: Modify an Intermediate Layer Width and Add New Layers
 
 ```java
-ComputationGraph vgg16FineTune = new TransferLearning.GraphBuilder(vgg16Transfer)
-              .fineTuneConfiguration(fineTuneConf)
-              .setFeatureExtractor(“block4_pool”)
-              .build();
+ComputationGraph model = new TransferLearning.GraphBuilder(pretrainedNet)
+    .fineTuneConfiguration(fineTuneConf)
+    .setFeatureExtractor("block5_pool")            // freeze through conv blocks
+    .nOutReplace("fc2", 1024, WeightInit.XAVIER)   // resize fc2 from 4096 to 1024
+    .removeVertexAndConnections("predictions")
+    .addLayer("fc3",
+        new DenseLayer.Builder()
+            .nIn(1024).nOut(256)
+            .activation(Activation.RELU)
+            .build(),
+        "fc2")
+    .addLayer("predictions",
+        new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+            .nIn(256).nOut(numClasses)
+            .activation(Activation.SOFTMAX)
+            .build(),
+        "fc3")
+    .setOutputs("predictions")
+    .build();
 ```
 
-### IV.  Saving “featurized” datasets and training with them.
+**Important:** `nOutReplace` automatically adjusts the `nIn` of all downstream layers that receive input from the modified layer. You do not need to update them manually.
 
-We use the transfer learning helper API. Note this freezes the layers of the model passed in.
+### Pattern 3: Progressive Unfreezing
 
-Here is how you obtain the featured version of the dataset at the specified layer “fc2”.
+Start with more layers frozen, then unfreeze progressively:
 
 ```java
-TransferLearningHelper transferLearningHelper = 
-    new TransferLearningHelper(pretrainedNet, "fc2");
-while(trainIter.hasNext()) {
-        DataSet currentFeaturized = transferLearningHelper.featurize(trainIter.next());
-        saveToDisk(currentFeaturized,trainDataSaved,true);
-  trainDataSaved++;
-}
+// Phase 1: Freeze up to block5_pool, train only the head
+ComputationGraph phase1 = new TransferLearning.GraphBuilder(pretrainedNet)
+    .fineTuneConfiguration(fineTuneConf)
+    .setFeatureExtractor("block5_pool")
+    .removeVertexKeepConnections("predictions")
+    .addLayer("predictions", newOutputLayer, "fc2")
+    .build();
+
+// Train phase1 for some epochs...
+phase1.fit(trainIter, 5);
+
+// Phase 2: Unfreeze block5 layers and continue training with a lower LR
+ComputationGraph phase2 = new TransferLearning.GraphBuilder(phase1)
+    .fineTuneConfiguration(new FineTuneConfiguration.Builder()
+        .updater(new Adam(1e-5))  // very small LR to avoid destroying pretrained features
+        .build())
+    .setFeatureExtractor("block4_pool")   // now freeze only up to block4
+    .build();
+
+phase2.fit(trainIter, 5);
 ```
 
-Here is how you can fit with a featured dataset. vgg16Transfer is a model setup in (A) of section III.
+### Pattern 4: MultiLayerNetwork Transfer Learning
 
 ```java
-TransferLearningHelper transferLearningHelper = 
-    new TransferLearningHelper(vgg16Transfer);
+MultiLayerNetwork pretrainedMln = ModelSerializer.restoreMultiLayerNetwork(new File("pretrained.zip"));
+
+MultiLayerNetwork transferMln = new TransferLearning.Builder(pretrainedMln)
+    .fineTuneConfiguration(fineTuneConf)
+    .setFeatureExtractor(5)               // freeze layers 0–5
+    .removeLayersFromOutput(1)            // remove last 1 layer (the output layer)
+    .addLayer(new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+        .nIn(512).nOut(numClasses)
+        .activation(Activation.SOFTMAX)
+        .weightInit(WeightInit.XAVIER)
+        .build())
+    .build();
+```
+
+---
+
+## TransferLearningHelper
+
+`TransferLearningHelper` speeds up transfer learning when you have a large frozen section. Instead of running the full forward pass through frozen layers at every training step, it pre-computes and caches ("featurizes") the activations at the freeze boundary.
+
+This can dramatically reduce training time when the frozen section is computationally expensive (e.g., deep VGG convolutional blocks).
+
+### Featurizing a Dataset
+
+```java
+import org.deeplearning4j.nn.transferlearning.TransferLearningHelper;
+
+// Freeze pretrainedNet at "fc2" and create the helper
+TransferLearningHelper helper = new TransferLearningHelper(pretrainedNet, "fc2");
+
+// Featurize the training data (runs forward pass through frozen layers once)
+List<DataSet> featurizedData = new ArrayList<>();
 while (trainIter.hasNext()) {
-       transferLearningHelper.fitFeaturized(trainIter.next());
+    DataSet featurized = helper.featurize(trainIter.next());
+    featurizedData.add(featurized);
+    // Optionally: save to disk to avoid re-running on each training run
 }
 ```
 
-## Notes
+### Training on Featurized Data
 
-* The TransferLearning builder returns a new instance of a dl4j model.&#x20;
+```java
+// Build transfer model (head only) — helper already froze pretrainedNet in-place
+TransferLearningHelper headHelper = new TransferLearningHelper(vgg16Transfer);
 
-Keep in mind this is a second model that leaves the original one untouched. For large pertained network take into consideration memory requirements and adjust your JVM heap space accordingly.
+for (int epoch = 0; epoch < numEpochs; epoch++) {
+    for (DataSet batch : featurizedData) {
+        headHelper.fitFeaturized(batch);
+    }
+}
+```
 
-* The trained model helper imports models from Keras without enforcing a training configuration.&#x20;
+The helper modifies the model **in place**. The parameters of the unfrozen portion of `pretrainedNet` are updated with each call to `fitFeaturized`.
 
-Therefore the last layer (as seen when printing the summary) is a dense layer and not an output layer with a loss function. Therefore to modify nOut of an output layer we delete the layer vertex, keeping it’s connections and add back in a new output layer with the same name, a different nOut, the suitable loss function etc etc.
+### Helper Methods
 
-* Changing nOuts at a layer/vertex will modify nIn of the layers/vertices it fans into.&#x20;
+| Method | Description |
+|--------|-------------|
+| `featurize(DataSet)` | Returns a `DataSet` where inputs are frozen-layer activations |
+| `featurize(MultiDataSet)` | Multi-input/output version |
+| `fitFeaturized(DataSetIterator)` | Train the unfrozen head on featurized data |
+| `fitFeaturized(MultiDataSetIterator)` | Multi-dataset version |
+| `outputFromFeaturized(INDArray)` | Inference from featurized (post-freeze-boundary) input |
+| `unfrozenMLN()` | Returns the unfrozen portion as a standalone `MultiLayerNetwork` |
+| `unfrozenGraph()` | Returns the unfrozen portion as a standalone `ComputationGraph` |
 
-When changing nOut users can specify a weight initialization scheme or a distribution for the layer as well as a separate weight initialization scheme or distribution for the layers it fans out to.
+---
 
-* Frozen layer configurations are not saved when writing the model to disk.&#x20;
+## Using Zoo Models as Starting Points
 
-In other words, a model with frozen layers when serialized and read back in will not have any frozen layers. To continue training holding specific layers constant the user is expected to go through the transfer learning helper or the transfer learning API. There are two ways to “freeze” layers in a dl4j model.
+DL4J's model zoo provides pretrained weights for common architectures:
 
-* On a copy: With the transfer learning API which will return a new model with the relevant frozen layers
-* In place: With the transfer learning helper API which will apply the frozen layers to the given model.
-* FineTune configurations will selectively update learning parameters.&#x20;
+```java
+import org.deeplearning4j.zoo.ZooModel;
+import org.deeplearning4j.zoo.model.VGG16;
+import org.deeplearning4j.zoo.PretrainedType;
 
-For eg, if a learning rate is specified this learning rate will apply to all unfrozen/trainable layers in the model. However, newly added layers can override this learning rate by specifying their own learning rates in the layer builder.
+// Download and initialize VGG16 with ImageNet weights
+ZooModel zooModel = VGG16.builder().build();
+ComputationGraph pretrainedVGG16 = (ComputationGraph) zooModel.initPretrained(PretrainedType.IMAGENET);
 
-## Utilities
+// Now apply transfer learning
+ComputationGraph myModel = new TransferLearning.GraphBuilder(pretrainedVGG16)
+    .fineTuneConfiguration(new FineTuneConfiguration.Builder()
+        .updater(new Adam(5e-5))
+        .seed(42)
+        .build())
+    .setFeatureExtractor("fc2")
+    .removeVertexKeepConnections("predictions")
+    .addLayer("predictions",
+        new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+            .nIn(4096).nOut(numClasses)
+            .activation(Activation.SOFTMAX)
+            .build(),
+        "fc2")
+    .build();
+
+System.out.println(myModel.summary());
+```
+
+---
+
+## Important Notes
+
+### Frozen Layers Are Not Saved
+
+When you serialize a model with frozen layers using `ModelSerializer`, the frozen state is **not** preserved. When you reload the model, no layers will be frozen. To continue training with frozen layers after reloading, you must re-apply the `TransferLearning` API or `TransferLearningHelper`.
+
+```java
+// After reloading, re-freeze as needed:
+MultiLayerNetwork reloaded = ModelSerializer.restoreMultiLayerNetwork(modelFile);
+MultiLayerNetwork frozenAgain = new TransferLearning.Builder(reloaded)
+    .fineTuneConfiguration(fineTuneConf)
+    .setFeatureExtractor(layerNumToFreeze)
+    .build();
+```
+
+### TransferLearning Returns a New Model
+
+`TransferLearning.Builder.build()` always returns a **new** model instance. The original pretrained model is not modified. Keep memory constraints in mind when working with large models.
+
+### Changing nOut Cascades to nIn of Downstream Layers
+
+When you call `nOutReplace("fc2", 1024, WeightInit.XAVIER)`, DL4J automatically updates the `nIn` of every layer that directly receives input from `fc2`. You do not need to manually specify `nIn` on those layers. You can optionally specify separate weight init schemes for the modified layer and its downstream consumers:
+
+```java
+.nOutReplace("fc2", 1024, WeightInit.XAVIER, WeightInit.XAVIER)
+//           layer   nOut  scheme-for-fc2   scheme-for-next-layers
+```
+
+### FineTuneConfiguration Selectively Updates
+
+`FineTuneConfiguration` only updates the learning parameters of unfrozen layers. Frozen layers retain their original configuration. Newly added layers inherit `FineTuneConfiguration` unless they specify their own updater/LR in their layer builder.
+
+---
+
+## Saving the Transfer-Learned Model
+
+```java
+import org.deeplearning4j.util.ModelSerializer;
+
+// Save including updater state (for continued training)
+ModelSerializer.writeModel(myModel, new File("myTransferModel.zip"), true);
+
+// Load
+ComputationGraph loaded = ModelSerializer.restoreComputationGraph(new File("myTransferModel.zip"));
+```

@@ -1,116 +1,174 @@
 ---
-description: Model import framework overview and examples
+title: "SameDiff Import Overview"
+description: "Importing TensorFlow and ONNX models into SameDiff — architecture, supported ops, and usage"
 ---
 
-# Model Import Framework
+## SameDiff Import Overview
 
-The built in model import framework is an extensible way to implement framework conversion to the nd4j format. It's possible to create mappings from one framework's file format to the nd4j file format.
+The SameDiff import subsystem converts models from external frameworks (TensorFlow, ONNX) into SameDiff computation graphs. Once imported, models are represented as native SameDiff graphs and inherit all SameDiff capabilities: autograd, custom training loops, op inspection, graph manipulation, and export.
 
-Conceptually, to import a model from a different framework, all a user has to do is include the appropriate module from the samediff-import-\* maven coordinates. A core api is provided, plus a module for each framework supported. Implementing custom framework importers is also very easy to do (to be explained in another page)
+---
 
-A quick code sample for tensorflow:
+## Architecture
 
-```java
-   //create the framework importer
-   TensorflowFrameworkImporter tensorflowFrameworkImporter = new TensorflowFrameworkImporter();
-   File pathToPbFile = ...;
-   SameDiff graph = tensorflowFrameworkImporter.runImport(pathToPbFile.getAbsolutePath(),Collections.emptyMap());
-```
+The import framework is implemented in Kotlin and lives in the `nd4j-samediff-import` family of modules. Its design is structured around three key abstractions:
 
-Onnx is the same api:
+### FrameworkImporter
 
-```java
-   //create the framework importer
-   OnnxFrameworkImporter onnxFrameworkImporter = new OnnxFrameworkImporter();
-   File pathToPbFile = ...;
-   SameDiff graph = onnxFrameworkImporter.runImport(pathToPbFile.getAbsolutePath(),Collections.emptyMap());
-```
+`FrameworkImporter` is the top-level interface for importing a model from a given framework. Each supported framework has a concrete implementation:
 
-A user underneath the covers may also provide placeholders to be used when running import, otherwise just provide an empty map for your variables. When a framework importer is created, it will scan the classpath for definitions of tensorflow ops, custom rules for importing nodes for specific ops or specific node names, and nd4j op descriptors. These elements of the model import framework are all customizable, but included by default for a fairly easy out of the box experience.
+- `TensorflowFrameworkImporter` — reads TF protobuf or SavedModel formats
+- `OnnxFrameworkImporter` — reads ONNX `.onnx` files
 
-For implementing your own custom overrides please see [here](https://github.com/eclipse/deeplearning4j/blob/master/nd4j/samediff-import/samediff-import-onnx/src/main/kotlin/org/nd4j/samediff/frameworkimport/onnx/definitions/implementations/GlobalAveragePooling.kt) for an example.
+### ImportGraph
 
-A brief explanation is below:
+`ImportGraph` performs the core translation work: it walks the framework-specific graph representation, resolves op mappings, and emits a SameDiff graph. It delegates to a registry of op mappers for individual operation translation.
 
-1. Annotate the class with a PrehookRule as in the above example. This will enable the runtime to discover your custom import.
-2. When scanning, the framework will look through the annotations for calls to intercept and use your framework call. It will intercept nodes with certain names (nodeNames), op names (ops with a name, ensure this is the op name in the framework you are trying to import)
-3. When annotating also specify the framework name (usually onnx and tensorflow, but you can also create custom frameworks as well )
-4. Afterwards, write the samediff calls to be the equivalent calls in what you might find in the framework. Usually samediff will have the op calls needed to implement any missing op you should need. If you need help, please ask on the forums: https://community.konduit.ai/
-5. Lastly, when return a hook result, as in what's at the bottom of the sample always know whether you return true or false for continuing the normal import process. That matters for ensuring that if you are implementing a whole op in the hook then it should return false, otherwise the hook can also be used as an addon.
+### Op Mapping Registry
 
-#### Implementing custom samediff ops
+Each framework integration registers a set of op mappers. A mapper takes a framework op (e.g., a TF `MatMul` node) and produces the corresponding ND4J/SameDiff op. The mapping registry can be extended with custom mappers for ops not covered by default.
 
-When implementing custom import calls, there are generally a few things of note:
+---
 
-1. The samediff instance that gets passed in is the one to be used for final output. Please consider how this may affect other parts of the graph when directly manipulating the graph itself.
-2. The op passed in will contain all information for input variables that were resolved from the node currently being imported. In order to access ndarrays specified on the op, you can use sd.getVariable(..)
-3. You may need to remove variables and ops if the original import is going to be replaced. This is currently a manual process and will be automated at a later date where possible. If you need help on whether you should add or remove  certain op calls or variables, please feel free to ping us on the forums: https://community.konduit.ai/
+## Supported Formats
 
-When needed, controlling this underlying experience allows users to configure the model import to work for their use case rather than having to rely on a software upgrade for missing operations. Many cutting edge models or operators can be supported by directly composing the ops within the samediff framework.
+| Format | Extension | Import path |
+|---|---|---|
+| TensorFlow frozen graph | `.pb` (protobuf) | `TFGraphMapper` |
+| TensorFlow SavedModel | directory with `saved_model.pb` | `TFGraphMapper` |
+| ONNX | `.onnx` | `OnnxGraphMapper` |
 
-When converting a model, a user should do this outside of production and save it as a samediff flatbuffers model. This is so end users can control the load times (especially for larger models)
+---
 
-In order to save a model, a user may call save as follows:
+## Maven Dependencies
 
-```java
-graph.save(new File("path/to/model.fb"),true);
-```
+### TensorFlow Import
 
-The second boolean parameter just covers whether to save the state of the training or not. If you are retraining your model, set it to true, otherwise false is fine.
-
-In order to load a model in samediff, just use:
-
-```java
-SameDiff importedGraph = SameDiff.load(new File("path/to/model.fb"),true);
-```
-
-The second boolean parameter, again same as above, just covers whether to save the state of the training or not. If you are retraining your model, set it to true, otherwise false is fine.
-
-## Usage from maven
-
-For tensorflow:
-
-```markup
- <dependency>
+```xml
+<dependency>
     <groupId>org.nd4j</groupId>
-    <artifactId>samediff-import-tensorflow</artifactId>
-    <version>1.0.0-M1</version>
- </dependency>
+    <artifactId>nd4j-samediff-import-tensorflow</artifactId>
+    <version>${dl4j.version}</version>
+</dependency>
 ```
 
-For onnx:
+### ONNX Import
 
-```markup
- <dependency>
+```xml
+<dependency>
     <groupId>org.nd4j</groupId>
-    <artifactId>samediff-import-onnx</artifactId>
-    <version>1.0.0-M1.1</version>
- </dependency>
+    <artifactId>nd4j-samediff-import-onnx</artifactId>
+    <version>${dl4j.version}</version>
+</dependency>
 ```
 
-In order to use this, you must also include an [nd4j backend](../../multi-project/explanation/configuration/backends/). The reason for this is because when nd4j tries to create an ndarray, it needs to know what chip its operating on to allocate memory.
+---
 
-Once the graph is loaded in memory, you can use it as any normal samediff graph.
+## General Import Workflow
 
-For seeing what's in the graph use:
+Regardless of the source framework, the import workflow follows the same pattern:
+
+1. Load the model file into a framework-specific protobuf/binary representation
+2. Call the appropriate `FrameworkImporter` or graph mapper
+3. The importer walks the graph, resolves op mappings, and emits a `SameDiff` graph
+4. Map input placeholders to input names
+5. Execute the `SameDiff` graph with input data
 
 ```java
- graph.summary();
+// Pseudocode illustrating the general pattern
+SameDiff sd = FrameworkImporter.importGraph(modelFile);
+Map<String, INDArray> inputs = new HashMap<>();
+inputs.put("input_placeholder_name", inputData);
+Map<String, INDArray> outputs = sd.output(inputs, "output_node_name");
 ```
 
-Where the input variables are the output of no ops, and the output variables are the input of no ops. Another way to find the inputs is
+Specific code for TF and ONNX is covered in the respective pages.
+
+---
+
+## Op Coverage
+
+### TensorFlow Ops
+
+The TF import registry covers the majority of ops used by standard TF models. Broadly supported categories include:
+
+- Arithmetic: Add, Sub, Mul, Div, MatMul, BatchMatMul, etc.
+- Neural network ops: Conv2D, DepthwiseConv2D, BiasAdd, Relu, Sigmoid, Softmax, etc.
+- Pooling: MaxPool, AvgPool, MaxPool3D, AvgPool3D
+- Normalization: FusedBatchNorm, FusedBatchNormV2, FusedBatchNormV3
+- Recurrent: LSTM, LSTMBlockCell, GRU
+- Shape manipulation: Reshape, Transpose, Concat, Stack, Unstack, Split, Slice
+- Control flow: Switch, Merge, Enter, Exit, NextIteration (TF 1.x style)
+- Reduction: ReduceSum, ReduceMean, ReduceMax, ReduceMin, ReduceAll, ReduceAny
+- Embedding and lookup: GatherV2, ResourceGather
+- Image ops: ResizeBilinear, ResizeNearestNeighbor, CropAndResize
+
+Unsupported ops result in an `OpNotYetImplementedException` at import time. The error message includes the op name; opening a GitHub issue or contributing a mapper is encouraged.
+
+### ONNX Ops
+
+The ONNX op set coverage follows the ONNX standard opset versions. Broadly supported:
+
+- Arithmetic: Add, Sub, Mul, Div, Gemm, MatMul
+- Activations: Relu, Sigmoid, Tanh, Softmax, Elu, Selu, LeakyRelu
+- Convolution: Conv, ConvTranspose
+- Pooling: MaxPool, AveragePool, GlobalMaxPool, GlobalAveragePool
+- Normalization: BatchNormalization, InstanceNormalization
+- Recurrent: LSTM, GRU, RNN
+- Shape: Reshape, Transpose, Concat, Flatten, Squeeze, Unsqueeze
+- Reduction: ReduceSum, ReduceMean, ReduceMax
+- Other: Gather, Slice, Cast, Identity, Dropout (inference mode)
+
+---
+
+## How Op Mapping Works
+
+Each op mapper implements the `OpMapper` interface. A mapper receives:
+
+- The framework op's configuration (attributes, inputs, outputs)
+- The in-progress SameDiff graph
+
+It produces:
+
+- One or more SameDiff ops added to the graph
+
+Mappers handle attribute translation (e.g., TF `data_format="NHWC"` to ND4J channel-last mode), input reordering, and output naming.
+
+The registry is consulted by name: for each op type encountered in the source graph, the registry looks up the registered mapper. Ops with no registered mapper result in an error unless a passthrough is configured.
+
+---
+
+## SameDiff Graph Capabilities After Import
+
+Once a model is imported as a `SameDiff` graph, you can:
+
+- **Run inference**: call `sd.output(inputs, outputNames)` with input data
+- **Inspect the graph**: call `sd.summary()` or iterate over `sd.ops()` 
+- **Modify the graph**: add ops, change inputs, replace subgraphs
+- **Compute gradients**: call `sd.calculateGradients()` for autograd
+- **Fine-tune**: set up a training configuration on the imported graph
+- **Export**: serialize the SameDiff graph for later loading
 
 ```java
-List<String> inputs = graph.inputs();
+// List all ops in the imported graph
+for (SameDiffOp op : sd.ops().values()) {
+    System.out.println(op.getName() + " : " + op.getOp().getClass().getSimpleName());
+}
 ```
 
-To run inference use:
+---
 
-```java
-INDArray out = graph.batchOutput()
-    .input(inputName, inputArray)
-    .output(outputs)
-    .execSingle();
-```
+## Limitations
 
-For multiple outputs, use `exec()` instead of `execSingle()`, to return a `Map<String,INDArray>` of outputs instead. Alternatively, you can use methods such as `SameDiff.output(Map<String, INDArray> placeholders, String... outputs)` to get the same output.
+- Custom TF ops (registered via `tf.RegisterGradient` or C++ extension) cannot be imported unless a custom mapper is implemented
+- TF 2.x eager mode models must be converted to a frozen graph or SavedModel before import
+- ONNX models using very recent opset versions may contain ops not yet mapped; check the op registry for your opset version
+- Dynamic control flow in TF models (while loops, if branches) is partially supported; complex dynamic shapes may require manual graph preprocessing
+
+---
+
+## Further Reading
+
+- [TensorFlow Import](./tensorflow) — importing `.pb` and SavedModel files
+- [ONNX Import](./onnx) — importing `.onnx` files
+- [SameDiff documentation](../../samediff/) — SameDiff API and training

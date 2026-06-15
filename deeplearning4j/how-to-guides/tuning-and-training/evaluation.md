@@ -1,200 +1,434 @@
 ---
-description: Tools and classes for evaluating neural network performance
+title: "Evaluation"
+description: "Detailed evaluation guide — classification metrics, regression metrics, ROC curves, calibration, and multi-output evaluation"
 ---
 
 # Evaluation
 
-## Why evaluate?
+Evaluating a trained model provides quantitative measures of how well it is performing. Eclipse Deeplearning4j provides a comprehensive set of evaluation classes covering classification, binary classification, regression, ROC analysis, and calibration.
 
-When training or deploying a Neural Network it is useful to know the accuracy of your model. In DL4J the Evaluation Class and variants of the Evaluation Class are available to evaluate your model's performance.
+> **Package migration (beta4 → M2.1):** All evaluation classes have moved from `org.deeplearning4j.eval` to `org.nd4j.evaluation`. Update your imports accordingly. The classes in the old package are kept as deprecated wrappers.
 
-### [Evaluation for Classification](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/how-to-guides/tuning-and-training/evaluation.md)
+---
 
-The Evaluation class is used to evaluate the performance for binary and multi-class classifiers (including time series classifiers). This section covers basic usage of the Evaluation Class.
+## Classification: `Evaluation`
 
-Given a dataset in the form of a DataSetIterator, the easiest way to perform evaluation is to use the built-in evaluate methods on MultiLayerNetwork and ComputationGraph:
+`org.nd4j.evaluation.classification.Evaluation` is the primary class for evaluating multi-class classifiers, including time-series classifiers. It accumulates predictions and labels across multiple minibatches before computing metrics.
 
-```java
-DataSetIterator myTestData = ...
-Evaluation eval = model.evaluate(myTestData);
-```
+### Running Evaluation
 
-However, evaluation can be performed on individual minibatches also. Here is an example taken from our dataexamples/CSVExample in the [Examples](https://github.com/eclipse/deeplearning4j-examples) project.
-
-The CSV example has CSV data for 3 classes of flowers and builds a simple feed forward neural network to classify the flowers based on 4 measurements.
+**Shortcut — using `model.evaluate()`:**
 
 ```java
-Evaluation eval = new Evaluation(3);
-INDArray output = model.output(testData.getFeatures());
-eval.eval(testData.getLabels(), output);
-log.info(eval.stats());
+import org.nd4j.evaluation.classification.Evaluation;
+
+DataSetIterator testIter = /* your test data */;
+
+// Most convenient: model handles iteration internally
+Evaluation eval = model.evaluate(testIter);
+System.out.println(eval.stats());
 ```
 
-The first line creates an Evaluation object with 3 classes. The second line gets the labels from the model for our test dataset. The third line uses the eval method to compare the labels array from the testdata with the labels generated from the model. The fourth line logs the evaluation data to the console.
+**Manual evaluation over minibatches:**
 
-The output.
+```java
+Evaluation eval = new Evaluation(numClasses);
+while (testIter.hasNext()) {
+    DataSet batch = testIter.next();
+    INDArray predictions = model.output(batch.getFeatures(), false);
+    eval.eval(batch.getLabels(), predictions);
+}
+testIter.reset();
+System.out.println(eval.stats());
+```
+
+### Available Metrics
+
+```java
+double accuracy  = eval.accuracy();
+double precision = eval.precision();   // macro-averaged by default
+double recall    = eval.recall();      // macro-averaged by default
+double f1        = eval.f1();          // macro-averaged by default
+
+// Per-class metrics (zero-indexed)
+double precisionClass0 = eval.precision(0);
+double recallClass1    = eval.recall(1);
+double f1Class2        = eval.f1(2);
+
+// Matthews Correlation Coefficient
+double mcc = eval.matthewsCorrelation(EvaluationAveraging.Macro);
+
+// False positive / false negative rates
+double fpr = eval.falsePositiveRate(classIndex);
+double fnr = eval.falseNegativeRate(classIndex);
+```
+
+### Confusion Matrix
+
+```java
+// Text table
+System.out.println(eval.confusionToString());
+
+// Structured access
+ConfusionMatrix<Integer> cm = eval.getConfusionMatrix();
+int truePositive = cm.getCount(actual, predicted);
+
+// Export
+String html = cm.toHTML();
+String csv  = cm.toCSV();
+```
+
+Example `eval.stats()` output:
 
 ```
-Examples labeled as 0 classified by model as 0: 24 times
-Examples labeled as 1 classified by model as 1: 11 times
-Examples labeled as 1 classified by model as 2: 1 times
-Examples labeled as 2 classified by model as 2: 17 times
-
-
-==========================Scores========================================
+========================Evaluation Metrics========================
  # of classes:    3
  Accuracy:        0.9811
  Precision:       0.9815
  Recall:          0.9722
  F1 Score:        0.9760
 Precision, recall & F1: macro-averaged (equally weighted avg. of 3 classes)
-========================================================================
+=================================================================
 ```
 
-By default the .stats() method displays the confusion matrix entries (one per line), Accuracy, Precision, Recall and F1 Score. Additionally the Evaluation Class can also calculate and return the following values:
+### Averaging Modes
 
-* Confusion Matrix
-* False Positive/Negative Rate
-* True Positive/Negative
-* Class Counts
-* F-beta, G-measure, Matthews Correlation Coefficient and more, see [Evaluation JavaDoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/evaluation/classification/Evaluation.html)
+Metrics that aggregate across classes support two averaging modes:
 
-Display the Confusion Matrix.
+| Mode | Description |
+|---|---|
+| `Macro` (default) | Unweighted mean across all classes — treats each class equally. |
+| `Micro` | Compute metric globally by counting total TPs, FPs, FNs across all classes. Appropriate for imbalanced datasets. |
 
 ```java
-System.out.println(eval.confusionToString());
+import org.nd4j.evaluation.classification.EvaluationAveraging;
+
+double macroPrecision = eval.precision(EvaluationAveraging.Macro);
+double microPrecision = eval.precision(EvaluationAveraging.Micro);
 ```
 
-Displays
+---
 
-```
-Predicted:         0      1      2
-Actual:
-0  0          |      16      0      0
-1  1          |       0     19      0
-2  2          |       0      0     18
-```
+## Binary Classification: `EvaluationBinary`
 
-Additionaly the confusion matrix can be accessed directly, converted to csv or html using.
+`org.nd4j.evaluation.classification.EvaluationBinary` is for networks with multiple binary outputs — typically with Sigmoid activation and binary cross-entropy loss. It computes the full set of classification metrics independently for each output.
 
 ```java
-eval.getConfusionMatrix() ;
-eval.getConfusionMatrix().toHTML();
-eval.getConfusionMatrix().toCSV();
+import org.nd4j.evaluation.classification.EvaluationBinary;
+
+// size = number of binary outputs
+EvaluationBinary evalBin = new EvaluationBinary(numOutputs);
+
+while (testIter.hasNext()) {
+    DataSet batch = testIter.next();
+    INDArray preds = model.output(batch.getFeatures());
+    evalBin.eval(batch.getLabels(), preds);
+}
+
+System.out.println(evalBin.stats());
+
+// Per-output metrics
+double acc     = evalBin.accuracy(outputIndex);
+double f1      = evalBin.f1(outputIndex);
+double auprc   = evalBin.averagePrecisionScore(outputIndex);
 ```
 
-### [Evaluation for Regression](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/how-to-guides/tuning-and-training/evaluation.md)
-
-To Evaluate a network performing regression use the RegressionEvaluation Class.
-
-As with the Evaluation class, RegressionEvaluation on a DataSetIterator can be performed as follows:
+Or using `model.evaluate()`:
 
 ```java
-DataSetIterator myTestData = ...
-RegressionEvaluation eval = model.evaluateRegression(myTestData);
+EvaluationBinary evalBin = model.evaluateBinary(testIter);
 ```
 
-Here is a code snippet with single column, in this case the neural network was predicting the age of shelfish based on measurements.
+---
+
+## Regression: `RegressionEvaluation`
+
+`org.nd4j.evaluation.regression.RegressionEvaluation` computes standard regression metrics independently for each output column.
 
 ```java
-RegressionEvaluation eval =  new RegressionEvaluation(1);
+import org.nd4j.evaluation.regression.RegressionEvaluation;
+
+RegressionEvaluation evalReg = new RegressionEvaluation(numOutputs);
+
+while (testIter.hasNext()) {
+    DataSet batch = testIter.next();
+    INDArray preds = model.output(batch.getFeatures());
+    evalReg.eval(batch.getLabels(), preds);
+}
+
+System.out.println(evalReg.stats());
 ```
 
-Print the statistics for the Evaluation.
+Or via shortcut:
 
 ```java
-System.out.println(eval.stats());
+RegressionEvaluation evalReg = model.evaluateRegression(testIter);
 ```
 
-Returns
+The stats output reports per-column:
 
 ```
-Column    MSE            MAE            RMSE           RSE            R^2            
+Column    MSE            MAE            RMSE           RSE            R^2
 col_0     7.98925e+00    2.00648e+00    2.82653e+00    5.01481e-01    7.25783e-01
 ```
 
-Columns are Mean Squared Error, Mean Absolute Error, Root Mean Squared Error, Relative Squared Error, and R^2 Coefficient of Determination
+| Column | Metric |
+|---|---|
+| MSE | Mean Squared Error |
+| MAE | Mean Absolute Error |
+| RMSE | Root Mean Squared Error |
+| RSE | Relative Squared Error |
+| R^2 | Coefficient of Determination |
 
-See [RegressionEvaluation JavaDoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/evaluation/regression/RegressionEvaluation.html)
-
-### [Performing Multiple Evaluations Simultaneously](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/how-to-guides/tuning-and-training/evaluation.md)
-
-When performing multiple types of evaluations (for example, Evaluation and ROC on the same network and dataset) it is more efficient to do this in one pass of the dataset, as follows:
-
-```java
-DataSetIterator testData = ...
-Evaluation eval = new Evaluation();
-ROC roc = new ROC();
-model.doEvaluation(testdata, eval, roc);
-```
-
-### [Evaluation of Time Series](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/how-to-guides/tuning-and-training/evaluation.md)
-
-Time series evaluation is very similar to the above evaluation approaches. Evaluation in DL4J is performed on all (non-masked) time steps separately - for example, a time series of length 10 will contribute 10 predictions/labels to an Evaluation object. One difference with time seires is the (optional) presence of mask arrays, which are used to mark some time steps as missing or not present. See [Using RNNs - Masking](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/how-to-guides/models/recurrent.md#masking-and-sequence-classification-after-training) for more details on masking.
-
-For most users, it is simply sufficient to use the `MultiLayerNetwork.evaluate(DataSetIterator)` or `MultiLayerNetwork.evaluateRegression(DataSetIterator)` and similar methods. These methods will properly handle masking, if mask arrays are present.
-
-### [Evaluation for Binary Classifiers](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/how-to-guides/tuning-and-training/evaluation.md)
-
-The EvaluationBinary is used for evaluating networks with binary classification outputs - these networks usually have Sigmoid activation functions and XENT loss functions. The typical classification metrics, such as accuracy, precision, recall, F1 score, etc. are calculated for each output.
+Access individual metrics programmatically:
 
 ```java
-EvaluationBinary eval = new EvaluationBinary(int size)
+import org.nd4j.evaluation.regression.RegressionEvaluation.Metric;
+
+double mse  = evalReg.scoreForMetric(Metric.MSE,  columnIndex);
+double mae  = evalReg.scoreForMetric(Metric.MAE,  columnIndex);
+double rmse = evalReg.scoreForMetric(Metric.RMSE, columnIndex);
+double r2   = evalReg.scoreForMetric(Metric.R2,   columnIndex);
 ```
 
-See [EvaluationBinary JavaDoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/evaluation/classification/EvaluationBinary.html)
+---
 
-### [ROC](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/how-to-guides/tuning-and-training/evaluation.md)
+## ROC Curves
 
-ROC (Receiver Operating Characteristic) is another commonly used evaluation metric for the evaluation of classifiers. Three ROC variants exist in DL4J:
+Three ROC classes cover different classification scenarios. All support two computation modes:
 
-* ROC - for single binary label (as a single column probability, or 2 column 'softmax' probability distribution).
-* ROCBinary - for multiple binary labels
-* ROCMultiClass - for evaluation of non-binary classifiers, using a "one vs. all" approach&#x20;
+- **Exact** (`new ROC()` or `new ROC(0)`) — exact AUROC/AUPRC calculation. Can require significant memory with very large datasets.
+- **Thresholded** (`new ROC(numBins)`) — approximate calculation using a fixed number of threshold bins. Constant memory. Recommended for large datasets.
 
-These classes have the ability to calculate the area under ROC curve (AUROC) and area under Precision-Recall curve (AUPRC), via the `calculateAUC()` and `calculateAUPRC()` methods. Furthermore, the ROC and Precision-Recall curves can be obtained using `getRocCurve()` and `getPrecisionRecallCurve()`.
+### ROC — Single Binary Label
 
-The ROC and Precision-Recall curves can be exported to HTML for viewing using: `EvaluationTools.exportRocChartsToHtmlFile(ROC, File)`, which will export a HTML file with both ROC and P-R curves, that can be viewed in a browser.
-
-Note that all three support two modes of operation/calculation
-
-* Thresholded (approximate AUROC/AUPRC calculation, no memory issues)
-* Exact (exact AUROC/AUPRC calculation, but can require large amount of memory with very large datasets - i.e., datasets with many millions of examples)
-
-The number of bins can be set using the constructors. Exact can be set using the default constructor `new ROC()` or explicitly using `new ROC(0)`
-
-See [ROCBinary JavaDoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/evaluation/classification/ROCBinary.html) is used to evaluate Binary Classifiers.
-
-### [Evaluating Classifier Calibration](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/how-to-guides/tuning-and-training/evaluation.md)
-
-Deeplearning4j also has the EvaluationCalibration class, which is designed to analyze the calibration of a classifier. It provides a number of tools for this purpose:
-
-* Counts of the number of labels and predictions for each class
-* Reliability diagram (or reliability curve)
-* Residual plot (histogram)
-*   Histograms of probabilities, including probabilities for each class separately
-
-    Evaluation of a classifier using EvaluationCalibration is performed in a similar manner to the other evaluation classes. The various plots/histograms can be exported to HTML for viewing using `EvaluationTools.exportevaluationCalibrationToHtmlFile(EvaluationCalibration, File)`.
-
-### [Distributed Evaluation for Spark Networks](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/how-to-guides/tuning-and-training/evaluation.md)
-
-SparkDl4jMultiLayer and SparkComputationGraph both have similar methods for evaluation:
+For networks with a single binary output (single Sigmoid, or 2-class Softmax):
 
 ```java
-Evaluation eval = SparkDl4jMultiLayer.evaluate(JavaRDD<DataSet>);
+import org.nd4j.evaluation.classification.ROC;
 
-//Multiple evaluations in one pass:
-SparkDl4jMultiLayer.doEvaluation(JavaRDD<DataSet>, IEvaluation...);
+ROC roc = new ROC(100);  // 100 threshold bins (thresholded mode)
+// or: ROC roc = new ROC();  // exact mode
+
+while (testIter.hasNext()) {
+    DataSet batch = testIter.next();
+    INDArray preds = model.output(batch.getFeatures());
+    roc.eval(batch.getLabels(), preds);
+}
+
+double auroc = roc.calculateAUC();
+double auprc = roc.calculateAUPRC();
+
+// Get curve data points
+RocCurve rocCurve = roc.getRocCurve();
+PrecisionRecallCurve prCurve = roc.getPrecisionRecallCurve();
+
+System.out.println("AUROC: " + auroc);
+System.out.println("AUPRC: " + auprc);
 ```
 
-### [Evaluation for Multi-task Networks](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/how-to-guides/tuning-and-training/evaluation.md)
+Or via shortcut:
 
-A multi-task network is a network that is trained to produce multiple outputs. For example a network given audio samples can be trained to both predict the language spoken and the gender of the speaker. Multi-task configuration is briefly described [here](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/deeplearning4j/how-to-guides/models/computationgraph.md).
+```java
+ROC roc = model.evaluateROC(testIter, 100);
+```
 
-Evaluation Classes useful for Multi-Task Network
+### ROCBinary — Multiple Binary Labels
 
-See [ROCMultiClass JavaDoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/evaluation/classification/ROCMultiClass.html)
+For networks with multiple binary outputs (multiple Sigmoid neurons):
 
-See [ROCBinary JavaDoc](https://javadoc.io/static/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/evaluation/classification/ROCBinary.html)
+```java
+import org.nd4j.evaluation.classification.ROCBinary;
 
-## Available evaluations
+ROCBinary rocBin = new ROCBinary(100);
+
+while (testIter.hasNext()) {
+    DataSet batch = testIter.next();
+    rocBin.eval(batch.getLabels(), model.output(batch.getFeatures()));
+}
+
+// Per-output AUROC
+for (int i = 0; i < numOutputs; i++) {
+    System.out.printf("Output %d AUROC: %.4f%n", i, rocBin.calculateAUC(i));
+}
+
+// Average AUROC across all outputs
+double avgAuroc = rocBin.calculateAverageAUC();
+```
+
+### ROCMultiClass — Multi-class One-vs-All
+
+For Softmax classifiers, computes ROC for each class using a one-versus-all strategy:
+
+```java
+import org.nd4j.evaluation.classification.ROCMultiClass;
+
+ROCMultiClass rocMulti = new ROCMultiClass(100);
+
+while (testIter.hasNext()) {
+    DataSet batch = testIter.next();
+    rocMulti.eval(batch.getLabels(), model.output(batch.getFeatures()));
+}
+
+for (int c = 0; c < numClasses; c++) {
+    System.out.printf("Class %d AUROC: %.4f%n", c, rocMulti.calculateAUC(c));
+}
+```
+
+Or via shortcut:
+
+```java
+ROCMultiClass rocMulti = model.evaluateROCMultiClass(testIter, 100);
+```
+
+### Exporting ROC Charts to HTML
+
+```java
+import org.deeplearning4j.evaluation.EvaluationTools;
+
+// Single ROC: generates HTML with both ROC and P-R curves
+EvaluationTools.exportRocChartsToHtmlFile(roc, new File("/tmp/roc.html"));
+```
+
+---
+
+## Calibration: `EvaluationCalibration`
+
+`org.nd4j.evaluation.classification.EvaluationCalibration` analyses how well predicted probabilities align with actual outcome frequencies (calibration). A well-calibrated model that predicts 70% probability for a class should be correct roughly 70% of the time.
+
+```java
+import org.nd4j.evaluation.classification.EvaluationCalibration;
+
+EvaluationCalibration cal = new EvaluationCalibration(numBins, numBins);
+
+while (testIter.hasNext()) {
+    DataSet batch = testIter.next();
+    cal.eval(batch.getLabels(), model.output(batch.getFeatures()));
+}
+
+System.out.println(cal.stats());
+```
+
+The calibration evaluator provides:
+
+- **Reliability diagram** (calibration curve) — predicted probability vs. actual frequency.
+- **Residual histogram** — distribution of prediction errors.
+- **Probability histograms** — overall and per-class.
+
+Export all plots to HTML:
+
+```java
+import org.deeplearning4j.evaluation.EvaluationTools;
+
+EvaluationTools.exportEvaluationCalibrationToHtmlFile(cal, new File("/tmp/calibration.html"));
+```
+
+---
+
+## Performing Multiple Evaluations in One Pass
+
+Running several evaluation types on the same test data requires only a single pass through the dataset when using `model.doEvaluation(...)`:
+
+```java
+DataSetIterator testIter = /* test data */;
+
+Evaluation eval        = new Evaluation(numClasses);
+ROCMultiClass rocMulti = new ROCMultiClass(100);
+EvaluationCalibration cal = new EvaluationCalibration(20, 20);
+
+// One pass, multiple evaluation objects updated simultaneously
+model.doEvaluation(testIter, eval, rocMulti, cal);
+
+System.out.println(eval.stats());
+System.out.println("Avg AUROC: " + rocMulti.calculateAverageAUC());
+```
+
+This is significantly more efficient than iterating the dataset three separate times.
+
+---
+
+## Time Series Evaluation
+
+Evaluation of RNNs proceeds in the same way as feedforward networks. DL4J evaluates all (non-masked) time steps independently. A sequence of length 10 contributes 10 prediction–label pairs per example.
+
+Mask arrays (marking padding time steps) are handled automatically when using the model shortcut methods:
+
+```java
+// Masks are automatically respected
+Evaluation eval = model.evaluate(testIter);
+```
+
+When evaluating manually, pass the mask array to `eval`:
+
+```java
+eval.evalTimeSeries(labels, predictions, labelsMask);
+```
+
+---
+
+## Multi-task Evaluation
+
+For `ComputationGraph` networks with multiple outputs, use `MultiTaskGraphEvaluation` or evaluate each output head separately using `model.doEvaluation()` with explicit output indices:
+
+```java
+// Evaluate output 0 as classification, output 1 as regression
+Evaluation classEval = new Evaluation(numClasses);
+RegressionEvaluation regEval = new RegressionEvaluation(1);
+
+while (testIter.hasNext()) {
+    MultiDataSet batch = testIter.next();
+    INDArray[] outputs = graph.output(batch.getFeatures());
+
+    classEval.eval(batch.getLabels(0), outputs[0]);
+    regEval.eval(batch.getLabels(1), outputs[1]);
+}
+```
+
+---
+
+## Distributed (Spark) Evaluation
+
+For Spark-distributed training, use evaluation methods on `SparkDl4jMultiLayer` or `SparkComputationGraph`:
+
+```java
+// Single evaluation type
+Evaluation eval = sparkModel.evaluate(testRdd);
+
+// Multiple types in one pass
+sparkModel.doEvaluation(testRdd, batchSizePerWorker, eval, roc);
+```
+
+---
+
+## Serialization
+
+All evaluation objects implement `IEvaluation` and can be serialised to JSON or YAML for storage and later combination (e.g., collecting partial results from distributed workers):
+
+```java
+String json = eval.toJson();
+Evaluation restored = Evaluation.fromJson(json);
+
+// Merge results from two partial evaluations
+Evaluation eval1 = /* from partition 1 */;
+Evaluation eval2 = /* from partition 2 */;
+eval1.merge(eval2);
+System.out.println(eval1.stats());
+```
+
+---
+
+## API Reference
+
+| Class | Package |
+|---|---|
+| `Evaluation` | `org.nd4j.evaluation.classification` |
+| `EvaluationBinary` | `org.nd4j.evaluation.classification` |
+| `ROC` | `org.nd4j.evaluation.classification` |
+| `ROCBinary` | `org.nd4j.evaluation.classification` |
+| `ROCMultiClass` | `org.nd4j.evaluation.classification` |
+| `EvaluationCalibration` | `org.nd4j.evaluation.classification` |
+| `RegressionEvaluation` | `org.nd4j.evaluation.regression` |
+| `ConfusionMatrix` | `org.nd4j.evaluation.classification` |
+| `EvaluationAveraging` | `org.nd4j.evaluation.classification` |
+| `IEvaluation` (interface) | `org.nd4j.evaluation` |
+| `EvaluationTools` | `org.deeplearning4j.evaluation` |

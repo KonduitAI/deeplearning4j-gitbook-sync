@@ -1,109 +1,221 @@
 ---
-description: How to write a python script for python4j
+title: "Python4J Getting Started"
+description: "Setting up Python4J — Maven dependencies, executing Python code, and variable I/O"
 ---
 
-# Write Python Script
+# Python4J Getting Started
 
-## Introduction
+This page walks through adding Python4J to a Maven project, executing Python code from Java, and passing variables back and forth across the Java/Python boundary.
 
-Writing a python script in python4j involves first understanding what variables you want to pass in and what variables you want to retrieve, very similar to writing any function in a programming language. In order to learn more about this, please see our [execution overview](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/python4j/reference/execution)
+---
 
-When writing a python script, a user should try to write the script to be as minimal as possible. Focus on the minimal set of inputs, outputs, and code you want to run within a python script. As this is an embedded interpreter, too many complexities arise when trying to run a full blown application. Some complexities include [garbage collection understanding](../reference/garbage-collection.md) and [debugging script execution](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/python4j/reference/execution)
+## Maven Setup
 
-If you are using external libraries, then you need to understand how our [custom python path support](../reference/python-path.md) works.
+Add `python4j-core` to your `pom.xml`. The version should match your ND4J/DL4J version.
 
-## Before you write your first script
-
-It is advised to test your python script in a real environment first. This would mean testing in a code editor and debugger for python like pycharm or visual studio code. This will also help you to determine what the script should look like for python4j. The following considerations should be thought about:
-
-1. inputs: the inputs to the script will be passed in from java and should not be declared as explicit variables in your script that's running embedded. These variable declarations will be dynamically created and inserted in to a real python script that gets executed by our execution framework.
-2. outputs: the outputs of the script will be passed from real python memory and are kept in memory within the scope of the try/with execution block.
-3. dependencies: the dependencies of your application should be bundled separately. The developers recommend a standalone miniconda installation for the target operating system. This version should match the version of cpython provided by python4j to avoid clashing. See \[../reference/python-path] for more information on this topic.
-
-## Writing and executing your first script
-
-Hello world is pretty straightforward. We'll do this write in line:
-
-```java
-PythonExecutioner.exec("print('hello world')");
+```xml
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>python4j-core</artifactId>
+    <version>${dl4j.version}</version>
+</dependency>
 ```
 
-This will do as you would expect and print hello world to the console.
+If you also need to exchange `INDArray` objects as NumPy arrays, add the NumPy bridge module:
 
-Next , we can add concateneate 2 strings. In this example, we pass hello world in as strings. Note that we pass in 2 variables of type string:
-
-```java
-try(PythonGIL pythonGIL = PythonGIL.lock()) {
-            List<PythonVariable> inputs = new ArrayList<>();
-            inputs.add(new PythonVariable<>("x", PythonTypes.STR, "Hello "));
-            inputs.add(new PythonVariable<>("y", PythonTypes.STR, "World"));
-            String code = "print(x + y)";
-            PythonExecutioner.exec(code, inputs, null);
-        }
+```xml
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>python4j-numpy</artifactId>
+    <version>${dl4j.version}</version>
+</dependency>
 ```
 
-We could also pass in 2 ints and add them as well:
+The `cpython` preset bundled by JavaCPP provides a self-contained Python runtime. No separate Python installation is needed for basic usage. To use packages like scikit-learn or PyTorch that are not bundled, point the interpreter at a local Python environment by setting the system property `org.eclipse.python4j.path` before any Python4J class loads:
 
 ```java
-try(PythonGIL pythonGIL = PythonGIL.lock()) {
-            List<PythonVariable> inputs = new ArrayList<>();
-            inputs.add(new PythonVariable<>("x", PythonTypes.INT, 1));
-            inputs.add(new PythonVariable<>("y", PythonTypes.INT, 2));
-            String code = "print(x + y)";
-            PythonExecutioner.exec(code, inputs, null);
-        }
+System.setProperty("org.eclipse.python4j.path", "/home/user/myenv/lib/python3.9");
 ```
 
-The supported python types can be found [here](https://github.com/eclipse/deeplearning4j/blob/master/python4j/python4j-core/src/main/java/org/nd4j/python4j/PythonTypes.java#L34) More on types can be found [here](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/python4j/reference/python-types)
+---
 
-If we want to write an actual python script and have python4j load it, we need to read the script in to memory.
+## First Execution
 
-This can be achieved with the following:
+`PythonExecutioner` is the entry point for running Python code. Its static initializer boots the CPython runtime the first time any of its methods are called, so no explicit setup step is required.
 
 ```java
-    String code = FileUtils.readFileToString(new File("path/to/pythonfile.py"), StandardCharsets.UTF_8);
+import org.nd4j.python4j.PythonExecutioner;
+import org.nd4j.python4j.PythonGIL;
+
+try (PythonGIL gil = PythonGIL.lock()) {
+    PythonExecutioner.exec("print('Hello from Python')");
+}
 ```
 
-From there, we can pass the code to PythonExecutioner.exec(..) as follows:
+`PythonGIL.lock()` acquires CPython's Global Interpreter Lock and returns an `AutoCloseable` that releases it when the try block exits. You must hold the GIL any time you call `PythonExecutioner` from a thread that is not the JVM main thread. On the main thread, if GIL release has not yet happened, a direct call without `PythonGIL.lock()` works, but using the lock block consistently is the safest pattern.
+
+The `exec()` method wraps your code in a try/except harness. If Python raises an exception, a `PythonException` is thrown on the Java side with the exception message.
+
+---
+
+## Passing Variables into Python
+
+Use `PythonVariable` to bind a Java value to a Python name before execution, and `PythonExecutioner.exec(code, inputs, outputs)` to set inputs, run the code, and collect outputs in one call.
 
 ```java
-try(PythonGIL pythonGIL = PythonGIL.lock()) {
-            List<PythonVariable> inputs = new ArrayList<>();
-            inputs.add(new PythonVariable<>("x", PythonTypes.INT, 1));
-            inputs.add(new PythonVariable<>("y", PythonTypes.INT, 2));
-             String code = FileUtils.readFileToString(new File("path/to/pythonfile.py"), StandardCharsets.UTF_8);
-            PythonExecutioner.exec(code, inputs, null);
-        }
+import org.nd4j.python4j.*;
+import java.util.Arrays;
+import java.util.List;
+
+try (PythonGIL gil = PythonGIL.lock()) {
+    // Inputs
+    List<PythonVariable> inputs = Arrays.asList(
+        new PythonVariable<>("x", PythonTypes.INT, 10L),
+        new PythonVariable<>("y", PythonTypes.FLOAT, 3.14)
+    );
+
+    // Outputs (values will be populated after exec)
+    List<PythonVariable> outputs = Arrays.asList(
+        new PythonVariable<>("result", PythonTypes.FLOAT)
+    );
+
+    String code = "result = x * y";
+    PythonExecutioner.exec(code, inputs, outputs);
+
+    Double result = (Double) outputs.get(0).getValue();
+    System.out.println("result = " + result); // result = 31.4
+}
 ```
 
-## Retrieving results
+`PythonVariable<T>` is a triple of (name, type, value). The type is a `PythonType<T>` constant from `PythonTypes` that governs how the value is converted to and from a CPython object.
 
-Up till now, we haven't actually retrieved results from the python script, just passed them in. Below is how to retrieve results:
+---
+
+## Supported Types
+
+The following type constants are defined in `PythonTypes`:
+
+| Constant | Python type | Java type |
+|----------|-------------|-----------|
+| `PythonTypes.STR` | `str` | `String` |
+| `PythonTypes.INT` | `int` | `Long` |
+| `PythonTypes.FLOAT` | `float` | `Double` |
+| `PythonTypes.BOOL` | `bool` | `Boolean` |
+| `PythonTypes.BYTES` | `bytes` | `byte[]` |
+| `PythonTypes.LIST` | `list` | `List` |
+| `PythonTypes.DICT` | `dict` | `Map` |
+
+When `python4j-numpy` is on the classpath, `NumpyArray.INSTANCE` handles `INDArray` / `numpy.ndarray` conversion. See [NumPy Bridge](numpy-bridge.md) for details.
+
+**List elements.** When you put a Java `List` into Python, each element is converted individually using type auto-detection. Mixed-type lists are supported. When you read a Python list back, each element is converted to its closest Java equivalent.
+
+**Dict keys and values.** Keys must be hashable (`str`, `int`, `float`, `bool`). Values can be any supported type.
+
+---
+
+## Reading Variables Back
+
+You can read a single variable by name:
 
 ```java
-    try(PythonGIL pythonGIL = PythonGIL.lock()) {
-            String code = "a = 5\nb = '10'\nc = 20.0";
-            List<PythonVariable> vars = PythonExecutioner.execAndReturnAllVariables(code);
-        }
+try (PythonGIL gil = PythonGIL.lock()) {
+    PythonExecutioner.exec("greeting = 'hello world'");
+    PythonVariable<String> v = PythonExecutioner.getVariable("greeting", PythonTypes.STR);
+    System.out.println(v.getValue()); // hello world
+}
 ```
 
-This will retrieve all results output from the executed python code. If you only want certain variables, then you can do the following:
+Or read all non-private variables that have a recognized type:
 
 ```java
-   try(PythonGIL pythonGIL = PythonGIL.lock()) {
-            List<PythonVariable> inputs = new ArrayList<>();
-            inputs.add(new PythonVariable<>("x", PythonTypes.STR, "Hello "));
-            inputs.add(new PythonVariable<>("y", PythonTypes.STR, "World"));
-            PythonVariable out = new PythonVariable<>("z", PythonTypes.STR);
-            String code = "z = x + y";
-            PythonExecutioner.exec(code, inputs, Collections.singletonList(out));
-        }
+try (PythonGIL gil = PythonGIL.lock()) {
+    PythonExecutioner.exec("a = 1\nb = 2.5\nc = [1, 2, 3]");
+    PythonVariables all = PythonExecutioner.getAllVariables();
+    for (PythonVariable<?> pv : all) {
+        System.out.println(pv.getName() + " = " + pv.getValue());
+    }
+}
 ```
 
-Afterwards, you can read the value from out post execution using:
+`getAllVariables()` skips names that start with `_` and skips objects whose type is not recognized by any registered `PythonType`.
+
+---
+
+## Running a Python Script File
+
+There is no dedicated "run script file" method, but you can read the file contents and pass them to `exec`:
 
 ```java
-String value = out.getValue();
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+String code = new String(Files.readAllBytes(Paths.get("/path/to/script.py")));
+try (PythonGIL gil = PythonGIL.lock()) {
+    PythonExecutioner.exec(code);
+}
 ```
 
-Note that out is a parameterized type. When retrieving the value, the java runtime will automatically try to cast whatever the output result is from python to the specified type. For more information on types, please see our [types reference](../reference/python-types.md)
+---
+
+## A Worked Example: Calling scikit-learn
+
+The following example assumes scikit-learn is available on the Python path.
+
+```java
+import org.nd4j.python4j.*;
+import java.util.*;
+
+try (PythonGIL gil = PythonGIL.lock()) {
+    // Pass training data as Python lists
+    List<PythonVariable> inputs = Arrays.asList(
+        new PythonVariable<>("X_train", PythonTypes.LIST,
+            Arrays.asList(
+                Arrays.asList(1.0, 2.0),
+                Arrays.asList(3.0, 4.0),
+                Arrays.asList(5.0, 6.0)
+            )
+        ),
+        new PythonVariable<>("y_train", PythonTypes.LIST,
+            Arrays.asList(0L, 1L, 0L)
+        )
+    );
+
+    List<PythonVariable> outputs = Arrays.asList(
+        new PythonVariable<>("prediction", PythonTypes.INT)
+    );
+
+    String code =
+        "from sklearn.linear_model import LogisticRegression\n" +
+        "clf = LogisticRegression()\n" +
+        "clf.fit(X_train, y_train)\n" +
+        "prediction = int(clf.predict([[2.0, 3.0]])[0])";
+
+    PythonExecutioner.exec(code, inputs, outputs);
+
+    Long prediction = (Long) outputs.get(0).getValue();
+    System.out.println("Predicted class: " + prediction);
+}
+```
+
+---
+
+## Error Handling
+
+Python exceptions are caught by the wrapper harness inside `exec()` and re-raised as `PythonException` on the Java side. `PythonException` is an unchecked (`RuntimeException`) subclass.
+
+```java
+try (PythonGIL gil = PythonGIL.lock()) {
+    PythonExecutioner.exec("raise ValueError('something went wrong')");
+} catch (PythonException e) {
+    System.err.println("Python error: " + e.getMessage());
+}
+```
+
+Syntax errors in the Python code cause `simpleExec` to return a non-zero status code, which `exec` translates into a `PythonException` with the message `"Execution failed, unable to retrieve python exception."`. Inspect the stderr output in your logs for the underlying traceback.
+
+---
+
+## Next Steps
+
+- [NumPy Bridge](numpy-bridge.md) — pass `INDArray` to Python as `numpy.ndarray` without copying data.
+- [Advanced Usage](advanced.md) — GIL management across threads, context isolation, subprocess utilities, and garbage collection.

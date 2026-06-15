@@ -1,174 +1,203 @@
 ---
-description: Special algorithms for gradient descent.
+title: "Activations"
+description: "Activation functions in ND4J — the Activation enum, IActivation interface, mathematical definitions, and usage in layers"
 ---
 
-# Activations
+# Activation Functions
 
-## What are activations?
+Activation functions introduce non-linearity into neural networks. Without them, stacking multiple layers would be equivalent to a single linear transformation, regardless of depth. ND4J provides all activation functions through a common `Activation` enum and the `IActivation` interface.
 
-At a simple level, activation functions help decide whether a neuron should be activated. This helps determine whether the information that the neuron is receiving is relevant for the input. The activation function is a non-linear transformation that happens over an input signal, and the transformed output is sent to the next neuron.
+## Using Activations
 
-## Usage
+### In Layer Configuration
 
-The recommended method to use activations is to add an activation layer in your neural network, and configure your desired activation:
-
-```java
-GraphBuilder graphBuilder = new NeuralNetConfiguration.Builder()
-    // add hyperparameters and other layers
-    .addLayer("softmax", new ActivationLayer(Activation.SOFTMAX), "previous_input")
-    // add more layers and output
-    .build();
-```
-
-## Available activations
-
-### ActivationRectifiedTanh
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl/ActivationRectifiedTanh.java)
-
-Rectified tanh
-
-Essentially max(0, tanh(x))
-
-Underlying implementation is in native code
-
-## ActivationELU
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl/ActivationELU.java)
-
-f(x) = alpha (exp(x) - 1.0); x < 0 = x ; x>= 0
-
-alpha defaults to 1, if not specified
-
-## ActivationReLU
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl/ActivationReLU.java)
-
-f(x) = max(0, x)
-
-## ActivationRationalTanh
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl/ActivationRationalTanh.java)
-
-Rational tanh approximation From [https://arxiv.org/pdf/1508.01292v3](https://arxiv.org/pdf/1508.01292v3)
-
-f(x) = 1.7159 tanh(2x/3) where tanh is approximated as follows, tanh(y) \~ sgn(y) { 1 - 1/(1+|y|+y^2+1.41645y^4)}
-
-Underlying implementation is in native code
-
-## ActivationThresholdedReLU
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl/ActivationThresholdedReLU.java)
-
-Thresholded RELU
-
-f(x) = x for x > theta, f(x) = 0 otherwise. theta defaults to 1.0
-
-## ActivationReLU6
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl/ActivationReLU6.java)
-
-f(x) = min(max(input, cutoff), 6)
-
-## ActivationHardTanH
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl/ActivationHardTanH.java)
+The most common way to use activations is through the `Activation` enum when configuring layers:
 
 ```java
-          ⎧  1, if x >  1
- f(x) =   ⎨ -1, if x < -1
-          ⎩  x, otherwise
+import org.nd4j.linalg.activations.Activation;
+
+new DenseLayer.Builder()
+    .nIn(784).nOut(256)
+    .activation(Activation.RELU)
+    .build()
 ```
 
-## ActivationSigmoid
+### As a Standalone Layer
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl/ActivationSigmoid.java)
+You can use `ActivationLayer` when you want the activation separate from the linear transformation:
 
-f(x) = 1 / (1 + exp(-x))
+```java
+import org.deeplearning4j.nn.conf.layers.ActivationLayer;
 
-## ActivationGELU
+.addLayer("relu", new ActivationLayer(Activation.RELU), "dense1")
+```
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl/ActivationGELU.java)
+### Directly on INDArrays
 
-GELU activation function - Gaussian Error Linear Units
+Apply activations to raw tensors using the `Transforms` class:
 
-## ActivationPReLU
+```java
+import org.nd4j.linalg.ops.transforms.Transforms;
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl/ActivationPReLU.java)
+INDArray x = Nd4j.create(new double[]{-2, -1, 0, 1, 2});
 
-/ Parametrized Rectified Linear Unit (PReLU)
+INDArray relu = Transforms.relu(x, false);       // copy
+// [0, 0, 0, 1, 2]
 
-f(x) = alpha x for x < 0, f(x) = x for x >= 0
+INDArray sigmoid = Transforms.sigmoid(x, false);  // copy
+// [0.1192, 0.2689, 0.5, 0.7311, 0.8808]
 
-alpha has the same shape as x and is a learned parameter.
+INDArray tanh = Transforms.tanh(x, false);        // copy
+// [-0.9640, -0.7616, 0, 0.7616, 0.9640]
+```
 
-## ActivationIdentity
+The second argument controls in-place behavior: `true` modifies `x` directly, `false` returns a copy.
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl/ActivationIdentity.java)
+### Via the IActivation Interface
 
-f(x) = x
+For programmatic access, get the `IActivation` instance from the enum:
 
-## ActivationSoftSign
+```java
+import org.nd4j.linalg.activations.IActivation;
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl/ActivationSoftSign.java)
+IActivation reluFn = Activation.RELU.getActivationFunction();
+INDArray activated = reluFn.getActivation(input.dup(), true);
+```
 
-| f\_i(x) = x\_i / (1+ | x\_i | ) |
-| -------------------- | ---- | - |
+## Available Activations
 
-## ActivationHardSigmoid
+All activations are in the `org.nd4j.linalg.activations.Activation` enum. Implementations are in `org.nd4j.linalg.activations.impl`.
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl/ActivationHardSigmoid.java)
+### ReLU Family
 
-f(x) = min(1, max(0, 0.2x + 0.5))
+| Activation | Enum Value | Formula | Notes |
+|-----------|-----------|---------|-------|
+| ReLU | `RELU` | f(x) = max(0, x) | Default choice for hidden layers. Fast, effective, but can suffer from "dying ReLU" |
+| Leaky ReLU | `LEAKYRELU` | f(x) = max(alpha * x, x), alpha=0.01 | Avoids dying ReLU by allowing small negative gradients |
+| RReLU | `RRELU` | f(x) = max(alpha * x, x), alpha ~ U(l,u) | Randomized leaky ReLU. l=1/8, u=1/3 by default. Uses (l+u)/2 at test time |
+| ReLU6 | `RELU6` | f(x) = min(max(0, x), 6) | Capped ReLU for mobile/quantized networks |
+| Thresholded ReLU | `THRESHOLDEDRELU` | f(x) = x if x > theta, 0 otherwise. theta=1.0 | Sparse activations |
+| PReLU | Via `PReLULayer` | f(x) = max(alpha * x, x), alpha learned | Parametric ReLU — alpha is a trainable parameter |
+| ELU | `ELU` | f(x) = x if x >= 0, alpha*(exp(x)-1) if x < 0. alpha=1.0 | Smooth alternative to ReLU with negative values |
+| SELU | `SELU` | f(x) = lambda * (x if x >= 0, alpha*(exp(x)-1) if x < 0) | Self-normalizing. Use with `WeightInit.LECUN_NORMAL` and `AlphaDropout` |
 
-## ActivationSoftmax
+### Smooth Activations
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl/ActivationSoftmax.java)
+| Activation | Enum Value | Formula | Notes |
+|-----------|-----------|---------|-------|
+| GELU | `GELU` | f(x) = x * Phi(x), where Phi is the Gaussian CDF | Used in Transformers (BERT, GPT). Smooth approximation of ReLU |
+| Mish | `MISH` | f(x) = x * tanh(softplus(x)) | Self-regularized, smooth. Good general-purpose alternative to ReLU |
+| Swish | `SWISH` | f(x) = x * sigmoid(x) | Smooth, non-monotonic. Discovered via neural architecture search |
+| Softplus | `SOFTPLUS` | f(x) = log(1 + exp(x)) | Smooth approximation of ReLU |
 
-f\_i(x) = exp(x\_i - shift) / sum\_j exp(x\_j - shift) where shift = max\_i(x\_i)
+### Sigmoid Family
 
-## ActivationCube
+| Activation | Enum Value | Formula | Notes |
+|-----------|-----------|---------|-------|
+| Sigmoid | `SIGMOID` | f(x) = 1 / (1 + exp(-x)) | Output range (0,1). Use for binary classification output |
+| Hard Sigmoid | `HARDSIGMOID` | f(x) = min(1, max(0, 0.2x + 0.5)) | Fast piecewise linear approximation of sigmoid |
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl/ActivationCube.java)
+### Tanh Family
 
-f(x) = x^3
+| Activation | Enum Value | Formula | Notes |
+|-----------|-----------|---------|-------|
+| Tanh | `TANH` | f(x) = (exp(x) - exp(-x)) / (exp(x) + exp(-x)) | Output range (-1,1). Alternative to ReLU for hidden layers, especially RNNs |
+| Hard Tanh | `HARDTANH` | f(x) = -1 if x < -1, 1 if x > 1, x otherwise | Fast piecewise linear approximation of tanh |
+| Rectified Tanh | `RECTIFIEDTANH` | f(x) = max(0, tanh(x)) | Combination of ReLU and tanh |
+| Rational Tanh | `RATIONALTANH` | f(x) = 1.7159 * tanh(2x/3) with rational approximation | Fast approximation from LeCun 1998 |
 
-## ActivationRReLU
+### Output Activations
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl/ActivationRReLU.java)
+| Activation | Enum Value | Formula | Notes |
+|-----------|-----------|---------|-------|
+| Softmax | `SOFTMAX` | f_i(x) = exp(x_i - max) / sum_j(exp(x_j - max)) | Multi-class classification output. Outputs sum to 1. Pair with `LossMCXENT` |
+| Identity | `IDENTITY` | f(x) = x | Regression output (linear). Pair with `LossMSE` |
 
-f(x) = max(0,x) + alpha min(0, x)
+### Other Activations
 
-alpha is drawn from uniform(l,u) during training and is set to l+u/2 during test l and u default to 1/8 and 1/3 respectively
+| Activation | Enum Value | Formula | Notes |
+|-----------|-----------|---------|-------|
+| Softsign | `SOFTSIGN` | f(x) = x / (1 + \|x\|) | Alternative to tanh — converges polynomially instead of exponentially |
+| Cube | `CUBE` | f(x) = x^3 | Rarely used in practice |
 
-[Empirical Evaluation of Rectified Activations in Convolutional Network](https://arxiv.org/abs/1505.00853)
+## Recommended Pairings
 
-## ActivationTanH
+Choosing the right activation depends on the layer type and task:
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl/ActivationTanH.java)
+### Hidden Layers
 
-f(x) = (exp(x) - exp(-x)) / (exp(x) + exp(-x))
+| Network Type | Activation | Weight Init | Why |
+|-------------|-----------|-------------|-----|
+| Feed-forward, CNN | `RELU` | `WeightInit.RELU` | Fast convergence, avoids vanishing gradient |
+| RNN (LSTM, GRU) | `TANH` | `WeightInit.XAVIER` | Bounded output prevents exploding activations in recurrence |
+| Self-normalizing nets | `SELU` | `WeightInit.LECUN_NORMAL` | Maintains mean=0, variance=1 through layers |
+| Transformer blocks | `GELU` | `WeightInit.XAVIER` | Smooth, works well with attention mechanisms |
 
-## ActivationSELU
+### Output Layers
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl/ActivationSELU.java)
+| Task | Activation | Loss Function | Why |
+|------|-----------|---------------|-----|
+| Multi-class classification | `SOFTMAX` | `LossMCXENT` | Outputs are valid probabilities summing to 1 |
+| Binary classification | `SIGMOID` | `LossBinaryXENT` | Output is probability in (0,1) |
+| Multi-label classification | `SIGMOID` | `LossBinaryXENT` | Each output is independent binary decision |
+| Regression | `IDENTITY` | `LossMSE` or `LossMAE` | Linear output, no bounds |
+| Bounded regression [0,1] | `SIGMOID` | `LossMSE` | Output constrained to (0,1) |
 
-[https://arxiv.org/pdf/1706.02515.pdf](https://arxiv.org/pdf/1706.02515.pdf)
+## Custom Activations
 
-## ActivationLReLU
+Implement the `IActivation` interface at `org.nd4j.linalg.activations.IActivation`:
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl/ActivationLReLU.java)
+```java
+import org.nd4j.linalg.activations.BaseActivationFunction;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.common.primitives.Pair;
 
-Leaky RELU f(x) = max(0, x) + alpha min(0, x) alpha defaults to 0.01
+public class CustomActivation extends BaseActivationFunction {
 
-## ActivationSwish
+    @Override
+    public INDArray getActivation(INDArray in, boolean training) {
+        // Modify 'in' in-place and return it
+        // Example: f(x) = x * sigmoid(x)  (Swish)
+        INDArray sigmoid = Transforms.sigmoid(in.dup(), false);
+        in.muli(sigmoid);
+        return in;
+    }
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl/ActivationSwish.java)
+    @Override
+    public Pair<INDArray, INDArray> backprop(INDArray in, INDArray epsilon) {
+        // Compute activation gradient and multiply by upstream gradient
+        // Return: Pair(gradient, null)
+        // The second element is null for activations without learnable parameters
+        INDArray gradient = computeGradient(in);  // your derivative
+        gradient.muli(epsilon);
+        return new Pair<>(gradient, null);
+    }
+}
+```
 
-f(x) = x sigmoid(x)
+Use a custom activation in a layer:
 
-## ActivationSoftPlus
+```java
+new DenseLayer.Builder()
+    .nIn(256).nOut(128)
+    .activation(new CustomActivation())
+    .build()
+```
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/linalg/activations/impl/ActivationSoftPlus.java)
+## Activation Function Comparison
 
-f(x) = log(1+e^x)
+For quick reference, key properties of each activation:
+
+| Activation | Range | Monotonic | Smooth | Zero-Centered | Computational Cost |
+|-----------|-------|-----------|--------|---------------|-------------------|
+| ReLU | [0, inf) | Yes | No | No | Very Low |
+| Leaky ReLU | (-inf, inf) | Yes | No | Yes | Very Low |
+| ELU | (-alpha, inf) | Yes | Yes | ~Yes | Medium |
+| SELU | (-lambda*alpha, inf) | Yes | Yes | ~Yes | Medium |
+| GELU | ~(-0.17, inf) | No | Yes | No | High |
+| Mish | ~(-0.31, inf) | No | Yes | No | High |
+| Swish | ~(-0.28, inf) | No | Yes | No | Medium |
+| Sigmoid | (0, 1) | Yes | Yes | No | Medium |
+| Tanh | (-1, 1) | Yes | Yes | Yes | Medium |
+| Softmax | (0, 1) per class | N/A | Yes | No | Medium |
+| Identity | (-inf, inf) | Yes | Yes | Yes | None |

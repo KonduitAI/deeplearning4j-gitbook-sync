@@ -1,122 +1,234 @@
 ---
-description: Using daily builds for access to latest Eclipse Deeplearning4j features.
+title: Snapshot Builds
+description: Using nightly snapshot builds of Eclipse Deeplearning4j 1.0.0-M2.1 — repository configuration, version identifiers, Maven and Gradle setup.
 ---
 
-# Snapshots
+## Overview
 
-## Contents
+Snapshot builds of Eclipse Deeplearning4j are published automatically after each successful CI build. They include the latest bug fixes, new operations, and experimental features ahead of the next stable release. Snapshots are served from the Sonatype OSS snapshot repository rather than Maven Central.
 
-* [Introduction to Snapshots](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/multi-project/explanation/config-snapshots.md#overview-introduction)
-* [Setup Instructions](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/multi-project/explanation/config-snapshots.md#setup-instructions)
-* [Limitations](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/multi-project/explanation/config-snapshots.md#limitations)
-* Configuration of ND4J Backend
-* [Note to Gradle Users](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/multi-project/explanation/config-snapshots.md#note-to-gradle-users)
+**Stability warning:** Snapshots are development builds. Breaking changes or regressions may be introduced at any point. Use the latest stable release in production; use snapshots only when you need a specific fix or feature that has not yet been released.
 
-## [Overview/Introduction](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/multi-project/explanation/config-snapshots.md)
+---
 
-We provide automated daily builds of repositories such as ND4J, DataVec, DeepLearning4j, RL4J etc. So all the newest functionality and most recent bug fixes are released daily.
+## Snapshot Version Identifier
 
-Snapshots work like any other Maven dependency. The only difference is that they are served from a custom repository rather than from Maven Central.
+The current snapshot version is:
 
-**Due to ongoing development, snapshots should be considered less stable than releases: breaking changes or bugs can in principle be introduced at any point during the course of normal development. Typically, releases (not snapshots) should be used when possible, unless a bug fix or new feature is required.**
+```
+1.0.0-SNAPSHOT
+```
 
-## [Setup Instructions](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/multi-project/explanation/config-snapshots.md#setup-instructions)
+This tracks the development branch for the next release after 1.0.0-M2.1.
 
-**Step 1:** To use snapshots in your project, you should add snapshot repository information like this to your `pom.xml` file:
+---
 
-```markup
+## Repository Configuration
+
+### Maven
+
+Add the Sonatype snapshot repository to your `pom.xml`:
+
+```xml
 <repositories>
     <repository>
-        <id>snapshots-repo</id>
+        <id>sonatype-snapshots</id>
         <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         <releases>
             <enabled>false</enabled>
         </releases>
         <snapshots>
             <enabled>true</enabled>
-            <updatePolicy>daily</updatePolicy>  <!-- Optional, update daily -->
+            <updatePolicy>daily</updatePolicy>
         </snapshots>
     </repository>
 </repositories>
 ```
 
-**Step 2:** Make sure to specify the snapshot version. We follow a simple rule: If the latest stable release version is `A.B.C`, the snapshot version will be `A.B.(C+1)-SNAPSHOT`. The current snapshot version is `1.0.0-SNAPSHOT`. For more details on the repositories section of the pom.xml file, see [Maven documentation](https://maven.apache.org/settings.html#Repositories)
+Then set the version property:
 
-If using properties like the DL4J examples, change: From version:
-
-```markup
-<dl4j.version>1.0.0-beta6</dl4j.version>
-<nd4j.version>1.0.0-beta6</nd4j.version>
+```xml
+<properties>
+    <dl4j.version>1.0.0-SNAPSHOT</dl4j.version>
+    <nd4j.version>1.0.0-SNAPSHOT</nd4j.version>
+</properties>
 ```
 
-To version:
+### Gradle
 
-```markup
-<dl4j.version>1.0.0-SNAPSHOT</dl4j.version>
-<nd4j.version>1.0.0-SNAPSHOT</nd4j.version>
-```
-
-**Sample pom.xml using Snapshots**
-
-A sample pom.xml is provided here: [sample pom.xml using snapshots](https://gist.github.com/AlexDBlack/28b0c9a72bce562c8782be326a6e2aaa) This has been taken from the DL4J standalone sample project and modified using step 1 and 2 above. The original (using the last release) can be found [here](https://github.com/eclipse/deeplearning4j-examples/blob/master/standalone-sample-project/pom.xml)
-
-## [Limitations](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/multi-project/explanation/config-snapshots.md#limitations)
-
-Both `-platform` (all operating systems) and single OS (non-platform) snapshot dependencies are released. Due to the multi-platform build nature of snapshots, it is possible (though rare) for the `-platform` artifacts to temporarily get out of sync, which can cause build issues.
-
-If you are building and deploying on just one platform, it is safter use the non-platform artifacts, such as:
-
-```markup
-        <dependency>
-            <groupId>org.nd4j</groupId>
-            <artifactId>nd4j-native</artifactId>
-            <version>${nd4j.version}</version>
-        </dependency>
-```
-
-## [Useful Maven Commands for Snapshots](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/multi-project/explanation/config-snapshots.md)
-
-Two commands that might be useful when using snapshot dependencies in Maven is as follows: 1. `-U` - for example, in `mvn package -U`. This `-U` option forces Maven to check (and if necessary, download) of new snapshot releases. This can be useful if you need the be sure you have the absolute latest snapshot release. 2. `-nsu` - for example, in `mvn package -nsu`. This `-nsu` option stops Maven from checking for snapshot releases. Note however your build will only succeed with this option if you have some snapshot dependencies already downloaded into your local Maven cache (.m2 directory)
-
-An alternative approach to (1) is to set `<updatePolicy>always</updatePolicy>` in the `<repositories>` section found earlier in this page. An alternative approach to (2) is to set `<updatePolicy>never</updatePolicy>` in the `<repositories>` section found earlier in this page.
-
-## [Note to Gradle users](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/multi-project/explanation/config-snapshots.md)
-
-Snapshots will not work with Gradle. You must use Maven to download the files. After that, you may try using your local Maven repository with `mavenLocal()`.
-
-In order to download specific snapshot artifacts into your local Maven repository, you can run the following Maven command.
-
-```
-mvn dependency:get -DremoteRepositories=snapshots::::https://oss.sonatype.org/content/repositories/snapshots -Dartifact=org.nd4j:nd4j-native:1.0.0-SNAPSHOT:jar:macos-x86_64
-```
-
-In this example, it will download the `nd4j-native` (CPU backend) artifact for macOS. If you are on Windows or Linux, you'd use `windows-x86_64` or `linux-x86_64` respectively.
-
-{% hint style="danger" %}
-A bare minimum file like the following _should_ work in theory, but it does not. This is due to [a bug in Gradle](https://github.com/gradle/gradle/issues/2882). Gradle with snapshots _and_ Maven classifiers appears to be a problem.
-{% endhint %}
-
-```
-version '1.0-SNAPSHOT'
-
-apply plugin: 'java'
-
-sourceCompatibility = 1.8
-
+```groovy
 repositories {
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
     mavenCentral()
 }
 
-dependencies {
-    compile group: 'org.deeplearning4j', name: 'deeplearning4j-core', version: '1.0.0-SNAPSHOT'
-    compile group: 'org.deeplearning4j', name: 'deeplearning4j-modelimport', version: '1.0.0-SNAPSHOT'
-    compile "org.nd4j:nd4j-native:1.0.0-SNAPSHOT"
-    // Use windows-x86_64 or linux-x86_64 if you are not on macos
-    compile "org.nd4j:nd4j-native:1.0.0-SNAPSHOT:macosx-x86_64"
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+ext {
+    dl4jVersion = '1.0.0-SNAPSHOT'
+}
 
+dependencies {
+    implementation "org.deeplearning4j:deeplearning4j-core:${dl4jVersion}"
+    implementation "org.nd4j:nd4j-native-platform:${dl4jVersion}"
 }
 ```
 
-Of note when using the nd4j-native backend (in contrast to nd4j-native-platform) on Gradle (and SBT - but not Maven), you need to add openblas as a dependency. We do this for you in the -platform pom. Reference the -platform pom [here](https://github.com/eclipse/deeplearning4j/blob/master/nd4j/nd4j-backends/nd4j-backend-impls/nd4j-native-platform/pom.xml#L19) to double check your dependencies. Note that these are version properties. See the `<properties>` section of the pom for current versions of the openblas and javacpp presets required to run nd4j-native.
+> **Gradle and classifiers:** Due to a [known Gradle bug](https://github.com/gradle/gradle/issues/2882), snapshot dependencies that include Maven classifiers (e.g., platform artifacts with OS classifiers) do not resolve correctly in Gradle. If you encounter resolution failures with `-platform` artifacts, use Maven or manually list the OS-specific artifacts.
+
+---
+
+## Sample Minimal pom.xml (CPU)
+
+```xml
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.example</groupId>
+    <artifactId>dl4j-snapshot-test</artifactId>
+    <version>1.0</version>
+
+    <properties>
+        <dl4j.version>1.0.0-SNAPSHOT</dl4j.version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>sonatype-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <snapshots><enabled>true</enabled></snapshots>
+            <releases><enabled>false</enabled></releases>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-core</artifactId>
+            <version>${dl4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.nd4j</groupId>
+            <artifactId>nd4j-native-platform</artifactId>
+            <version>${dl4j.version}</version>
+        </dependency>
+    </dependencies>
+</project>
+```
+
+---
+
+## ND4J Backend Configuration for Snapshots
+
+The backend is selected by the dependency you include, exactly as with stable releases.
+
+**CPU backend:**
+
+```xml
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-native-platform</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</dependency>
+```
+
+**GPU backend (CUDA 11.6):**
+
+```xml
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-cuda-11.6-platform</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</dependency>
+```
+
+If you need cuDNN integration with a snapshot build:
+
+```xml
+<dependency>
+    <groupId>org.deeplearning4j</groupId>
+    <artifactId>deeplearning4j-cuda-11.6</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</dependency>
+```
+
+---
+
+## Forcing Snapshot Updates
+
+By default, Maven checks for new snapshots based on the `updatePolicy` set in the repository configuration. To force Maven to download the latest snapshot immediately:
+
+```shell
+mvn package -U
+```
+
+The `-U` flag forces Maven to check for new snapshot versions regardless of the update policy.
+
+To prevent Maven from checking for updates (useful in offline or CI cache scenarios):
+
+```shell
+mvn package -nsu
+```
+
+`-nsu` (no snapshot updates) requires that the snapshot artifact is already in the local `.m2` cache. The build will fail if the snapshot is not cached.
+
+---
+
+## Platform Artifacts and Build Timing
+
+Because snapshot builds are produced for multiple platforms (Linux x86_64, Linux ARM64, macOS x86_64, macOS ARM64, Windows x86_64) and not all platform builds complete simultaneously, `-platform` artifacts can temporarily become inconsistent. This may cause build errors such as missing classifiers.
+
+If you are building and deploying to a single known platform, use the single-platform artifact to avoid this:
+
+```xml
+<!-- Linux x86_64 only, avoids multi-platform sync issues -->
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-native</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</dependency>
+<!-- plus the platform-specific native binary: -->
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-native</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <classifier>linux-x86_64</classifier>
+</dependency>
+```
+
+---
+
+## Snapshot Limitations
+
+| Limitation | Detail |
+|---|---|
+| No semantic versioning guarantee | Snapshots may contain breaking API changes |
+| Gradle classifiers | Platform artifacts with OS classifiers may not resolve due to a Gradle bug |
+| Temporary build failures | Snapshots can be unavailable for short periods during CI runs |
+| Not recommended for production | Use a stable release (`1.0.0-M2.1`) in production environments |
+
+---
+
+## Checking Which Snapshot You Have
+
+To see the exact snapshot build date and commit hash:
+
+```shell
+# Look at the artifact jar manifest or check the Sonatype repository browser
+mvn dependency:list -Dincludes=org.nd4j -Dverbose
+```
+
+Or browse the Sonatype snapshot repository directly:
+
+```
+https://oss.sonatype.org/content/repositories/snapshots/org/nd4j/nd4j-native/
+```
+
+Each snapshot sub-version shows a timestamp in the format `1.0.0-YYYYMMDD.HHMMSS-N`.
+
+---
+
+## Related Pages
+
+- [Maven Setup](./maven) — stable release dependency configuration
+- [Build Tools](./build-tools) — Gradle and other build tool configuration
+- [GPU and CPU Setup](./gpu-cpu) — backend selection

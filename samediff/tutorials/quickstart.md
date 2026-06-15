@@ -1,82 +1,204 @@
 ---
-description: Samediff Quickstart
+title: "SameDiff Overview"
+description: "Automatic differentiation framework in ND4J — define-and-run computation graphs, comparison with MultiLayerNetwork and ComputationGraph"
 ---
 
-# Quickstart
+# SameDiff Overview
 
-Samediff is a lower level and more flexible api for composing neural networks. It is a compliment to nd4j. It provides a declarative api for creating computation graphs. If you are not familiar with the idea of computation graphs, here are a few references: 1. [https://www.codingame.com/playgrounds/9487/deep-learning-from-scratch---theory-and-implementation/computational-graphs](https://www.codingame.com/playgrounds/9487/deep-learning-from-scratch---theory-and-implementation/computational-graphs) 2. [https://www.machinecurve.com/index.php/2020/09/13/tensorflow-eager-execution-what-is-it/](https://www.machinecurve.com/index.php/2020/09/13/tensorflow-eager-execution-what-is-it/)
+SameDiff is the automatic differentiation (autograd) framework built into ND4J. It lets you define mathematical computation graphs in Java, execute them against real data, and compute gradients automatically — without writing any backpropagation code by hand.
 
-It is very similar to more popular frameworks such as tensorflow and pytorch.
+## What SameDiff Is
 
-In short, a computation graph allows a user to declare a series of math operats to get to a desired output. Deeplearning4j itself has a computation graph api. More about that can be found [here](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/samediff/models/computationgraph)
+At its core, SameDiff represents a computation as a directed acyclic graph (DAG) where:
 
-Note that the samediff api is a completely separate, standalone api that shares some code via nd4j, but is otherwise a standalone framework for executing neural networks. It has a distinct file format, training/graph execution, and apis for execution. Samediff will be the main api going forward. The dl4j api most people know will still be supported, but should otherwise be treated as a feature in maintenance mode. Consider samediff a rewrite of sorts. Samediff has a set of examples [here](https://github.com/eclipse/deeplearning4j-examples/tree/master/samediff-examples) that cover the basics.
+- **Nodes** are variables (`SDVariable` instances) holding arrays of numbers.
+- **Edges** are operations that consume one or more input variables and produce an output variable.
 
-Follow this [example](https://github.com/eclipse/deeplearning4j-examples/blob/master/samediff-examples/src/main/java/org/nd4j/examples/samediff/quickstart/basics/Ex1\_SameDiff\_Basics.java) for imports and other important aspects. Please treat this page as a simple walkthrough of the concepts in samediff for people unfamiliar with the framework itself.
-
-In short, in order to create a graph a user starts by calling Samediff.create() as follows:
-
-```java
-   SameDiff sd = SameDiff.create();
-```
-
-Nd4j's INDArray is used as the core data structure for holding results that have been compute. Graph declarations are done via samediff's SDVariable. Assuming you have read the above references on computation graphs, a samediff graph declaration can happen as follows:
+When you write code like:
 
 ```java
-/*
-        Variables can be added to a graph in a number of ways.
-        You can think of variables as "holders" of an n-dimensional array - specifically, an ND4J INDArray
-        First, let's create a variable based on a specified array, with the name "myVariable"
-        */
-        INDArray values = Nd4j.ones(3,4);
-        SDVariable variable = sd.var("myVariable", values);
-
-        //We can then perform operations on the variable:
-        SDVariable plusOne = variable.add(1.0);                               //Name: automatically generated as "add"
-        SDVariable mulTen = variable.mul("mulTen", 10.0);        //Name: Defined to be "mulTen"
+SameDiff sd = SameDiff.create();
+SDVariable x = sd.placeHolder("x", DataType.FLOAT, -1, 784);
+SDVariable w = sd.var("w", DataType.FLOAT, 784, 10);
+SDVariable b = sd.var("b", DataType.FLOAT, 10);
+SDVariable logits = x.mmul(w).add(b);
+SDVariable output = sd.nn.softmax("output", logits);
 ```
 
-Note we pass an INDArray in here, then call sd.var(..). Within the samediff graph that was declared, a variable referencing this INDArray is created and stored and can then be references within the graph. The SDVariable then holds a reference to the samediff graph that created it. This allows us to then chain operations off those variables delegating the call to samediff graph internally. In essence, all we're doing above is declaring a graph that adds 1 to the input, then multiplies it by 10.
+you are **defining** the graph, not executing it. No numeric computation happens yet. The graph is a blueprint that SameDiff stores internally. Execution happens separately when you call `output()`, `exec()`, or `fit()`.
 
-To print out the graph, you can use sd.summary() as follows:
+This approach is called **define-and-run** (as opposed to the eager evaluation model where each line immediately computes a result).
+
+## Automatic Gradient Computation
+
+The major payoff of building a computation graph is that SameDiff can traverse it in reverse to compute gradients with respect to any variable automatically. When training, SameDiff:
+
+1. Runs the forward pass (evaluates all nodes in topological order).
+2. Computes the scalar loss value.
+3. Runs the backward pass (applies the chain rule through each op in reverse order).
+4. Updates trainable `VARIABLE`-type parameters using the configured optimizer.
+
+You never implement `backward()` methods. The gradients for every built-in operation are pre-registered in the framework.
+
+## Key Classes
+
+| Class | Role |
+|---|---|
+| `SameDiff` | The graph container. Holds all variables, ops, and training configuration. Create one with `SameDiff.create()`. |
+| `SDVariable` | A node in the graph. Wraps an `INDArray` (when values are available) and knows its position in the graph. |
+| `TrainingConfig` | Bundles the optimizer, loss variable name, data-type mappings, and listener list for a training run. |
+| `History` | Returned by `fit()`; records loss and metric values epoch by epoch. |
+| `InferenceSession` | Low-level execution engine; usually used indirectly via `sd.output()`. |
+
+## When to Use SameDiff vs MultiLayerNetwork / ComputationGraph
+
+DL4J provides three ways to build neural networks. Choose based on your needs:
+
+### MultiLayerNetwork
+
+Use when your network is a simple sequential stack of layers. It is the easiest API:
 
 ```java
-         //Let's inspect the graph. We currently have 3 variables, with names "myVariable", "add", and "mulTen",
-        // and two functions - our "add 1.0" and our "multiply by 10" functions. These are shown in the summary:
-        System.out.println(sd.summary());
-        System.out.println("===================================");
+MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
+    .list()
+    .layer(new DenseLayer.Builder().nIn(784).nOut(256).activation(Activation.RELU).build())
+    .layer(new OutputLayer.Builder().nIn(256).nOut(10).activation(Activation.SOFTMAX).build())
+    .build();
+MultiLayerNetwork model = new MultiLayerNetwork(conf);
+model.init();
 ```
 
-In order to execute the graph and get some real results out, there are a few ways to do this. One can call sd.output(..) as follows:
+**Best for:** standard feedforward networks, CNNs with a single input/output, beginners.
+
+### ComputationGraph
+
+Use when your network has multiple inputs, multiple outputs, skip connections, or branching paths (e.g. encoder-decoder, Siamese networks). Still configuration-driven but more flexible than `MultiLayerNetwork`.
+
+**Best for:** complex topologies that can still be described with DL4J's built-in layer types.
+
+### SameDiff
+
+Use when you need:
+
+- **Custom operations or loss functions** that have no counterpart in the DL4J layer catalogue.
+- **Research and experimentation** where you want full symbolic control over every operation.
+- **Fine-grained weight sharing** or unusual parameter tying.
+- **Importing and fine-tuning TensorFlow/ONNX models** — the model import pipeline internally produces SameDiff graphs.
+
+SameDiff is more verbose than the DL4J layer APIs but gives you complete flexibility over every computation in your model.
+
+## Building a Simple Neural Net in SameDiff
+
+Here is a complete minimal example of a one-hidden-layer network for MNIST classification, from graph definition through to a training loop.
+
+### Step 1: Define the graph
 
 ```java
-       //We are passing in any empty map since this graph does not need any inputs for the forward pass
-        sd.output(Collections.<String,INDArray>emptyMap(), "mulTen");
+import org.nd4j.autodiff.samediff.SameDiff;
+import org.nd4j.autodiff.samediff.SDVariable;
+import org.nd4j.autodiff.samediff.TrainingConfig;
+import org.nd4j.linalg.api.buffer.DataType;
+import org.nd4j.linalg.learning.config.Adam;
+import org.nd4j.weightinit.impl.XavierInitScheme;
+
+SameDiff sd = SameDiff.create();
+
+// Placeholders receive data at runtime
+SDVariable input  = sd.placeHolder("input",  DataType.FLOAT, -1, 784);
+SDVariable labels = sd.placeHolder("labels", DataType.FLOAT, -1, 10);
+
+// Trainable parameters — Xavier-initialised
+SDVariable w1 = sd.var("w1", new XavierInitScheme('c', 784, 256), DataType.FLOAT, 784, 256);
+SDVariable b1 = sd.var("b1", DataType.FLOAT, 256);
+
+SDVariable w2 = sd.var("w2", new XavierInitScheme('c', 256, 10), DataType.FLOAT, 256, 10);
+SDVariable b2 = sd.var("b2", DataType.FLOAT, 10);
+
+// Forward pass
+SDVariable hidden  = sd.nn.relu("hidden",  input.mmul(w1).add(b1), 0);
+SDVariable logits  = hidden.mmul(w2).add(b2);
+SDVariable softmax = sd.nn.softmax("softmax", logits);
+
+// Loss — cross-entropy averaged over the minibatch
+SDVariable loss = sd.loss.softmaxCrossEntropy("loss", labels, logits, null);
 ```
 
-The user will notice we pass an empty map in. The reason you have to pass in variables, is inputs in to a neural network tend to be dynamic. This graph does not have dynamic inputs and can there for execute without user input. A dynamic input is typically called a placeholder.
-
-In order to obtain results, (read: real INDArrays with actual data) there are a few ways to do so:
+### Step 2: Configure training
 
 ```java
-        INDArray variableArr = variable.getArr();               //We can get arrays directly from the variables
-        INDArray mulTenArr = sd.getArrForVarName("mulTen");     //Or also by name, from the Samediff instance
+TrainingConfig config = TrainingConfig.builder()
+    .updater(new Adam(1e-3))
+    .dataSetFeatureMapping("input")        // DataSet feature -> placeholder name
+    .dataSetLabelMapping("labels")         // DataSet label   -> placeholder name
+    .build();
+
+sd.setTrainingConfig(config);
 ```
 
-Another way of executing results is to use the SDVariable eval(..) api as follows:
+### Step 3: Train
 
 ```java
-        //We can also do the forward pass by calling eval on the SDVariable directly.
-        //Note that this will clear the sd graph and set all it's variable arrays that are not on the path of the forward pass to null
-        plusOneArr = plusOne.eval();
-        variableArr = variable.getArr();               //We can get arrays directly from the variables
-        mulTenArr = sd.getArrForVarName("mulTen");     //Or also by name, from the Samediff instance
+import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
+
+DataSetIterator trainIter = /* your iterator */ null;
+int numEpochs = 10;
+
+sd.fit(trainIter, numEpochs);
 ```
 
-eval(..) returns the resulting value for that variable from the forward pass. You may also obtain the result from getArr(..) since the actual SDVariable stores the current state of the computation.
+### Step 4: Run inference
 
-Breaking down what happens a bit:
+```java
+import org.nd4j.linalg.api.ndarray.INDArray;
+import java.util.Map;
 
-1. A neural network forward pass requires computing state in a sequence construted as a DAG.
-2. Each node in the graph is an operation that has input and output variables.&#x20;
-3. Variables represent a named parameter for an operation and may or may not contain a current value as an INDArray.
+INDArray testInput = /* your test batch */ null;
+Map<String, INDArray> results = sd.output(
+    Map.of("input", testInput),
+    "softmax"
+);
+INDArray predictions = results.get("softmax");
+```
+
+## How the Graph Executes
+
+When `sd.output()` is called, SameDiff internally uses an `InferenceSession` that:
+
+1. Resolves which nodes need to be computed in order to produce the requested output variables.
+2. Determines a valid topological execution order.
+3. Evaluates each op in that order, passing intermediate results through the graph.
+4. Returns the values of the requested output nodes.
+
+Only the ops necessary to compute the requested outputs are evaluated — unreachable subgraphs are skipped.
+
+## Graph Inspection
+
+SameDiff provides several utilities for inspecting the graph you have built:
+
+```java
+// Print a summary of all variables and their types
+sd.summary();
+
+// List all variable names
+List<String> varNames = sd.variableNames();
+
+// Get a variable by name
+SDVariable v = sd.getVariable("hidden");
+
+// View the output shape of a variable (without executing)
+long[] shape = sd.getShapeForVarName("hidden");
+```
+
+## Thread Safety and Multiple Graphs
+
+Each `SameDiff` instance is a self-contained graph. You can have multiple `SameDiff` instances in the same JVM, but variables from one instance cannot be mixed with variables from another. All `SDVariable` objects carry a reference back to their owning `SameDiff`.
+
+`SameDiff` instances are not thread-safe for concurrent mutation. For inference in a multi-threaded server environment, either synchronise access or keep a pool of separate `SameDiff` instances loaded from the same saved file.
+
+## Next Steps
+
+- [Variables](./variables) — learn about `SDVariable` types (`VARIABLE`, `CONSTANT`, `PLACEHOLDER`, `ARRAY`), data types, and type conversion.
+- [Operations](./operations) — explore the op namespaces: `sd.math`, `sd.nn`, `sd.cnn`, `sd.rnn`, `sd.loss`, `sd.random`.
+- [Training](./training) — configure `TrainingConfig`, run `fit()`, and track progress with `History`.
+- [Execution and Inference](./execution) — understand `sd.output()`, placeholder binding, and batch inference.
+- [Serialization](./serialization) — save and load graphs with `sd.save()` and `SameDiff.load()`.

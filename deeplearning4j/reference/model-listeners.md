@@ -1,247 +1,352 @@
 ---
-description: Adding hooks and listeners on DL4J models.
+title: "Listeners"
+description: "Training listeners — ScoreIterationListener, PerformanceListener, EvaluativeListener, CheckpointListener, and custom listeners"
 ---
 
-# Model Listeners
+# Listeners
 
-## What are listeners?
+Listeners let you hook into events during `MultiLayerNetwork` or `ComputationGraph` training. Common uses include logging loss scores, measuring throughput, saving periodic checkpoints, and running evaluation on a test set. Listeners implement `org.deeplearning4j.optimize.api.TrainingListener` and are added with `setListeners(...)`.
 
-Listeners allow users to "hook" into certain events in Eclipse Deeplearning4j. This allows you to collect or print information useful for tasks like training. For example, a `ScoreIterationListener` allows you to print training scores from the output layer of a neural network.
-
-## Usage
-
-To add one or more listeners to a `MultiLayerNetwork` or `ComputationGraph`, use the `addListener` method:
+## Attaching Listeners
 
 ```java
+import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
+import org.deeplearning4j.optimize.listeners.PerformanceListener;
+
 MultiLayerNetwork model = new MultiLayerNetwork(conf);
 model.init();
-//print the score with every 1 iteration
-model.setListeners(new ScoreIterationListener(1));
+
+// One listener
+model.setListeners(new ScoreIterationListener(10));
+
+// Multiple listeners at once
+model.setListeners(
+    new ScoreIterationListener(10),
+    new PerformanceListener(10, true)
+);
+
+// Add to a ComputationGraph the same way
+ComputationGraph graph = new ComputationGraph(graphConf);
+graph.init();
+graph.setListeners(new ScoreIterationListener(1));
 ```
 
-## Available listeners
+---
 
-### EvaluativeListener
+## ScoreIterationListener
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/listeners/EvaluativeListener.java)
+Logs the current loss value to `slf4j` (INFO level) every N iterations. The "score" is the network's loss function value for the most recently processed minibatch.
 
-This TrainingListener implementation provides simple way for model evaluation during training. It can be launched every Xth Iteration/Epoch, depending on frequency and InvocationType constructor arguments
+```java
+import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 
-**EvaluativeListener**
-
-```
-public EvaluativeListener(@NonNull DataSetIterator iterator, int frequency)
-```
-
-This callback will be invoked after evaluation finished
-
-**iterationDone**
-
-```
-public void iterationDone(Model model, int iteration, int epoch)
+// Print score every 10 iterations
+model.setListeners(new ScoreIterationListener(10));
 ```
 
-* param iterator Iterator to provide data for evaluation
-* param frequency Frequency (in number of iterations/epochs according to the invocation type) to perform evaluation
-* param type Type of value for ‘frequency’ - iteration end, epoch end, etc
-
-### ScoreIterationListener
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/listeners/ScoreIterationListener.java)
-
-Score iteration listener. Reports the score (value of the loss function )of the network during training every N iterations
-
-**ScoreIterationListener**
+Example output:
 
 ```
-public ScoreIterationListener(int printIterations)
+o.d.o.l.ScoreIterationListener - Score at iteration 0 is 2.302
+o.d.o.l.ScoreIterationListener - Score at iteration 10 is 1.847
+o.d.o.l.ScoreIterationListener - Score at iteration 20 is 1.523
 ```
 
-* param printIterations frequency with which to print scores (i.e., every printIterations parameter updates)
+**Constructor:** `ScoreIterationListener(int printIterations)` — frequency in parameter update steps.
 
-### ComposableIterationListener
+---
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/listeners/ComposableIterationListener.java)
+## PerformanceListener
 
-A group of listeners
+Reports training throughput (examples per second and minibatches per second) and optionally the current score. Useful for profiling training speed across hardware configurations.
 
-### CollectScoresIterationListener
+```java
+import org.deeplearning4j.optimize.listeners.PerformanceListener;
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/listeners/CollectScoresIterationListener.java)
-
-CollectScoresIterationListener simply stores the model scores internally (along with the iteration) every 1 or N iterations (this is configurable). These scores can then be obtained or exported.
-
-**CollectScoresIterationListener**
-
-```
-public CollectScoresIterationListener()
-```
-
-Constructor for collecting scores with default saving frequency of 1
-
-**iterationDone**
-
-```
-public void iterationDone(Model model, int iteration, int epoch)
+// Report every 10 iterations, include score in output
+model.setListeners(
+    new PerformanceListener.Builder()
+        .reportIteration(true)
+        .reportSample(true)       // samples/sec
+        .reportBatch(true)        // batches/sec
+        .reportScore(true)        // current loss
+        .reportTime(true)         // elapsed wall time
+        .setFrequency(10)
+        .build()
+);
 ```
 
-Constructor for collecting scores with the specified frequency.
+Or use the simple constructor:
 
-* param frequency Frequency with which to collect/save scores
-
-**exportScores**
-
-```
-public void exportScores(OutputStream outputStream) throws IOException
+```java
+// Every 10 iterations, report score=true
+model.setListeners(new PerformanceListener(10, true));
 ```
 
-Export the scores in tab-delimited (one per line) UTF-8 format.
-
-**exportScores**
+Example output:
 
 ```
-public void exportScores(OutputStream outputStream, String delimiter) throws IOException
+o.d.o.l.PerformanceListener - iteration 10; iteration time: 45 ms; samples/sec: 1422.22; score: 1.432
 ```
 
-Export the scores in delimited (one per line) UTF-8 format with the specified delimiter
+---
 
-* param outputStream Stream to write to
-* param delimiter Delimiter to use
+## EvaluativeListener
 
-**exportScores**
+Runs a full evaluation pass on a held-out `DataSetIterator` every N iterations or every N epochs. The `InvocationType` controls whether frequency counts iterations or epochs.
 
+```java
+import org.deeplearning4j.optimize.listeners.EvaluativeListener;
+import org.deeplearning4j.optimize.listeners.EvaluativeListener.InvocationType;
+
+DataSetIterator testIter = /* test data */;
+
+// Evaluate every 100 iterations
+model.setListeners(
+    new EvaluativeListener(testIter, 100, InvocationType.ITERATION_END)
+);
+
+// Evaluate once per epoch
+model.setListeners(
+    new EvaluativeListener(testIter, 1, InvocationType.EPOCH_END)
+);
 ```
-public void exportScores(File file) throws IOException
+
+The listener logs the result of `model.evaluate(iterator)` (for classification) or `model.evaluateRegression(iterator)` depending on the network configuration.
+
+You can supply a callback to receive the `IEvaluation` result:
+
+```java
+EvaluativeListener listener = new EvaluativeListener(testIter, 1, InvocationType.EPOCH_END);
+listener.setCallback((evaluation, net, iter, epoch) -> {
+    System.out.println("Epoch " + epoch + ": " + evaluation.stats());
+});
+model.setListeners(listener);
 ```
 
-Export the scores to the specified file in delimited (one per line) UTF-8 format, tab delimited
+---
 
-* param file File to write to
+## CheckpointListener
 
-**exportScores**
+Periodically saves the model to disk during training. The three trigger types (epochs, iterations, time) can be combined freely.
 
+```java
+import org.deeplearning4j.optimize.listeners.CheckpointListener;
+import java.util.concurrent.TimeUnit;
+
+File checkpointDir = new File("/tmp/checkpoints");
+
+// Example 1: Save every 2 epochs, keep all files
+model.setListeners(
+    new CheckpointListener.Builder(checkpointDir)
+        .keepAll()
+        .saveEveryNEpochs(2)
+        .build()
+);
+
+// Example 2: Save every 1000 iterations, keep only the 3 most recent
+model.setListeners(
+    new CheckpointListener.Builder(checkpointDir)
+        .keepLast(3)
+        .saveEveryNIterations(1000)
+        .build()
+);
+
+// Example 3: Save every 15 minutes, keep the 3 most recent and every 4th
+model.setListeners(
+    new CheckpointListener.Builder(checkpointDir)
+        .keepLastAndEvery(3, 4)
+        .saveEvery(15, TimeUnit.MINUTES)
+        .build()
+);
+
+// Example 4: Save every epoch AND every 15 minutes (since last save)
+model.setListeners(
+    new CheckpointListener.Builder(checkpointDir)
+        .keepAll()
+        .saveEveryNEpochs(1)
+        .saveEvery(15, TimeUnit.MINUTES, true)  // sinceLast=true resets 15-min counter on save
+        .build()
+);
 ```
-public void exportScores(File file, String delimiter) throws IOException
+
+### CheckpointListener Builder Reference
+
+| Method | Description |
+|---|---|
+| `saveEveryNEpochs(int n)` | Save after every n completed epochs. |
+| `saveEveryNIterations(int n)` | Save after every n parameter update iterations. |
+| `saveEvery(long amount, TimeUnit unit)` | Save when the specified wall-clock time has elapsed since training started. |
+| `saveEvery(long amount, TimeUnit unit, boolean sinceLast)` | If `sinceLast=true`, reset timer after each save. |
+| `keepAll()` | Never delete checkpoint files. |
+| `keepLast(int n)` | Keep only the most recent n checkpoint files; older ones are deleted. |
+| `keepLastAndEvery(int nLast, int every)` | Keep the most recent `nLast` files plus every `every`-th checkpoint. |
+
+### Restoring from a Checkpoint
+
+```java
+import org.deeplearning4j.util.ModelSerializer;
+
+// List available checkpoints (files not yet deleted)
+List<Checkpoint> available = listener.availableCheckpoints();
+
+// Restore the most recent checkpoint
+Checkpoint latest = available.get(available.size() - 1);
+MultiLayerNetwork restored = ModelSerializer.restoreMultiLayerNetwork(latest.getFile());
 ```
 
-Export the scores to the specified file in delimited (one per line) UTF-8 format, using the specified delimiter
+---
 
-* param file File to write to
-* param delimiter Delimiter to use for writing scores
+## CollectScoresIterationListener
 
-### CheckpointListener
+Stores the loss score at each iteration (or every N iterations) in memory for later programmatic access or export to a file.
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/listeners/CheckpointListener.java)
+```java
+import org.deeplearning4j.optimize.listeners.CollectScoresIterationListener;
 
-CheckpointListener: The goal of this listener is to periodically save a copy of the model during training..\
-Model saving may be done:
+// Collect every iteration
+CollectScoresIterationListener scoreCollector = new CollectScoresIterationListener();
 
-1. Every N epochs&#x20;
-2. Every N iterations&#x20;
-3. Every T time units (every 15 minutes, for example) Or some combination of the 3.   **Example 1**: Saving a checkpoint every 2 epochs, keep all model files
+// Collect every 5 iterations
+CollectScoresIterationListener scoreCollector5 = new CollectScoresIterationListener(5);
 
-```
-.keepAll() //Don't delete any models
-.saveEveryNEpochs(2)
-.build()
+model.setListeners(scoreCollector);
+model.fit(trainIter);
+
+// Retrieve scores as a list of (iteration, score) pairs
+List<Double> scores = scoreCollector.getListOfScores();
+
+// Export to file (tab-delimited by default)
+scoreCollector.exportScores(new File("/tmp/scores.txt"));
+
+// Export with custom delimiter
+scoreCollector.exportScores(new File("/tmp/scores.csv"), ",");
+
+// Export to an OutputStream
+try (OutputStream os = new FileOutputStream("/tmp/scores.tsv")) {
+    scoreCollector.exportScores(os);
 }
 ```
 
-**Example 2**: Saving a checkpoint every 1000 iterations, but keeping only the last 3 models (all older model files will be automatically deleted)
+---
+
+## TimeIterationListener
+
+Estimates and logs the remaining training time and projected finish time. Requires the total number of iterations (across all epochs) to be specified upfront.
+
+```java
+import org.deeplearning4j.optimize.listeners.TimeIterationListener;
+
+int totalIterations = numEpochs * (trainingSetSize / batchSize);
+model.setListeners(new TimeIterationListener(totalIterations));
+```
+
+Output each iteration:
 
 ```
-.keepLast(3)
-.saveEveryNIterations(1000)
-.build();
+o.d.o.l.TimeIterationListener - Remaining: 42 minutes, expected finish: 2026-06-15T14:35:00
+```
+
+---
+
+## ComposableIterationListener
+
+Groups multiple `IterationListener` instances into a single listener. Useful when you need to wrap listeners in a context that accepts only one.
+
+```java
+import org.deeplearning4j.optimize.listeners.ComposableIterationListener;
+
+ComposableIterationListener composite = new ComposableIterationListener(
+    new ScoreIterationListener(10),
+    new PerformanceListener(10, true),
+    scoreCollector
+);
+model.setListeners(composite);
+```
+
+---
+
+## ParamAndGradientIterationListener
+
+Logs statistics (mean, min, max, mean absolute value) for all parameters and gradients at each iteration. Text-based alternative to the UI histogram when training on remote machines.
+
+```java
+import org.deeplearning4j.optimize.listeners.ParamAndGradientIterationListener;
+
+model.setListeners(
+    new ParamAndGradientIterationListener.Builder()
+        .printMean(true)
+        .printMinMax(true)
+        .printMeanAbsValue(true)
+        .outputToFile(true)
+        .file(new File("/tmp/gradients.txt"))
+        .delimiter("\t")
+        .build()
+);
+```
+
+---
+
+## Custom Listeners
+
+Implement `TrainingListener` (or extend `BaseTrainingListener` for default no-op implementations of unused methods):
+
+```java
+import org.deeplearning4j.nn.api.Model;
+import org.deeplearning4j.optimize.api.BaseTrainingListener;
+
+public class MyListener extends BaseTrainingListener {
+
+    private final int frequency;
+
+    public MyListener(int frequency) {
+        this.frequency = frequency;
+    }
+
+    @Override
+    public void iterationDone(Model model, int iteration, int epoch) {
+        if (iteration % frequency == 0) {
+            double score = model.score();
+            System.out.printf("Epoch %d, Iteration %d: score = %.4f%n", epoch, iteration, score);
+        }
+    }
+
+    @Override
+    public void onEpochStart(Model model) {
+        System.out.println("Starting epoch");
+    }
+
+    @Override
+    public void onEpochEnd(Model model) {
+        System.out.println("Epoch finished. Final score: " + model.score());
+    }
 }
 ```
 
-**Example 3**: Saving a checkpoint every 15 minutes, keeping the most recent 3 and otherwise every 4th checkpoint file:
+The full `TrainingListener` interface also exposes:
 
-```
-.keepLastAndEvery(3, 4)
-.saveEvery(15, TimeUnit.MINUTES)
-.build();
-}
-```
+| Method | When called |
+|---|---|
+| `onForwardPass(Model, List<INDArray>)` | After each forward pass (activations available) |
+| `onBackwardPass(Model)` | After each backward pass (gradients available) |
+| `onGradientCalculation(Model)` | After gradient computation, before parameter update |
+| `iterationDone(Model, int, int)` | After each parameter update (iteration, epoch) |
+| `onEpochStart(Model)` | Before the first iteration of each epoch |
+| `onEpochEnd(Model)` | After the last iteration of each epoch |
 
-Note that you can mix these: for example, to save every epoch and every 15 minutes (independent of last save time):\
-To save every epoch, and every 15 minutes, since the last model save use:\
-Note that is this last example, the sinceLast parameter is true. This means the 15-minute counter will be reset any time a model is saved.
+---
 
-**CheckpointListener**
+## API Reference
 
-```
-public CheckpointListener build()
-```
-
-List all available checkpoints. A checkpoint is ‘available’ if the file can be loaded. Any checkpoint files that have been automatically deleted (given the configuration) will not be returned here.
-
-* return List of checkpoint files that can be loaded
-
-### SharedGradient
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/listeners/SharedGradient.java)
-
-### SleepyTrainingListener
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/listeners/SleepyTrainingListener.java)
-
-This TrainingListener implementation provides a way to “sleep” during specific Neural Network training phases.\
-Suitable for debugging/testing purposes only.
-
-PLEASE NOTE: All timers treat time values as milliseconds. PLEASE NOTE: Do not use it in production environment.
-
-**onEpochStart**
-
-```
-public void onEpochStart(Model model)
-```
-
-In this mode parkNanos() call will be used, to make process really idle
-
-### CollectScoresListener
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/listeners/CollectScoresListener.java)
-
-A simple listener that collects scores to a list every N iterations. Can also optionally log the score.
-
-### PerformanceListener
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/listeners/PerformanceListener.java)
-
-Simple IterationListener that tracks time spend on training per iteration.
-
-**PerformanceListener**
-
-```
-public PerformanceListener build()
-```
-
-This method defines, if iteration number should be reported together with other data
-
-* param reportIteration
-* return
-
-### ParamAndGradientIterationListener
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/listeners/ParamAndGradientIterationListener.java)
-
-An iteration listener that provides details on parameters and gradients at each iteration during traning. Attempts to provide much of the same information as the UI histogram iteration listener, but in a text-based format (for example, when learning on a system accessed via SSH etc). i.e., is intended to aid network tuning and debugging\
-This iteration listener is set up to calculate mean, min, max, and mean absolute value of each type of parameter and gradient in the network at each iteration.
-
-### TimeIterationListener
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/listeners/TimeIterationListener.java)
-
-Time Iteration Listener. This listener displays into INFO logs the remaining time in minutes and the date of the end of the process. Remaining time is estimated from the amount of time for training so far, and the total number of iterations specified by the user
-
-**TimeIterationListener**
-
-```
-public TimeIterationListener(int iterationCount)
-```
-
-Constructor
-
-* param iterationCount The global number of iteration for training (all epochs)
+| Class | Package |
+|---|---|
+| `TrainingListener` (interface) | `org.deeplearning4j.optimize.api` |
+| `BaseTrainingListener` | `org.deeplearning4j.optimize.api` |
+| `ScoreIterationListener` | `org.deeplearning4j.optimize.listeners` |
+| `PerformanceListener` | `org.deeplearning4j.optimize.listeners` |
+| `EvaluativeListener` | `org.deeplearning4j.optimize.listeners` |
+| `CheckpointListener` | `org.deeplearning4j.optimize.listeners` |
+| `CollectScoresIterationListener` | `org.deeplearning4j.optimize.listeners` |
+| `TimeIterationListener` | `org.deeplearning4j.optimize.listeners` |
+| `ComposableIterationListener` | `org.deeplearning4j.optimize.listeners` |
+| `ParamAndGradientIterationListener` | `org.deeplearning4j.optimize.listeners` |

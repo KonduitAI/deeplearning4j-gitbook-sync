@@ -1,178 +1,294 @@
-# Auto Encoders
+---
+title: "Autoencoders"
+description: "Autoencoder and Variational Autoencoder layers in Deeplearning4j — architecture, configuration, and training"
+---
 
-## What are autoencoders?
+# Autoencoders
 
-Autoencoders are neural networks for unsupervised learning. Eclipse Deeplearning4j supports certain autoencoder layers such as variational autoencoders.
+Autoencoders are neural networks trained to reconstruct their inputs through a compressed latent representation. Eclipse Deeplearning4j supports a denoising AutoEncoder layer and a full VariationalAutoencoder (VAE) layer with configurable reconstruction distributions.
 
-## Where’s Restricted Boltzmann Machine?
+> **Note:** Restricted Boltzmann Machines (RBMs) were removed in version 0.9.x and are no longer supported.
 
-RBMs are no longer supported as of version 0.9.x. They are no longer best-in-class for most machine learning problems.
+## AutoEncoder Layer
 
-## Supported layers
+The `AutoEncoder` layer (`org.deeplearning4j.nn.conf.layers.AutoEncoder`) is a denoising autoencoder. It adds random noise (corruption) to the input during training, then learns to reconstruct the clean original. This forces the network to learn a robust representation.
 
-### AutoEncoder
+### Key Parameters
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/nn/conf/layers/AutoEncoder.java)
+| Parameter | Method | Description |
+|---|---|---|
+| Corruption level | `corruptionLevel(double)` | Fraction of input values zeroed out during training. Range 0.0 (none) to 1.0 (all). Typical: 0.3 |
+| Sparsity | `sparsity(double)` | Sparsity regularization penalty. Encourages few active hidden units. |
 
-Autoencoder layer. Adds noise to input and learn a reconstruction function.
+Standard layer parameters (`nIn`, `nOut`, `activation`, `weightInit`, `updater`, etc.) all apply.
 
-**corruptionLevel**
+### Configuration Example
 
-```
-public Builder corruptionLevel(double corruptionLevel)
-```
+```java
+import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
+import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
+import org.deeplearning4j.nn.conf.layers.AutoEncoder;
+import org.deeplearning4j.nn.conf.layers.OutputLayer;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.nd4j.linalg.activations.Activation;
+import org.nd4j.linalg.lossfunctions.LossFunctions;
 
-Level of corruption - 0.0 (none) to 1.0 (all values corrupted)
+int inputSize  = 784;  // e.g. MNIST 28x28
+int hiddenSize = 256;
 
-**sparsity**
+MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
+    .updater(new org.nd4j.linalg.learning.config.Adam(1e-3))
+    .list()
+    .layer(new AutoEncoder.Builder()
+        .nIn(inputSize).nOut(hiddenSize)
+        .activation(Activation.RELU)
+        .corruptionLevel(0.3)
+        .sparsity(0.0)
+        .build())
+    // Tie weights back to reconstruction by adding a second AutoEncoder layer reversed,
+    // or simply use a DenseLayer + OutputLayer for the decoder portion:
+    .layer(new OutputLayer.Builder(LossFunctions.LossFunction.MSE)
+        .nIn(hiddenSize).nOut(inputSize)
+        .activation(Activation.SIGMOID)
+        .build())
+    .build();
 
-```
-public Builder sparsity(double sparsity)
-```
-
-Autoencoder sparity parameter
-
-* param sparsity Sparsity
-
-### VariationalAutoencoder
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/nn/conf/layers/variational/VariationalAutoencoder.java)
-
-Variational Autoencoder layer
-
-See: Kingma & Welling, 2013: Auto-Encoding Variational Bayes - [https://arxiv.org/abs/1312.6114](https://arxiv.org/abs/1312.6114)
-
-This implementation allows multiple encoder and decoder layers, the number and sizes of which can be set independently.
-
-A note on scores during pretraining: This implementation minimizes the negative of the variational lower bound objective as described in Kingma & Welling; the mathematics in that paper is based on maximization of the variational lower bound instead. Thus, scores reported during pretraining in DL4J are the negative of the variational lower bound equation in the paper. The backpropagation and learning procedure is otherwise as described there.
-
-**encoderLayerSizes**
-
-```
-public Builder encoderLayerSizes(int... encoderLayerSizes)
-```
-
-Size of the encoder layers, in units. Each encoder layer is functionally equivalent to a {- link org.deeplearning4j.nn.conf.layers.DenseLayer}. Typically the number and size of the decoder layers (set via {- link #decoderLayerSizes(int…)} is similar to the encoder layers.
-
-**setEncoderLayerSizes**
-
-```
-public void setEncoderLayerSizes(int... encoderLayerSizes)
+MultiLayerNetwork model = new MultiLayerNetwork(conf);
+model.init();
 ```
 
-Size of the encoder layers, in units. Each encoder layer is functionally equivalent to a {- link org.deeplearning4j.nn.conf.layers.DenseLayer}. Typically the number and size of the decoder layers (set via {- link #decoderLayerSizes(int…)} is similar to the encoder layers.
+During training the model minimises reconstruction loss on the corrupted-then-decoded output.
 
-* param encoderLayerSizes Size of each encoder layer in the variational autoencoder
+---
 
-**decoderLayerSizes**
+## VariationalAutoencoder Layer
 
-```
-public Builder decoderLayerSizes(int... decoderLayerSizes)
-```
+The `VariationalAutoencoder` layer (`org.deeplearning4j.nn.conf.layers.variational.VariationalAutoencoder`) implements the VAE described in Kingma & Welling (2013), "Auto-Encoding Variational Bayes". It supports multiple encoder and decoder hidden layers, a configurable latent space size, and several reconstruction distributions.
 
-Size of the decoder layers, in units. Each decoder layer is functionally equivalent to a {- link org.deeplearning4j.nn.conf.layers.DenseLayer}. Typically the number and size of the decoder layers is similar to the encoder layers (set via {- link #encoderLayerSizes(int…)}.
+Key ideas:
 
-* param decoderLayerSizes Size of each deccoder layer in the variational autoencoder
+- The encoder maps input x to a distribution q(z|x) over latent variable z.
+- A latent code z is sampled from q(z|x).
+- The decoder maps z back to a reconstruction p(x|z).
+- The training objective maximises the variational lower bound (ELBO).
 
-**setDecoderLayerSizes**
+> **Score sign convention:** DL4J minimises the *negative* of the variational lower bound, so reported scores during pretraining are negative values of the ELBO described in the paper.
 
-```
-public void setDecoderLayerSizes(int... decoderLayerSizes)
-```
+### Builder Parameters
 
-Size of the decoder layers, in units. Each decoder layer is functionally equivalent to a {- link org.deeplearning4j.nn.conf.layers.DenseLayer}. Typically the number and size of the decoder layers is similar to the encoder layers (set via {- link #encoderLayerSizes(int…)}.
+| Method | Description |
+|---|---|
+| `encoderLayerSizes(int...)` | Sizes of hidden layers in the encoder. Each acts like a `DenseLayer`. |
+| `decoderLayerSizes(int...)` | Sizes of hidden layers in the decoder. Typically mirrors the encoder. |
+| `nOut(int)` | Size of the latent space Z. |
+| `reconstructionDistribution(ReconstructionDistribution)` | Distribution used to model p(x\|z). See distributions below. |
+| `pzxActivationFunction(Activation)` | Activation for the mean/log-variance output feeding into p(z\|x). Avoid bounded activations like `RELU`. Use `TANH` or `IDENTITY`. |
+| `numSamples(int)` | Number of latent samples per data point during pretraining (default 1). |
+| `lossFunction(IActivation, ILossFunction)` | Alternative: use a deterministic loss function instead of a reconstruction distribution. |
 
-* param decoderLayerSizes Size of each deccoder layer in the variational autoencoder
+### Configuration Example
 
-**reconstructionDistribution**
+```java
+import org.deeplearning4j.nn.conf.layers.variational.VariationalAutoencoder;
+import org.deeplearning4j.nn.conf.layers.variational.GaussianReconstructionDistribution;
+import org.nd4j.linalg.activations.Activation;
 
-```
-public Builder reconstructionDistribution(ReconstructionDistribution distribution)
-```
+int inputDim  = 784;
+int latentDim = 32;
 
-The reconstruction distribution for the data given the hidden state - i.e., P(data|Z).\
-This should be selected carefully based on the type of data being modelled. For example:
+MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
+    .updater(new org.nd4j.linalg.learning.config.Adam(1e-3))
+    .list()
+    .layer(new VariationalAutoencoder.Builder()
+        .nIn(inputDim)
+        .nOut(latentDim)                      // latent space size
+        .encoderLayerSizes(512, 256)           // two encoder hidden layers
+        .decoderLayerSizes(256, 512)           // two decoder hidden layers (mirrored)
+        .pzxActivationFunction(Activation.IDENTITY)
+        .reconstructionDistribution(
+            new GaussianReconstructionDistribution(Activation.IDENTITY))
+        .activation(Activation.LEAKYRELU)
+        .build())
+    .build();
 
-* {- link GaussianReconstructionDistribution} + {identity or tanh} for real-valued (Gaussian) data &#x20;
-* {- link BernoulliReconstructionDistribution} + sigmoid for binary-valued (0 or 1) data &#x20;
-* param distribution Reconstruction distribution
-
-**lossFunction**
-
-```
-public Builder lossFunction(IActivation outputActivationFn, LossFunctions.LossFunction lossFunction)
-```
-
-Configure the VAE to use the specified loss function for the reconstruction, instead of a ReconstructionDistribution. Note that this is NOT following the standard VAE design (as per Kingma & Welling), which assumes a probabilistic output - i.e., some p(x|z). It is however a valid network configuration, allowing for optimization of more traditional objectives such as mean squared error.\
-Note: clearly, setting the loss function here will override any previously set recontruction distribution
-
-* param outputActivationFn Activation function for the output/reconstruction
-* param lossFunction Loss function to use
-
-**lossFunction**
-
-```
-public Builder lossFunction(Activation outputActivationFn, LossFunctions.LossFunction lossFunction)
-```
-
-Configure the VAE to use the specified loss function for the reconstruction, instead of a ReconstructionDistribution. Note that this is NOT following the standard VAE design (as per Kingma & Welling), which assumes a probabilistic output - i.e., some p(x|z). It is however a valid network configuration, allowing for optimization of more traditional objectives such as mean squared error.\
-Note: clearly, setting the loss function here will override any previously set recontruction distribution
-
-* param outputActivationFn Activation function for the output/reconstruction
-* param lossFunction Loss function to use
-
-**lossFunction**
-
-```
-public Builder lossFunction(IActivation outputActivationFn, ILossFunction lossFunction)
+MultiLayerNetwork model = new MultiLayerNetwork(conf);
+model.init();
 ```
 
-Configure the VAE to use the specified loss function for the reconstruction, instead of a ReconstructionDistribution. Note that this is NOT following the standard VAE design (as per Kingma & Welling), which assumes a probabilistic output - i.e., some p(x|z). It is however a valid network configuration, allowing for optimization of more traditional objectives such as mean squared error.\
-Note: clearly, setting the loss function here will override any previously set recontruction distribution
+---
 
-* param outputActivationFn Activation function for the output/reconstruction
-* param lossFunction Loss function to use
+## Reconstruction Distributions
 
-**pzxActivationFn**
+The reconstruction distribution defines how the decoder output is interpreted when computing the reconstruction loss. Choose based on the nature of your data.
 
-```
-public Builder pzxActivationFn(IActivation activationFunction)
-```
+### GaussianReconstructionDistribution
 
-Activation function for the input to P(z|data).\
-Care should be taken with this, as some activation functions (relu, etc) are not suitable due to being bounded in range \[0,infinity).
+Models each output dimension as an independent Gaussian with learned mean and log-variance. Appropriate for continuous real-valued data.
 
-* param activationFunction Activation function for p(z| x)
+```java
+import org.deeplearning4j.nn.conf.layers.variational.GaussianReconstructionDistribution;
+import org.nd4j.linalg.activations.Activation;
 
-**pzxActivationFunction**
+// Identity activation (outputs can be any real value)
+new GaussianReconstructionDistribution(Activation.IDENTITY)
 
-```
-public Builder pzxActivationFunction(Activation activation)
+// Tanh activation (outputs bounded to [-1, 1])
+new GaussianReconstructionDistribution(Activation.TANH)
 ```
 
-Activation function for the input to P(z|data).\
-Care should be taken with this, as some activation functions (relu, etc) are not suitable due to being bounded in range \[0,infinity).
+The network learns both mean and log(variance) for each output. Avoid asymmetric activations like `RELU` or `SIGMOID` as the distribution parameter space is (-inf, inf).
 
-* param activation Activation function for p(z | x)
+### BernoulliReconstructionDistribution
 
-**nOut**
+Models each output dimension as a Bernoulli random variable. Appropriate for binary data (pixel values 0 or 1).
 
-```
-public Builder nOut(int nOut)
-```
+```java
+import org.deeplearning4j.nn.conf.layers.variational.BernoulliReconstructionDistribution;
 
-Set the size of the VAE state Z. This is the output size during standard forward pass, and the size of the distribution P(Z|data) during pretraining.
-
-* param nOut Size of P(Z | data) and output size
-
-**numSamples**
-
-```
-public Builder numSamples(int numSamples)
+// Uses sigmoid activation by default (outputs must be in [0, 1])
+new BernoulliReconstructionDistribution()
 ```
 
-Set the number of samples per data point (from VAE state Z) used when doing pretraining. Default value: 1.
+The decoder output is passed through a sigmoid to produce probabilities. Do **not** use `RELU`, `TANH`, or other non-sigmoid activations — the output must be in [0, 1].
 
-This is parameter L from Kingma and Welling: “In our experiments we found that the number of samples L per datapoint can be set to 1 as long as the minibatch size M was large enough, e.g. M = 100.”
+### ExponentialReconstructionDistribution
 
-* param numSamples Number of samples per data point for pretraining
+Models outputs using an exponential distribution. Appropriate for data in range [0, infinity), such as waiting times or count data.
+
+```java
+import org.deeplearning4j.nn.conf.layers.variational.ExponentialReconstructionDistribution;
+
+new ExponentialReconstructionDistribution(Activation.IDENTITY)
+```
+
+The network models gamma = log(lambda), so the parameterisation is unconstrained and `IDENTITY` or `TANH` are appropriate activations.
+
+### CompositeReconstructionDistribution
+
+Combines multiple distributions for datasets with mixed data types (e.g., some continuous columns, some binary columns).
+
+```java
+import org.deeplearning4j.nn.conf.layers.variational.CompositeReconstructionDistribution;
+
+CompositeReconstructionDistribution dist = new CompositeReconstructionDistribution.Builder()
+    // First 100 output values modelled as Gaussian (continuous features)
+    .addDistribution(100, new GaussianReconstructionDistribution(Activation.IDENTITY))
+    // Next 50 output values modelled as Bernoulli (binary features)
+    .addDistribution(50, new BernoulliReconstructionDistribution())
+    .build();
+```
+
+Distributions are applied to contiguous slices of the output in the order they are added.
+
+### LossFunctionWrapper
+
+Allows using a standard loss function (e.g., MSE) in place of a probabilistic reconstruction distribution. This is not standard VAE design but is valid when a probabilistic interpretation is not required.
+
+```java
+import org.deeplearning4j.nn.conf.layers.variational.LossFunctionWrapper;
+import org.nd4j.linalg.activations.Activation;
+import org.nd4j.linalg.lossfunctions.LossFunctions;
+
+new LossFunctionWrapper(Activation.SIGMOID,
+    new org.nd4j.linalg.lossfunctions.impl.LossMSE())
+```
+
+Note: reconstruction log-probability cannot be computed when using `LossFunctionWrapper`.
+
+---
+
+## Training Patterns
+
+### Pretraining (Unsupervised)
+
+Call `pretrain(iterator)` to train using the VAE's generative objective (ELBO maximisation):
+
+```java
+DataSetIterator trainIter = /* your iterator */;
+model.pretrain(trainIter);
+```
+
+During pretraining only the VAE layer parameters are updated. Add additional layers after the VAE for downstream classification or regression tasks.
+
+### Reconstruction and Generation
+
+After training, use the underlying `org.deeplearning4j.nn.layers.variational.VariationalAutoencoderParamInitializer` API via the layer itself:
+
+```java
+import org.deeplearning4j.nn.layers.variational.VariationalAutoencoder;
+
+// Obtain the VAE layer from a trained MultiLayerNetwork
+VariationalAutoencoder vaeLayer =
+    (VariationalAutoencoder) model.getLayer(0);
+
+// Encode: get latent mean for given input
+INDArray input = /* your data, shape [batchSize, inputDim] */;
+INDArray latentMean = vaeLayer.activate(input, false, LayerWorkspaceMgr.noWorkspaces());
+
+// Reconstruct: decode a latent code back to data space
+INDArray reconstructed = vaeLayer.generateAtMeanGivenZ(latentMean);
+
+// Sample: generate new examples from the prior p(z) = N(0, I)
+INDArray noise = Nd4j.randn(new long[]{numSamples, latentDim});
+INDArray generated = vaeLayer.generateAtMeanGivenZ(noise);
+```
+
+### Fine-tuning After Pretraining
+
+Stack a classification head on top and fine-tune with supervised training:
+
+```java
+MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
+    .updater(new Adam(1e-4))
+    .list()
+    .layer(new VariationalAutoencoder.Builder()
+        .nIn(inputDim).nOut(latentDim)
+        .encoderLayerSizes(512, 256)
+        .decoderLayerSizes(256, 512)
+        .reconstructionDistribution(
+            new GaussianReconstructionDistribution(Activation.IDENTITY))
+        .build())
+    .layer(new DenseLayer.Builder()
+        .nIn(latentDim).nOut(128)
+        .activation(Activation.RELU)
+        .build())
+    .layer(new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+        .nIn(128).nOut(numClasses)
+        .activation(Activation.SOFTMAX)
+        .build())
+    .build();
+
+MultiLayerNetwork model = new MultiLayerNetwork(conf);
+model.init();
+
+// Step 1: pretrain
+model.pretrain(trainIter);
+
+// Step 2: finetune (supervised)
+model.fit(labelledTrainIter);
+```
+
+### Choosing `numSamples`
+
+The `numSamples` parameter controls how many latent samples are drawn per data point during pretraining. Kingma & Welling note that `numSamples = 1` is sufficient when the minibatch size is large (e.g., >= 100). Increasing `numSamples` reduces variance in the gradient estimate but increases computation cost proportionally.
+
+```java
+.numSamples(1)   // default; appropriate for batch sizes >= 100
+.numSamples(5)   // more stable gradients for small batches
+```
+
+---
+
+## API Reference
+
+| Class | Package |
+|---|---|
+| `AutoEncoder` | `org.deeplearning4j.nn.conf.layers` |
+| `VariationalAutoencoder` (config) | `org.deeplearning4j.nn.conf.layers.variational` |
+| `VariationalAutoencoder` (layer) | `org.deeplearning4j.nn.layers.variational` |
+| `GaussianReconstructionDistribution` | `org.deeplearning4j.nn.conf.layers.variational` |
+| `BernoulliReconstructionDistribution` | `org.deeplearning4j.nn.conf.layers.variational` |
+| `ExponentialReconstructionDistribution` | `org.deeplearning4j.nn.conf.layers.variational` |
+| `CompositeReconstructionDistribution` | `org.deeplearning4j.nn.conf.layers.variational` |
+| `LossFunctionWrapper` | `org.deeplearning4j.nn.conf.layers.variational` |
+| `ReconstructionDistribution` (interface) | `org.deeplearning4j.nn.conf.layers.variational` |

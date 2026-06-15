@@ -1,475 +1,609 @@
 ---
-description: 'Deeplearning4j on Spark: How To Build Data Pipelines'
+title: "Spark Training How-To"
+description: "Step-by-step guide to distributed training with Apache Spark — setup, data loading, training, and evaluation"
 ---
 
-# How To
+# Deeplearning4j on Spark: How-To Guide
 
-This page provides some guides on how to create data pipelines for both training and evaluation when using Deeplearning4j on Spark.
+This page covers practical how-to tasks for training neural networks with DL4J on Apache Spark. For data pipeline guides, see [Spark Data Pipelines](spark-data-howto.md). For a conceptual introduction, see the [Distributed Training Overview](overview.md).
 
-This page assumes some familiarity with Spark (RDDs, master vs. workers, etc) and Deeplearning4j (networks, DataSet etc).
+**Contents**
 
-As with training on a single machine, the final step of a data pipeline should be to produce a DataSet (single features arrays, single label array) or MultiDataSet (one or more feature arrays, one or more label arrays). In the case of DL4J on Spark, the final step of a data pipeline is data in one of the following formats: (a) an `RDD<DataSet>`/`JavaRDD<DataSet>` (b) an `RDD<MultiDataSet>`/`JavaRDD<MultiDataSet>` (c) a directory of serialized DataSet/MultiDataSet (minibatch) objects on network storage such as HDFS, S3 or Azure blob storage (d) a directory of minibatches in some other format
+Before Training:
+- [Build an uber-JAR with Maven](#uberjar)
+- [Use GPUs for training on Spark](#gpus)
+- [Use CPUs on master, GPUs on workers](#cpusgpus)
+- [Configure memory settings for Spark](#memory)
+- [Configure garbage collection on workers](#gc)
+- [Use Kryo serialization](#kryo)
+- [Use YARN with GPUs](#yarngpus)
+- [Configure Spark locality](#locality)
 
-Once data is in one of those four formats, it can be used for training or evaluation.
+During and After Training:
+- [Configure encoding thresholds](#threshold)
+- [Perform distributed evaluation](#evaluation)
+- [Save and load networks trained on Spark](#saveload)
+- [Perform distributed inference](#inference)
 
-**Note:** When training multiple models on a single dataset, it is best practice to preprocess your data once, and save it to network storage such as HDFS. Then, when training the network you can call `SparkDl4jMultiLayer.fit(String path)` or `SparkComputationGraph.fit(String path)` where `path` is the directory where you saved the files.
+Troubleshooting:
+- [Debug dependency problems](#dependencyproblems)
+- [Fix "Error querying NTP server"](#ntperror)
+- [Cache RDD DataSet objects safely](#caching)
+- [Fix libgomp issues on Amazon EMR](#libgomp)
+- [Failed training on Ubuntu 16.04](#ubuntu16)
 
-Spark Data Prepration: How-To Guides
+---
 
-* [How to prepare a RDD\[DataSet\] from CSV data for classification or regression](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/spark/how-to-guides/data-howto.md#how-to-prepare-a-rdd-dataset-from-csv-data-for-classification-or-regression)
-* [How to create a Spark data pipeline for training on images](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/spark/how-to-guides/data-howto.md#how-to-create-a-spark-data-pipeline-for-training-on-images)
-* [How to create a RDD\[MultiDataSet\] from one or more RDD\[List\[Writable\]\]](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/spark/how-to-guides/data-howto.md#how-to-create-a-rdd-multidataset-from-one-or-more-rdd-list-writable)
-* [How to save a RDD\[DataSet\] or RDD\[MultiDataSet\] to network storage and use it for training](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/spark/how-to-guides/data-howto.md#how-to-save-a-rdd-dataset-or-rdd-multidataset-to-network-storage-and-use-it-for-training)
-* [How to prepare data on a single machine for use on a cluster: saving DataSets](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/spark/how-to-guides/data-howto.md#how-to-prepare-data-on-a-single-machine-for-use-on-a-cluster-saving-datasets)
-* [How to prepare data on a single machine for use on a cluster: map/sequence files](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/spark/how-to-guides/data-howto.md#how-to-prepare-data-on-a-single-machine-for-use-on-a-cluster-map-sequence-files)
-* [How to load multiple CSVs (one sequence per file) for RNN data pipelines](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/spark/how-to-guides/data-howto.md#how-to-load-multiple-csvs-one-sequence-per-file-for-rnn-data-pipelines)
-* [How to create a Spark data pipeline for training on image](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/spark/how-to-guides/data-howto.md#how-to-create-a-spark-data-pipeline-for-training-on-images)
-* [How to load prepared minibatches in custom format](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/spark/how-to-guides/data-howto.md#how-to-load-prepared-minibatches-in-custom-format)
+## Before Training
 
-## [How to prepare a RDD\[DataSet\] from CSV data for classification or regression](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/spark/how-to-guides/data-howto.md)
+### <a name="uberjar"></a>Build an Uber-JAR for Spark Submit
 
-This guide shows how to load data contained in one or more CSV files and produce a `JavaRDD<DataSet>` for export, training or evaluation on Spark.
+When submitting a training job to a cluster, you need an "uber-jar" — a single JAR file containing all dependencies required to run the job. Spark submit adds Spark itself to the classpath; everything else must be bundled in your JAR.
 
-The process is fairly straightforward. Note that the `DataVecDataSetFunction` is very similar to the `RecordReaderDataSetIterator` that is often used for single machine training.
+**Step 1: Decide on dependencies**
 
-For example, suppose the CSV had the following format - 6 total columns: 5 features followed by an integer class index for classification, and 10 possible classes
+For CPU training on Spark with gradient sharing, include at minimum:
 
-```
-1.0,3.2,4.5,1.1,6.3,0
-1.6,2.4,5.9,0.2,2.2,1
-...
-```
-
-we could load this data for classification using the following code:
-
-```java
-String filePath = "hdfs:///your/path/some_csv_file.csv";
-JavaSparkContext sc = new JavaSparkContext();
-JavaRDD<String> rddString = sc.textFile(filePath);
-RecordReader recordReader = new CSVRecordReader(',');
-JavaRDD<List<Writable>> rddWritables = rddString.map(new StringToWritablesFunction(recordReader));
-
-int labelIndex = 5;         //Labels: a single integer representing the class index in column number 5
-int numLabelClasses = 10;   //10 classes for the label
-JavaRDD<DataSet> rddDataSetClassification = rddWritables.map(new DataVecDataSetFunction(labelIndex, numLabelClasses, false));
-```
-
-However, if this dataset was for regression instead, with again 6 total columns, 3 feature columns (positions 0, 1 and 2 in the file rows) and 3 label columns (positions 3, 4 and 5) we could load it using the same process as above, but changing the last 3 lines to:
-
-```java
-int firstLabelColumn = 3;   //First column index for label
-int lastLabelColumn = 5;    //Last column index for label
-JavaRDD<DataSet> rddDataSetRegression = rddWritables.map(new DataVecDataSetFunction(firstColumnLabel, lastColumnLabel, true, null, null));
-```
-
-## [How to create a RDD\[MultiDataSet\] from one or more RDD\[List\[Writable\]\]](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/spark/how-to-guides/data-howto.md)
-
-RecordReaderMultiDataSetIterator (RRMDSI) is the most common way to create MultiDataSet instances for single-machine training data pipelines. It is possible to use RRMDSI for Spark data pipelines, where data is coming from one or more of `RDD<List<Writable>>` (for 'standard' data) or `RDD<List<List<Writable>>` (for sequence data).
-
-**Case 1: Single `RDD<List<Writable>>` to `RDD<MultiDataSet>`**
-
-Consider the following _single node_ (non-Spark) data pipeline for a CSV classification task.
-
-```java
-RecordReader recordReader = new CSVRecordReader(numLinesToSkip,delimiter);
-recordReader.initialize(new FileSplit(new ClassPathResource("iris.txt").getFile()));
-
-int batchSize = 32;
-int labelColumn = 4;
-int numClasses = 3;
-MultiDataSetIterator iter = new RecordReaderMultiDataSetIterator.Builder(batchSize)
-    .addReader("data", recordReader)
-    .addInput("data", 0, labelColumn-1)
-    .addOutputOneHot("data", labelColumn, numClasses)
-    .build();
-```
-
-The equivalent to the following Spark data pipeline:
-
-```java
-JavaRDD<List<Writable>> rdd = sc.textFile(f.getPath()).map(new StringToWritablesFunction(new CSVRecordReader()));
-
-MultiDataSetIterator iter = new RecordReaderMultiDataSetIterator.Builder(batchSize)
-    .addReader("data", new SparkSourceDummyReader(0))        //Note the use of the "SparkSourceDummyReader"
-    .addInput("data", 0, labelColumn-1)
-    .addOutputOneHot("data", labelColumn, numClasses)
-    .build();
-JavaRDD<MultiDataSet> mdsRdd = IteratorUtils.mapRRMDSI(rdd, rrmdsi2);
-```
-
-For Sequence data (`List<List<Writable>>`) you can use SparkSourceDummySeqReader instead.
-
-**Case 2: Multiple `RDD<List<Writable>>` or `RDD<List<List<Writable>>` to `RDD<MultiDataSet>`**
-
-For this case, the process is much the same. However, internaly, a join is used.
-
-```java
-JavaRDD<List<Writable>> rdd1 = ...
-JavaRDD<List<Writable>> rdd2 = ...
-
-RecordReaderMultiDataSetIterator rrmdsi = new RecordReaderMultiDataSetIterator.Builder(batchSize)
-    .addReader("rdd1", new SparkSourceDummyReader(0))        //0 = use first rdd in list
-    .addReader("rdd2", new SparkSourceDummyReader(1))        //1 = use second rdd in list
-    .addInput("rdd1", 1, 2)            //
-    .addOutput("rdd2", 1, 2)
-    .build();
-
-List<JavaRDD<List<Writable>>> list = Arrays.asList(rdd1, rdd2);
-int[] keyIdxs = new int[]{0,0};        //Column 0 in rdd1 and rdd2 is the 'key' used for joining
-boolean filterMissing = false;        //If true: filter out any records that don't have matching keys in all RDDs
-JavaRDD<MultiDataSet> mdsRdd = IteratorUtils.mapRRMDSI(list, null, keyIdxs, null, filterMissing, rrmdsi);
-```
-
-## [How to save a RDD\[DataSet\] or RDD\[MultiDataSet\] to network storage and use it for training](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/spark/how-to-guides/data-howto.md)
-
-As noted at the start of this page, it is considered a best practice to preprocess and export your data once (i.e., save to network storage such as HDFS and reuse), rather than fitting from an `RDD<DataSet>` or `RDD<MultiDataSet>` directly in each training job.
-
-There are a number of reasons for this:
-
-* Better performance (avoid redundant loading/calculation): When fitting multiple models from the same dataset, it is faster to preprocess this data once and save to disk rather than preprocessing it again for every single training run.
-* Minimizing memory and other resources: By exporting and fitting from disk, we only need to keep the DataSets we are currently using (plus a small async prefetch buffer) in memory, rather than also keeping many unused DataSet objects in memory. Exporting results in lower total memory use and hence we can use larger networks, larger minibatch sizes, or allocate fewer resources to our job.
-* Avoiding recomputation: When an RDD is too large to fit into memory, some parts of it may need to be recomputed before it can be used (depending on the cache settings). When this occurs, Spark will recompute parts of the data pipeline multiple times, costing us both time and memory. A pre-export step avoids this recomputation entirely.
-
-**Step 1: Saving**
-
-Saving the DataSet objects once you have an `RDD<DataSet>` is quite straightforward:
-
-```java
-JavaRDD<DataSet> rddDataSet = ...
-int minibatchSize = 32;     //Minibatch size of the saved DataSet objects
-String exportPath = "hdfs:///path/to/export/data";
-JavaRDD<String> paths = rddDataSet.mapPartitionsWithIndex(new BatchAndExportDataSetsFunction(minibatchSize, exportPath), true);
-```
-
-Keep in mind that this is a map function, so no data will be saved until the paths RDD is executed - i.e., you should follow this with an operation such as:
-
-```java
-paths.saveAsTextFile("hdfs:///path/to/text/file.txt");  //Specified file will contain paths/URIs of all saved DataSet objects
-```
-
-or
-
-```java
-List<String> paths = paths.collect();    //Collection of paths/URIs of all saved DataSet objects
-```
-
-or
-
-```java
-paths.foreach(new VoidFunction<String>() {
-    @Override
-    public void call(String path) {
-        //Some operation on each path
-    }
-});
-```
-
-Saving an `RDD<MultiDataSet>` can be done in the same way using `BatchAndExportMultiDataSetsFunction` instead, which takes the same arguments.
-
-**Step 2: Loading and Fitting**
-
-The exported data can be used in a few ways. First, it can be used to fit a network directly:
-
-```java
-String exportPath = "hdfs:///path/to/export/data";
-SparkDl4jMultiLayer net = ...
-net.fit(exportPath);      //Loads the serialized DataSet objects found in the 'exportPath' directory
-```
-
-Similarly, we can use `SparkComputationGraph.fitMultiDataSet(String path)` if we saved an `RDD<MultiDataSet>` instead.
-
-Alternatively, we can load up the paths in a few different ways, depending on if or how we saved them:
-
-```java
-JavaSparkContext sc = new JavaSparkContext();
-
-//If we used saveAsTextFile:
-String saveTo = "hdfs:///path/to/text/file.txt";
-paths.saveAsTextFile(saveTo);                         //Save
-JavaRDD<String> loadedPaths = sc.textFile(saveTo);    //Load
-
-//If we used collecting:
-List<String> paths = paths.collect();                 //Collect
-JavaRDD<String> loadedPaths = sc.parallelize(paths);  //Parallelize
-
-//If we want to list the directory contents:
-String exportPath = "hdfs:///path/to/export/data";
-JavaRDD<String> loadedPaths = SparkUtils.listPaths(sc, exportPath);   //List paths using org.deeplearning4j.spark.util.SparkUtils
-```
-
-Then we can execute training on these paths by using methods such as `SparkDl4jMultiLayer.fitPaths(JavaRDD<String>)`
-
-## [How to prepare data on a single machine for use on a cluster: saving DataSets](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/spark/how-to-guides/data-howto.md)
-
-Another possible workflow is to start with the data pipeline on a single machine, and export the DataSet or MultiDataSet objects for use on the cluster. This workflow clearly isn't as scalable as preparing data on a cluster (you are using just one machine to prepare data) but it can be an easy option in some cases, especially when you have an existing data pipeline.
-
-This section assumes you have an existing `DataSetIterator` or `MultiDataSetIterator` used for single-machine training. There are many different ways to create one, which is outside of the scope of this guide.
-
-**Step 1: Save the DataSets or MultiDataSets**
-
-Saving the contents of a DataSet to a local directory can be done using the following code:
-
-```java
-DataSetIterator iter = ...
-File rootDir = new File("/saving/directory/");
-int count = 0;
-while(iter.hasNext()){
-  DataSet ds = iter.next();
-  File outFile = new File(rootDir, "dataset_" + (count++) + ".bin");
-  ds.save(outFile);
-}
-```
-
-Note that for the purposes of Spark, the exact file names don't matter. The process for saving MultiDataSets is almost identical.
-
-As an aside: you can read these saved DataSet objects on a single machine (for non-Spark training) using [FileDataSetIterator](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-data/deeplearning4j-utility-iterators/src/main/java/org/deeplearning4j/datasets/iterator/file/FileDataSetIterator.java)).
-
-An alternative approach is to save directly to the cluster using output streams, to (for example) HDFS. This can only be done if the machine running the code is properly configured with the required libraries and access rights. For example, to save the DataSets directly to HDFS you could use:
-
-```java
-JavaSparkContext sc = new JavaSparkContext();
-FileSystem fileSystem = FileSystem.get(sc.hadoopConfiguration());
-String outputDir = "hdfs:///my/output/location/";
-
-DataSetIterator iter = ...
-int count = 0;
-while(iter.hasNext()){
-  DataSet ds = iter.next();
-  String filePath = outputDir + "dataset_" + (count++) + ".bin";
-  try (OutputStream os = new BufferedOutputStream(fileSystem.create(new Path(outputPath)))) {
-    ds.save(os);
-  }
-}
-```
-
-**Step 2: Load and Train on a Cluster** The saved DataSet objects can then be copied to the cluster or network file storage (for example, using Hadoop FS utilities on a Hadoop cluster), and used as follows:
-
-```java
-String dir = "hdfs:///data/copied/here";
-SparkDl4jMultiLayer net = ...
-net.fit(dir);      //Loads the serialized DataSet objects found in the 'dir' directory
-```
-
-or alternatively/equivalently, we can list the paths as an RDD using:
-
-```java
-String dir = "hdfs:///data/copied/here";
-JavaRDD<String> paths = SparkUtils.listPaths(sc, dir);   //List paths using org.deeplearning4j.spark.util.SparkUtils
-```
-
-## [How to prepare data on a single machine for use on a cluster: map/sequence files](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/spark/how-to-guides/data-howto.md)
-
-An alternative approach is to use Hadoop MapFile and SequenceFiles, which are efficient binary storage formats. This can be used to convert the output of any DataVec `RecordReader` or `SequenceRecordReader` (including a custom record reader) to a format usable for use on Spark. MapFileRecordWriter and MapFileSequenceRecordWriter require the following dependencies:
-
-```markup
+```xml
+<!-- Core DL4J -->
 <dependency>
-    <groupId>org.datavec</groupId>
-    <artifactId>datavec-hadoop</artifactId>
-    <version>${datavec.version}</version>
+    <groupId>org.deeplearning4j</groupId>
+    <artifactId>deeplearning4j-core</artifactId>
+    <version>${dl4j.version}</version>
 </dependency>
+
+<!-- Gradient sharing Spark module -->
 <dependency>
-    <groupId>org.apache.hadoop</groupId>
-    <artifactId>hadoop-common</artifactId>
-    <version>${hadoop.version}</version>
-    <!-- Optional exclusion for log4j in case you are using other logging frameworks -->
-    <!--
-    <exclusions>
-        <exclusion>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-        </exclusion>
-        <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-        </exclusion>
-    </exclusions>
-    -->
+    <groupId>org.deeplearning4j</groupId>
+    <artifactId>dl4j-spark-parameterserver_2.11</artifactId>
+    <version>${dl4j.spark.version}</version>
+</dependency>
+
+<!-- CPU backend -->
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-native-platform</artifactId>
+    <version>${nd4j.version}</version>
 </dependency>
 ```
 
-**Step 1: Create a MapFile Locally** In the following example, a CSVRecordReader will be used, but any other RecordReader could be used in its place:
+For Spark 2 / Scala 2.11 (most common):
+```xml
+<dependency>
+    <groupId>org.deeplearning4j</groupId>
+    <artifactId>dl4j-spark_2.11</artifactId>
+    <version>1.0.0-beta7_spark_2</version>
+</dependency>
+```
+
+For Spark 1 / Scala 2.10:
+```xml
+<dependency>
+    <groupId>org.deeplearning4j</groupId>
+    <artifactId>dl4j-spark_2.10</artifactId>
+    <version>1.0.0-beta7_spark_1</version>
+</dependency>
+```
+
+The Scala version suffix (`_2.10` or `_2.11`) must match your cluster's Spark build exactly. Mismatches cause runtime `AbstractMethodError` or `ClassNotFoundException` failures.
+
+You can set the Spark dependency to `provided` scope if you only need it at compile time and your cluster provides it:
+```xml
+<dependency>
+    <groupId>org.apache.spark</groupId>
+    <artifactId>spark-core_2.11</artifactId>
+    <version>2.4.0</version>
+    <scope>provided</scope>
+</dependency>
+```
+
+**GPU dependencies:**
+
+Case 1 — CUDA toolkit is installed on cluster nodes:
+```xml
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-cuda-10.2</artifactId>   <!-- match installed CUDA version -->
+    <version>${nd4j.version}</version>
+</dependency>
+<dependency>
+    <groupId>org.deeplearning4j</groupId>
+    <artifactId>deeplearning4j-cuda-10.2</artifactId>
+    <version>${dl4j.version}</version>
+</dependency>
+```
+
+Case 2 — CUDA toolkit is NOT installed on cluster nodes, include the platform variant to bundle native libraries:
+```xml
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-cuda-10.2-platform</artifactId>
+    <version>${nd4j.version}</version>
+</dependency>
+```
+
+**Step 2: Configure the Maven shade plugin**
+
+Use the Maven shade plugin to produce the uber-jar. Add this to your `pom.xml`:
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.2.4</version>
+            <configuration>
+                <shadedArtifactAttached>true</shadedArtifactAttached>
+                <shadedClassifierName>bin</shadedClassifierName>
+                <createDependencyReducedPom>true</createDependencyReducedPom>
+                <filters>
+                    <filter>
+                        <artifact>*:*</artifact>
+                        <excludes>
+                            <exclude>org/datanucleus/**</exclude>
+                            <exclude>META-INF/*.SF</exclude>
+                            <exclude>META-INF/*.DSA</exclude>
+                            <exclude>META-INF/*.RSA</exclude>
+                        </excludes>
+                    </filter>
+                </filters>
+            </configuration>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals><goal>shade</goal></goals>
+                    <configuration>
+                        <transformers>
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                <resource>reference.conf</resource>
+                            </transformer>
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"/>
+                        </transformers>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```
+
+The `ServicesResourceTransformer` is required for ND4J's `ServiceLoader`-based backend discovery. Without it, the CUDA or native backend may not load correctly on the cluster.
+
+**Step 3: Build and submit**
+
+```bash
+mvn package -DskipTests
+# The shaded jar is at: target/<project>-bin.jar
+
+spark-submit \
+  --class com.example.MyTrainingJob \
+  --master spark://master:7077 \
+  target/myproject-bin.jar
+```
+
+---
+
+### <a name="gpus"></a>Use GPUs for Training on Spark
+
+DL4J's backend is configured by which ND4J dependency is on the classpath. Switch from CPU to GPU by replacing `nd4j-native-platform` with `nd4j-cuda-x.x` (or `nd4j-cuda-x.x-platform` if CUDA is not installed on the cluster).
+
+No code changes are required — the same network configuration and training code runs on both CPU and GPU.
+
+For cuDNN acceleration (recommended for convolutional and LSTM layers):
+```xml
+<dependency>
+    <groupId>org.deeplearning4j</groupId>
+    <artifactId>deeplearning4j-cuda-10.2</artifactId>
+    <version>${dl4j.version}</version>
+</dependency>
+```
+
+This requires cuDNN library files to be present on each node (or bundled via `nd4j-cuda-x.x-platform`). See the [CuDNN configuration guide](../config/cudnn.md) for setup instructions.
+
+---
+
+### <a name="cpusgpus"></a>Use CPUs on Master, GPUs on Workers
+
+If your master/driver runs on a CPU-only machine while workers have GPUs, include both backends:
+
+```xml
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-cuda-10.2</artifactId>
+    <version>${nd4j.version}</version>
+</dependency>
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-native</artifactId>
+    <version>${nd4j.version}</version>
+</dependency>
+```
+
+When both are on the classpath, ND4J tries the CUDA backend first, then falls back to native CPU. On a CPU-only driver, the CUDA backend load will fail and ND4J will automatically use CPU. On GPU workers, CUDA will be used.
+
+You can override the backend priority via environment variables on the driver:
+```bash
+# Force CPU on the driver
+export BACKEND_PRIORITY_CPU=100
+export BACKEND_PRIORITY_GPU=0
+```
+
+The exact mechanism for setting per-role environment variables depends on your cluster manager (YARN, Mesos, Spark standalone). Consult your cluster manager's documentation.
+
+---
+
+### <a name="memory"></a>Configure Memory for Spark
+
+DL4J/ND4J uses significant off-heap memory via JavaCPP. Spark's default memory settings are designed for JVM-heap-resident data and are often insufficient.
+
+You need to configure four values:
+1. Worker on-heap memory (`--executor-memory` in Spark submit)
+2. Worker off-heap memory (`org.bytedeco.javacpp.maxbytes` system property)
+3. Driver on-heap memory (`--driver-memory`)
+4. Driver off-heap memory
+
+**YARN example** (4 GB on-heap, 5 GB off-heap, 6 GB YARN overhead):
+```bash
+spark-submit \
+  --executor-memory 4G \
+  --driver-memory 4G \
+  --conf "spark.executor.extraJavaOptions=-Dorg.bytedeco.javacpp.maxbytes=5G" \
+  --conf "spark.driver.extraJavaOptions=-Dorg.bytedeco.javacpp.maxbytes=5G" \
+  --conf spark.yarn.executor.memoryOverhead=6144 \
+  --conf spark.yarn.driver.memoryOverhead=6144 \
+  ...
+```
+
+On YARN, always set `spark.yarn.executor.memoryOverhead` and `spark.yarn.driver.memoryOverhead` to account for off-heap usage. The default values (a small fixed amount) are far too low for DL4J.
+
+**Spark standalone** — set in `conf/spark-env.sh` on each node:
+```bash
+SPARK_DRIVER_OPTS=-Dorg.bytedeco.javacpp.maxbytes=12G
+SPARK_DRIVER_MEMORY=8G
+SPARK_WORKER_OPTS=-Dorg.bytedeco.javacpp.maxbytes=18G
+SPARK_WORKER_MEMORY=12G
+```
+
+A good starting point: off-heap should be 1.5–2x on-heap for most workloads.
+
+---
+
+### <a name="gc"></a>Configure Garbage Collection on Workers
+
+DL4J uses memory workspaces that keep most allocations off-heap. Frequent JVM garbage collection is therefore wasteful and can slow training. The default in 1.0.0-beta3+ is to run GC every 5 seconds on workers.
+
+To configure GC frequency on workers via the TrainingMaster:
 
 ```java
-File csvFile = new File("/path/to/file.csv")
-RecordReader recordReader = new CSVRecordReader();
-recordReader.initialize(new FileSplit(csvFile));
-
-//Create map file writer
-String outPath = "/map/file/root/dir"
-MapFileRecordWriter writer = new MapFileRecordWriter(new File(outPath));
-
-//Convert to MapFile binary format:
-RecordReaderConverter.convert(recordReader, writer);
+new SharedTrainingMaster.Builder(voidConfiguration, minibatch)
+    .workerTogglePeriodicGC(true)        // enable periodic GC
+    .workerPeriodicGCFrequency(5000)     // run GC every 5 seconds
+    .build();
 ```
 
-The process for using a `SequenceRecordReader` combined with a `MapFileSequenceRecordWriter` is virtually the same.
-
-Note also that `MapFileRecordWriter` and `MapFileSequenceRecordWriter` both support splitting - i.e., creating multiple smaller map files instead of creating one single (potentially multi-GB) map file. Using splitting is recommended when saving data in this manner for use with Spark.
-
-**Step 2: Copy to HDFS or other network file storage**
-
-The exact process is beyond the scope of this guide. However, it should be sufficient to simply copy the directory ("/map/file/root/dir" in the example above) to a location on HDFS.
-
-**Step 3: Read and Convert to `RDD<DataSet>` for Training**
-
-We can load the data for training using the following:
+To disable periodic GC entirely on workers:
 
 ```java
-JavaSparkContext sc = new JavaSparkContext();
-String pathOnHDFS = "hdfs:///map/file/directory";
-JavaRDD<List<Writable>> rdd = SparkStorageUtils.restoreMapFile(pathOnHDFS, sc);     //import: org.datavec.spark.storage.SparkStorageUtils
-
-//Note at this point: it's the same as the latter part of the CSV how-to guide
-int labelIndex = 5;         //Labels: a single integer representing the class index in column number 5
-int numLabelClasses = 10;   //10 classes for the label
-JavaRDD<DataSet> rddDataSetClassification = rdd.map(new DataVecDataSetFunction(labelIndex, numLabelClasses, false));
+new SharedTrainingMaster.Builder(voidConfiguration, minibatch)
+    .workerTogglePeriodicGC(false)
+    .build();
 ```
 
-## [How to load multiple CSVs (one sequence per file) for RNN data pipelines](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/spark/how-to-guides/data-howto.md)
+Note: setting `Nd4j.getMemoryManager().setAutoGcWindow(5000)` on the driver affects only the driver, not the workers. Use the `SharedTrainingMaster.Builder` methods above to control worker GC.
 
-This guide shows how load CSV files for training an RNN. The assumption is that the dataset is comprised of multiple CSV files, where:
+---
 
-* each CSV file represents one sequence
-* each row/line of the CSV contains the values for one time step (one or more columns/values, same number of values in all rows for all files)&#x20;
-* each CSV may contain a different number of lines to other CSVs (i.e., variable length sequences are OK here)
-* header lines either aren't present in any files, or are present in all files
+### <a name="kryo"></a>Use Kryo Serialization
 
-A data pipeline can be created using the following process:
+Kryo serialization can speed up Spark's shuffle operations. DL4J and ND4J provide Kryo registrators for their types.
+
+Add the dependency:
+```xml
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-kryo_2.11</artifactId>
+    <version>${dl4j.version}</version>
+</dependency>
+```
+
+Then configure Spark before creating your context:
+```java
+SparkConf conf = new SparkConf();
+conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer");
+conf.set("spark.kryo.registrator", "org.nd4j.Nd4jRegistrator");
+JavaSparkContext sc = new JavaSparkContext(conf);
+```
+
+If Kryo is not configured correctly, `SparkDl4jMultiLayer` and `SparkComputationGraph` will log a warning at startup. Note: because INDArrays are stored primarily off-heap, the Kryo performance benefit is smaller than for normal Java objects, but it is still generally recommended.
+
+---
+
+### <a name="yarngpus"></a>Use YARN with GPUs
+
+For recent YARN versions (3.1+), YARN has built-in GPU resource scheduling. See the [YARN GPU documentation](https://hadoop.apache.org/docs/r3.1.0/hadoop-yarn/hadoop-yarn-site/UsingGpus.html) for cluster configuration.
+
+For older YARN versions (2.7.x and earlier), GPU resource awareness is not built in. Options:
+- Use node labels to target GPU nodes: [YARN Node Labels docs](https://hadoop.apache.org/docs/r2.7.3/hadoop-yarn/hadoop-yarn-site/NodeLabel.html).
+- Manually specify the number of executors and ensure they are scheduled on GPU nodes.
+
+In all cases, YARN memory overhead configuration (see [memory section](#memory)) is required when using GPUs with DL4J.
+
+---
+
+### <a name="locality"></a>Configure Spark Locality
+
+Adding `--conf spark.locality.wait=0` to your Spark submit can marginally reduce training times by scheduling network fit operations sooner, at the cost of potentially less data-local task placement:
+
+```bash
+spark-submit --conf spark.locality.wait=0 ...
+```
+
+This is optional and has varying impact depending on your cluster and data layout. See the [Spark tuning guide](https://spark.apache.org/docs/latest/tuning.html#data-locality) for details.
+
+---
+
+## During and After Training
+
+### <a name="threshold"></a>Configure Encoding Thresholds
+
+Gradient sharing uses a threshold to decide which updates to communicate. Updates smaller than the threshold are stored in a residual and applied later. This is the main hyperparameter specific to distributed training.
+
+- **Too large a threshold**: updates communicated infrequently; convergence may suffer.
+- **Too small a threshold**: updates communicated more often; more network traffic per iteration.
+
+DL4J defaults to `AdaptiveThresholdAlgorithm`, which automatically adjusts the threshold to keep the sparsity ratio (fraction of parameters communicated per update) between 0.0001 and 0.01.
+
+Available threshold algorithms:
+- `AdaptiveThresholdAlgorithm` (default): adjusts threshold to hit a target sparsity range.
+- `FixedThresholdAlgorithm`: fixed threshold, no adaptation.
+- `TargetSparsityThresholdAlgorithm`: adapts to hit a specific target sparsity.
+
+Configure the threshold algorithm:
+```java
+TrainingMaster tm = new SharedTrainingMaster.Builder(voidConfiguration, minibatch)
+    .thresholdAlgorithm(new AdaptiveThresholdAlgorithm(1e-3))   // initial threshold
+    .residualPostProcessor(new ResidualClippingPostProcessor(5, 5))
+    .build();
+```
+
+The `ResidualClippingPostProcessor(5, 5)` clips the residual to 5x the current threshold every 5 steps, preventing residual explosion.
+
+Enable debug mode to log per-worker threshold statistics:
+```java
+new SharedTrainingMaster.Builder(...)
+    .encodingDebugMode(true)
+    .build();
+```
+
+Debug mode logs the threshold, sparsity ratio, and encoding statistics for each worker at each iteration. Useful for diagnosing threshold issues but has performance overhead — disable in production.
+
+---
+
+### <a name="evaluation"></a>Perform Distributed Evaluation
+
+All of DL4J's standard evaluation metrics can be computed in a distributed manner on Spark.
+
+**Step 1: Load the network on the driver**
 
 ```java
-String directoryWithCsvFiles = "hdfs:///path/to/directory";
-JavaPairRDD<String, PortableDataStream> origData = sc.binaryFiles(directoryWithCsvFiles);
-
-int numHeaderLinesEachFile = 0; //No header lines
-int delimiter = ",";            //Comma delimited files
-SequenceRecordReader seqRR = new CSVSequenceRecordReader(numHeaderLinesEachFile, delimiter);
-
-JavaRDD<List<List<Writable>>> sequencesRdd = origData.map(new SequenceRecordReaderFunction(seqRR));
-
-//Similar to the non-sequence CSV guide using DataVecDataSetFunction. Assuming classification here:
-int labelIndex = 5;             //Index of the label column. Occurs at position/column 5
-int numClasses = 10;            //Number of classes for classification
-JavaRDD<DataSet> dataSetRdd = sequencesRdd.map(new DataVecSequenceDataSetFunction(labelIndex, numClasses, false));
+MultiLayerNetwork net = ModelSerializer.restoreMultiLayerNetwork(new File("model.bin"));
+SparkDl4jMultiLayer sparkNet = new SparkDl4jMultiLayer(sc, net, null);
+// Pass null for TrainingMaster — not needed for evaluation
 ```
 
-## [How to create a Spark data pipeline for training on images](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/spark/how-to-guides/data-howto.md)
-
-This guide shows how to create an `RDD<DataSet>` for image classification, starting from images stored either locally, or on a network file system such as HDFS.
-
-The approach here used (added in 1.0.0-beta3) is to first preprocess the images into batches of files - [FileBatch](https://github.com/eclipse/deeplearning4j/blob/master/nd4j/nd4j-common/src/main/java/org/nd4j/api/loader/FileBatch.java) objects. The motivation for this approach is simple: the original image files typically use efficient compresion (JPEG for example) which is much more space (and network) efficient than a bitmap (int8 or 32-bit floating point) representation. However, on a cluster we want to minimize disk reads due to latency issues with remote storage - one file read/transfer is going to be faster than `minibatchSize` remote file reads.
-
-The [TinyImageNet example](https://github.com/eclipse/deeplearning4j-examples/tree/master/dl4j-spark-examples/dl4j-spark/src/main/java/org/deeplearning4j/tinyimagenet) also shows how this can be done.
-
-Note that one limitation of the implementation is that the set of classes (i.e., the class/category labels when doing classification) needs to be known, provided or collected manually. This differs from using ImageRecordReader for classification on a single machine, which can automatically infer the set of class labels.
-
-First, assume the images are in subdirectories based on their class labels. For example, suppose there are two classes, "cat" and "dog", the directory structure would look like:
-
-```
-rootDir/cat/img0.jpg
-rootDir/cat/img1.jpg
-...
-rootDir/dog/img0.jpg
-rootDir/dog/img1.jpg
-...
+Or for ComputationGraph:
+```java
+ComputationGraph net = ComputationGraph.load(new File("model.bin"), true);
+SparkComputationGraph sparkNet = new SparkComputationGraph(sc, net, null);
 ```
 
-(Note the file names don't matter in this example - however, the parent directory names are the class labels)
+**Step 2: Prepare evaluation data**
 
-**Step 1 (option 1 of 2): Preprocess Locally**
+Evaluation data uses the same formats as training data:
+- `JavaRDD<DataSet>` for single input/output networks
+- `JavaRDD<MultiDataSet>` for multi-input/output networks
+- `JavaRDD<String>` where each string is a path to a serialized DataSet on HDFS
 
-Local preprocessing can be done as follows:
+**Step 3: Run evaluation**
 
 ```java
-String sourceDirectory = "/home/user/my_images";            //Where your data is located
-String destinationDirectory = "/home/user/preprocessed";    //Where the preprocessed data should be written
-int batchSize = 32;                                         //Number of examples (images) in each FileBatch object
-SparkDataUtils.createFileBatchesLocal(sourceDirectory, NativeImageLoader.ALLOWED_FORMATS, true, saveDirTrain, batchSize);
+// Classification metrics (accuracy, F1, etc)
+Evaluation eval = sparkNet.evaluate(rddDataSet);
+
+// ROC for binary classification
+ROC roc = sparkNet.evaluateROC(rddDataSet);
+
+// Regression metrics
+RegressionEvaluation regrEval = sparkNet.evaluateRegression(rddDataSet);
 ```
 
-The full import for SparkDataUtils is `org.deeplearning4j.spark.util.SparkDataUtils`.
-
-After preprocessing is has been completed, the directory can be copied to the cluster for use in training (Step 2).
-
-**Step 1 (option 2 of 2): Preprocess using Spark**
-
-Alternatively, if the original images are on remote file storage (such as HDFS), we can use the following:
-
+For multiple evaluations in a single pass (more efficient):
 ```java
-String sourceDirectory = "hdfs:///data/my_images"; //Where your data is located String
-destinationDirectory = "hdfs:///data/preprocessed"; //Where the preprocessed data should be written int 
-batchSize = 32; //Number of examples (images) in each FileBatch object 
-SparkDataUtils.createFileBatchesSpark(sourceDirectory, destinationDirectory, batchSize, sparkContext);
+IEvaluation[] evals = new IEvaluation[]{ new Evaluation(), new ROCMultiClass() };
+sparkNet.doEvaluation(rddDataSet, /*batchSize=*/ 64, evals);
 ```
 
-**Step 2: Training** The data pipeline for image classification can be constructed as follows. This code is taken from the [TinyImageNet example](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-spark-examples/dl4j-spark/src/main/java/org/deeplearning4j/tinyimagenet/TrainSpark.java):
+Key parameters available on evaluation methods:
+- `evalNumWorkers`: number of network copies used for evaluation per node. Reduce if memory is tight.
+- `evalBatchSize`: minibatch size for evaluation. 32–128 is usually a good starting range.
 
+**Saving evaluation results to HDFS:**
 ```java
-//Create data loader
-int imageHeightWidth = 64;      //64x64 pixel input to network
-int imageChannels = 3;          //RGB
-PathLabelGenerator labelMaker = new ParentPathLabelGenerator();
-ImageRecordReader rr = new ImageRecordReader(imageHeightWidth, imageHeightWidth, imageChannels, labelMaker);
-rr.setLabels(Arrays.asList("cat", "dog"));
-int numClasses = 2;
-RecordReaderFileBatchLoader loader = new RecordReaderFileBatchLoader(rr, minibatch, 1, numClasses);
-loader.setPreProcessor(new ImagePreProcessingScaler());   //Scale 0-255 valued pixels to 0-1 range
+String json = eval.toJson();
+SparkUtils.writeStringToFile("hdfs:///output/eval.json", json, sc);
 
+// Load later:
+String json = SparkUtils.readStringFromFile("hdfs:///output/eval.json", sc);
+Evaluation loaded = Evaluation.fromJson(json);
+```
 
-//Fit the network
-String trainDataPath = "hdfs:///data/preprocessed";         //Where the preprocessed data is located
-JavaRDD<String> pathsTrain = SparkUtils.listPaths(sc, trainDataPath);
-for (int i = 0; i < numEpochs; i++) {
-    sparkNet.fitPaths(pathsTrain, loader);
+---
+
+### <a name="saveload"></a>Save and Load Networks Trained on Spark
+
+`SparkDl4jMultiLayer` and `SparkComputationGraph` wrap the standard `MultiLayerNetwork` and `ComputationGraph` classes. Access the underlying network with `getNetwork()`.
+
+**Save to local filesystem (driver):**
+```java
+MultiLayerNetwork net = sparkNet.getNetwork();
+net.save(new File("/local/path/model.bin"));
+// Or use ModelSerializer:
+ModelSerializer.writeModel(net, new File("/local/path/model.bin"), true);
+```
+
+**Save to HDFS:**
+```java
+FileSystem fs = FileSystem.get(sc.hadoopConfiguration());
+String path = "hdfs:///models/my_model.bin";
+try (BufferedOutputStream os = new BufferedOutputStream(fs.create(new Path(path)))) {
+    ModelSerializer.writeModel(sparkNet.getNetwork(), os, true);
 }
 ```
 
-And that's it.
-
-Note: for other label generation cases (such as labels provided from the filename instead of parent directory), or for tasks such as semantic segmentation, you can substitute a different PathLabelGenerator instead of the default. For example, if the label should come from the file name, you can use `PatternPathLabelGenerator` instead. Let's say images are in the format "cat\_img1234.jpg", "dog\_2309.png" etc. We can use the following process:
-
+**Load from HDFS:**
 ```java
-PathLabelGenerator labelGenerator = new PatternPathLabelGenerator("_", 0);  //Split on the "_" character, and take the first value
-ImageRecordReader imageRecordReader = new ImageRecordReader(imageHW, imageHW, imageChannels, labelGenerator);
-```
-
-Note that PathLabelGenerator returns a Writable object, so for tasks like image segmentation, you can return an INDArray using the NDArrayWritable class in a custom PathLabelGenerator.
-
-## [How to load prepared minibatches in custom format](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/spark/how-to-guides/data-howto.md)
-
-DL4J Spark training supports the ability to load data serialized in a custom format. The assumption is that each file on the remote/network storage represents a single minibatch of data in some readable format.
-
-Note that this approach is typically not required or recommended for most users, but is provided as an additional option for advanced users or those with pre-prepared data in a custom format or a format that is not natively supported by DL4J. When files represent a single record/example (instead of a minibatch) in a custom format, a custom RecordReader could be used instead.
-
-The interfaces of note are:
-
-* [DataSetLoader](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-core/src/main/java/org/deeplearning4j/api/loader/DataSetLoader.java)
-* [MultiDataSetLoader](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-core/src/main/java/org/deeplearning4j/api/loader/MultiDataSetLoader.java)
-
-Both of which extend the single-method [Loader](https://github.com/eclipse/deeplearning4j/blob/master/nd4j/nd4j-common/src/main/java/org/nd4j/api/loader/Loader.java) interface.
-
-Suppose a HDFS directory contains a number of files, each being a minibatch in some custom format. These can be loaded using the following process:
-
-```java
-JavaSparkContext sc = new JavaSparkContext();
-String dataDirectory = "hdfs:///path/with/data";
-JavaRDD<String> loadedPaths = SparkUtils.listPaths(sc, dataDirectory);   //List paths using org.deeplearning4j.spark.util.SparkUtils
-
-SparkDl4jMultiLayer net = ...
-Loader<DataSet> myCustomLoader = new MyCustomLoader();
-net.fitPaths(loadedPaths, myCustomLoader);
-```
-
-Where the custom loader class looks something like:
-
-```java
-public class MyCustomLoader implements DataSetLoader {
-    @Override
-    public DataSet load(Source source) throws IOException {
-        InputStream inputStream = source.getInputStream();
-        <load custom data format here> 
-        INDArray features = ...;
-        INDArray labels = ...;
-        return new DataSet(features, labels);
-    }
+FileSystem fs = FileSystem.get(sc.hadoopConfiguration());
+String path = "hdfs:///models/my_model.bin";
+MultiLayerNetwork net;
+try (BufferedInputStream is = new BufferedInputStream(fs.open(new Path(path)))) {
+    net = ModelSerializer.restoreMultiLayerNetwork(is);
 }
 ```
+
+It is good practice to save the model after each epoch during long training runs. If the master node fails, training must be restarted, and you want to resume from the most recent checkpoint rather than from scratch.
+
+---
+
+### <a name="inference"></a>Perform Distributed Inference
+
+DL4J supports distributed inference — generating predictions on a cluster using a `JavaPairRDD` of inputs.
+
+```java
+// SparkDl4jMultiLayer
+JavaPairRDD<String, INDArray> features = ...;  // key -> feature array
+JavaPairRDD<String, INDArray> predictions =
+    sparkNet.feedForwardWithKey(features, /*batchSize=*/ 64);
+
+// SparkComputationGraph (multi-input)
+JavaPairRDD<String, INDArray[]> featuresMulti = ...;
+JavaPairRDD<String, INDArray[]> predictions =
+    sparkCG.feedForwardWithKey(featuresMulti, 64);
+```
+
+The generic key type `K` is user-defined. It is used purely to correlate inputs with outputs, since Spark RDDs are unordered. Common key types are `String` (file paths or example IDs) or `Long` (sequence numbers).
+
+The `batchSize` parameter controls memory/throughput tradeoff. A value of 64 is a reasonable starting point.
+
+---
+
+## Troubleshooting
+
+### <a name="dependencyproblems"></a>Debug Spark Dependency Problems
+
+Dependency conflicts at runtime produce exceptions like `NoSuchMethodException`, `ClassNotFoundException`, `AbstractMethodError`, or `UnsupportedClassVersionError`.
+
+**Step 1: Generate a dependency tree**
+```bash
+mvn dependency:tree
+mvn dependency:tree -Dverbose  # shows version conflict details
+```
+
+**Step 2: Check Spark version compatibility**
+
+The artifact suffix must match your cluster:
+- Spark 2, Scala 2.11: `dl4j-spark_2.11` with version ending in `_spark_2`
+- Spark 1, Scala 2.11: `dl4j-spark_2.11` with version ending in `_spark_1`
+
+Trying to run Spark 1 artifacts on a Spark 2 cluster typically produces:
+```
+java.lang.AbstractMethodError: org.deeplearning4j.spark.api.worker.ExecuteWorkerPathMDSFlatMap.call(...)
+```
+
+**Step 3: Check Scala version consistency**
+
+Scan the dependency tree for mixed `_2.10` and `_2.11` suffixes. All Spark-related artifacts must use the same Scala version.
+
+**Step 4: Check for conflicting transitive dependencies**
+
+Common troublemakers: Jackson, Guava. These are used by Spark and many other libraries. Use Maven exclusions or explicit version declarations to pin conflicting dependencies:
+
+```xml
+<dependency>
+    <groupId>com.google.guava</groupId>
+    <artifactId>guava</artifactId>
+    <version>27.0-jre</version>
+</dependency>
+```
+
+**Step 5: User classpath ordering**
+
+As a last resort for stubborn conflicts, try:
+```bash
+spark-submit \
+  --conf spark.driver.userClassPathFirst=true \
+  --conf spark.executor.userClassPathFirst=true \
+  ...
+```
+
+This makes Spark load your JAR's classes before Spark's bundled classes, which can resolve cases where Spark ships an older version of a library that you've upgraded.
+
+---
+
+### <a name="ntperror"></a>Fix "Error querying NTP server" Errors
+
+This error occurs when `setCollectTrainingStats(true)` is enabled and workers cannot reach an NTP server.
+
+Solutions:
+1. **Don't use `setCollectTrainingStats(true)`** — it is optional and disabled by default.
+2. **Use the local system clock as the time source:**
+```bash
+spark-submit \
+  --conf "spark.driver.extraJavaOptions=-Dorg.deeplearning4j.spark.time.TimeSource=org.deeplearning4j.spark.time.SystemClockTimeSource" \
+  --conf "spark.executor.extraJavaOptions=-Dorg.deeplearning4j.spark.time.TimeSource=org.deeplearning4j.spark.time.SystemClockTimeSource" \
+  ...
+```
+
+Note: using the system clock means timing statistics may be inaccurate if clocks are not synchronized across the cluster.
+
+---
+
+### <a name="caching"></a>Cache RDD DataSet Objects Safely
+
+Spark's memory estimation for DL4J objects is inaccurate because `DataSet` and `INDArray` objects hold their data primarily off-heap. Spark only sees a tiny on-heap footprint and will cache far more objects than memory can actually hold, leading to OOM errors.
+
+Rules:
+- Never use `MEMORY_ONLY` or `MEMORY_AND_DISK` persistence for `RDD<DataSet>` or `RDD<INDArray>`.
+- Always use `MEMORY_ONLY_SER` or `MEMORY_AND_DISK_SER`. Spark can accurately estimate serialized object sizes (which are fully on-heap).
+
+```java
+JavaRDD<DataSet> rdd = ...;
+rdd.persist(StorageLevel.MEMORY_ONLY_SER());
+```
+
+---
+
+### <a name="libgomp"></a>Fix libgomp Issues on Amazon EMR
+
+Some Amazon EMR configurations encounter issues with OpenMP (libgomp) when running ND4J-native workloads. If you see errors related to `libgomp.so`, try setting the number of OpenMP threads explicitly:
+
+```bash
+spark-submit \
+  --conf "spark.executor.extraJavaOptions=-DOMP_NUM_THREADS=1" \
+  ...
+```
+
+Or set the environment variable on each node: `export OMP_NUM_THREADS=1`.
+
+---
+
+### <a name="ubuntu16"></a>Failed Training on Ubuntu 16.04
+
+On Ubuntu 16.04 with Spark on YARN, all processes owned by the YARN user may be killed after a job completes. This is caused by a known Ubuntu 16.04 bug ([launchpad.net/ubuntu/+source/procps/+bug/1610499](https://bugs.launchpad.net/ubuntu/+source/procps/+bug/1610499)).
+
+Options:
+1. Add `KillUserProcesses=no` to `/etc/systemd/logind.conf` and reboot.
+2. Replace `/bin/kill` with the Ubuntu 14.04 version.
+3. Downgrade to Ubuntu 14.04.
+4. Run `sudo loginctl enable-linger <hadoop_user>` on each cluster node.

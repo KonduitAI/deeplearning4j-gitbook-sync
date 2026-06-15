@@ -1,108 +1,294 @@
 ---
-description: An overview of the core deeplearning4j workflow
+title: "Ecosystem Overview"
+description: "Overview of the Eclipse Deeplearning4j ecosystem — ND4J, DL4J, DataVec, SameDiff, Python4J, and OmniHub"
 ---
 
-# The core workflow
+# Ecosystem Overview
 
-## Introduction
+Eclipse Deeplearning4j is a suite of JVM-based libraries for building, training, and deploying deep learning models. The project is hosted as a single monorepo on GitHub and ships six user-facing libraries that cover every stage of a machine learning project — from raw data ingestion to distributed training and production serving.
 
-An end to end workflow involves the following:
+DL4J runs on Java 11 and later. It targets x86\_64 (with AVX2 and AVX512 acceleration), ARM (AArch64), and PowerPC (PPC64LE) CPUs, as well as NVIDIA GPUs through a CUDA backend. Windows, Linux, and macOS are all first-class platforms.
 
-1. Preparing your data
-2. Normalization
-3. Building a model
-4. Tuning a model
-5. Preparing for deployment
+---
 
-This page will try to cover considerations for each workflow and link to additional resources for how to handle each step that maybe specific to particular people.
+## The Library Stack
 
-## Preparing your data
+The six libraries are layered. Lower layers provide the compute substrate; upper layers provide higher-level abstractions. Understanding the boundaries between layers prevents confusion when debugging dependency issues or choosing which API to use.
 
-Data always needs to be preprocessed.  This means converting data from a raw source of different data types to ndarrays to be processed by a neural network. In the deeplearning4j suite there can be a few ways to do this:
+### libnd4j (C++)
 
-1. The datavec module: Using a record reader abstraction, data can be read in batches via a data set iterator to train models
-2. Pre process using embedded python code in python4j: using the python ecosystem such as pandas and python opencv, you can embed python scripts and output numpy arrays for training
-3. Custom java code: using 3rd party libraries such as [tablesaw](https://jtablesaw.github.io/tablesaw/) and [javacv](https://github.com/bytedeco/javacv)
+libnd4j is the native C++ foundation. It provides hand-tuned kernel implementations for tensor operations — element-wise math, BLAS routines, convolutions, reductions, random number generation — compiled separately for each target platform. The x86 builds use AVX2 or AVX512 intrinsics; the CUDA build links against cuBLAS and cuDNN.
 
-We recommend the following for the various data types:
+Users never import libnd4j directly. It is bundled inside the platform-specific JAR artifacts for ND4J. Its existence matters when diagnosing native crashes or when building from source for a custom platform.
 
-1. CSV: The CSV record reader in datavec is fairly good for this if you have a lot of data. The reason is the record readers assume that the data you are using is too large to fit in memory. If you have a smaller dataset that can fit in memory you can look at our [tablesaw example](https://github.com/eclipse/deeplearning4j-examples/blob/master/data-pipeline-examples/src/main/java/org/deeplearning4j/datapipelineexamples/tablesaw/TablesawCSVExample.java#L51). If you have a large amount of CSV data then our example [here ](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/quickstart/modeling/feedforward/classification/IrisClassifier.java#L62)should work well.
-2. Images: The native image loader and image record reader based on javacv handles loading images of any format and are easily converted to labeled image datasets. We have a comprehensive image example [here](https://github.com/eclipse/deeplearning4j-examples/blob/master/data-pipeline-examples/src/main/java/org/deeplearning4j/datapipelineexamples/formats/image/ImagePipelineExample.java).
-3. NLP:  The DL4J suite has a core tokenizer api where a user can supply a tokenizer and build an iterator from that. A combination of that interface and something like our [BERT iterator](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-nlp-parent/deeplearning4j-nlp/src/main/java/org/deeplearning4j/iterator/BertIterator.java) allow usage of the latest transformer models. If you are looking for word2vec, then we also have examples for that as well [here](https://github.com/eclipse/deeplearning4j-examples/tree/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/advanced/modelling/textclassification).
-4. Audio:   We do have a midi example [here](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/wip/advanced/modelling/melodl4j/MidiMelodyExtractor.java). Audio should be treated as time series. For your workflow, javacpp (which our ndarray library nd4j supports internally) has [ffmpeg bindings](https://github.com/bytedeco/javacpp-presets/tree/master/ffmpeg). Due to licensing restrictions for the project (basically no gpl code) we can not directly include ffmpeg in the project, but you are welcome to ask questions on the community forums.
-5. Video: Dl4j does not directly support video, but does have 3d convolutional layers for processing video frames. It is suggested to use javacv or ffmpeg mentioned above to process video and convert them in to frames. Please use our [forums](https://community.konduit.ai/) for additional support.
+### ND4J (Java)
 
-Once you have figured out how you will convert your data, you will need to figure out how to split it up in to training and validation sets. Dl4j allows you to do this in a few ways.
+ND4J is the tensor library for the JVM, analogous in purpose to NumPy. Every numerical operation in the DL4J ecosystem flows through ND4J.
 
-If all of your data is in memory, you can use our dataset api's split test and train api.
+The central abstraction is `INDArray` — an n-dimensional array that may live in CPU RAM or GPU VRAM depending on the active backend. The `Nd4j` factory class creates arrays:
 
-An example of that workflow maybe found [here](https://github.com/eclipse/deeplearning4j-examples/blob/165f406763330d5e7f8ce842e76d4376e24ff0d1/dl4j-examples/src/main/java/org/deeplearning4j/examples/advanced/features/metadata/CSVExampleEvaluationMetaData.java#L74). If your data may not fit in memory, it maybe worth looking in to our minibatch pipelines and ways of creating your test train splits over minibatches. Our image examples cover [this ](https://github.com/eclipse/deeplearning4j-examples/blob/165f406763330d5e7f8ce842e76d4376e24ff0d1/dl4j-examples/src/main/java/org/deeplearning4j/examples/advanced/modelling/densenet/DenseNetMain.java#L88). For larger input data like images, it is highly suggested to do minibatch partitioning of your data.
+```java
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
 
+// Create a 3x4 matrix of zeros
+INDArray zeros = Nd4j.zeros(3, 4);
 
+// Create from Java array
+INDArray a = Nd4j.create(new float[]{1, 2, 3, 4, 5, 6}, new int[]{2, 3});
 
-## Normalization
+// Element-wise multiply
+INDArray b = Nd4j.ones(2, 3);
+INDArray c = a.mul(b);
 
-Once your input data has been created and converted to ndarrays, you still need to decide how to normalize your data. DL4J has a set of normalizers that cover the standard preprocessing, this includes:
+// Matrix multiply
+INDArray result = a.mmul(b.transpose()); // shape [2, 2]
+```
 
-1. [Zero mean unit variance](https://github.com/eclipse/deeplearning4j-examples/blob/165f406763330d5e7f8ce842e76d4376e24ff0d1/dl4j-examples/src/main/java/org/deeplearning4j/examples/wip/quickstart/modelling/AnimalClassifier.java#L108)
-2. [Scale zero to 1](https://github.com/eclipse/deeplearning4j-examples/blob/165f406763330d5e7f8ce842e76d4376e24ff0d1/dl4j-examples/src/main/java/org/deeplearning4j/examples/quickstart/modeling/feedforward/regression/CSVDataModel.java#L78) - note that this can also be used to scale to a min and max like for images in this case being between 1 and 255.
+ND4J also ships activations (`Nd4j.getActivations()`), loss functions (`LossFunctions`), updaters (Adam, SGD, RMSProp), and evaluation classes (`Evaluation`, `RegressionEvaluation`).
 
-Normalizers, like models upcoming can be saved and loaded as part of your pipeline. Models must have their accompanying normalizers even during deployment. An example of serializing normalizers can be found [here](https://github.com/eclipse/deeplearning4j-examples/blob/165f406763330d5e7f8ce842e76d4376e24ff0d1/dl4j-examples/src/main/java/org/deeplearning4j/examples/advanced/modelling/sequenceanomalydetection/SequenceAnomalyDetection.java#L82).
+The backend is pluggable at the dependency level. Swap `nd4j-native` for `nd4j-cuda` and the same Java code executes on GPU — no source changes required.
 
+### SameDiff (inside ND4J)
 
+SameDiff is ND4J's automatic differentiation framework. It lives in the `nd4j-api` module alongside the `INDArray` API. SameDiff lets you define computation graphs symbolically using `SDVariable` nodes, execute them with concrete data, and differentiate through them automatically.
 
-## Building a model
+```java
+import org.nd4j.autodiff.samediff.SameDiff;
+import org.nd4j.autodiff.samediff.SDVariable;
 
-Once you have figured out how you will serialize your data as ndarrays you need to figure out how you will want to build your model.
+SameDiff sd = SameDiff.create();
 
-When building a model, you can choose one of the following:
+SDVariable x = sd.placeHolder("x", DataType.FLOAT, 2, 3);
+SDVariable w = sd.var("w", Nd4j.randn(3, 1));
+SDVariable b = sd.var("b", Nd4j.zeros(1));
 
-1. Train a model using the higher level dl4j interface. One quick example can be found [here](https://github.com/eclipse/deeplearning4j-examples/blob/165f406763330d5e7f8ce842e76d4376e24ff0d1/mvn-project-template/src/main/java/org/deeplearning4j/examples/sample/LeNetMNIST.java#L69).
-2. Train a model using samediff: lower level but more flexible. An example can be found [here](https://github.com/eclipse/deeplearning4j-examples/blob/165f406763330d5e7f8ce842e76d4376e24ff0d1/samediff-examples/src/main/java/org/nd4j/examples/samediff/quickstart/modeling/MNISTFeedforward.java#L52).
-3. Import a model from another framework such as tensorflow,keras or pytorch.
+SDVariable pred = sd.nn.linear(x, w, b);  // x * w + b
+SDVariable loss = sd.loss.meanSquaredError("loss", pred, sd.placeHolder("label", DataType.FLOAT, 2, 1));
 
-If you are going to import a model, there are a few things to be aware of.&#x20;
+sd.fit(...);  // trains via backprop
+```
 
-1. Tensorflow import: This uses samediff. Samediff has 2 forms of tensorflow import. The new version is the recommended path forward which uses a more extensible model import framework.
-2. Pytorch: Right now, it is required to import pytorch models via onnx. Please use pytorch's onnx model export to import a pytorch model in to deeplearning4j
-3. Keras: The keras h5 format integration is a bit older and uses the higher level dl4j interface. Keras model import for non sequential models use the computation graph. An example can be found [here](https://github.com/eclipse/deeplearning4j-examples/blob/165f406763330d5e7f8ce842e76d4376e24ff0d1/tensorflow-keras-import-examples/src/main/java/org/deeplearning4j/modelimportexamples/keras/advanced/deepmoji/ImportDeepMoji.java#L66). Sequential models can be found [here](https://github.com/eclipse/deeplearning4j-examples/blob/165f406763330d5e7f8ce842e76d4376e24ff0d1/tensorflow-keras-import-examples/src/main/java/org/deeplearning4j/modelimportexamples/keras/quickstart/SimpleSequentialMlpImport.java#L78).
+SameDiff can import pre-trained TensorFlow SavedModel and frozen graph files, as well as ONNX models, making it the primary entry point for running Python-trained models inside the JVM without a Python runtime.
 
-For more advanced models, it is suggested that the user pick the samediff framework. Going forward, that will be the preferred way to train and run models.&#x20;
+### DataVec
 
-When saving a model, make sure you save it. Note that the higher level dl4j interface and samediff also have different file formats. When saving models, note that normalizers above are saved separately. It is advised to save both separately.
+DataVec is the data ETL (extract, transform, load) library. Raw data in CSV, image directories, JSON, sequence files, JDBC, or dozens of other formats flows in through a `RecordReader` and comes out as `DataSet` objects ready for training.
 
+The two core components are:
 
+- **RecordReader** — reads raw bytes and emits `List<Writable>` records. Implementations include `CSVRecordReader`, `ImageRecordReader`, `JDBCRecordReader`, and many others.
+- **TransformProcess** — a chainable pipeline that maps, filters, normalizes, and reorders records according to a declared `Schema`.
 
-## Tuning a model
+```java
+Schema inputSchema = new Schema.Builder()
+    .addColumnString("label")
+    .addColumnsFloat("feature1", "feature2", "feature3")
+    .build();
 
-Tuning a model can be difficult. Our [tuning guide](../../deeplearning4j/how-to-guides/tuning-and-training/) can help navigate this. It uses the deeplearning4j ui to monitor the gradients and ensure that they converge quickly. It is recommended to run the dl4j ui in a separate process to avoid dependency clashes. An example of how to run the UI server in a separate process can be found [here](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/quickstart/features/userinterface/RemoteUIExample.java).
+TransformProcess tp = new TransformProcess.Builder(inputSchema)
+    .stringToOneHot("label", Arrays.asList("cat", "dog", "bird"))
+    .normalize("feature1", NormalizerType.STANDARDIZE)
+    .build();
 
-When evaluating models, it is suggested to pair the workflow here with the data set splitting considerations above. Our evaluation API takes in ndarrays and tracks evaluations in bits. An example of the higher level dl4j interface's evaluate call can be shown [here](https://github.com/eclipse/deeplearning4j-examples/blob/165f406763330d5e7f8ce842e76d4376e24ff0d1/dl4j-examples/src/main/java/org/deeplearning4j/examples/quickstart/modeling/convolution/LeNetMNISTReLu.java#L171).
+RecordReader rr = new CSVRecordReader(1, ',');  // skip header
+rr.initialize(new FileSplit(new File("data.csv")));
 
-A samediff model also has a similar evaluate call. In samediff, you pass in an evaluation object in to a training configuration. Results for the validation set will be streamed in to this object. An example can be found [here](https://github.com/eclipse/deeplearning4j-examples/blob/22197bd797661aac4b9a4871ea4314d43231383e/samediff-examples/src/main/java/org/nd4j/examples/samediff/quickstart/modeling/MNISTCNN.java#L88).
+RecordReader transformed = new TransformProcessRecordReader(rr, tp);
+DataSetIterator iter = new RecordReaderDataSetIterator(transformed, 32, 0, 3);
+```
 
+DataVec pipelines run locally or scale out on Apache Spark with no code changes to the transform logic.
 
+### Deeplearning4j (DL4J)
 
-## Deploying a model
+DL4J is the high-level neural network API. It sits on top of ND4J and DataVec and provides two model types:
 
-When deploying a machine learning model, the first consideration is to figure out what you are deploying. Generally a model deployment contains:
+- **`MultiLayerNetwork`** — a sequential stack of layers, suitable for feedforward, convolutional, and recurrent networks.
+- **`ComputationGraph`** — a directed acyclic graph of layers, required for multi-input/multi-output architectures, skip connections (ResNet), and any topology that `MultiLayerNetwork` cannot express.
 
-1. A normalizer file which is loaded and used during inference
-2. A model file (either a dl4j zip file or a samediff flatbuffers file)
-3. Data pipeline code that converts raw data from production to an appropriate format (usually ndarrays) for consumption by the neural network.
+```java
+MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
+    .seed(42)
+    .updater(new Adam(1e-3))
+    .list()
+    .layer(new DenseLayer.Builder().nIn(784).nOut(256).activation(Activation.RELU).build())
+    .layer(new DenseLayer.Builder().nIn(256).nOut(128).activation(Activation.RELU).build())
+    .layer(new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+        .nIn(128).nOut(10).activation(Activation.SOFTMAX).build())
+    .build();
 
-These 3 aspects of a deployment should all be treated as software assets just like code and be versioned. Optionally, a user may want to consider how to implement versioned deployments. There are a number of tools that can handle this.
+MultiLayerNetwork model = new MultiLayerNetwork(conf);
+model.init();
+model.fit(trainIter, 10);  // 10 epochs
 
-After a model has been built and deployed, usually the next thing users will want to do are setup the environment in which the model will run. One immediate suggestion is to optimize your dependencies.\
-Since the whole deeplearning4j suite heavily relies on javacpp for its underlying dependencies, [this guide](../how-to-guides/developer-docs/javacpp.md#dl-4-j-and-javacpp-overview) is recommended reading as next steps for optimizing your binaries.&#x20;
+Evaluation eval = model.evaluate(testIter);
+System.out.println(eval.stats());
+```
 
-Another consideration is performance. Depending on the nd4j backend you pick and the cpus you are deploying on, you may be able to add specialized performance increases such as:
+DL4J also includes:
 
-1. Helpers: Accelerated libraries for faster platform specific math routines including [onednn, armcompute, and cudnn.](../../libnd4j/reference/helpers-overview-cudnn-onednn-armcompute.md)
-2. Avx: We pre compile our binaries for specific intel cpus including avx2 and avx512. Various classifiers are available for developers which can be found [here](https://repo1.maven.org/maven2/org/nd4j/nd4j-native/1.0.0-M1.1/).
-3. Compatibility: if you need to run on a very old linux, we also provide a centos 6 compatible compat classifier.
+- **NLP utilities** — Word2Vec, Doc2Vec, GloVe, and tokenizers.
+- **Model Zoo** — pretrained weights for VGG16, ResNet50, YOLO, InceptionV3, and others via the `deeplearning4j-zoo` module.
+- **Distributed training** — gradient sharing and parameter averaging on Apache Spark clusters via `deeplearning4j-scaleout-spark`.
+- **Training UI** — a local web server (port 9000 by default) that streams loss curves and weight histograms to a browser during training.
 
-For building deployment pipelines, it is recommended to use [konduit-serving](https://github.com/KonduitAI/konduit-serving) which is built on the same technology and is usually co released alongside deeplearning4j.&#x20;
+### Python4J
 
-If you are going to just be deploying a model embedded in your application, then please remember the above artifacts for a model deployment when including resources for your micro service.
+Python4J embeds CPython 3.10 into the JVM via JavaCPP-packaged binaries. This allows Java code to call Python functions, execute scripts, and pass data between the two runtimes without serialization overhead.
 
+The `python4j-numpy` extension provides zero-copy interop between `INDArray` and `numpy.ndarray` by sharing the underlying memory buffer:
+
+```java
+PythonCondaEnvironment env = PythonCondaEnvironment.ofDirectory("/opt/conda/envs/myenv");
+Python.setContext(env);
+
+INDArray data = Nd4j.linspace(0, 9, 10).reshape(2, 5);
+
+PythonVariables inputs = new PythonVariables();
+inputs.addNDArray("x", data);
+
+PythonVariables outputs = new PythonVariables();
+outputs.addNDArray("result");
+
+Python.exec("import numpy as np; result = np.square(x)", inputs, outputs);
+
+INDArray result = outputs.getNDArrayValue("result");
+```
+
+Python4J is useful for calling scipy routines, custom preprocessing logic, or model inference libraries that do not yet have a JVM equivalent.
+
+### OmniHub
+
+OmniHub is a model hub for the DL4J ecosystem. It provides a registry of pretrained models in DL4J (`MultiLayerNetwork`/`ComputationGraph`) and SameDiff formats, downloadable with a single API call:
+
+```java
+ZooModel zooModel = OmniHubModel.builder()
+    .modelName("VGG16")
+    .pretrained(PretrainedType.IMAGENET)
+    .build();
+
+ComputationGraph model = (ComputationGraph) zooModel.initPretrained();
+```
+
+OmniHub handles checksum verification, caching to `~/.deeplearning4j/models/`, and version resolution.
+
+---
+
+## Dependency Diagram
+
+```
+libnd4j  (C++, platform-native kernels)
+    ^
+    | JavaCPP bindings
+    |
+ND4J  (nd4j-native or nd4j-cuda)  <-- SameDiff (autodiff, inside nd4j-api)
+    ^
+    |
+DataVec (ETL)    DL4J (neural networks)    Python4J    OmniHub
+```
+
+`DataVec`, `DL4J`, `Python4J`, and `OmniHub` all declare a dependency on `nd4j-api`. Your application must supply exactly one backend implementation (`nd4j-native` or `nd4j-cuda`) on the classpath at runtime.
+
+---
+
+## Typical Workflow
+
+A complete DL4J project follows this path:
+
+1. **Raw data** (CSV files, image folders, database tables) is pointed to by a `RecordReader`.
+2. **DataVec** applies a `TransformProcess` to clean, type-cast, and normalize the records.
+3. A **`DataSetIterator`** (usually `RecordReaderDataSetIterator`) wraps the reader and batches records into `DataSet` objects.
+4. **DL4J** trains a `MultiLayerNetwork` or `ComputationGraph` by iterating over the `DataSetIterator`.
+5. An **`Evaluation`** object scores the model on a held-out test iterator.
+6. **`ModelSerializer.writeModel()`** saves the trained model and normalizer to disk.
+7. At inference time, **`ModelSerializer.restoreMultiLayerNetwork()`** reloads the model, which can then score new `INDArray` inputs directly.
+
+---
+
+## Maven Setup for M2.1
+
+Add the version property and the two core dependencies to your `pom.xml`:
+
+```xml
+<properties>
+    <dl4j.version>1.0.0-M2.1</dl4j.version>
+</properties>
+
+<dependencies>
+    <!-- DL4J high-level API. Transitively pulls in deeplearning4j-nn and nd4j-api. -->
+    <dependency>
+        <groupId>org.deeplearning4j</groupId>
+        <artifactId>deeplearning4j-core</artifactId>
+        <version>${dl4j.version}</version>
+    </dependency>
+
+    <!-- CPU backend with natives bundled for all supported OS/arch combos. -->
+    <dependency>
+        <groupId>org.nd4j</groupId>
+        <artifactId>nd4j-native-platform</artifactId>
+        <version>${dl4j.version}</version>
+    </dependency>
+</dependencies>
+```
+
+`deeplearning4j-core` is a convenience aggregate that pulls in `deeplearning4j-nn` (the layer and model classes) and `nd4j-api` (the `INDArray` interface and SameDiff). It does not pull in a backend — that is always your choice.
+
+For DataVec, add:
+
+```xml
+<dependency>
+    <groupId>org.datavec</groupId>
+    <artifactId>datavec-api</artifactId>
+    <version>${dl4j.version}</version>
+</dependency>
+```
+
+Add format-specific modules as needed — for example `datavec-data-image` for `ImageRecordReader`, or `datavec-data-codec` for video.
+
+---
+
+## Backend Selection
+
+### Platform artifacts vs. classifier-specific artifacts
+
+The `-platform` suffix (`nd4j-native-platform`, `nd4j-cuda-platform`) causes Maven to download native JARs for all supported OS and architecture combinations. This is the recommended approach during development because it produces a portable artifact — the same JAR runs on any developer machine regardless of OS or CPU brand.
+
+In production, where the target hardware is known, use classifier-specific artifacts to avoid shipping unnecessary natives. For example, to target Linux on x86\_64 with AVX2:
+
+```xml
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-native</artifactId>
+    <version>${dl4j.version}</version>
+    <classifier>linux-x86_64-avx2</classifier>
+</dependency>
+```
+
+### Switching to GPU
+
+Replace `nd4j-native-platform` with `nd4j-cuda-platform`. No Java source code changes are required:
+
+```xml
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-cuda-11.6-platform</artifactId>
+    <version>${dl4j.version}</version>
+</dependency>
+```
+
+The CUDA version suffix (`11.6`) must match the CUDA toolkit installed on the machine. At runtime ND4J detects available GPUs through JavaCPP's CUDA bindings and allocates device memory automatically. You can control device selection with `Nd4j.getAffinityManager()`.
+
+Only one backend may be active per JVM process. If both `nd4j-native` and `nd4j-cuda` appear on the classpath, `nd4j-cuda` wins by default; set the system property `-Dorg.nd4j.linalg.factoryclass=org.nd4j.linalg.cpu.nativecpu.CpuNDArrayFactory` to force CPU.
+
+---
+
+## Where to Go Next
+
+With the ecosystem map in mind, the remaining core-concepts pages cover each layer in depth:
+
+- **INDArray and ND4J Operations** — shapes, strides, views, broadcasting rules, and the full operation API.
+- **SameDiff and Automatic Differentiation** — defining graphs, custom ops, and importing TensorFlow/ONNX models.
+- **DataVec ETL Pipelines** — schemas, all built-in `RecordReader` implementations, `TransformProcess` in detail, and Spark execution.
+- **MultiLayerNetwork and ComputationGraph** — layer catalog, configuration options, training callbacks, and the training UI.
+- **Backend Configuration** — memory management, workspace configuration, cuDNN integration, and profiling native performance.

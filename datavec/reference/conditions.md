@@ -1,400 +1,337 @@
+---
+title: "Conditions"
+description: "Conditional operations in DataVec — filtering and transforming data based on conditions"
+---
+
 # Conditions
 
-## BooleanCondition
+A `Condition` is a predicate over a record (or sequence) that returns true or false. Conditions are the building blocks of two things in DataVec:
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/condition/BooleanCondition.java)
+1. **Filters** — remove records where a condition is true
+2. **Conditional transforms** — replace or copy values in a column when a condition is met
 
-BooleanCondition: used for creating compound conditions, such as AND(ConditionA, ConditionB, …)\
-As a BooleanCondition is a condition, these can be chained together, like NOT(OR(AND(…),AND(…)))
+Most conditions are column-level: they inspect the value of a specific column and compare it against a threshold, set, or pattern.
 
-#### **outputColumnName**
+## The Condition Interface
 
-```
-public String outputColumnName()
-```
+All conditions implement `Condition`:
 
-The output column name after the operation has been applied
-
-* return the output column name
-
-#### **columnName**
-
-```
-public String columnName()
+```java
+public interface Condition {
+    boolean condition(Object input);             // evaluate on a full record
+    boolean conditionSequence(Object sequence); // evaluate on a sequence
+    Schema transform(Schema inputSchema);        // schema is unchanged for conditions
+}
 ```
 
-The output column names This will often be the same as the input
+When used in a filter, a record is removed if `condition(record)` returns **true**. Keep this direction in mind when writing conditions — it is the opposite of what some filter libraries use.
 
-* return the output column names
+## Column Conditions
 
-**condition**
+Column conditions apply to a specific named column, using a `ConditionOp` to specify the comparison.
 
-```
-public boolean condition(Object input)
-```
+### ConditionOp Values
 
-Condition on arbitrary input
+| ConditionOp | Meaning |
+|---|---|
+| `Equal` | value == threshold |
+| `NotEqual` | value != threshold |
+| `LessThan` | value < threshold |
+| `LessThanOrEqual` | value <= threshold |
+| `GreaterThan` | value > threshold |
+| `GreaterThanOrEqual` | value >= threshold |
+| `InSet` | value is in a set |
+| `NotInSet` | value is not in a set |
 
-* param input the input to return the condition for
-* return true if the condition is met false otherwise
+### DoubleColumnCondition
 
-**conditionSequence**
+Checks a double-precision column against a threshold:
 
-```
-public boolean conditionSequence(Object sequence)
-```
+```java
+import org.datavec.api.transform.condition.column.DoubleColumnCondition;
+import org.datavec.api.transform.condition.ConditionOp;
 
-Condition on arbitrary input
+// True if "price" < 0.0
+Condition negativePrice = new DoubleColumnCondition("price", ConditionOp.LessThan, 0.0);
 
-* param sequence the sequence to do a condition on
-* return true if the condition for the sequence is met false otherwise
-
-**transform**
-
-```
-public Schema transform(Schema inputSchema)
-```
-
-Get the output schema for this transformation, given an input schema
-
-* param inputSchema
-
-### **AND**
-
-```
-public static Condition AND(Condition... conditions)
+// True if "score" >= 0.9
+Condition highScore = new DoubleColumnCondition("score", ConditionOp.GreaterThanOrEqual, 0.9);
 ```
 
-And of all the given conditions
+### IntegerColumnCondition
 
-* param conditions the conditions to and
-* return a joint and of all these conditions
+```java
+import org.datavec.api.transform.condition.column.IntegerColumnCondition;
 
-### **OR**
+// True if "age" < 18
+Condition minor = new IntegerColumnCondition("age", ConditionOp.LessThan, 18);
 
-```
-public static Condition OR(Condition... conditions)
-```
-
-Or of all the given conditions
-
-* param conditions the conditions to or
-* return a joint and of all these conditions
-
-### **NOT**
-
-```
-public static Condition NOT(Condition condition)
+// True if "retryCount" > 3
+Condition tooManyRetries = new IntegerColumnCondition("retryCount", ConditionOp.GreaterThan, 3);
 ```
 
-Not of the given condition
+### LongColumnCondition
 
-* param condition the conditions to and
-* return a joint and of all these condition
+```java
+import org.datavec.api.transform.condition.column.LongColumnCondition;
 
-### **XOR**
-
-```
-public static Condition XOR(Condition first, Condition second)
-```
-
-And of all the given conditions
-
-* param first the first condition
-* param second the second condition for xor
-* return the xor of these 2 conditions
-
-#### SequenceConditionMode <a href="#sequenceconditionmode" id="sequenceconditionmode"></a>
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/condition/SequenceConditionMode.java)
-
-For certain single-column conditions: how should we apply these to sequences?\
-**And**: Condition applies to sequence only if it applies to ALL time steps\
-**Or**: Condition applies to sequence if it applies to ANY time steps\
-**NoSequencMode**: Condition cannot be applied to sequences at all (error condition)
-
-## BooleanColumnCondition
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/condition/column/BooleanColumnCondition.java)
-
-Created by agibsonccc on 11/26/16.
-
-**columnCondition**
-
-```
-public boolean columnCondition(Writable writable)
+// True if "timestamp" is before a certain epoch millisecond value
+long cutoff = DateTime.parse("2024-01-01").getMillis();
+Condition beforeCutoff = new LongColumnCondition("timestamp", ConditionOp.LessThan, cutoff);
 ```
 
-Returns whether the given element meets the condition set by this operation
+### StringColumnCondition
 
-* param writable the element to test
-* return true if the condition is met false otherwise
+Supports only `Equal` and `NotEqual` operators on string columns:
 
-**condition**
+```java
+import org.datavec.api.transform.condition.column.StringColumnCondition;
 
-```
-public boolean condition(Object input)
-```
+// True if "status" == "active"
+Condition isActive = new StringColumnCondition("status", ConditionOp.Equal, "active");
 
-Condition on arbitrary input
-
-* param input the input to return the condition for
-* return true if the condition is met false otherwise
-
-## CategoricalColumnCondition
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/condition/column/CategoricalColumnCondition.java)
-
-**columnCondition**
-
-```
-public boolean columnCondition(Writable writable)
+// True if "status" != "deleted"
+Condition notDeleted = new StringColumnCondition("status", ConditionOp.NotEqual, "deleted");
 ```
 
-Constructor for conditions equal or not equal. Uses default sequence condition mode, {- link BaseColumnCondition#DEFAULT\_SEQUENCE\_CONDITION\_MODE}
+### CategoricalColumnCondition
 
-* param columnName Column to check for the condition
-* param op Operation (== or != only)
-* param value Value to use in the condition
+Applies to categorical columns. Supports `Equal`, `NotEqual`, `InSet`, and `NotInSet`:
 
-**condition**
+```java
+import org.datavec.api.transform.condition.column.CategoricalColumnCondition;
 
-```
-public boolean condition(Object input)
-```
+// True if "tier" == "gold"
+Condition isGold = new CategoricalColumnCondition("tier", ConditionOp.Equal, "gold");
 
-Condition on arbitrary input
-
-* param input the input to return the condition for
-* return true if the condition is met false otherwise
-
-## DoubleColumnCondition
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/condition/column/DoubleColumnCondition.java)
-
-**columnCondition**
-
-```
-public boolean columnCondition(Writable writable)
+// True if "country" is NOT in the allowed set
+Condition notAllowed = new CategoricalColumnCondition(
+    "country",
+    ConditionOp.NotInSet,
+    new HashSet<>(Arrays.asList("USA", "CAN", "GBR"))
+);
 ```
 
-Constructor for operations such as less than, equal to, greater than, etc. Uses default sequence condition mode, {- link BaseColumnCondition#DEFAULT\_SEQUENCE\_CONDITION\_MODE}
+### TimeColumnCondition
 
-* param columnName Column to check for the condition
-* param op Operation (<, >=, !=, etc)
-* param value Value to use in the condition
+Compares a Time column (stored as epoch milliseconds) against a threshold:
 
-**condition**
+```java
+import org.datavec.api.transform.condition.column.TimeColumnCondition;
 
-```
-public boolean condition(Object input)
-```
+long oneDayAgoMs = System.currentTimeMillis() - (24 * 60 * 60 * 1000L);
 
-Condition on arbitrary input
-
-* param input the input to return the condition for
-* return true if the condition is met false otherwise
-
-## InfiniteColumnCondition
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/condition/column/InfiniteColumnCondition.java)
-
-A column condition that simply checks whether a floating point value is infinite
-
-**columnCondition**
-
-```
-public boolean columnCondition(Writable writable)
+// True if "eventTime" < one day ago (i.e., old records)
+Condition oldRecord = new TimeColumnCondition("eventTime", ConditionOp.LessThan, oneDayAgoMs);
 ```
 
-* param columnName Column check for the condition
+### BooleanColumnCondition
 
-## IntegerColumnCondition
+```java
+import org.datavec.api.transform.condition.column.BooleanColumnCondition;
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/condition/column/IntegerColumnCondition.java)
-
-**columnCondition**
-
-```
-public boolean columnCondition(Writable writable)
+// True if "isActive" == true
+Condition active = new BooleanColumnCondition("isActive", ConditionOp.Equal, true);
 ```
 
-Constructor for operations such as less than, equal to, greater than, etc. Uses default sequence condition mode, {- link BaseColumnCondition#DEFAULT\_SEQUENCE\_CONDITION\_MODE}
+## Null and Invalid Value Conditions
 
-* param columnName Column to check for the condition
-* param op Operation (<, >=, !=, etc)
-* param value Value to use in the condition
+### NullWritableColumnCondition
 
-**condition**
+True when the value in the specified column is a `NullWritable` (the DataVec representation of a missing value):
 
-```
-public boolean condition(Object input)
-```
+```java
+import org.datavec.api.transform.condition.column.NullWritableColumnCondition;
 
-Condition on arbitrary input
-
-* param input the input to return the condition for
-* return true if the condition is met false otherwise
-
-## InvalidValueColumnCondition
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/condition/column/InvalidValueColumnCondition.java)
-
-A Condition that applies to a single column. Whenever the specified value is invalid according to the schema, the condition applies.
-
-For example, if a Writable contains String values in an Integer column (and these cannot be parsed to an integer), then the condition would return true, as these values are invalid according to the schema.
-
-**condition**
-
-```
-public boolean condition(Object input)
+// True if "email" is null/missing
+Condition emailMissing = new NullWritableColumnCondition("email");
 ```
 
-Condition on arbitrary input
+### NaNColumnCondition
 
-* param input the input to return the condition for
-* return true if the condition is met false otherwise
+True when a floating-point column contains NaN:
 
-## LongColumnCondition
+```java
+import org.datavec.api.transform.condition.column.NaNColumnCondition;
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/condition/column/LongColumnCondition.java)
-
-**columnCondition**
-
-```
-public boolean columnCondition(Writable writable)
+Condition hasNaN = new NaNColumnCondition("sensorReading");
 ```
 
-Constructor for operations such as less than, equal to, greater than, etc. Uses default sequence condition mode, {- link BaseColumnCondition#DEFAULT\_SEQUENCE\_CONDITION\_MODE}
+### InfiniteColumnCondition
 
-* param columnName Column to check for the condition
-* param op Operation (<, >=, !=, etc)
-* param value Value to use in the condition
+True when a floating-point column contains positive or negative infinity:
 
-**condition**
+```java
+import org.datavec.api.transform.condition.column.InfiniteColumnCondition;
 
-```
-public boolean condition(Object input)
+Condition isInfinite = new InfiniteColumnCondition("logLoss");
 ```
 
-Condition on arbitrary input
+### InvalidValueColumnCondition
 
-* param input the input to return the condition for
-* return true if the condition is met false otherwise
+True whenever a column's value cannot be parsed as its declared type (e.g., a string where a Long is expected, or a value outside the declared min/max range):
 
-## NaNColumnCondition
+```java
+import org.datavec.api.transform.condition.column.InvalidValueColumnCondition;
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/condition/column/NaNColumnCondition.java)
-
-A column condition that simply checks whether a floating point value is NaN
-
-**columnCondition**
-
-```
-public boolean columnCondition(Writable writable)
+// True if "age" contains a value invalid for its Integer column type
+Condition invalidAge = new InvalidValueColumnCondition("age");
 ```
 
-* param columnName Name of the column to check the condition for
+This is particularly useful with `FilterInvalidValues` when you want to remove rather than fix bad records.
 
-## NullWritableColumnCondition
+## Regex Condition
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/condition/column/NullWritableColumnCondition.java)
+### StringRegexColumnCondition
 
-Condition that applies to the values in any column. Specifically, condition is true if the Writable value is a NullWritable, and false for any other value
+True if the string value in a column matches (or does not match) a regex:
 
-**condition**
+```java
+import org.datavec.api.transform.condition.string.StringRegexColumnCondition;
 
-```
-public boolean condition(Object input)
-```
+// True if "zipCode" matches exactly 5 digits
+Condition validZip = new StringRegexColumnCondition("zipCode", "\\d{5}");
 
-Condition on arbitrary input
-
-* param input the input to return the condition for
-* return true if the condition is met false otherwise
-
-## StringColumnCondition
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/condition/column/StringColumnCondition.java)
-
-**columnCondition**
-
-```
-public boolean columnCondition(Writable writable)
+// Can be applied to non-String columns too — uses Writable.toString()
 ```
 
-Constructor for conditions equal or not equal Uses default sequence condition mode, {- link BaseColumnCondition#DEFAULT\_SEQUENCE\_CONDITION\_MODE}
+## Sequence Length Condition
 
-* param columnName Column to check for the condition
-* param op Operation (== or != only)
-* param value Value to use in the condition
+### SequenceLengthCondition
 
-**condition**
+True when a sequence's length satisfies a comparison:
 
-```
-public boolean condition(Object input)
-```
+```java
+import org.datavec.api.transform.condition.sequence.SequenceLengthCondition;
 
-Condition on arbitrary input
+// True if the sequence has fewer than 10 time steps
+Condition tooShort = new SequenceLengthCondition(ConditionOp.LessThan, 10);
 
-* param input the input to return the condition for
-* return true if the condition is met false otherwise
-
-## TimeColumnCondition
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/condition/column/TimeColumnCondition.java)
-
-Condition that applies to the values
-
-**columnCondition**
-
-```
-public boolean columnCondition(Writable writable)
+// True if the sequence has exactly 100 steps
+Condition exactLength = new SequenceLengthCondition(ConditionOp.Equal, 100);
 ```
 
-Constructor for operations such as less than, equal to, greater than, etc. Uses default sequence condition mode, {- link BaseColumnCondition#DEFAULT\_SEQUENCE\_CONDITION\_MODE}
+## Boolean Logic: AND, OR, NOT, XOR
 
-* param columnName Column to check for the condition
-* param op Operation (<, >=, !=, etc)
-* param value Time value (in epoch millisecond format) to use in the condition
+`BooleanCondition` provides static factory methods to combine conditions:
 
-**condition**
+### AND
 
-```
-public boolean condition(Object input)
-```
+True only if all component conditions are true:
 
-Condition on arbitrary input
+```java
+import org.datavec.api.transform.condition.BooleanCondition;
 
-* param input the input to return the condition for
-* return true if the condition is met false otherwise
-
-## TrivialColumnCondition
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/condition/column/TrivialColumnCondition.java)
-
-Created by huitseeker on 5/17/17.
-
-## SequenceLengthCondition
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/condition/sequence/SequenceLengthCondition.java)
-
-A condition on sequence lengths
-
-## StringRegexColumnCondition
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/condition/string/StringRegexColumnCondition.java)
-
-Condition that applies to the values in a String column, using a provided regex. Condition return true if the String matches the regex, or false otherwise\
-**Note:** Uses Writable.toString(), hence can potentially be applied to non-String columns
-
-**condition**
-
-```
-public boolean condition(Object input)
+Condition richAdult = BooleanCondition.AND(
+    new IntegerColumnCondition("age", ConditionOp.GreaterThanOrEqual, 18),
+    new DoubleColumnCondition("income", ConditionOp.GreaterThan, 50000.0)
+);
 ```
 
-Condition on arbitrary input
+### OR
 
-* param input the input to return the condition for
-* return true if the condition is met false otherwise
+True if any component condition is true:
+
+```java
+Condition badRecord = BooleanCondition.OR(
+    new NaNColumnCondition("score"),
+    new InfiniteColumnCondition("score"),
+    new NullWritableColumnCondition("score")
+);
+```
+
+### NOT
+
+Inverts a condition:
+
+```java
+// True when "status" is NOT "active"
+Condition notActive = BooleanCondition.NOT(
+    new CategoricalColumnCondition("status", ConditionOp.Equal, "active")
+);
+```
+
+### XOR
+
+True when exactly one of the two conditions is true:
+
+```java
+Condition xorCondition = BooleanCondition.XOR(conditionA, conditionB);
+```
+
+### Nesting
+
+Boolean conditions can be nested to arbitrary depth:
+
+```java
+// Remove records that are either:
+// (a) from an unknown country, OR
+// (b) from an allowed country but with a negative price
+Condition toFilter = BooleanCondition.OR(
+    new CategoricalColumnCondition("country", ConditionOp.NotInSet,
+        new HashSet<>(Arrays.asList("USA", "CAN"))),
+    BooleanCondition.AND(
+        new CategoricalColumnCondition("country", ConditionOp.InSet,
+            new HashSet<>(Arrays.asList("USA", "CAN"))),
+        new DoubleColumnCondition("price", ConditionOp.LessThan, 0.0)
+    )
+);
+```
+
+## Sequence Condition Mode
+
+For single-column conditions applied to sequences, you can control how the condition is evaluated across all time steps:
+
+- `SequenceConditionMode.And` — the condition is true for the sequence only if it is true at **every** time step
+- `SequenceConditionMode.Or` — the condition is true for the sequence if it is true at **any** time step
+- `SequenceConditionMode.NoSequenceMode` — applying this condition to a sequence throws an error
+
+Most column condition constructors accept an optional `SequenceConditionMode` parameter:
+
+```java
+// True for a sequence if ANY time step has price < 0
+Condition anyNegative = new DoubleColumnCondition(
+    "price",
+    ConditionOp.LessThan,
+    0.0,
+    SequenceConditionMode.Or
+);
+```
+
+## Using Conditions in a TransformProcess
+
+### As a Filter
+
+```java
+TransformProcess tp = new TransformProcess.Builder(schema)
+    // Remove records where country is not in allowed set
+    .filter(new ConditionFilter(
+        new CategoricalColumnCondition("country",
+            ConditionOp.NotInSet, new HashSet<>(Arrays.asList("USA","CAN")))
+    ))
+    // Shorthand: pass condition directly (creates a ConditionFilter internally)
+    .filter(new DoubleColumnCondition("price", ConditionOp.LessThan, 0.0))
+    .build();
+```
+
+### In a Conditional Replace
+
+```java
+TransformProcess tp = new TransformProcess.Builder(schema)
+    // Replace negative prices with 0.0
+    .conditionalReplaceValueTransform(
+        "price",
+        new DoubleWritable(0.0),
+        new DoubleColumnCondition("price", ConditionOp.LessThan, 0.0)
+    )
+    // Replace with one of two values based on a boolean condition
+    .conditionalReplaceValueTransformWithDefault(
+        "flag",
+        new Text("yes"),
+        new Text("no"),
+        new BooleanColumnCondition("isActive", ConditionOp.Equal, true)
+    )
+    .build();
+```
+
+Conditions are evaluated at runtime for every record. Constructing complex nested conditions has essentially no overhead compared to the I/O of reading the data itself.

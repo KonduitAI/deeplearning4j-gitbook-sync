@@ -1,131 +1,234 @@
 ---
-description: Overview of language processing in DL4J
+title: "NLP Overview"
+description: "Natural language processing in Deeplearning4j — Word2Vec, Doc2Vec, tokenization, and text processing pipeline"
 ---
 
-# Language Processing
+# NLP Overview
 
-Although not designed to be comparable to tools such as Stanford CoreNLP or NLTK, deepLearning4J does include some core text processing tools that are described here.
+Deeplearning4j provides a focused set of natural language processing (NLP) tools designed for training and evaluating neural word embeddings and document embeddings on the JVM. The toolkit is not a full NLP pipeline in the style of Stanford CoreNLP or spaCy — it does not include dependency parsers, named-entity recognizers, or syntactic analyzers out of the box — but it covers the preprocessing and representation learning steps needed to feed text into deep learning models.
 
-Deeplearning4j's NLP support contains interfaces for different NLP libraries. A user wraps third party libraries via our interfaces. Deeplearning4j as of M1, does not support any 3rd party libraries directly. This is due to the lack of maintenance and custom work needed to make this work well for users. Instead, we expose interfaces to allow users to implement their own tokenizers.
+The core supported algorithms are:
 
-## SentenceIterator
+- **Word2Vec** — unsupervised learning of dense word vectors via Skip-Gram or CBOW objectives
+- **Doc2Vec (ParagraphVectors)** — extension of Word2Vec that learns vector representations for entire documents or labeled text spans
+- **GloVe-compatible loading** — load pretrained GloVe vectors and use them as word embeddings
 
-There are several steps involved in processing natural language. The first is to iterate over your corpus to create a list of documents, which can be as short as a tweet, or as long as a newspaper article. This is performed by a SentenceIterator, which will appear like this:
+For heavier linguistic preprocessing (sentence boundary detection, part-of-speech tagging, lemmatization), DL4J integrates with [Apache UIMA](https://uima.apache.org/) and the ClearTK framework. UIMA-based components are available but are optional — for most Word2Vec and Doc2Vec workflows, the built-in iterators and tokenizers are sufficient.
 
-```java
-// Gets Path to Text file
-String filePath = new File(dataLocalPath,"raw_sentences.txt").getAbsolutePath();
-// Strip white space before and after for each line
-SentenceIterator iter = new BasicLineIterator(filePath);
+---
+
+## The Text Processing Pipeline
+
+Every NLP workflow in DL4J follows the same three-stage pipeline:
+
+```
+Raw text
+   |
+   v
+SentenceIterator          -- produces one sentence (string) at a time
+   |
+   v
+TokenizerFactory          -- splits each sentence into tokens (words)
+   |
+   v
+Word2Vec / ParagraphVectors  -- learns vector representations
 ```
 
-The SentenceIterator encapsulates a corpus or text, organizing it, say, as one Tweet per line. It is responsible for feeding text piece by piece into your natural language processor. The SentenceIterator is not analogous to a similarly named class, the DatasetIterator, which creates a dataset for training a neural net. Instead it creates a collection of strings by segmenting a corpus.
+Understanding each stage makes it straightforward to swap components or build custom ones.
 
-## Tokenizer
+---
 
-A Tokenizer further segments the text at the level of single words, also alternatively as n-grams. ClearTK contains the underlying tokenizers, such as parts of speech (PoS) and parse trees, which allow for both dependency and constituency parsing, like that employed by a recursive neural tensor network (RNTN).
+## Stage 1: SentenceIterator
 
-A Tokenizer is created and wrapped by a [TokenizerFactory](https://github.com/eclipse/deeplearning4j/blob/6f027fd5075e3e76a38123ae5e28c00c17db4361/deeplearning4j-scaleout/deeplearning4j-nlp/src/main/java/org/deeplearning4j/text/tokenization/tokenizerfactory/UimaTokenizerFactory.java). The default tokens are words separated by spaces. The tokenization process also involves some machine learning to differentiate between ambibuous symbols like . which end sentences and also abbreviate words such as Mr. and vs.
+A `SentenceIterator` feeds raw text into the training process one sentence at a time. "Sentence" here means any unit of text that should be processed as a coherent context window — it might be an actual sentence, a tweet, a paragraph, or a document depending on your task.
 
-Both Tokenizers and SentenceIterators work with Preprocessors to deal with anomalies in messy text like Unicode, and to render such text, say, as lowercase characters uniformly.
+DL4J ships several implementations:
+
+| Class | Input source |
+|---|---|
+| `BasicLineIterator` | Reads a plain text file; one line = one sentence |
+| `LineSentenceIterator` | Like `BasicLineIterator`; accepts a `File` and allows a preprocessor |
+| `CollectionSentenceIterator` | Iterates over a `Collection<String>` already in memory |
+| `FileSentenceIterator` | Recursively walks a directory and returns lines |
+| `UimaSentenceIterator` | Uses OpenNLP / ClearTK for linguistically correct sentence segmentation |
+
+Minimal example using a text file:
 
 ```java
- public static void main(String[] args) throws Exception {
-
-        dataLocalPath = DownloaderUtility.NLPDATA.Download();
-        // Gets Path to Text file
-        String filePath = new File(dataLocalPath,"raw_sentences.txt").getAbsolutePath();
-
-        log.info("Load & Vectorize Sentences....");
-        // Strip white space before and after for each line
-        SentenceIterator iter = new BasicLineIterator(filePath);
-        // Split on white spaces in the line to get words
-        TokenizerFactory t = new DefaultTokenizerFactory();
-
-        /*
-            CommonPreprocessor will apply the following regex to each token: [\d\.:,"'\(\)\[\]|/?!;]+
-            So, effectively all numbers, punctuation symbols and some special symbols are stripped off.
-            Additionally it forces lower case for all tokens.
-         */
-        t.setTokenPreProcessor(new CommonPreprocessor());
+SentenceIterator iterator = new BasicLineIterator("/path/to/corpus.txt");
 ```
 
-## Vocab
-
-Each document has to be tokenized to create a vocab, the set of words that matter for that document or corpus. Those words are stored in the vocab cache, which contains statistics about a subset of words counted in the document, the words that "matter". The line separating significant and insignifant words is mobile, but the basic idea of distinguishing between the two groups is that words occurring only once (or less than, say, five times) are hard to learn and their presence represents unhelpful noise.
-
-The vocab cache stores metadata for methods such as Word2vec and Bag of Words, which treat words in radically different ways. Word2vec creates representations of words, or neural word embeddings, in the form of vectors that are hundreds of coefficients long. Those coefficients help neural nets predict the likelihood of a word appearing in any given context; for example, after another word. Here's Word2vec, configured:
+With a lowercase preprocessor:
 
 ```java
-package org.deeplearning4j.examples.nlp.word2vec;
+SentenceIterator iterator = new LineSentenceIterator(new File("/path/to/corpus.txt"));
+iterator.setPreProcessor(sentence -> sentence.toLowerCase());
+```
 
-import org.deeplearning4j.examples.download.DownloaderUtility;
+For in-memory data such as a list of tweets:
+
+```java
+List<String> tweets = Arrays.asList("Hello world", "DL4J is great", ...);
+SentenceIterator iterator = new CollectionSentenceIterator(tweets);
+```
+
+See [Sentence Iterators](sentence-iterator.md) for the full reference including custom implementations.
+
+---
+
+## Stage 2: TokenizerFactory
+
+A `TokenizerFactory` converts each sentence string into a sequence of tokens (typically words). It is stateless with respect to the vocabulary — vocabulary construction happens later inside the model.
+
+The standard choice for most tasks:
+
+```java
+TokenizerFactory tokenizerFactory = new DefaultTokenizerFactory();
+tokenizerFactory.setTokenPreProcessor(new CommonPreprocessor());
+```
+
+`CommonPreprocessor` applies lowercase conversion and strips punctuation, which is the most common normalization step before word embedding training.
+
+Alternative factories:
+
+- `NGramTokenizerFactory` — wraps another factory and produces n-gram tokens in addition to unigrams
+- `UimaTokenizerFactory` — linguistically accurate tokenization with stemming and POS tagging via UIMA
+
+See [Tokenization](tokenization.md) for details on preprocessors and custom tokenizers.
+
+---
+
+## Stage 3: Word2Vec or ParagraphVectors
+
+With an iterator and a tokenizer factory in hand, you wire them into a model builder:
+
+```java
+Word2Vec model = new Word2Vec.Builder()
+        .minWordFrequency(5)
+        .layerSize(100)
+        .windowSize(5)
+        .iterate(iterator)
+        .tokenizerFactory(tokenizerFactory)
+        .build();
+
+model.fit();
+```
+
+The model builds a `VocabCache` internally (filtering out words below `minWordFrequency`), then trains word vectors. After `fit()` completes, the model can answer nearest-neighbor queries and produce vector representations for any in-vocabulary word.
+
+---
+
+## Key Classes at a Glance
+
+| Class / Interface | Package | Role |
+|---|---|---|
+| `SentenceIterator` | `org.deeplearning4j.text.sentenceiterator` | Produces raw sentence strings |
+| `TokenizerFactory` | `org.deeplearning4j.text.tokenization.tokenizerfactory` | Creates `Tokenizer` instances per sentence |
+| `Tokenizer` | `org.deeplearning4j.text.tokenization.tokenizer` | Splits one sentence into tokens |
+| `TokenPreProcess` | `org.deeplearning4j.text.tokenization.tokenizer` | Normalizes individual tokens |
+| `VocabCache` | `org.deeplearning4j.models.word2vec.wordstore` | Stores vocabulary, word counts, and indices |
+| `Word2Vec` | `org.deeplearning4j.models.word2vec` | Trains and queries word embeddings |
+| `ParagraphVectors` | `org.deeplearning4j.models.paragraphvectors` | Trains document + word embeddings |
+| `WordVectorSerializer` | `org.deeplearning4j.models.embeddings.loader` | Saves and loads models and pretrained vectors |
+| `InMemoryLookupTable` | `org.deeplearning4j.models.embeddings.inmemory` | Stores the weight matrix (syn0/syn1) |
+
+---
+
+## Choosing the Right Component
+
+**Use Word2Vec when:**
+- Your goal is word-level similarity, analogy reasoning, or producing word embeddings as input features for a downstream neural network
+- You have a large text corpus and want unsupervised representation learning
+- You want to load pretrained embeddings (GloVe, Google News vectors) and use them with DL4J tooling
+
+**Use ParagraphVectors (Doc2Vec) when:**
+- You need vector representations for whole documents or labeled text categories
+- You are doing document classification, clustering, or similarity search at the document level
+- You have labeled training data and want to jointly learn document and word vectors
+
+**Use UimaSentenceIterator / UimaTokenizerFactory when:**
+- Sentence boundaries in your corpus are ambiguous (e.g., prose text with abbreviations)
+- You need linguistically accurate tokenization — for example, separating "isn't" into "is" and "n't"
+- You are working with languages or domains where simple whitespace splitting is inadequate
+
+For most English-language corpora where sentences are already one-per-line (logs, tweets, Wikipedia sentence-split dumps), `BasicLineIterator` plus `DefaultTokenizerFactory` with `CommonPreprocessor` is the right starting point. Add UIMA only when the simpler tools produce noticeable quality problems.
+
+---
+
+## Maven Dependency
+
+All NLP classes live in the `deeplearning4j-nlp` artifact:
+
+```xml
+<dependency>
+    <groupId>org.deeplearning4j</groupId>
+    <artifactId>deeplearning4j-nlp</artifactId>
+    <version>1.0.0-M2.1</version>
+</dependency>
+```
+
+UIMA-based components require the additional `deeplearning4j-nlp-uima` artifact:
+
+```xml
+<dependency>
+    <groupId>org.deeplearning4j</groupId>
+    <artifactId>deeplearning4j-nlp-uima</artifactId>
+    <version>1.0.0-M2.1</version>
+</dependency>
+```
+
+---
+
+## End-to-End Example
+
+The following snippet shows the complete pipeline from file to trained Word2Vec model:
+
+```java
 import org.deeplearning4j.models.word2vec.Word2Vec;
 import org.deeplearning4j.text.sentenceiterator.BasicLineIterator;
 import org.deeplearning4j.text.sentenceiterator.SentenceIterator;
 import org.deeplearning4j.text.tokenization.tokenizer.preprocessor.CommonPreprocessor;
 import org.deeplearning4j.text.tokenization.tokenizerfactory.DefaultTokenizerFactory;
 import org.deeplearning4j.text.tokenization.tokenizerfactory.TokenizerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 
-import java.io.File;
-import java.util.Collection;
+// 1. Load sentences
+SentenceIterator iterator = new BasicLineIterator("/data/corpus.txt");
 
-/**
- * Created by agibsonccc on 10/9/14.
- *
- * Neural net that processes text into wordvectors. See below url for an in-depth explanation.
- * https://deeplearning4j.org/word2vec.html
- */
-public class Word2VecRawTextExample {
+// 2. Configure tokenizer
+TokenizerFactory tokenizerFactory = new DefaultTokenizerFactory();
+tokenizerFactory.setTokenPreProcessor(new CommonPreprocessor());
 
-    private static Logger log = LoggerFactory.getLogger(Word2VecRawTextExample.class);
+// 3. Build and train Word2Vec
+Word2Vec model = new Word2Vec.Builder()
+        .minWordFrequency(5)
+        .layerSize(100)
+        .windowSize(5)
+        .iterations(1)
+        .seed(42)
+        .iterate(iterator)
+        .tokenizerFactory(tokenizerFactory)
+        .build();
 
-    public static String dataLocalPath;
+model.fit();
 
+// 4. Query the model
+Collection<String> nearest = model.wordsNearest("deep", 10);
+System.out.println("Nearest to 'deep': " + nearest);
 
-    public static void main(String[] args) throws Exception {
+double similarity = model.similarity("neural", "network");
+System.out.println("Similarity neural/network: " + similarity);
 
-        dataLocalPath = DownloaderUtility.NLPDATA.Download();
-        // Gets Path to Text file
-        String filePath = new File(dataLocalPath,"raw_sentences.txt").getAbsolutePath();
-
-        log.info("Load & Vectorize Sentences....");
-        // Strip white space before and after for each line
-        SentenceIterator iter = new BasicLineIterator(filePath);
-        // Split on white spaces in the line to get words
-        TokenizerFactory t = new DefaultTokenizerFactory();
-
-        /*
-            CommonPreprocessor will apply the following regex to each token: [\d\.:,"'\(\)\[\]|/?!;]+
-            So, effectively all numbers, punctuation symbols and some special symbols are stripped off.
-            Additionally it forces lower case for all tokens.
-         */
-        t.setTokenPreProcessor(new CommonPreprocessor());
-
-        log.info("Building model....");
-        Word2Vec vec = new Word2Vec.Builder()
-                .minWordFrequency(5)
-                .iterations(1)
-                .layerSize(100)
-                .seed(42)
-                .windowSize(5)
-                .iterate(iter)
-                .tokenizerFactory(t)
-                .build();
-
-        log.info("Fitting Word2Vec model....");
-        vec.fit();
-
-        log.info("Writing word vectors to text file....");
-
-        // Prints out the closest 10 words to "day". An example on what to do with these Word Vectors.
-        log.info("Closest Words:");
-        Collection<String> lst = vec.wordsNearestSum("day", 10);
-        log.info("10 Words closest to 'day': {}", lst);
-    }
-}
+// 5. Save
+WordVectorSerializer.writeWord2VecModel(model, "/models/word2vec.bin");
 ```
 
-Once you obtain word vectors, you can feed them into a deep net for classification, prediction, sentiment analysis and the like.
+---
+
+## Further Reading
+
+- [Word2Vec](word2vec.md) — detailed guide to training and querying word embeddings
+- [Doc2Vec / ParagraphVectors](doc2vec.md) — document-level embeddings
+- [Sentence Iterators](sentence-iterator.md) — all iterator types and custom iterators
+- [Tokenization](tokenization.md) — tokenizer factories, preprocessors, and custom tokenizers
+- [Vocabulary Cache](vocabulary-cache.md) — how the vocabulary is built and managed

@@ -1,292 +1,285 @@
 ---
-description: General guidelines for benchmarking in DL4J and ND4J.
+title: "Benchmarking"
+description: "How to benchmark DL4J and ND4J — OpProfiler, performance metrics, and comparing configurations"
 ---
 
-# Benchmark
+## Benchmarking DL4J and ND4J
 
-### General Benchmarking Guidelines
+Benchmarking neural network code is harder than benchmarking most software because of JVM warmup, garbage collection pauses, workspace memory learning phases, and the interaction between native libraries, BLAS implementations, and hardware. This guide covers the common pitfalls and the right tools for measuring performance accurately.
 
-**Guideline 1: Run Warm-Up Iterations Before Benchmarking**
+---
 
-A warm-up period is where you run a number of iterations (for example, a few hundred) of your benchmark without timing, before commencing timing for further iterations.
+## Why Benchmark?
 
-Why is a warm-up required? The first few iterations of any ND4J/DL4J execution may be slower than those that come later, for a number of reasons:
+Benchmarking answers questions like:
 
-1. In the initial benchmark iterations, the JVM has not yet had time to perform just-in-time compilation of code. Once JIT has completed, code is likely to execute faster for all subsequent operations&#x20;
-2. ND4J and DL4J (and, some other libraries) have some degree of lazy initialization: the first operation may trigger some one-off execution code.&#x20;
-3. DL4J or ND4J (when using workspaces) can take some iterations to learn memory requirements for execution. During this learning phase, performance will be lower than after its completion.
+- Is GPU training actually faster than CPU training for my model and batch size?
+- Is my data pipeline the bottleneck, or is it the forward/backward pass?
+- Will switching from OpenBLAS to MKL improve throughput on CPU?
+- Is minibatch size 64, 128, or 256 fastest for my hardware?
+- Has a code change regressed performance?
 
-**Guideline 2: Run Multiple Iterations of All Benchmarks**
+Without careful benchmarking, these questions are answered by intuition, which is frequently wrong for deep learning workloads.
 
-Your benchmark isn't the only thing running on your computer (not to mention if you are using cloud hardware, that might have shared resources). And operation runtime is not perfectly deterministic.
+---
 
-For benchmark results to be reliable, it is important to run multiple iterations - and ideally report both mean and standard deviation for the runtime. Without this, it's impossible to compare the performance of operations, as performance differences may simply be due to random variation.
+## Common Pitfalls
 
-**Guideline 3: Pay Careful Attention to What You Are Benchmarking**
+### 1. No JVM Warmup
 
-This is especially important when comparing frameworks. Before you declare that "performance on operation X is Y" or "A is faster than B", make sure that:
+The first several hundred iterations of any DL4J/ND4J workload are slower than steady-state for three reasons:
 
-You are bench-marking only the operations of interest.
+1. **JIT compilation** — The JVM interprets bytecode until the JIT compiler has profiled enough executions to compile hot methods to native code.
+2. **Library initialization** — ND4J and DL4J perform one-off initialization on the first operation.
+3. **Workspace memory learning** — When workspaces are enabled (the default), DL4J observes memory allocation patterns for the first few iterations before settling into an optimal allocation strategy.
 
-If your goal is to check the performance of an operation, make sure that only this operation is being timed.
-
-You should carefully check whether you unintentionally including other things - for example, does it include: JVM initialization time? Library initialization time? Result array allocation time? Garbage collection time? Data loading time?
-
-Ideally, these should be excluded from any timing/performance results you report. If they cannot be excluded, make sure you note this whenever making performance claims.
-
-1.  What native libraries are you using?
-
-    For example: what BLAS implementation (MKL, OpenBLAS, etc)? If you are using CUDA, are you using CuDNN? ND4J and DL4J can use these libraries (MKL, CuDNN) when they are available - but are not always available by default. If they are not made available, performance can be lower - sometimes considerably.
-
-    This is especially important when comparing results between libraries: for example, if you compared two libraries (one using OpenBLAS, another using MKL) your results may simply reflect the performance differences it the BLAS library being used - and not the performance of the libraries being tested. Similarly, one library with CuDNN and another without CuDNN may simply reflect the performance benefit of using CuDNN.
-2.  How are things configured?
-
-    For better or worse, DL4J and ND4J allow a lot of configuration. The default values for a lot of this configuration is adequate for most users - but sometimes manual configuration is required for optimal performance. This can be especially true in some benchmarks! Some of these configuration options allow users to trade off higher memory use for better performance, for example. Some configuration options of note: (a) Memory configuration (b) Workspaces and garbage collection (c) CuDNN (d) DL4J Cache Mode (enable using `.cacheMode(CacheMode.DEVICE)`)
-
-If you aren't sure if you are only measuring what you intend to measure when running DL4J or ND4J code, you can use a profiler such as VisualVM or YourKit Profilers.
-
-1. What versions are you using?  When benchmarking, you should use the latest version of whatever libraries you are benchmarking. There's no point identifying and reporting a bottleneck that was fixed 6 months ago. An exception to this would be when you are comparing performance over time between versions. Note also that snapshot versions of DL4J and ND4J are also available - these may contain performance improvements (feel free to ask)
-
-**Guideline 4: Focus on Real-World Use Cases - And Run a Range of Sizes**
-
-Consider for example a benchmark a benchmark that adds two numbers:
+**Fix:** Run at least 50–100 warmup iterations before starting any timer. Do not include warmup in your reported numbers.
 
 ```java
-double x = 0;
-//<start timing>
-x += 1.0;
-//<end timing>
+// Warmup — not timed
+for (int i = 0; i < 100; i++) {
+    net.fit(trainData.next());
+}
+trainData.reset();
+
+// Timed benchmark
+long start = System.currentTimeMillis();
+for (int i = 0; i < numIterations; i++) {
+    net.fit(trainData.next());
+}
+long end = System.currentTimeMillis();
+double iterationsPerSec = numIterations / ((end - start) / 1000.0);
 ```
 
-And something equivalent in ND4J:
+### 2. Too Few Iterations
 
-```java
-INDArray x = Nd4j.create(1);
-//<start timing>
-x.addi(1.0);
-//<end timing>
-```
+Network throughput is not perfectly deterministic due to GC pauses, OS scheduling, and shared resources on cloud hardware. Running only a handful of iterations produces noisy, unreliable numbers.
 
-Of course, the ND4J benchmark above is going to be much slower - method calls are required, input validation is performed, native code has to be called (with context switching overhead), and so on. One must ask the question, however: is this what users will actually be doing with ND4J or an equivalent linear algebra library? It's an extreme example - but the general point is a valid one.
+**Fix:** Run at least 100 timed iterations and report mean ± standard deviation. Without standard deviation, you cannot tell whether two configurations differ in performance or are within noise.
 
-Note also that performance on mathematical operations can be size - and shape - specific. For example, if you are benchmarking the performance on matrix multiplication - the matrix dimensions can matter a lot. In some internal benchmarks, we found that different BLAS implementations (MKL vs OpenBLAS) - and different backends (CPU vs GPU) - can perform very differently with different matrix dimensions. None of the BLAS implementations (OpenBLAS, MKL, CUDA) we have tested internally were uniformly faster than others for all input shapes and sizes.
+### 3. Measuring the Wrong Thing
 
-Therefore - whenever you are running benchmarks, it's important to run those benchmarks with multiple different input shapes/sizes, to get the full performance picture.
+Verify that your timer wraps exactly the code you intend to benchmark. Common accidental inclusions:
 
-**Guideline 5: Understand Your Hardware**
+- JVM startup time
+- Library initialization
+- Array allocation and zero-initialization
+- Data loading and preprocessing (ETL)
+- Garbage collection pauses (especially if GC triggers inside the timing window)
 
-When comparing different hardware, it's important to be aware of what it excels at. For example, you might find that neural network training performs faster on a CPU with minibatch size 1 than on a GPU - yet larger minibatch sizes show exactly the opposite. Similarly, small layer sizes may not be able to adequately utilize the power of a GPU.
+If you are benchmarking only the neural network forward/backward pass, pre-allocate all arrays and pre-fetch your data before starting the timer.
 
-Furthermore, some deep learning distributions may need to be specifically compiled to provide support for hardware features such as AVX2 (note that recent version of ND4J are packaged with binaries for CPUs that support these features). When running benchmarks, the utilization (or lack there-of) of these features can make a considerable difference to performance.
+### 4. Wrong Native Libraries
 
-**Guideline 6: Make It Reproducible**
+ND4J supports multiple BLAS backends:
 
-When running benchmarks, it's important to make your benchmarks reproducible. Why? Good or bad performance may only occur under certain limited circumstances.
+- **CPU:** OpenBLAS (default) or Intel MKL. MKL is typically 1.3–8× faster than OpenBLAS depending on array dimensions, though OpenBLAS is faster for some specific shapes.
+- **GPU:** CuBLAS (always used when CUDA backend is active). CuDNN additionally accelerates convolution — make sure it is enabled for CNN benchmarks.
 
-And finally - remember that (a) ND4J and DL4J are in constant development, and (b) benchmarks do sometimes identify performance bottlenecks (after all we - ND4J includes literally hundreds of distinct operations). If you identify a performance bottleneck, great - we want to know about it - so we can fix it. Any time a potential bottleneck is identified, we first need to reproduce it - so that we can study it, understand it and ultimately fix it.
-
-**Guideline 7: Understand the Limitations of Your Benchmarks**
-
-Linear algebra libraries contain hundreds of distinct operations. Neural network libraries contain dozens of layer types. When benchmarking, it's important to understand the limitations of those benchmarks. Benchmarking one type of operation or layer cannot tell you anything about the performance on other types of layers or operations - unless they share code that has been identified to be a performance bottleneck.
-
-**Guideline 8: If You Aren't Sure - Ask**
-
-The DL4J/ND4J developers are available on discourse. You can ask questions about benchmarking and performance there: [https://community.konduit.ai/c/dl4j](https://community.konduit.ai/c/dl4j)
-
-And if you do happen to find a performance issue - let us know!
-
-### ND4J Specific Benchmarking
-
-**A Note on BLAS and Array Orders**
-
-BLAS - or Basic Linear Algebra Subprograms - refers to an interface and set of methods used for linear algebra operations. Some examples include 'gemm' - General Matrix Multiplication - and 'axpy', which implements `Y = a*X+b`.
-
-ND4J can use multiple BLAS implementations - versions up to and including 1.0.0-beta6 have defaulted to OpenBLAS. However, if Intel MKL (free versions are available [here](https://software.intel.com/en-us/mkl)) is installed an available, ND4J will link with it for improved performance in many BLAS operations.
-
-Note that ND4J will log the BLAS backend used when it initializes. For example:
+ND4J logs which BLAS backend it is using at startup:
 
 ```
-14:17:34,169 INFO  ~ Loaded [CpuBackend] backend
-14:17:34,672 INFO  ~ Number of threads used for NativeOps: 8
-14:17:34,823 INFO  ~ Number of threads used for BLAS: 8
-14:17:34,831 INFO  ~ Backend used: [CPU]; OS: [Windows 10]
-14:17:34,831 INFO  ~ Cores: [16]; Memory: [7.1GB];
-14:17:34,831 INFO  ~ Blas vendor: [OPENBLAS]
+INFO ~ Blas vendor: [OPENBLAS]
 ```
 
-Performance can depend on the available BLAS library - in internal tests, we have found that OpenBLAS has been between 30% faster and 8x slower than MKL - depending on the array sizes and array orders.
+If you are comparing DL4J to another framework, make sure both are using the same BLAS library. Otherwise you are measuring the BLAS difference, not the framework difference.
 
-Regarding array orders, this also matters for performance. ND4J has the possibility of representing arrays in either row major ('c') or column major ('f') order. See [this Wikipedia page](https://en.wikipedia.org/wiki/Row-\_and\_column-major\_order) for more details. Performance in operations such as matrix multiplication - but also more general ND4J operations - depends on the input and result array orders.
+To use MKL, download it from [Intel's website](https://software.intel.com/en-us/mkl) and ensure it is on the library path before ND4J initializes.
 
-For matrix multiplication, this means there are 8 possible combinations of array orders (c/f for each of input 1, input 2 and result arrays). Performance won't be the same for all cases.
+### 5. Minibatch Size of 1
 
-Similarly, an operation such as element-wise addition (i.e., z=x+y) will be much faster for some combinations of input orders than others - notably, when x, y and z are all the same order. In short, this is due to memory striding: it's cheaper to read a sequence of memory addresses when those memory addresses are adjacent to each other in memory, as compared to being spread far apart.
+GPUs are throughput-optimized for large parallel workloads. A minibatch of 1 is almost always slower on GPU than CPU because the GPU cannot be fully utilized. Do not benchmark with minibatch size 1 unless minibatch size 1 is actually your inference use case.
 
-Note that, by default, ND4J expects result arrays (for matrix multiplication) to be defined in column major ('f') order, to be consistent across backends, given that CuBLAS (i.e., NVIDIA's BLAS library for CUDA) requires results to be in f order. As a consequence, some ways of performing matrix multiplication with the result array being in c order will have lower performance than if the same operation was executed with an 'f' order array.
+**Rule of thumb for GPU:** Use minibatch sizes that are multiples of 32 (or at least 8). For CPU training, larger batches reduce Python-to-Java boundary overhead when using SameDiff, and also reduce per-iteration overhead.
 
-Finally, when it comes to CUDA: array orders/striding can matter even more than when running on CPU. For example, certain combinations of orders can be much faster than others - and input/output dimensions that are even multiples of 32 or 64 typically perform faster (sometimes considerably) than when input/output dimensions are not multiples of 32.
+### 6. Benchmarking Only One Array Shape
 
-### DL4J Specific Benchmarking
+BLAS operation performance is sensitive to matrix dimensions. A benchmark with `[128, 512]` × `[512, 1024]` matrix multiplication does not predict performance for `[1, 512]` × `[512, 1024]`. Run your benchmark with a range of batch sizes and layer sizes to get a complete picture.
 
-Most of what has been said for ND4J also applies to DL4J.
+---
 
-In addition:
+## JVM Configuration for Benchmarking
 
-1. If you are using the nd4j-native (CPU) backend, ensure you are using Intel MKL. This is faster than the default of OpenBLAS in most cases.&#x20;
-2. If you are using CUDA, ensure you are using CuDNN ([link](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/multi-project/config/backends/config-cudnn.md))
-3. Check the [Workspaces](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/multi-project/config/config-memory/config-workspaces.md) and [Memory](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/multi-project/config/config-memory/) guides. The defaults are usually good - but sometimes better performance can be obtained with some tweaking. This is especially important if you have a lot of Java objects (such as, Word2Vec vectors) in memory while training.&#x20;
-4. Watch out for ETL bottlenecks. You can add PerformanceListener to your network training to see if ETL is a bottleneck.&#x20;
-5. Don't forget that performance is dependent on minibatch sizes. Don't benchmark with minibatch size 1 - use something more realistic.&#x20;
-6. If you need multi-GPU training or inference support, use `ParallelWrapper` or `ParallelInference`.
-7. Don't forget that CuDNN is configurable: you can specify DL4J/CuDNN to prefer performance - at the expense of memory - using `.cudnnAlgoMode(ConvolutionLayer.AlgoMode.PREFER_FASTEST)` configuration on convolution layers&#x20;
-8. When using GPUs, multiples of 8 (or 32) for input sizes and layer sizes may perform better.&#x20;
-9. When using RNNs (and manually creating INDArrays), use 'f' ordered arrays for both features and (`RnnOutputLayer`) labels. Otherwise, use 'c' ordered arrays. This is for faster memory access.
+### Heap Space
 
-### Common Benchmark Mistakes
+DL4J uses both on-heap and off-heap memory. JavaCPP manages off-heap memory (including GPU memory) and uses the JVM GC to trigger deallocation. Setting heap too low causes frequent GC, which introduces pauses into your timing.
 
-Finally, here's a summary list of common benchmark mistakes:
-
-1. Not using the latest version of ND4J/DL4J (there's no point identifying a bottleneck that was fixed many releases back). Consider trying snapshots to get the latest performance improvements.
-2. Not paying attention to what native libraries (MKL, OpenBLAS, CuDNN etc) are being used
-3. Providing no warm-up period before benchmarking begins
-4. Running only a single (or too few) iterations, or not reporting mean, standard deviation and number of iterations
-5. Not configuring workspaces, garbage collection, etc
-6. Running only one possible case - for example, benchmarking a single set of array dimensions/orders when benchmarking BLAS operations
-7. Running unusually small inputs - for example, minibatch size 1 on a GPU (which might be slower - but isn't realistic!)
-8. Not measuring exactly - and only - what you claim to be measuring (for example, not accounting for array allocation, initialization or garbage collection time)
-9. Not making your benchmarks reproducible (does the benchmark conclusion generalize? are there problems with the benchmark? what can we do to fix it?)
-10. Comparing results across different hardware, not accounting for differences (for example, testing on one machine with AVX2 support, and on another without)
-11. Not asking the devs (via [Discourse](https://community.konduit.ai/c/dl4j) - we are happy to provide suggestions and investigate if performance isn't where it should be!
-
-## How to Run Deeplearning4j Benchmarks - A Guide
-
-Total training time is always ETL plus computation. That is, both the data pipeline and the matrix manipulations determine how long a neural network takes to train on a dataset.
-
-When programmers familiar with Python try to run benchmarks comparing Deeplearning4j to well-known Python frameworks, they usually end up comparing ETL + computation on DL4J to just computation on the Python framework. That is, they're comparing apples to oranges. We'll explain how to optimize several parameters below.
-
-The JVM has knobs to tune, and if you know how to tune them, you can make it a very fast environment for deep learning. There are several things to keep in mind on the JVM. You need to:
-
-* Increase the [heap space](http://javarevisited.blogspot.com/2011/05/java-heap-space-memory-size-jvm.html)
-* Get garbage collection right
-* Make ETL asynchronous
-* Presave datasets (aka pickling)
-
-### Setting Heap Space
-
-Users have to reconfigure their JVMs themselves, including setting the heap space. We can't give it to you preconfigured, but we can show you how to do it. Here are the two most important knobs for heap space.
-
-* Xms sets the minimum heap space
-* Xmx sets the maximum heap space
-
-You can set these in IDEs like IntelliJ and Eclipse, as well as via the CLI like so:
+Set `-Xms` and `-Xmx` to the same value to avoid gradual heap expansion overhead:
 
 ```
-    java -Xms256m -Xmx1024m YourClassNameHere
+java -Xms4g -Xmx4g -cp ... YourBenchmarkClass
 ```
 
-In [IntelliJ, this is a VM parameter](https://www.jetbrains.com/help/idea/2016.3/setting-configuration-options.html), not a program argument. When you hit run in IntelliJ (the green button), that sets up a run-time configuration. IJ starts a Java VM for you with the configurations you specify.
-
-What’s the ideal amount to set `Xmx` to? That depends on how much RAM is on your computer. In general, allocate as much heap space as you think the JVM will need to get work done. Let’s say you’re on a 16G RAM laptop — allocate 8G of RAM to the JVM. A sound minimum on laptops with less RAM would be 3g, so
-
-```
-    java -Xmx3g
-```
-
-It may seem counterintuitive, but you want the min and max to be the same; i.e. `Xms` should equal `Xmx`. If they are unequal, the JVM will progressively allocate more memory as needed until it reaches the max, and that process of gradual allocation slows things down. You want to pre-allocate it at the beginning. So
-
-```
-    java -Xms3g -Xmx3g YourClassNameHere
-```
-
-IntelliJ will automatically specify the [Java main class](https://docs.oracle.com/javase/tutorial/getStarted/application/) in question.
-
-Another way to do this is by setting your environmental variables. Here, you would alter your hidden `.bash_profile` file, which adds environmental variables to bash. To see those variables, enter `env` in the command line. To add more heap space, enter this command in your console:
-
-```
-    echo "export MAVEN_OPTS="-Xmx512m -XX:MaxPermSize=512m"" > ~/.bash_profile
-```
-
-We need to increase heap space because Deeplearning4j loads data in the background, which means we're taking more RAM in memory. By allowing more heap space for the JVM, we can cache more data in memory.
+A common starting point is half your available RAM.
 
 ### Garbage Collection
 
-A garbage collector is a program which runs on the JVM and gets rid of objects no longer used by a Java application. It is automatic memory management. Creating a new object in Java takes on-heap memory: A new Java object takes up 8 bytes of memory by default. So every new `DatasetIterator` you create takes another 8 bytes.
-
-You may need to alter the garbage collection algorithm that Java is using. This can be done via the command line like so:
+Use the G1GC garbage collector, which provides more predictable pause behavior:
 
 ```
-    java -XX:+UseG1GC
+java -XX:+UseG1GC -Xms4g -Xmx4g ...
 ```
 
-Better garbage collection increases throughput. For a more detailed exploration of the issue, please read this [InfoQ article](https://www.infoq.com/articles/Make-G1-Default-Garbage-Collector-in-Java-9).
+For benchmarks where GC pauses would corrupt your timing, use `-Xlog:gc` to log GC events and exclude iterations that had a GC pause from your statistics.
 
-DL4J is tightly linked to the garbage collector. [JavaCPP](https://github.com/bytedeco/javacpp), the bridge between the JVM and C++, adheres to the heap space you set with `Xmx` and works extensively with off-heap memory. The off-heap memory will not surpass the amount of heap space you specify.
+---
 
-JavaCPP, created by a Skymind engineer, relies on the garbage collector to tell it what has been done. We rely on the Java GC to tell us what to collect; the Java GC points at things, and we know how to de-allocate them with JavaCPP. This applies equally to how we work with GPUs.
+## PerformanceListener
 
-The larger the batch size you use, the more RAM you’re taking in memory.
-
-### ETL & Asynchronous ETL
-
-In our `dl4j-examples` repo, we don't make the ETL asynchronous, because the point of examples is to keep them simple. But for real-world problems, you need asynchronous ETL, and we'll show you how to do it with examples.
-
-Data is stored on disk and disk is slow. That’s the default. So you run into bottlenecks when loading data onto your hard drive. When optimizing throughput, the slowest component is always the bottleneck. For example, a distributed Spark job using three GPU workers and one CPU worker will have a bottleneck with the CPU. The GPUs have to wait for that CPU to finish.
-
-The Deeplearning4j class `DatasetIterator` hides the complexity of loading data on disk. The code for using any Datasetiterator will always be the same, invoking looks the same, but they work differently.
-
-* one loads from disk&#x20;
-* one loads asynchronously
-* one loads pre-saved from RAM
-
-Here's how the DatasetIterator is uniformly invoked for MNIST:
+`PerformanceListener` is a DL4J training listener that logs throughput (examples/sec and iterations/sec) to the console at a configurable frequency. It is the easiest way to measure training throughput without writing a custom benchmark loop.
 
 ```java
-        while(mnistTest.hasNext()){
-                DataSet ds = mnistTest.next();
-                INDArray output = model.output(ds.getFeatures(), false);
-                eval.eval(ds.getLabels(), output);
-        }
+import org.deeplearning4j.optimize.listeners.PerformanceListener;
+
+// Report throughput every 10 iterations
+net.addListeners(new PerformanceListener(10, true));
+
+// Train normally
+net.fit(dataSetIterator, numEpochs);
 ```
 
-You can optimize by using an asynchronous loader in the background. Java can do real multi-threading. It can load data in the background while other threads take care of compute. So you load data into the GPU at the same time that compute is being run. The neural net trains even as you grab new data from memory.
+Output example:
+```
+o.d.o.l.PerformanceListener - Iteration 10, thread 1:
+    Score: 1.2345, examples/sec: 4821.3, batches/sec: 75.3
+```
 
-This is the [relevant code](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-scaleout/deeplearning4j-scaleout-parallelwrapper/src/main/java/org/deeplearning4j/parallelism/ParallelWrapper.java#L136), in particular the third line:
+`PerformanceListener` is also useful for detecting ETL bottlenecks: if `examples/sec` is lower than expected for your hardware, and GPU utilization is low, the data loading pipeline is likely the bottleneck.
+
+---
+
+## Profiling with OpProfiler
+
+ND4J's `OpProfiler` records timing and call counts for every native operation, allowing you to identify which ops are taking the most time.
 
 ```java
-    MultiDataSetIterator iterator;
-    if (prefetchSize > 0 && source.asyncSupported()) {
-        iterator = new AsyncMultiDataSetIterator(source, prefetchSize);
-    } else iterator = source;
+import org.nd4j.linalg.profiler.OpProfiler;
+
+// Enable profiling
+OpProfiler.getInstance().reset();
+
+// Run your workload
+net.fit(data);
+
+// Print the profiling report
+OpProfiler.getInstance().printOutDashboard();
 ```
 
-There are actually two types of asynchronous dataset iterators. The `AsyncDataSetIterator` is what you would use most of the time. It's described in the [Javadoc here](https://javadoc.io/doc/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/linalg/dataset/AsyncDataSetIterator.html).
+The report shows each op sorted by total time, with call count and mean/max latency. This is useful for:
 
-For special cases such as recurrent neural nets applied to time series, or for computation graphs, you would use a `AsyncMultiDataSetIterator`, described in the [Javadoc here](https://javadoc.io/doc/org.nd4j/nd4j-api/1.0.0-M1/org/nd4j/linalg/dataset/AsyncMultiDataSetIterator.html).
+- Finding which layer types are the bottleneck (e.g., a specific activation function or normalization layer)
+- Verifying that CuDNN is being used for convolution (CuDNN ops appear as `cudnnConvolutionForward` rather than a generic `conv2d`)
+- Identifying ops that are called far more times than expected (indicating a loop or algorithm issue)
 
-Notice in the code above that `prefetchSize` is another parameter to set. Normal batch size might be 1000 examples, but if you set `prefetchSize` to 3, it would pre-fetch 3,000 instances.
+For CUDA profiling with external tools (NVIDIA Nsight, nvprof), ND4J exposes NVTX markers that annotate GPU kernel launches with their logical op names.
 
-### ETL: Comparing Python frameworks With Deeplearning4j
+---
 
-In Python, programmers are converting their data into [pickles](https://docs.python.org/2/library/pickle.html), or binary data objects. And if they're working with a smallish toy dataset, they're loading all those pickles into RAM. So they're effectively sidestepping a major task in dealing with larger datasets. At the same time, when benchmarking against Dl4j, they're not loading all the data onto RAM. So they're effectively comparing Dl4j speed for training computations + ETL against only training computation time for Python frameworks.
+## CPU vs GPU Comparison
 
-But Java has robust tools for moving big data, and if compared correctly, is much faster than Python. The Deeplearning4j community has reported up to 3700% increases in speed over Python frameworks, when ETL and computation are optimized.
+When comparing CPU and GPU performance:
 
-Deeplearning4j uses DataVec as it ETL and vectorization library. Unlike other deep-learning tools, DataVec does not force a particular format on your dataset. (Caffe forces you to use [hdf5](https://support.hdfgroup.org/HDF5/), for example.)
+- **Favor large batch sizes for GPU.** The GPU becomes worthwhile when the parallelism of matrix operations can be fully exploited. A rule of thumb: for a layer with `N` outputs, you want a minibatch of at least `N/32` to saturate a modern GPU.
+- **MKL on CPU** is competitive with GPU for small models and small batch sizes. Do not assume GPU is faster without measuring.
+- **Input dimensions matter for CUDA.** Sizes that are even multiples of 32 (or 64) typically perform better on GPU due to warp alignment. Avoid odd sizes in benchmarks unless those are your production sizes.
+- **Array order matters.** ND4J defaults to column-major ('f') order for BLAS result arrays (required by CuBLAS). Mismatched array orders between operations add transpose overhead. In benchmarks, track array orders explicitly.
 
-We try to be more flexible. That means you can point DL4J at raw photos, and it will load the image, run the transforms and put it into an NDArray to generate a dataset on the fly.
+---
 
-But if your training pipeline is doing that every time, Deeplearning4j will seem about 10x slower than other frameworks, because you’re spending your time creating datasets. Every time you call `fit`, you're recreating a dataset, over and over again. We allow it to happen for ease of use, but we can show you how to speed things up. There are ways to make it just as fast.
+## Batch Size Optimization
 
-One way is to pre-save the datasets, in a manner similar to the Python frameworks. (Pickles are pre-formatted data.) When you pre-save the dataset, you create a separate class.
+The optimal batch size is a function of your hardware, model architecture, and training objective. Guidelines:
 
-Here’s how you [pre-save datasets](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/misc/presave/PreSave.java).
+- Start at 32 and double until you hit memory limits or diminishing throughput returns.
+- For GPU: multiples of 32 are generally most efficient. Multiples of 8 are the minimum.
+- For training quality: very large batches (> 2048) often require learning rate scaling (e.g., linear scaling rule: multiply LR by `batch_size / base_batch_size`) to maintain convergence speed.
+- Measure both throughput (examples/sec) and convergence (accuracy per epoch) — the fastest batch size in examples/sec may not yield the fastest convergence in wall-clock time if it hurts generalization.
 
-A `Recordreaderdatasetiterator` talks to Datavec and outputs datasets for DL4J.
+---
 
-Here’s how you [load a pre-saved dataset](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/misc/presave/LoadPreSavedLenetMnistExample.java).
+## ETL Benchmarking and Async Loading
 
-Line 90 is where you see the asynchronous ETL. In this case, it's wrapping the pre-saved iterator, so you're taking advantage of both methods, with the asynch loading the pre-saved data in the background as the net trains.
+A common mistake when comparing DL4J to Python frameworks is including ETL time in the DL4J timing but not in the Python timing (because Python frameworks are usually compared with pre-cached pickled data). Measure ETL and computation separately.
 
-### MKL and Inference on CPUs
+To detect an ETL bottleneck with `PerformanceListener`: if GPU utilization is low and `PerformanceListener` shows low throughput, the DataSetIterator is the bottleneck.
 
-If you are running inference benchmarks on CPUs, make sure you are using Deeplearning4j with Intel's MKL library, which is available via a clickwrap; i.e. Deeplearning4j does not bundle MKL like Anaconda, which is used by libraries like PyTorch.
+**Fix: Use AsyncDataSetIterator**
+
+```java
+import org.deeplearning4j.datasets.iterator.AsyncDataSetIterator;
+
+DataSetIterator underlying = new ImageDataSetIterator(...);
+DataSetIterator async = new AsyncDataSetIterator(underlying, prefetchSize);
+
+net.fit(async, numEpochs);
+```
+
+`prefetchSize` controls how many minibatches are pre-fetched in a background thread. A value of 2–8 is typical.
+
+For `ComputationGraph` with `MultiDataSetIterator`:
+
+```java
+import org.deeplearning4j.datasets.iterator.AsyncMultiDataSetIterator;
+MultiDataSetIterator async = new AsyncMultiDataSetIterator(underlying, prefetchSize);
+```
+
+**Fix: Pre-save datasets**
+
+For datasets where preprocessing is expensive, pre-save the transformed DataSet objects to disk and load them directly during training:
+
+```java
+// Pre-save (run once)
+DataSetIterator raw = new RecordReaderDataSetIterator(...);
+int i = 0;
+while (raw.hasNext()) {
+    DataSet ds = raw.next();
+    DataSetWriterIterator.save(ds, new File("presaved/batch_" + i++ + ".bin"));
+}
+
+// Load pre-saved (fast at training time)
+DataSetIterator presaved = new ExistingMinibatchDataSetIterator(new File("presaved/"));
+DataSetIterator async = new AsyncDataSetIterator(presaved, 4);
+net.fit(async, numEpochs);
+```
+
+---
+
+## Memory Profiling
+
+If you suspect memory pressure is degrading throughput (frequent GC pauses, out-of-memory errors, or slow throughput despite high GPU utilization):
+
+1. **Log GC:** Add `-Xlog:gc` to the JVM arguments and observe how often major collections occur during training.
+2. **Check workspace configuration:** See the [Workspaces](config/workspaces.md) guide. The default workspace configuration is good for most cases, but disabling workspaces for debugging can help isolate whether workspace overhead is the issue.
+3. **Off-heap monitoring:** JavaCPP off-heap usage is bounded by the heap size (set via `-Xmx`). If you have 16 GB of RAM and set `-Xmx4g`, ND4J's off-heap will not exceed 4 GB.
+4. **VisualVM or YourKit:** For deep profiling, attach a Java profiler to your training process to see heap allocation rate, GC frequency, and hot allocation paths.
+
+---
+
+## Reproducibility and Reporting
+
+A benchmark is only useful if it can be reproduced. When reporting results, always include:
+
+- DL4J and ND4J version (include snapshot versions if applicable)
+- JVM version and GC configuration
+- BLAS backend (MKL or OpenBLAS; CuDNN version for GPU)
+- Hardware (CPU model / GPU model, RAM)
+- Minibatch size and number of iterations (warmup + timed)
+- Mean and standard deviation of the metric
+
+Without these details, another person cannot reproduce your results or identify whether a difference in your benchmarks reflects framework performance or environmental differences.
+
+If you identify a performance bottleneck, open an issue on the [DL4J GitHub](https://github.com/eclipse/deeplearning4j/issues) with a minimal reproducible benchmark. The developers actively investigate and fix performance regressions.
+
+---
+
+## Quick Checklist
+
+- [ ] JVM warmup period of at least 50–100 iterations before timing
+- [ ] 100+ timed iterations; report mean and standard deviation
+- [ ] Timer wraps only the code you intend to measure
+- [ ] Correct BLAS backend confirmed in ND4J startup log
+- [ ] CuDNN enabled and confirmed for GPU convolution benchmarks
+- [ ] Minibatch size is realistic (not 1 on GPU)
+- [ ] Array allocation is outside the timing window
+- [ ] ETL is benchmarked separately from computation
+- [ ] Results include version, hardware, and BLAS backend information

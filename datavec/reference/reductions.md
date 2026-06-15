@@ -1,97 +1,213 @@
+---
+title: "Reductions"
+description: "DataVec reduction operations — aggregating, grouping, and summarizing records and sequences"
+---
+
 # Reductions
 
-## Available reductions
+Reductions aggregate multiple records (or time steps within a sequence) into a single record. They are the primary tool for:
 
-### GeographicMidpointReduction
+- Collapsing a group of rows that share the same key into one summarized row
+- Reducing sequences into a fixed-size feature vector
+- Computing geographic midpoints from coordinate strings
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/reduce/impl/GeographicMidpointReduction.java)
+DataVec provides two core reducer classes: `Reducer` for numerical and general column data, and `StringReducer` for string-column aggregation.
 
-delimiter is configurable), determine the geographic midpoint. See “geographic midpoint” at: [http://www.geomidpoint.com/methods.html](http://www.geomidpoint.com/methods.html) For implementation algorithm, see: [http://www.geomidpoint.com/calculation.html](http://www.geomidpoint.com/calculation.html)
+## Reducer
 
-**transform**
+`Reducer` (in `org.datavec.api.transform.reduce`) collapses groups of records into single records. The columns you specify for reduction get aggregated; the remaining key columns are left as-is.
 
-```
-public Schema transform(Schema inputSchema)
-```
+### Basic usage
 
-* param delim Delimiter for the coordinates in text format. For example, if format is “lat,long” use “,”
+```java
+import org.datavec.api.transform.reduce.Reducer;
+import org.datavec.api.transform.ReduceOp;
 
-### StringReducer
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/stringreduce/StringReducer.java)
-
-A StringReducer is used to take a set of examples and reduce them. The idea: suppose you have a large number of columns, and you want to combine/reduce the values in each column.\
-StringReducer allows you to specify different reductions for differently for different columns: min, max, sum, mean etc.
-
-Uses are: (1) Reducing examples by a key (2) Reduction operations in time series (windowing ops, etc)
-
-**transform**
-
-```
-public Schema transform(Schema schema)
+Reducer reducer = new Reducer.Builder(ReduceOp.Mean)
+    .keyColumns("CustomerID")          // group by this column
+    .meanColumns("TransactionAmount")  // compute mean of this column
+    .countColumns("TransactionAmount") // add a count column
+    .sumColumns("Refunds")
+    .build();
 ```
 
-Get the output schema, given the input schema
+### Reduction operations
 
-**outputColumnName**
+`ReduceOp` specifies the default operation applied to any column not individually configured.
 
-```
-public Builder outputColumnName(String outputColumnName)
-```
+| `ReduceOp` | Description |
+|---|---|
+| `Sum` | Sum of all values |
+| `Mean` | Arithmetic mean |
+| `Count` | Number of records |
+| `CountUnique` | Number of distinct values |
+| `TakeFirst` | First value (in encounter order) |
+| `TakeLast` | Last value (in encounter order) |
+| `Min` | Minimum value |
+| `Max` | Maximum value |
+| `Range` | max - min |
+| `Stdev` | Sample standard deviation |
+| `Variance` | Sample variance |
+| `UncorrectedStdDev` | Population standard deviation |
+| `PopulationVariance` | Population variance |
+| `Prod` | Product of all values |
+| `Append` | Concatenate string values |
+| `Prepend` | Prepend-concatenate string values |
 
-Create a StringReducer builder, and set the default column reduction operation. For any columns that aren’t specified explicitly, they will use the default reduction operation. If a column does have a reduction operation explicitly specified, then it will override the default specified here.
+### Column-level configuration
 
-* param defaultOp Default reduction operation to perform
+You can override the default operation per column using the builder methods:
 
-**appendColumns**
-
-```
-public Builder appendColumns(String... columns)
-```
-
-Reduce the specified columns by taking the minimum value
-
-**prependColumns**
-
-```
-public Builder prependColumns(String... columns)
-```
-
-Reduce the specified columns by taking the maximum value
-
-**mergeColumns**
-
-```
-public Builder mergeColumns(String... columns)
-```
-
-Reduce the specified columns by taking the sum of values
-
-**replaceColumn**
-
-```
-public Builder replaceColumn(String... columns)
+```java
+Reducer reducer = new Reducer.Builder(ReduceOp.TakeFirst)
+    .keyColumns("OrderID")
+    .sumColumns("Quantity", "Price")
+    .maxColumns("Rating")
+    .minColumns("DeliveryDays")
+    .countColumns("ItemID")
+    .customReduction("Tags", myCustomColumnReduction)
+    .setIgnoreInvalid("Price")     // skip rows where Price is invalid
+    .build();
 ```
 
-Reduce the specified columns by taking the mean of the values
+### Ignoring invalid values
 
-**customReduction**
+`setIgnoreInvalid(String... columns)` configures the reducer to skip invalid values in the listed columns when computing the aggregate. Invalid is defined relative to the column's `ColumnMetaData`.
 
-```
-public Builder customReduction(String column, ColumnReduction columnReduction)
-```
+### Custom column reductions
 
-Reduce the specified column using a custom column reduction functionality.
+Implement `ColumnReduction` to provide a custom aggregation function for a specific column:
 
-* param column Column to execute the custom reduction functionality on
-* param columnReduction Column reduction to execute on that column
-
-**setIgnoreInvalid**
-
-```
-public Builder setIgnoreInvalid(String... columns)
+```java
+public interface ColumnReduction {
+    Writable reduceColumn(List<Writable> columnValues);
+    String getColumnOutputName(String columnInputName);
+    ColumnMetaData getColumnOutputMetaData(String newColumnName, ColumnMetaData columnInputMeta);
+}
 ```
 
-When doing the reduction: set the specified columns to ignore any invalid values. Invalid: defined as being not valid according to the ColumnMetaData: {- link ColumnMetaData#isValid(Writable)}. For numerical columns, this typically means being unable to parse the Writable. For example, Writable.toLong() failing for a Long column. If the column has any restrictions (min/max values, regex for Strings etc) these will also be taken into account.
+Then register it:
 
-* param columns Columns to set ‘ignore invalid’ for
+```java
+reducer.customReduction("myColumn", new MyColumnReduction());
+```
+
+---
+
+## StringReducer
+
+`StringReducer` is a reducer that operates on string columns. It supports the same grouping concept as `Reducer` but provides string-specific operations: append, prepend, merge, and replace.
+
+[source](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/stringreduce/StringReducer.java)
+
+```java
+import org.datavec.api.transform.stringreduce.StringReducer;
+
+StringReducer reducer = new StringReducer.Builder(StringReduceOp.Merge)
+    .keyColumns("ProductID")
+    .appendColumns("Tags")       // append all tag values
+    .prependColumns("Prefix")    // prepend all prefix values
+    .replaceColumn("Status")     // use last value (replace)
+    .mergeColumns("Description") // merge all values with separator
+    .build();
+```
+
+### Builder methods
+
+| Method | Effect |
+|---|---|
+| `appendColumns(String... cols)` | Concatenate all values, appending each new value to the end |
+| `prependColumns(String... cols)` | Concatenate values, prepending each new value to the start |
+| `mergeColumns(String... cols)` | Merge all values using a separator |
+| `replaceColumn(String... cols)` | Replace previous value with each new value (keeps last) |
+| `customReduction(String col, ColumnReduction r)` | Use a custom reduction for the named column |
+| `setIgnoreInvalid(String... cols)` | Skip invalid values during reduction |
+| `outputColumnName(String name)` | Set the output column name |
+
+---
+
+## GeographicMidpointReduction
+
+[source](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-api/src/main/java/org/datavec/api/transform/reduce/impl/GeographicMidpointReduction.java)
+
+A specialized reduction that computes the geographic midpoint from a column of latitude/longitude coordinate strings. This is useful when you have a set of GPS pings or location records and want to reduce them to a single representative point.
+
+The algorithm follows the method described at [geomidpoint.com](http://www.geomidpoint.com/methods.html), which converts spherical coordinates to Cartesian, computes the average, and converts back.
+
+```java
+import org.datavec.api.transform.reduce.impl.GeographicMidpointReduction;
+
+// Column "Coordinates" contains strings like "lat,long"
+GeographicMidpointReduction geoReduction = new GeographicMidpointReduction(",");
+```
+
+Constructor parameter: `delim` — the delimiter used to separate latitude and longitude within the string, for example `","` for `"40.7128,-74.0060"`.
+
+The output column will also be a string in `"lat,long"` format representing the computed midpoint.
+
+---
+
+## Executing reductions
+
+### Locally
+
+```java
+import org.datavec.local.transforms.LocalTransformExecutor;
+import org.datavec.api.transform.join.Join;
+
+// Execute a reduction inline in a transform process
+TransformProcess tp = new TransformProcess.Builder(schema)
+    .reduce(reducer)
+    .build();
+
+List<List<Writable>> reduced = LocalTransformExecutor.execute(data, tp);
+```
+
+### On Spark
+
+```java
+import org.datavec.spark.transform.SparkTransformExecutor;
+
+JavaRDD<List<Writable>> reduced = SparkTransformExecutor.execute(inputRdd, tp);
+```
+
+---
+
+## Joins (group and combine)
+
+`Join` combines two datasets on a common key. Combined with `Reducer`, joins can produce rich aggregated views over multiple data sources.
+
+```java
+import org.datavec.api.transform.join.Join;
+
+Join join = new Join.Builder(Join.JoinType.Inner)
+    .setJoinColumns("CustomerID")
+    .setSchemas(leftSchema, rightSchema)
+    .build();
+
+List<List<Writable>> joined = LocalTransformExecutor.executeJoin(join, leftData, rightData);
+```
+
+Join types:
+
+| Type | Description |
+|---|---|
+| `Inner` | Only records with matching keys in both datasets |
+| `LeftOuter` | All left records; matched right records or nulls |
+| `RightOuter` | All right records; matched left records or nulls |
+| `FullOuter` | All records from both datasets; unmatched sides get nulls |
+
+---
+
+## Sequence reduction
+
+When working with sequence data (time series), reductions can collapse a variable-length sequence into a fixed-size feature vector. The same `Reducer` API applies — each time step is treated as one record, and the resulting summary is one record per sequence.
+
+```java
+// Reduce each sequence to one record using per-column operations
+TransformProcess tp = new TransformProcess.Builder(sequenceSchema)
+    .reduceSequenceByWindow(reducer, windowFunction)
+    .build();
+```
+
+See `ReduceSequenceByWindowTransform` for windowed reductions, which are useful for sliding-window feature engineering on time series.

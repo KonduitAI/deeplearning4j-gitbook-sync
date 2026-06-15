@@ -1,165 +1,244 @@
 ---
-description: >-
-  Deeplearning4j supports fast distributed training with Spark and a parameter
-  server.
+title: "Parameter Server"
+description: "Gradient sharing via the Aeron-based parameter server for distributed training"
 ---
 
-# Parameter Server
+# Parameter Server and Gradient Sharing
 
-DeepLearning4j supports distributed training in the Apache Spark environment and [Aeron](https://github.com/real-logic/Aeron) for high performance inter-node communication outside of Spark. The idea is relatively simple: individual workers calculate gradients on their DataSets.
+DL4J's primary distributed training implementation uses an Aeron-based parameter server for high-performance gradient sharing. This page covers the architecture, network requirements, configuration, and performance tuning for this approach.
 
-Before gradients are applied to the network weights, they are accumulated in an intermediate storage mechanism (one for each machine). After aggregation, updated values above some configurable threshold are propagated across the network as a sparse binary array. Values below the threshold are stored and added to future updates, hence they are not lost, but merely delayed in their communication.
+For an introduction, see the [Distributed Training Overview](overview.md). For API details, see [SharedTrainingMaster in the API Reference](spark-api-reference.md#sharedtrainingmaster).
 
-This thresholding approach reduces the network communication requirements by many orders of magnitude compared to a naive approach of sending the entire dense update, or parameter vector, while maintaining high accuracy.
+---
 
-For more details on the thresholding approach, see [Strom, 2015 - Scalable Distributed DNN Training using Commodity GPU Cloud Computing](http://nikkostrom.com/publications/interspeech2015/strom\_interspeech2015.pdf).
+## Architecture
 
-Here are a few more perks were added to original algorithm proposed by Nikko Strom:
+### The Gradient Sharing Algorithm
 
-* Variable threshold: If the number of updates per iteration gets too low, the threshold is automatically decreased by a configurable step value.&#x20;
-* Dense bitmap encoding: If the number of updates gets too high, another encoding scheme is used, which provides guarantees of "maximum number of bytes" being sent over the wire for any given update message.
-* Periodically, we send "shake up" messages, encoded with a significantly smaller threshold, to share delayed weights that can't get above current threshold.
+Each worker computes a gradient update on its local minibatch. Rather than sending the full gradient vector to a centralized server, only updates that exceed a threshold are communicated:
 
-Note that using Spark entails overhead. In order to determine whether Spark will help you or not, consider using the [Performance Listener](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/optimize/listeners/PerformanceListener.java) and look at the millisecond iteration time. If it's <= 150ms, Spark may not be worth it.
+1. Each worker computes its parameter update (gradient times learning rate).
+2. Updates are accumulated in an intermediate buffer.
+3. Updates whose absolute value exceeds the threshold `τ` are encoded as a sparse binary vector and broadcast to other nodes.
+4. Updates below `τ` are stored in a **residual vector** — they are not discarded. They accumulate and will be communicated in future iterations once the cumulative residual exceeds `τ`.
 
-## Setting up Your Cluster
+This produces a sparse, quantized communication message. The threshold encoding represents each communicated element as either `+τ` or `-τ`, requiring only one bit per element (plus an integer index). In practice this reduces communication volume by orders of magnitude vs. sending the raw update.
 
-All you need to run training is a Spark 1.x/2.x cluster and at least one open UDP port (both inbound/outbound).
+### DL4J Extensions to the Strom Algorithm
 
-### Cluster Setup
+The original [Strom 2015 paper](http://nikkostrom.com/publications/interspeech2015/strom_interspeech2015.pdf) assumed a fixed threshold and point-to-point communication. DL4J's implementation differs in several important ways:
 
-As mentioned above, DeepLearning4j supports both Spark 1.x and Spark 2.x clusters. However, this particular implementation also requires Java 8+ to run. If your cluster is running Java 7, you'll either have to upgrade or use our [Parameters Averaging training mode](https://app.gitbook.com/s/-LsGrpMiOeoMSFYK0VJQ-714541269/spark/reference/deeplearning4j-scaleout/deeplearning4j-spark-training).
+**Adaptive threshold**: The threshold `τ` is adjusted automatically after each iteration to maintain a target sparsity ratio (fraction of parameters communicated). If updates are too sparse (almost nothing communicated), the threshold is reduced. If too dense (nearly everything communicated), the threshold is increased. This is implemented via the `ThresholdAlgorithm` interface; the default is `AdaptiveThresholdAlgorithm`.
 
-### Network Environment
+**Dual encoding schemes**: DL4J dynamically selects between two encodings:
+- *Threshold encoding*: a list of integer indexes, one per communicated parameter. Provides very high compression for sparse updates.
+- *Bitmap encoding*: two bits per parameter, encoding states: no change, `+τ`, `-τ`, and `τ/2` (a "shake-up" value for delayed weights). Results in exactly 16x compression vs. the raw update vector. Used when updates are dense enough that the bitmap is more compact than the index list.
 
-Gradient sharing relies heavily on the UDP protocol for communication between the Master and the slave nodes during training. If you're running your cluster in a cloud environment such as AWS or Azure, you need to allow one UDP port for Inbound/Outbound connections, and you have to specify that port in the `VoidConfiguration.unicastPort(int)` bean that is passed to `SharedTrainingMaster` constructor.
+**Residual clipping**: If updates are much larger than the threshold, the residual can grow to many multiples of `τ`, taking many iterations to communicate (residual explosion). `ResidualClippingPostProcessor` clips the residual to a maximum of 5x the current threshold every 5 steps by default.
 
-Another option to keep in mind: if you use YARN (or any other resource manager that handles Spark networking), you'll have to specify the network mask of the network that'll be used for UDP communications. That could be done with something like this: `VoidConfiguration.setNetworkMask("10.1.1.0/24")`.
+**Shake-up messages**: Periodically, special messages are sent with a much smaller threshold, to flush delayed weights that would otherwise take too long to be communicated through the normal threshold process.
 
-An option of last resort for IP address selection is the `DL4J_VOID_IP` environment variable. Set that variable on each node you're running, with a local IP address to be used for comms.
+### Aeron for Out-of-Spark Communication
 
-### Netmask
+Spark's RPC layer is too slow for the per-iteration gradient messages required by ASGD. DL4J uses [Aeron](https://github.com/real-logic/aeron/wiki) for out-of-band communication:
 
-Network mask is CIDR notation, is just a way to tell software, which network interfaces should be used for communication. For example, if your cluster has 3 boxes with following IP addresses: `192.168.1.23, 192.168.1.78, 192.168.2.133` their common part of network address is 192.168.\*, so netmask is `192.168.0.0/16`. You can also get detailed explanation what is netmask in wikipedia: [https://en.wikipedia.org/wiki/Subnetwork](https://en.wikipedia.org/wiki/Subnetwork)
+- Aeron is a high-performance messaging library designed for minimum latency and maximum throughput.
+- It runs over **UDP unicast** (also supporting InfiniBand and shared memory, though UDP is the standard Spark cluster choice).
+- Cloud environments (AWS, Azure) that do not support multicast are supported — DL4J uses unicast only.
+- All gradient messages bypass Spark's shuffle and RPC layers entirely.
 
-We're using netmasks for cases when Spark cluster is run on top of hadoop, or any other environment which doesn't assume Spark IP addresses announced. In such cases valid netmask should be provided in `VoidConfiguration` bean, and it will be used to pick interface for out-of-Spark communications.
+The trade-off: you must open a UDP port on all nodes and configure network addressing explicitly via `VoidConfiguration`.
 
-### Dependencies
+---
 
-Here's the template for the only required dependency:
+## Network and Cluster Setup
 
-```markup
-<dependency>
-    <groupId>org.deeplearning4j</groupId>
-    <artifactId>dl4j-spark-parameterserver_${scala.binary.version}</artifactId>
-    <version>${dl4j.version}</version>
-</dependency>
+### Requirements
+
+- Spark 2.x cluster (Spark 1.x is also supported but less tested).
+- Java 8 or later.
+- At least one UDP port open for **inbound and outbound** traffic on all nodes (driver and workers).
+
+### Cloud Environments (AWS, Azure, GCP)
+
+You must open the UDP port in your security group / firewall rules for all nodes in the cluster. Inbound and outbound must both be permitted.
+
+Set the network mask to the CIDR range of your cluster's internal network:
+```java
+VoidConfiguration conf = VoidConfiguration.builder()
+    .unicastPort(40123)
+    .networkMask("10.0.0.0/16")       // adjust to match your VPC CIDR
+    .controllerAddress("10.0.2.4")    // driver's internal IP
+    .build();
 ```
 
-For example:
+### YARN Environments
 
-```markup
-<dependency>
-    <groupId>org.deeplearning4j</groupId>
-    <artifactId>dl4j-spark-parameterserver_2.11</artifactId>
-    <version>${dl4j.version}</version>
-</dependency>
-```
-
-### Example Configuration:
-
-Below is a snippet from an example project taken from [our examples repo on Github](https://github.com/eclipse/deeplearning4j-examples/blob/master/dl4j-spark-examples/dl4j-spark/src/main/java/org/deeplearning4j/mlp/MnistMLPDistributedExample.java)
+When running Spark on YARN, Spark may assign IP addresses that are not reachable for direct node-to-node communication. Specify the network mask of the interface to use:
 
 ```java
-SparkConf sparkConf = new SparkConf();
-sparkConf.setAppName("DL4J Spark Example");
-JavaSparkContext sc = new JavaSparkContext(sparkConf);
-
-MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-            .seed(12345)
-            .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-            ...
-            .build();
-
-/*
-    This is a ParameterServer configuration bean. The only option you'll really ever use is .unicastPort(int) 
-*/
-VoidConfiguration voidConfiguration = VoidConfiguration.builder()
-            .unicastPort(40123)
-            .build();
-
-/*
-    SharedTrainingMaster is the basement of distributed training. Tt holds all logic required for training 
-*/
-TrainingMaster tm = new SharedTrainingMaster.Builder(voidConfiguration,batchSizePerWorker)
-            .updatesThreshold(1e-3)
-            .rddTrainingApproach(RDDTrainingApproach.Export)
-            .batchSizePerWorker(batchSizePerWorker)
-            .workersPerNode(4)
-            .build();
-
-//Create the Spark network
-SparkDl4jMultiLayer sparkNet = new SparkDl4jMultiLayer(sc, conf, tm);
-
-//Execute training:
-for (int i = 0; i < numEpochs; i++) {
-    sparkNet.fit(trainData);
-    log.info("Completed Epoch {}", i);
-}
+VoidConfiguration conf = VoidConfiguration.builder()
+    .unicastPort(40123)
+    .networkMask("192.168.1.0/24")    // subnet where all nodes can reach each other
+    .build();
 ```
 
-_**PLEASE NOTE**_: This configuration assumes that you have UDP port 40123 open on ALL nodes within your cluster.
+If automatic interface selection still fails, set the `DL4J_VOID_IP` environment variable on each node to force a specific IP address for Aeron communication:
+```bash
+export DL4J_VOID_IP=192.168.1.45   # set to the node's correct IP
+```
 
-## Effective Scalability
+### Network Mask Reference
 
-Network IO has its own price, and this algorithm does some IO as well. Additional overhead to training time can be calculated as `updates encoding time + message serialization time + updates application from other workers`.
+A network mask (in CIDR notation) identifies which addresses share a subnet. Examples:
+- Cluster with IPs `192.168.1.23`, `192.168.1.78`, `192.168.2.133` — use `192.168.0.0/16`
+- Cluster with IPs `10.1.2.x` — use `10.1.2.0/24` or `10.0.0.0/8`
 
-The longer the original iteration time, the less relative impact will come from sharing, and the better hypothetical scalability you will get.
+The mask selects which network interface Aeron binds to for inter-node communication.
 
-Here's a simple form that'll help you with scalability expectations:
+---
 
-| Iteration Time | Encode Time | Decode Time | Update Time | Service overhead |
-| -------------- | ----------- | ----------- | ----------- | ---------------- |
-| 550            | 50          | 5           | 50          | 20               |
+## Configuration
 
-| Number of nodes | Workers per node |
-| --------------- | ---------------- |
-| 8               | 4                |
+### Complete SharedTrainingMaster Setup
 
-**Scalability ratio: 70.51%**
+```java
+VoidConfiguration voidConf = VoidConfiguration.builder()
+    .unicastPort(40123)
+    .networkMask("10.0.0.0/16")
+    .controllerAddress("10.0.2.4")
+    .build();
 
-## Performance Hints
+TrainingMaster tm = new SharedTrainingMaster.Builder(voidConf)
+    .batchSizePerWorker(32)
+    .workersPerNode(4)                              // number of GPUs per node
+    .thresholdAlgorithm(new AdaptiveThresholdAlgorithm(1e-3))
+    .residualPostProcessor(new ResidualClippingPostProcessor(5, 5))
+    .meshBuildMode(MeshBuildMode.MESH)              // use PLAIN for < 32 nodes
+    .rddTrainingApproach(RDDTrainingApproach.Export)
+    .workerTogglePeriodicGC(true)
+    .workerPeriodicGCFrequency(5000)
+    .build();
 
-### Executors, Cores, Parallelism
+SparkDl4jMultiLayer sparkNet = new SparkDl4jMultiLayer(sc, modelConf, tm);
+```
 
-By design, Spark allows you to configure the number of executors and cores per executor for your task. Imagine you have a cluster of 18 nodes with 32 cores in each node.
+### Plain Mode vs. Mesh Mode
 
-In this case, your `--num-executors` value will be 18 and the recommended `--executor-cores` value will be somewhere between 2 and 32. This option will basically define how many partitions your RDD will be split into.
+**Plain mode** (`MeshBuildMode.PLAIN`):
 
-Plus, you can manually set the specific number of DL4J workers that'll be used on each node. This can be done via the `SharedTrainingMaster.Builder().workersPerNode(int)` method.
+Each worker sends encoded updates to the master; the master relays them to all other workers. The master always holds the current model state, making it the authoritative checkpoint for fault tolerance. The master is a potential bottleneck with large clusters.
 
-If your nodes are GPU-powered, it's usually a very good idea to set `workersPerNode(int)` to the number of GPUs per box or to keep its default value for auto-tuning.
+Use plain mode when:
+- Cluster size is less than ~32 nodes.
+- You want a simpler topology that is easier to debug.
+
+**Mesh mode** (`MeshBuildMode.MESH`):
+
+Workers form a non-binary tree rooted at the master. Each node relays updates to its directly connected neighbors. The default configuration allows up to 8 children per node and a maximum tree depth of 5 levels (supporting thousands of nodes in theory).
+
+Benefits:
+- The master's communication load is reduced (it only communicates directly with its immediate children in the tree).
+- Scales to much larger clusters.
+
+Use mesh mode when:
+- Cluster size exceeds ~32 nodes.
+- The master would otherwise become a communication bottleneck.
+
+---
+
+## Fault Tolerance
+
+The gradient sharing implementation is fully fault-tolerant as of 1.0.0-beta3.
+
+### What Happens When a Worker Node Fails
+
+DL4J's parameter server maintains an internal heartbeat mechanism outside of Spark to detect node failures and recoveries. When a worker fails and is restarted by Spark, it will initially be out of sync with other nodes (since Spark's RDD lineage tracks back to the initial parameters). To prevent training divergence:
+
+1. The restored node reconnects to the master.
+2. It begins receiving new gradient updates from other nodes.
+3. It sends a request to the master for the current parameter state, optimizer state, and iteration/epoch number.
+4. The master fulfills these requests (either directly or by proxying to another worker for the optimizer state).
+5. The restored node applies only the updates it missed (tracked by unique update IDs).
+6. Training continues in sync.
+
+**Important**: updates are tagged with unique IDs. No update is applied twice, even if the timing of the parameter sync overlaps with new incoming updates.
+
+### Mesh Mode: Node Failure Remapping
+
+In mesh mode, when a node fails, its children in the tree are remapped. For example, if node 2 fails and its children are nodes 5, 6, and 7:
+- Node 5 is remapped directly to the master.
+- Nodes 6 and 7 are remapped to node 5.
+
+The master is chosen as the remapping target because it is the most reliable node in the cluster.
+
+### Limitations
+
+1. **Duplicate minibatches**: A failed node may have processed some minibatches (sending updates) before failing. Those examples may be processed again on the replacement node, since the RDD partition is recomputed from the beginning. In practice this affects only a small number of examples and is not a problem for multi-epoch training.
+
+2. **Master is a single point of failure**: If the Spark driver/master fails, training cannot continue. This is a Spark limitation. Mitigate by saving model checkpoints frequently — if the master fails, restart training from the latest checkpoint.
+
+---
+
+## Performance Tuning
+
+### Iteration Time is the Key Metric
+
+The parameter server's communication overhead is fixed per iteration. The longer each iteration takes (more computation), the smaller the relative overhead from gradient sharing. A rough guide:
+- Iteration time > 150 ms: gradient sharing provides good speedup.
+- Iteration time 10–150 ms: sub-linear scaling, but still typically beneficial.
+- Iteration time < 10 ms: communication overhead may dominate; Spark may not help.
+
+Use `PerformanceListener` to measure per-iteration time before moving to distributed training.
+
+### Executors and Core Count
+
+Set `--num-executors` to the number of machines. Set `--executor-cores` based on your hardware. For GPU nodes, 1–2 Spark executor cores per GPU is typical (Spark cores control data pipeline threads, not GPU threads).
+
+`workersPerNode` controls DL4J training threads per node:
+- GPU nodes: set equal to the number of GPUs per machine.
+- CPU nodes: `1` is usually best; for large core counts (32+), experiment with higher values paired with `OMP_NUM_THREADS`.
+
+Example for a node with 4 GPUs:
+```java
+.workersPerNode(4)
+```
 
 ### Encoding Threshold
 
-A higher threshold value gives you more sparse updates which will boost network IO performance, but it might (and probably will) affect the learning performance of your neural network.
+The threshold controls the sparsity of gradient communication. Higher threshold = fewer updates communicated = less network traffic but potentially slower convergence. Lower threshold = more updates = more traffic but better model quality.
 
-A lower threshold value will give you more dense updates so each individual updates message will become larger. This will degrade network IO performance. Individual "best threshold value" is impossible to predict since it may vary for different architectures, but a default value of `1e-3` is a good value to start with.
+The `AdaptiveThresholdAlgorithm` default targets a sparsity ratio of 0.0001–0.01, meaning 0.01%–1% of parameters are communicated per step. This works well for most models.
 
-### Network Latency vs Bandwidth
+Enable encoding debug mode during development to monitor whether the threshold is appropriate:
+```java
+.encodingDebugMode(true)
+```
 
-The rule of thumb is simple here: the faster your network, the better your performance. A 1GBe network should be considered the absolute minimum, but a 10GBe will perform better due to lower latency.
+Watch the logged sparsity ratio. If it is consistently very close to 0 or to 1, the threshold needs adjustment.
 
-Of course, performance depends on the network size and the amount of computation. Larger networks require greater bandwidth but also require more time per iteration (hence possibly leaving more time for asynchronous communication).
+### Network Bandwidth
 
-### UDP Unicast vs UDP Broadcast
+Minimum: 1 GbE. Recommended: 10 GbE or faster.
 
-To ensure maximum compatibility (for example, with cloud computing environments such as AWS and Azure, which do not support multicast), only UDP unicast is currently utilized in DL4J.
+With a well-configured threshold, gradient messages are very small (sparse encoding). The bottleneck for most well-sized models is computation, not network. However, very large models or very short iteration times can make network a bottleneck.
 
-UDP Broadcast transfers should be faster, but for training performance, the difference should not be noticeable (except perhaps for very small workloads).
+Infiniband and RDMA are supported via Aeron's transport layer for clusters with specialized interconnects.
 
-By design, each worker sends 1 updates message per iteration and this won’t change regardless of UDP transport type. Since message retransmission in UDP Unicast transport is handled by the Master node (which typically has low utilization) and since message passing is asynchronous, we simply require that update communication time is less than network iteration time for performance - which is usually the case.
+### Multi-GPU Nodes
 
-### Multi-GPU Environments
+On multi-GPU boxes, DL4J uses `ParallelWrapper` internally within each node to coordinate the GPUs. PCIe or NVLink peer-to-peer GPU connectivity improves performance but is not required. P2P transfers are faster, but training will still work correctly (just somewhat slower) without P2P.
 
-The best results are to be expected on boxes where PCIe/NVLink P2P connectivity between devices is available. However, everything will still work fine even without P2P. Just "a bit" slower. :)
+---
+
+## Dependency
+
+```xml
+<dependency>
+    <groupId>org.deeplearning4j</groupId>
+    <artifactId>dl4j-spark-parameterserver_${scala.binary.version}</artifactId>
+    <version>${dl4j.spark.version}</version>
+</dependency>
+```
+
+Replace `${scala.binary.version}` with `2.11` for Spark 2.x clusters.

@@ -1,179 +1,205 @@
 ---
-description: Gather statistics on datasets.
+title: "Analysis"
+description: "DataVec data analysis tools — profiling datasets, detecting quality issues, and computing statistics locally and on Spark"
 ---
 
 # Analysis
 
-## Analysis of data
+Before transforming data, it helps to understand what you are working with. DataVec provides analysis tools that scan a dataset and return per-column statistics: type distribution, missing value counts, histograms, min/max, mean, and standard deviation. The same API works locally (via a `RecordReader`) and at scale (via Apache Spark).
 
-Sometimes datasets are too large or too abstract in their format to manually analyze and estimate statistics on certain columns or patterns. DataVec comes with some helper utilities for performing a data analysis, and maximums, means, minimums, and other useful metrics.
+## Local analysis
 
-## Using Spark for analysis
-
-If you have loaded your data into Apache Spark, DataVec has a special `AnalyzeSpark` class which can generate histograms, collect statistics, and return information about the quality of the data. Assuming you have already loaded your data into a Spark RDD, pass the `JavaRDD` and `Schema` to the class.
-
-If you are using DataVec in Scala and your data was loaded into a regular `RDD` class, you can convert it by calling `.toJavaRDD()` which returns a `JavaRDD`. If you need to convert it back, call `rdd()`.
-
-The code below demonstrates some of many analyses for a 2D dataset in Spark analysis using the RDD `javaRdd` and the schema `mySchema`:
-
-```java
-import org.datavec.spark.transform.AnalyzeSpark;
-import org.datavec.api.writable.Writable;
-import org.datavec.api.transform.analysis.*;
-
-int maxHistogramBuckets = 10
-DataAnalysis analysis = AnalyzeSpark.analyze(mySchema, javaRdd, maxHistogramBuckets)
-
-DataQualityAnalysis analysis = AnalyzeSpark.analyzeQuality(mySchema, javaRdd)
-
-Writable max = AnalyzeSpark.max(javaRdd, "myColumn", mySchema)
-
-int numSamples = 5
-List<Writable> sample = AnalyzeSpark.sampleFromColumn(numSamples, "myColumn", mySchema, javaRdd)
-```
-
-Note that if you have sequence data, there are special methods for that as well:
-
-```java
-SequenceDataAnalysis seqAnalysis = AnalyzeSpark.analyzeSequence(mySchema, sequenceRdd)
-
-List<Writable> uniqueSequence = AnalyzeSpark.getUniqueSequence("myColumn", seqSchema, sequenceRdd)
-```
-
-## Analyzing locally
-
-The `AnalyzeLocal` class works very similarly to its Spark counterpart and has a similar API. Instead of passing an RDD, it accepts a `RecordReader` which allows it to iterate over the dataset.
+`AnalyzeLocal` scans data through a `RecordReader` and returns a `DataAnalysis` object.
 
 ```java
 import org.datavec.local.transforms.AnalyzeLocal;
+import org.datavec.api.records.reader.impl.csv.CSVRecordReader;
+import org.datavec.api.split.FileSplit;
+import org.datavec.api.transform.analysis.DataAnalysis;
+import org.datavec.api.transform.analysis.DataQualityAnalysis;
 
-int maxHistogramBuckets = 10
-DataAnalysis analysis = AnalyzeLocal.analyze(mySchema, csvRecordReader, maxHistogramBuckets)
+Schema schema = new Schema.Builder()
+    .addColumnString("Name")
+    .addColumnDouble("Score")
+    .addColumnInteger("Age")
+    .build();
+
+RecordReader rr = new CSVRecordReader(1, ',');
+rr.initialize(new FileSplit(new File("data.csv")));
+
+int maxHistogramBuckets = 10;
+DataAnalysis analysis = AnalyzeLocal.analyze(schema, rr, maxHistogramBuckets);
+System.out.println(analysis);
 ```
 
-## Utilities
+### Quality analysis
 
-### AnalyzeLocal
+Quality analysis reports missing values, values that cannot be parsed according to the schema, and values that violate column metadata constraints.
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-local/src/main/java/org/datavec/local/transforms/AnalyzeLocal.java)
+```java
+RecordReader rr = new CSVRecordReader(0, ',');
+rr.initialize(new FileSplit(new File("data.csv")));
 
-Analyse the specified data - returns a DataAnalysis object with summary information about each column
-
-#### **analyze**
-
+DataQualityAnalysis quality = AnalyzeLocal.analyzeQuality(schema, rr);
+System.out.println(quality);
 ```
+
+For sequence data:
+
+```java
+DataQualityAnalysis seqQuality = AnalyzeLocal.analyzeQualitySequence(schema, sequenceRecordReader);
+```
+
+### `AnalyzeLocal` API
+
+[source](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-local/src/main/java/org/datavec/local/transforms/AnalyzeLocal.java)
+
+```java
+// Full analysis with histogram buckets
 public static DataAnalysis analyze(Schema schema, RecordReader rr, int maxHistogramBuckets)
-```
 
-Analyse the specified data - returns a DataAnalysis object with summary information about each column
+// Quality report
+public static DataQualityAnalysis analyzeQuality(Schema schema, RecordReader data)
 
-* param schema Schema for data
-* param rr Data to analyze
-* return DataAnalysis for data
-
-#### **analyzeQualitySequence**
-
-```
+// Quality report for sequence data
 public static DataQualityAnalysis analyzeQualitySequence(Schema schema, SequenceRecordReader data)
 ```
 
-Analyze the data quality of sequence data - provides a report on missing values, values that don’t comply with schema, etc
+---
 
-* param schema Schema for data
-* param data Data to analyze
-* return DataQualityAnalysis object
+## Spark analysis
 
-#### **analyzeQuality**
+`AnalyzeSpark` mirrors the local API but operates on `JavaRDD<List<Writable>>` datasets already loaded into Apache Spark. It also adds methods for sampling individual column values.
 
-```
-public static DataQualityAnalysis analyzeQuality(final Schema schema, final RecordReader data)
-```
+```java
+import org.datavec.spark.transform.AnalyzeSpark;
+import org.datavec.api.transform.analysis.DataAnalysis;
+import org.datavec.api.transform.analysis.DataQualityAnalysis;
+import org.datavec.api.transform.analysis.SequenceDataAnalysis;
+import org.datavec.api.writable.Writable;
 
-Analyze the data quality of data - provides a report on missing values, values that don’t comply with schema, etc
+// Full statistical analysis
+int maxHistogramBuckets = 10;
+DataAnalysis analysis = AnalyzeSpark.analyze(schema, javaRdd, maxHistogramBuckets);
+System.out.println(analysis);
 
-* param schema Schema for data
-* param data Data to analyze
-* return DataQualityAnalysis object
+// Quality analysis
+DataQualityAnalysis quality = AnalyzeSpark.analyzeQuality(schema, javaRdd);
 
-### AnalyzeSpark
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-spark/src/main/java/org/datavec/spark/transform/AnalyzeSpark.java)
-
-AnalizeSpark: static methods for analyzing and
-
-#### **analyzeSequence**
-
-```
-public static SequenceDataAnalysis analyzeSequence(Schema schema, JavaRDD<List<List<Writable>>> data,
-                    int maxHistogramBuckets)
+// Sequence analysis
+SequenceDataAnalysis seqAnalysis = AnalyzeSpark.analyzeSequence(schema, sequenceRdd, maxHistogramBuckets);
 ```
 
-* param schema
-* param data
-* param maxHistogramBuckets
-* return
+### Extracting min and max
 
-#### **analyze**
-
+```java
+Writable min = AnalyzeSpark.min(javaRdd, "Score", schema);
+Writable max = AnalyzeSpark.max(javaRdd, "Score", schema);
 ```
+
+### Sampling values
+
+```java
+int numSamples = 5;
+List<Writable> sample = AnalyzeSpark.sampleFromColumn(numSamples, "Score", schema, javaRdd);
+
+// Sample only values that are invalid according to the schema
+List<Writable> invalidSamples = AnalyzeSpark.sampleInvalidFromColumn(numSamples, "Score", schema, javaRdd);
+
+// Get all unique values in a column
+List<Writable> unique = AnalyzeSpark.getUnique("Category", schema, javaRdd);
+
+// Get all unique values in a sequence column
+List<Writable> uniqueSeq = AnalyzeSpark.getUniqueSequence("Category", seqSchema, sequenceRdd);
+```
+
+### `AnalyzeSpark` API
+
+[source](https://github.com/eclipse/deeplearning4j/tree/master/datavec/datavec-spark/src/main/java/org/datavec/spark/transform/AnalyzeSpark.java)
+
+```java
 public static DataAnalysis analyze(Schema schema, JavaRDD<List<Writable>> data)
-```
-
-Analyse the specified data - returns a DataAnalysis object with summary information about each column
-
-* param schema Schema for data
-* param data Data to analyze
-* return DataAnalysis for data
-
-#### **analyzeQualitySequence**
-
-```
+public static DataAnalysis analyze(Schema schema, JavaRDD<List<Writable>> data, int maxHistogramBuckets)
+public static DataQualityAnalysis analyzeQuality(Schema schema, JavaRDD<List<Writable>> data)
+public static SequenceDataAnalysis analyzeSequence(Schema schema, JavaRDD<List<List<Writable>>> data, int maxHistogramBuckets)
 public static DataQualityAnalysis analyzeQualitySequence(Schema schema, JavaRDD<List<List<Writable>>> data)
-```
-
-Randomly sample values from a single column
-
-* param count Number of values to sample
-* param columnName Name of the column to sample from
-* param schema Schema
-* param data Data to sample from
-* return A list of random samples
-
-#### **analyzeQuality**
-
-```
-public static DataQualityAnalysis analyzeQuality(final Schema schema, final JavaRDD<List<Writable>> data)
-```
-
-Analyze the data quality of data - provides a report on missing values, values that don’t comply with schema, etc
-
-* param schema Schema for data
-* param data Data to analyze
-* return DataQualityAnalysis object
-
-#### **min**
-
-```
 public static Writable min(JavaRDD<List<Writable>> allData, String columnName, Schema schema)
-```
-
-Randomly sample a set of invalid values from a specified column. Values are considered invalid according to the Schema / ColumnMetaData
-
-* param numToSample Maximum number of invalid values to sample
-* param columnName Same of the column from which to sample invalid values
-* param schema Data schema
-* param data Data
-* return List of invalid examples
-
-#### **max**
-
-```
 public static Writable max(JavaRDD<List<Writable>> allData, String columnName, Schema schema)
+public static List<Writable> sampleFromColumn(int count, String columnName, Schema schema, JavaRDD<List<Writable>> data)
+public static List<Writable> sampleInvalidFromColumn(int numToSample, String columnName, Schema schema, JavaRDD<List<Writable>> data)
+public static List<Writable> getUnique(String columnName, Schema schema, JavaRDD<List<Writable>> data)
+public static List<Writable> getUniqueSequence(String columnName, Schema schema, JavaRDD<List<List<Writable>>> data)
 ```
 
-Get the maximum value for the specified column
+---
 
-* param allData All data
-* param columnName Name of the column to get the minimum value for
-* param schema Schema of the data
-* return Maximum value for the column
+## Analysis result types
+
+### DataAnalysis
+
+Contains a `ColumnAnalysis` entry for each column in the schema.
+
+```java
+DataAnalysis analysis = AnalyzeLocal.analyze(schema, rr, 10);
+
+// Print the full analysis summary
+System.out.println(analysis);
+
+// Access per-column analysis
+List<ColumnAnalysis> columnAnalyses = analysis.getColumnAnalysis();
+for (ColumnAnalysis ca : columnAnalyses) {
+    System.out.println(ca.toString());
+}
+```
+
+### ColumnAnalysis implementations
+
+| Class | Applies to |
+|---|---|
+| `IntegerAnalysis` | Integer columns |
+| `LongAnalysis` | Long columns |
+| `DoubleAnalysis` | Double/float columns |
+| `StringAnalysis` | String columns |
+| `CategoricalAnalysis` | Categorical columns |
+| `TimeAnalysis` | Time columns |
+| `BytesAnalysis` | Binary (bytes) columns |
+| `NDArrayAnalysis` | NDArray columns |
+
+Each numeric analysis includes: count, min, max, mean, standard deviation, and a histogram. String and categorical analyses include count, unique-value count, and length statistics.
+
+### DataQualityAnalysis
+
+Reports data quality per column.
+
+```java
+System.out.println(quality);
+// Output includes per-column counts of: total values, invalid values,
+// null/missing values, and out-of-range values.
+```
+
+### SequenceDataAnalysis
+
+In addition to per-column statistics, reports sequence-level information: min/max/mean sequence length, and histogram of sequence lengths.
+
+---
+
+## Workflow: analyze then transform
+
+A common pattern is to analyze the data first, then use the results to configure a `TransformProcess`.
+
+```java
+// Step 1: analyze
+DataAnalysis analysis = AnalyzeLocal.analyze(schema, rr, 10);
+
+// Step 2: build a transform process that uses the analysis
+//         e.g., to normalize using discovered min/max values
+TransformProcess tp = new TransformProcess.Builder(schema)
+    .normalize("Score", Normalize.MinMax, analysis)
+    .build();
+
+// Step 3: execute
+rr.reset();
+List<List<Writable>> processed = LocalTransformExecutor.execute(rr, tp);
+```
+
+The `normalize` builder method accepts a `DataAnalysis` directly, extracting the per-column statistics needed to apply min-max or standardize normalization inline within a transform pipeline.

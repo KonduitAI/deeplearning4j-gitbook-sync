@@ -1,834 +1,237 @@
-# Convolutional Layers
+---
+title: Keras Convolutional Layer Import
+description: DL4J equivalents and API reference for Keras convolutional layers — Conv1D, Conv2D, Conv3D, SeparableConv2D, transposed convolutions, cropping, upsampling, and zero-padding.
+---
+
+## Keras Convolutional Layer Import
+
+Convolutional layer support is implemented in the [layers/convolutional](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional) package.
+
+### Support Summary
+
+| Keras Layer | DL4J Equivalent | Supported |
+|---|---|---|
+| Conv1D | Convolution1DLayer | Yes |
+| Conv2D | ConvolutionLayer | Yes |
+| Conv3D | ConvolutionLayer (3D) | Yes |
+| AtrousConvolution1D | Convolution1DLayer (with dilation) | Yes |
+| AtrousConvolution2D | ConvolutionLayer (with dilation) | Yes |
+| SeparableConv1D | — | No |
+| SeparableConv2D | SeparableConvolution2DLayer | Yes |
+| DepthwiseConv2D | DepthwiseConvolution2DLayer | Yes |
+| Conv2DTranspose | Deconvolution2DLayer | Yes |
+| Conv3DTranspose | — | No |
+| Cropping1D | Cropping1DLayer | Yes |
+| Cropping2D | Cropping2DLayer | Yes |
+| Cropping3D | Cropping3DLayer | Yes |
+| UpSampling1D | Upsampling1DLayer | Yes |
+| UpSampling2D | Upsampling2DLayer | Yes |
+| UpSampling3D | Upsampling3DLayer | Yes |
+| ZeroPadding1D | ZeroPadding1DLayer | Yes |
+| ZeroPadding2D | ZeroPaddingLayer | Yes |
+| ZeroPadding3D | ZeroPadding3DLayer | Yes |
+
+---
 
 ## KerasConvolution2D
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasConvolution2D.java)
+[source](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasConvolution2D.java)
 
-Imports a 2D Convolution layer from Keras.
+Imports a Keras Conv2D layer as a DL4J `ConvolutionLayer`.
 
-**KerasConvolution2D**
+#### Constructor
 
-```
+```java
 public KerasConvolution2D(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
-Pass-through constructor from KerasLayer
+Pass-through constructor. `kerasVersion` is the major Keras version (1 or 2).
 
-* param kerasVersion major keras version
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
+#### getConvolution2DLayer
 
-**getConvolution2DLayer**
-
-```
+```java
 public ConvolutionLayer getConvolution2DLayer()
 ```
 
-Constructor from parsed Keras layer configuration dictionary.
+Returns the DL4J `ConvolutionLayer`.
 
-* param layerConfig dictionary containing Keras layer configuration
-* throws InvalidKerasConfigurationException Invalid Keras config
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
+#### getOutputType
 
-**getOutputType**
-
-```
+```java
 public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
 ```
 
-Get layer output type.
-
-* param inputType Array of InputTypes
-* return output type as InputType
-* throws InvalidKerasConfigurationException Invalid Keras config
-
-## KerasCropping2D
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasCropping2D.java)
-
-Imports a Keras Cropping 2D layer.
-
-**KerasCropping2D**
-
-```
-public KerasCropping2D(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration.
-* throws InvalidKerasConfigurationException Invalid Keras config
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-
-**getCropping2DLayer**
-
-```
-public Cropping2D getCropping2DLayer()
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration
-* param enforceTrainingConfig whether to enforce training-related configuration options
-* throws InvalidKerasConfigurationException Invalid Keras config
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-
-**getOutputType**
-
-```
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
-```
-
-Get layer output type.
-
-* param inputType Array of InputTypes
-* return output type as InputType
-* throws InvalidKerasConfigurationException Invalid Keras config
-
-## KerasUpsampling3D
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasUpsampling3D.java)
-
-Keras Upsampling3D layer support
-
-**KerasUpsampling3D**
-
-```
-public KerasUpsampling3D(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration.
-* throws InvalidKerasConfigurationException Invalid Keras configuration exception
-* throws UnsupportedKerasConfigurationException Unsupported Keras configuration exception
-
-**getUpsampling3DLayer**
-
-```
-public Upsampling3D getUpsampling3DLayer()
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration
-* param enforceTrainingConfig whether to enforce training-related configuration options
-* throws InvalidKerasConfigurationException Invalid Keras configuration exception
-* throws UnsupportedKerasConfigurationException Invalid Keras configuration exception
-
-**getOutputType**
-
-```
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
-```
-
-Get layer output type.
-
-* param inputType Array of InputTypes
-* return output type as InputType
-* throws InvalidKerasConfigurationException Invalid Keras config
+---
 
 ## KerasConvolution1D
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasConvolution1D.java)
+[source](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasConvolution1D.java)
 
-Imports a 1D Convolution layer from Keras.
+Imports a Keras Conv1D layer as a DL4J `Convolution1DLayer`.
 
-**KerasConvolution1D**
+#### Constructor
 
-```
+```java
 public KerasConvolution1D(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
-Pass-through constructor from KerasLayer
+#### getConvolution1DLayer
 
-* param kerasVersion major keras version
-* throws UnsupportedKerasConfigurationException
-
-**getConvolution1DLayer**
-
-```
+```java
 public Convolution1DLayer getConvolution1DLayer()
 ```
 
-Constructor from parsed Keras layer configuration dictionary.
+#### getInputPreprocessor
 
-* param layerConfig dictionary containing Keras layer configuration
-* throws InvalidKerasConfigurationException
-* throws UnsupportedKerasConfigurationException
-
-**getOutputType**
-
-```
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
+```java
+public InputPreProcessor getInputPreprocessor(InputType... inputType)
+        throws InvalidKerasConfigurationException
 ```
 
-Get layer output type.
+#### setWeights
 
-* param inputType Array of InputTypes
-* return output type as InputType
-* throws InvalidKerasConfigurationException
-
-**getInputPreprocessor**
-
-```
-public InputPreProcessor getInputPreprocessor(InputType... inputType) throws InvalidKerasConfigurationException
-```
-
-Gets appropriate DL4J InputPreProcessor for given InputTypes.
-
-* param inputType Array of InputTypes
-* return DL4J InputPreProcessor
-* throws InvalidKerasConfigurationException Invalid Keras configuration exception
-* see org.deeplearning4j.nn.conf.InputPreProcessor
-
-**setWeights**
-
-```
+```java
 public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException
 ```
 
-Set weights for layer.
-
-* param weights Map from parameter name to INDArray.
-
-## KerasUpsampling1D
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasUpsampling1D.java)
-
-Keras Upsampling1D layer support
-
-**KerasUpsampling1D**
-
-```
-public KerasUpsampling1D(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration.
-* throws InvalidKerasConfigurationException Invalid Keras configuration exception
-* throws UnsupportedKerasConfigurationException Unsupported Keras configuration exception
-
-**getUpsampling1DLayer**
-
-```
-public Upsampling1D getUpsampling1DLayer()
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration
-* param enforceTrainingConfig whether to enforce training-related configuration options
-* throws InvalidKerasConfigurationException Invalid Keras configuration exception
-* throws UnsupportedKerasConfigurationException Invalid Keras configuration exception
-
-**getOutputType**
-
-```
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
-```
-
-Get layer output type.
-
-* param inputType Array of InputTypes
-* return output type as InputType
-* throws InvalidKerasConfigurationException Invalid Keras config
-
-## KerasAtrousConvolution2D
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasAtrousConvolution2D.java)
-
-Keras 1D atrous / dilated convolution layer. Note that in keras 2 this layer has been removed and dilations are now available through the “dilated” argument in regular Conv1D layers
-
-author: Max Pumperla
-
-**KerasAtrousConvolution2D**
-
-```
-public KerasAtrousConvolution2D(Integer kerasVersion) throws UnsupportedKerasConfigurationException
-```
-
-Pass-through constructor from KerasLayer
-
-* param kerasVersion major keras version
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-
-**getAtrousConvolution2D**
-
-```
-public ConvolutionLayer getAtrousConvolution2D()
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration
-* throws InvalidKerasConfigurationException Invalid Keras config
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-
-**getOutputType**
-
-```
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
-```
-
-Get layer output type.
-
-* param inputType Array of InputTypes
-* return output type as InputType
-* throws InvalidKerasConfigurationException Invalid Keras config
-
-## KerasAtrousConvolution1D
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasAtrousConvolution1D.java)
-
-Keras 1D atrous / dilated convolution layer. Note that in keras 2 this layer has been removed and dilations are now available through the “dilated” argument in regular Conv1D layers
-
-author: Max Pumperla
-
-**KerasAtrousConvolution1D**
-
-```
-public KerasAtrousConvolution1D(Integer kerasVersion) throws UnsupportedKerasConfigurationException
-```
-
-Pass-through constructor from KerasLayer
-
-* param kerasVersion major keras version
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-
-**getAtrousConvolution1D**
-
-```
-public Convolution1DLayer getAtrousConvolution1D()
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration
-* throws InvalidKerasConfigurationException Invalid Keras config
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-
-**getOutputType**
-
-```
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
-```
-
-Get layer output type.
-
-* param inputType Array of InputTypes
-* return output type as InputType
-* throws InvalidKerasConfigurationException Invalid Keras config
-
-## KerasCropping3D
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasCropping3D.java)
-
-Imports a Keras Cropping 3D layer.
-
-**KerasCropping3D**
-
-```
-public KerasCropping3D(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration.
-* throws InvalidKerasConfigurationException Invalid Keras config
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-
-**getCropping3DLayer**
-
-```
-public Cropping3D getCropping3DLayer()
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration
-* param enforceTrainingConfig whether to enforce training-related configuration options
-* throws InvalidKerasConfigurationException Invalid Keras config
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-
-**getOutputType**
-
-```
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
-```
-
-Get layer output type.
-
-* param inputType Array of InputTypes
-* return output type as InputType
-* throws InvalidKerasConfigurationException Invalid Keras config
-
-## KerasZeroPadding2D
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasZeroPadding2D.java)
-
-Imports a Keras ZeroPadding 2D layer.
-
-**KerasZeroPadding2D**
-
-```
-public KerasZeroPadding2D(Map<String, Object> layerConfig)
-                    throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration.
-* throws InvalidKerasConfigurationException Invalid Keras config
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-
-**getZeroPadding2DLayer**
-
-```
-public ZeroPaddingLayer getZeroPadding2DLayer()
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration
-* param enforceTrainingConfig whether to enforce training-related configuration options
-* throws InvalidKerasConfigurationException Invalid Keras config
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-
-**getOutputType**
-
-```
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
-```
-
-Get layer output type.
-
-* param inputType Array of InputTypes
-* return output type as InputType
-* throws InvalidKerasConfigurationException Invalid Keras config
+---
 
 ## KerasConvolution3D
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasConvolution3D.java)
+[source](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasConvolution3D.java)
 
-Imports a 3D Convolution layer from Keras.
+Imports a Keras Conv3D layer as a DL4J 3D `ConvolutionLayer`.
 
-**KerasConvolution3D**
+---
 
-```
-public KerasConvolution3D(Integer kerasVersion) throws UnsupportedKerasConfigurationException
-```
+## KerasAtrousConvolution1D / KerasAtrousConvolution2D
 
-Pass-through constructor from KerasLayer
+[source 1D](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasAtrousConvolution1D.java) |
+[source 2D](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasAtrousConvolution2D.java)
 
-* param kerasVersion major keras version
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
+Imports Keras 1.x AtrousConvolution (dilated convolution) layers. In Keras 2, dilation is specified via the `dilation_rate` argument of standard Conv layers; the importer handles both representations.
 
-**getConvolution3DLayer**
-
-```
-public ConvolutionLayer getConvolution3DLayer()
+```java
+public KerasAtrousConvolution2D(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration
-* throws InvalidKerasConfigurationException Invalid Keras config
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-
-**getOutputType**
-
-```
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
-```
-
-Get layer output type.
-
-* param inputType Array of InputTypes
-* return output type as InputType
-* throws InvalidKerasConfigurationException Invalid Keras config
-
-## KerasDeconvolution2D
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasDeconvolution2D.java)
-
-Imports a 2D Deconvolution layer from Keras.
-
-**KerasDeconvolution2D**
-
-```
-public KerasDeconvolution2D(Integer kerasVersion) throws UnsupportedKerasConfigurationException
-```
-
-Pass-through constructor from KerasLayer
-
-* param kerasVersion major keras version
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-
-**getDeconvolution2DLayer**
-
-```
-public Deconvolution2D getDeconvolution2DLayer()
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration
-* throws InvalidKerasConfigurationException Invalid Keras config
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-
-**getOutputType**
-
-```
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
-```
-
-Get layer output type.
-
-* param inputType Array of InputTypes
-* return output type as InputType
-* throws InvalidKerasConfigurationException Invalid Keras config
-
-## KerasZeroPadding3D
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasZeroPadding3D.java)
-
-Imports a Keras ZeroPadding 3D layer.
-
-**KerasZeroPadding3D**
-
-```
-public KerasZeroPadding3D(Map<String, Object> layerConfig)
-                    throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration.
-* throws InvalidKerasConfigurationException Invalid Keras config
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-
-**getZeroPadding3DLayer**
-
-```
-public ZeroPadding3DLayer getZeroPadding3DLayer()
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration
-* param enforceTrainingConfig whether to enforce training-related configuration options
-* throws InvalidKerasConfigurationException Invalid Keras config
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-
-**getOutputType**
-
-```
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
-```
-
-Get layer output type.
-
-* param inputType Array of InputTypes
-* return output type as InputType
-* throws InvalidKerasConfigurationException Invalid Keras config
-
-## KerasConvolutionUtils
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasConvolutionUtils.java)
-
-Utility functionality for Keras convolution layers.
-
-**getConvolutionModeFromConfig**
-
-```
-public static ConvolutionMode getConvolutionModeFromConfig(Map<String, Object> layerConfig,
-                                                               KerasLayerConfiguration conf)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
-```
-
-Get (convolution) stride from Keras layer configuration.
-
-* param layerConfig dictionary containing Keras layer configuration
-* return Strides array from Keras configuration
-* throws InvalidKerasConfigurationException Invalid Keras config
-
-## KerasZeroPadding1D
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasZeroPadding1D.java)
-
-Imports a Keras ZeroPadding 1D layer.
-
-**KerasZeroPadding1D**
-
-```
-public KerasZeroPadding1D(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration.
-* throws InvalidKerasConfigurationException Invalid Keras config
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-
-**getZeroPadding1DLayer**
-
-```
-public ZeroPadding1DLayer getZeroPadding1DLayer()
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration
-* param enforceTrainingConfig whether to enforce training-related configuration options
-* throws InvalidKerasConfigurationException Invalid Keras config
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-
-**getOutputType**
-
-```
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
-```
-
-Get layer output type.
-
-* param inputType Array of InputTypes
-* return output type as InputType
-* throws InvalidKerasConfigurationException Invalid Keras config
-
-## KerasCropping1D
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasCropping1D.java)
-
-Imports a Keras Cropping 1D layer.
-
-**KerasCropping1D**
-
-```
-public KerasCropping1D(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration.
-* throws InvalidKerasConfigurationException Invalid Keras config
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-
-**getCropping1DLayer**
-
-```
-public Cropping1D getCropping1DLayer()
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration
-* param enforceTrainingConfig whether to enforce training-related configuration options
-* throws InvalidKerasConfigurationException Invalid Keras config
-* throws UnsupportedKerasConfigurationException Unsupported Keras config
-
-**getOutputType**
-
-```
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
-```
-
-Get layer output type.
-
-* param inputType Array of InputTypes
-* return output type as InputType
-* throws InvalidKerasConfigurationException Invalid Keras config
-
-## KerasSpaceToDepth
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasSpaceToDepth.java)
-
-Constructor from parsed Keras layer configuration dictionary.
-
-**KerasSpaceToDepth**
-
-```
-public KerasSpaceToDepth(Map<String, Object> layerConfig, boolean enforceTrainingConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration
-* param enforceTrainingConfig whether to enforce training-related configuration options
-* throws InvalidKerasConfigurationException Invalid Keras configuration exception
-* throws UnsupportedKerasConfigurationException Unsupported Keras configuration exception
-
-**getSpaceToDepthLayer**
-
-```
-public SpaceToDepthLayer getSpaceToDepthLayer()
-```
-
-Get DL4J SpaceToDepth layer.
-
-* return SpaceToDepth layer
-
-**getOutputType**
-
-```
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
-```
-
-Get layer output type.
-
-* param inputType Array of InputTypes
-* return output type as InputType
-* throws InvalidKerasConfigurationException Invalid Keras config
-
-## KerasUpsampling2D
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasUpsampling2D.java)
-
-Keras Upsampling2D layer support
-
-**KerasUpsampling2D**
-
-```
-public KerasUpsampling2D(Map<String, Object> layerConfig)
-            throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration.
-* throws InvalidKerasConfigurationException Invalid Keras configuration exception
-* throws UnsupportedKerasConfigurationException Unsupported Keras configuration exception
-
-**getUpsampling2DLayer**
-
-```
-public Upsampling2D getUpsampling2DLayer()
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration
-* param enforceTrainingConfig whether to enforce training-related configuration options
-* throws InvalidKerasConfigurationException Invalid Keras configuration exception
-* throws UnsupportedKerasConfigurationException Invalid Keras configuration exception
-
-**getOutputType**
-
-```
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
-```
-
-Get layer output type.
-
-* param inputType Array of InputTypes
-* return output type as InputType
-* throws InvalidKerasConfigurationException Invalid Keras config
+---
 
 ## KerasSeparableConvolution2D
 
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasSeparableConvolution2D.java)
+[source](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasSeparableConvolution2D.java)
 
-Keras separable convolution 2D layer support
+Imports a Keras SeparableConv2D layer as a DL4J `SeparableConvolution2DLayer`. Depthwise and pointwise weight tensors are loaded separately from the HDF5 file.
 
-**KerasSeparableConvolution2D**
-
-```
+```java
 public KerasSeparableConvolution2D(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
-Pass-through constructor from KerasLayer
+---
 
-* param kerasVersion major keras version
-* throws UnsupportedKerasConfigurationException Unsupported Keras configuration
+## KerasDeconvolution2D (Conv2DTranspose)
 
-**setWeights**
+[source](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasDeconvolution2D.java)
 
-```
-public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException
-```
+Imports a Keras `Conv2DTranspose` layer as a DL4J `Deconvolution2DLayer`.
 
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration
-* throws InvalidKerasConfigurationException Invalid Keras configuration
-* throws UnsupportedKerasConfigurationException Unsupported Keras configuration
-
-**getSeparableConvolution2DLayer**
-
-```
-public SeparableConvolution2D getSeparableConvolution2DLayer()
+```java
+public KerasDeconvolution2D(Integer kerasVersion) throws UnsupportedKerasConfigurationException
 ```
 
-Get DL4J SeparableConvolution2D.
+---
 
-* return SeparableConvolution2D
+## Cropping Layers
 
-**getOutputType**
+### KerasCropping1D
 
-```
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
-```
+[source](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasCropping1D.java)
 
-Get layer output type.
-
-* param inputType Array of InputTypes
-* return output type as InputType
-* throws InvalidKerasConfigurationException Invalid Keras config
-
-## KerasDepthwiseConvolution2D
-
-[\[source\]](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasDepthwiseConvolution2D.java)
-
-Keras depth-wise convolution 2D layer support
-
-**KerasDepthwiseConvolution2D**
-
-```
-public KerasDepthwiseConvolution2D(Integer kerasVersion) throws UnsupportedKerasConfigurationException
+```java
+public KerasCropping1D(Map<String, Object> layerConfig)
+        throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 ```
 
-Pass-through constructor from KerasLayer
+### KerasCropping2D
 
-* param kerasVersion major keras version
-* throws UnsupportedKerasConfigurationException Unsupported Keras configuration
+[source](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasCropping2D.java)
 
-**setWeights**
+```java
+public KerasCropping2D(Map<String, Object> layerConfig)
+        throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
 
-```
-public void setWeights(Map<String, INDArray> weights) throws InvalidKerasConfigurationException
-```
-
-Constructor from parsed Keras layer configuration dictionary.
-
-* param layerConfig dictionary containing Keras layer configuration
-* throws InvalidKerasConfigurationException Invalid Keras configuration
-* throws UnsupportedKerasConfigurationException Unsupported Keras configuration
-
-**getDepthwiseConvolution2DLayer**
-
-```
-public DepthwiseConvolution2D getDepthwiseConvolution2DLayer()
+public Cropping2D getCropping2DLayer()
 ```
 
-Get DL4J DepthwiseConvolution2D.
+### KerasCropping3D
 
-* return DepthwiseConvolution2D
+[source](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasCropping3D.java)
 
-**getOutputType**
+---
 
+## Upsampling Layers
+
+### KerasUpsampling1D
+
+[source](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasUpsampling1D.java)
+
+```java
+public KerasUpsampling1D(Map<String, Object> layerConfig)
+        throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
+
+public Upsampling1D getUpsampling1DLayer()
 ```
-public InputType getOutputType(InputType... inputType) throws InvalidKerasConfigurationException
+
+### KerasUpsampling2D
+
+[source](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasUpsampling2D.java)
+
+```java
+public Upsampling2D getUpsampling2DLayer()
 ```
 
-Get layer output type.
+### KerasUpsampling3D
 
-* param inputType Array of InputTypes
-* return output type as InputType
-* throws InvalidKerasConfigurationException Invalid Keras config
+[source](https://github.com/eclipse/deeplearning4j/blob/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasUpsampling3D.java)
+
+```java
+public Upsampling3D getUpsampling3DLayer()
+```
+
+---
+
+## Zero Padding Layers
+
+### KerasZeroPadding1D
+
+[source](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasZeroPadding1D.java)
+
+```java
+public KerasZeroPadding1D(Map<String, Object> layerConfig)
+        throws InvalidKerasConfigurationException, UnsupportedKerasConfigurationException
+```
+
+### KerasZeroPadding2D
+
+[source](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasZeroPadding2D.java)
+
+```java
+public ZeroPaddingLayer getZeroPadding2DLayer()
+```
+
+### KerasZeroPadding3D
+
+[source](https://github.com/eclipse/deeplearning4j/tree/master/deeplearning4j/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/layers/convolutional/KerasZeroPadding3D.java)
+
+```java
+public ZeroPadding3DLayer getZeroPadding3DLayer()
+```
+
+---
+
+## Notes
+
+- **Data format**: Keras defaults to channels-last (`NHWC`). DL4J uses channels-first (`NCHW`) internally. The importer transposes weight tensors during loading so you do not need to manually convert weights.
+- **SeparableConv1D**: not supported. Use `Conv1D` with `groups` if available in your Keras version, or restructure the model.
+- **Conv3DTranspose**: no DL4J equivalent at this time.
+- **Dilation**: both the legacy `AtrousConvolution` names (Keras 1) and the `dilation_rate` argument (Keras 2) on standard Conv layers are handled transparently.
