@@ -130,6 +130,8 @@
   * [Updaters/Optimizers](deeplearning4j/reference/updaters-optimizers.md)
   * [Vertices](deeplearning4j/reference/vertices.md)
   * [Word2Vec/Glove/Doc2Vec](deeplearning4j/reference/word2vec-glove-doc2vec.md)
+  * [LLM & VLM Stack](deeplearning4j/reference/llm-overview.md)
+  * [PEFT & RL Alignment Training](deeplearning4j/reference/peft-and-rl.md)
 * [Explanation](deeplearning4j/explanation.md)
 
 ## datavec
@@ -180,6 +182,8 @@
   * [Op Descriptor Format](nd4j/reference/op-descriptor-format.md)
   * [Tensor](nd4j/reference/tensor.md)
   * [Syntax](nd4j/reference/syntax.md)
+  * [New Operations Reference](nd4j/reference/new-operations.md)
+  * [Hardware Backends](nd4j/reference/hardware-backends.md)
 * [Explanation](nd4j/explanation.md)
 
 ## Samediff
@@ -189,6 +193,8 @@
 * [How To Guides](samediff/how-to-guides/README.md)
   * [Importing Tensorflow](samediff/how-to-guides/importing-tensorflow.md)
   * [Importing ONNX](samediff/how-to-guides/importing-onnx.md)
+  * [ONNX Import & Export (Expanded)](model-import/reference/onnx-expanded.md)
+  * [GGML/GGUF Import](model-import/reference/ggml-overview.md)
   * [Training](samediff/how-to-guides/training.md)
   * [Execution and Inference](samediff/how-to-guides/execution.md)
   * [Serialization](samediff/how-to-guides/serialization.md)
@@ -207,6 +213,7 @@
     * [Random](samediff/reference/operation-namespaces/random.md)
     * [RNN](samediff/reference/operation-namespaces/rnn.md)
   * [Variables](samediff/reference/variables.md)
+  * [DSP Execution Engine](samediff/reference/dsp.md)
 * [Explanation](samediff/explanation/README.md)
   * [Model Import Framework](samediff/explanation/model-import-framework.md)
 
